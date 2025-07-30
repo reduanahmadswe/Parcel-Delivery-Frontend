@@ -83,28 +83,28 @@ export default function AdminDashboard() {
   const statCards = [
     {
       title: "Total Users",
-      value: stats.users.total,
+      value: stats.users.total || 0,
       icon: Users,
       color: "blue",
-      change: `+${stats.users.newThisMonth} this month`,
+      change: `+${stats.users.newThisMonth || 0} this month`,
     },
     {
       title: "Total Parcels",
-      value: stats.parcels.total,
+      value: stats.parcels.total || 0,
       icon: Package,
       color: "green",
-      change: `${stats.parcels.delivered} delivered`,
+      change: `${stats.parcels.delivered || 0} delivered`,
     },
     {
       title: "Active Parcels",
-      value: stats.parcels.pending + stats.parcels.inTransit,
+      value: (stats.parcels.pending || 0) + (stats.parcels.inTransit || 0),
       icon: TrendingUp,
       color: "yellow",
-      change: `${stats.parcels.urgent} urgent`,
+      change: `${stats.parcels.urgent || 0} urgent`,
     },
     {
       title: "Flagged Items",
-      value: stats.parcels.flagged,
+      value: stats.parcels.flagged || 0,
       icon: BarChart3,
       color: "red",
       change: "Needs attention",
@@ -120,7 +120,7 @@ export default function AdminDashboard() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
               {[...Array(4)].map((_, i) => (
                 <div
-                  key={i}
+                  key={`loading-card-${i}`}
                   className="h-32 bg-slate-200 dark:bg-slate-700 rounded-lg"
                 ></div>
               ))}
@@ -153,7 +153,7 @@ export default function AdminDashboard() {
             const Icon = card.icon;
             return (
               <div
-                key={index}
+                key={`stat-card-${index}`}
                 className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow border border-slate-200 dark:border-slate-700"
               >
                 <div className="flex items-center justify-between">
@@ -162,7 +162,7 @@ export default function AdminDashboard() {
                       {card.title}
                     </p>
                     <p className="text-2xl font-bold text-slate-900 dark:text-slate-100">
-                      {card.value}
+                      {typeof card.value === "number" && !isNaN(card.value) ? card.value : 0}
                     </p>
                     <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
                       {card.change}
@@ -192,22 +192,22 @@ export default function AdminDashboard() {
               {[
                 {
                   label: "Pending",
-                  value: stats.parcels.pending,
+                  value: stats.parcels.pending || 0,
                   color: "yellow",
                 },
                 {
                   label: "In Transit",
-                  value: stats.parcels.inTransit,
+                  value: stats.parcels.inTransit || 0,
                   color: "blue",
                 },
                 {
                   label: "Delivered",
-                  value: stats.parcels.delivered,
+                  value: stats.parcels.delivered || 0,
                   color: "green",
                 },
               ].map((item) => (
                 <div
-                  key={item.label}
+                  key={`chart-item-${item.label}`}
                   className="flex items-center justify-between"
                 >
                   <span className="text-sm text-slate-600 dark:text-slate-400">
@@ -218,12 +218,18 @@ export default function AdminDashboard() {
                       <div
                         className={`bg-${item.color}-500 h-2 rounded-full`}
                         style={{
-                          width: `${(item.value / stats.parcels.total) * 100}%`,
+                          width: `${
+                            (stats.parcels.total || 0) > 0
+                              ? Math.round(
+                                  ((item.value || 0) / (stats.parcels.total || 1)) * 100
+                                )
+                              : 0
+                          }%`,
                         }}
                       ></div>
                     </div>
                     <span className="text-sm font-medium text-slate-900 dark:text-slate-100">
-                      {item.value}
+                      {typeof item.value === "number" && !isNaN(item.value) ? item.value : 0}
                     </span>
                   </div>
                 </div>
@@ -242,7 +248,9 @@ export default function AdminDashboard() {
                   Active Users
                 </span>
                 <span className="text-lg font-semibold text-green-600 dark:text-green-400">
-                  {stats.users.active}
+                  {typeof stats.users.active === "number" && !isNaN(stats.users.active)
+                    ? stats.users.active
+                    : 0}
                 </span>
               </div>
               <div className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-700 rounded-md">
@@ -250,7 +258,9 @@ export default function AdminDashboard() {
                   Blocked Users
                 </span>
                 <span className="text-lg font-semibold text-red-600 dark:text-red-400">
-                  {stats.users.blocked}
+                  {typeof stats.users.blocked === "number" && !isNaN(stats.users.blocked)
+                    ? stats.users.blocked
+                    : 0}
                 </span>
               </div>
               <div className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-700 rounded-md">
@@ -258,7 +268,9 @@ export default function AdminDashboard() {
                   New This Month
                 </span>
                 <span className="text-lg font-semibold text-blue-600 dark:text-blue-400">
-                  {stats.users.newThisMonth}
+                  {typeof stats.users.newThisMonth === "number" && !isNaN(stats.users.newThisMonth)
+                    ? stats.users.newThisMonth
+                    : 0}
                 </span>
               </div>
             </div>

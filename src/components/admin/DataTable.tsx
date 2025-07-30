@@ -152,7 +152,7 @@ export default function DataTable<T extends Record<string, unknown>>({
             ) : (
               sortedData.map((row, index) => (
                 <tr
-                  key={index}
+                  key={('id' in row && row.id) ? String(row.id) : `row-${index}`}
                   className="hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
                 >
                   {columns.map((column) => (

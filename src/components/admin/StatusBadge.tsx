@@ -1,5 +1,5 @@
 interface StatusBadgeProps {
-  status: string;
+  status: string | null | undefined;
   variant?: "parcel" | "user" | "custom";
   className?: string;
 }
@@ -9,9 +9,12 @@ export default function StatusBadge({
   variant = "parcel",
   className = "",
 }: StatusBadgeProps) {
+  // Handle undefined, null, or non-string status values
+  const safeStatus = status?.toString() || "unknown";
+
   const getStatusConfig = () => {
     if (variant === "parcel") {
-      switch (status.toLowerCase()) {
+      switch (safeStatus.toLowerCase()) {
         case "pending":
           return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200";
         case "in_transit":
@@ -33,7 +36,7 @@ export default function StatusBadge({
     }
 
     if (variant === "user") {
-      switch (status.toLowerCase()) {
+      switch (safeStatus.toLowerCase()) {
         case "active":
           return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200";
         case "blocked":
@@ -54,7 +57,7 @@ export default function StatusBadge({
     <span
       className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusConfig()} ${className}`}
     >
-      {status.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase())}
+      {safeStatus.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase())}
     </span>
   );
 }
