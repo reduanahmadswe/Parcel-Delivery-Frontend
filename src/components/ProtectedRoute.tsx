@@ -1,20 +1,20 @@
-'use client';
+"use client";
 
-import { useAuth } from '@/contexts/AuthContext';
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
-import { User } from '@/types';
+import { useAuth } from "@/contexts/AuthContext";
+import { User } from "@/types";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
-  allowedRoles?: User['role'][];
+  allowedRoles?: User["role"][];
   redirectTo?: string;
 }
 
-export default function ProtectedRoute({ 
-  children, 
-  allowedRoles = [], 
-  redirectTo = '/login' 
+export default function ProtectedRoute({
+  children,
+  allowedRoles = [],
+  redirectTo = "/login",
 }: ProtectedRouteProps) {
   const { user, loading } = useAuth();
   const router = useRouter();
@@ -29,17 +29,17 @@ export default function ProtectedRoute({
       if (allowedRoles.length > 0 && !allowedRoles.includes(user.role)) {
         // Redirect based on user role
         switch (user.role) {
-          case 'admin':
-            router.push('/admin');
+          case "admin":
+            router.push("/admin");
             break;
-          case 'sender':
-            router.push('/sender');
+          case "sender":
+            router.push("/sender");
             break;
-          case 'receiver':
-            router.push('/receiver');
+          case "receiver":
+            router.push("/receiver");
             break;
           default:
-            router.push('/');
+            router.push("/");
         }
         return;
       }
@@ -48,8 +48,8 @@ export default function ProtectedRoute({
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-500"></div>
       </div>
     );
   }

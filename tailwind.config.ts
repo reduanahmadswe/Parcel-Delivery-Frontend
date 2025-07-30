@@ -53,6 +53,32 @@ const config: Config = {
                         dark: "#c7d2ff",
                     },
                 },
+                // Admin Dashboard Colors
+                admin: {
+                    background: {
+                        light: "#f8fafc", // slate-50
+                        dark: "#0f172a",  // slate-900
+                    },
+                    surface: {
+                        light: "#ffffff", // white
+                        dark: "#1e293b",  // slate-800
+                    },
+                    text: {
+                        primary: {
+                            light: "#0f172a", // slate-900
+                            dark: "#f8fafc",  // slate-100
+                        },
+                        secondary: {
+                            light: "#475569", // slate-600
+                            dark: "#cbd5e1",  // slate-300
+                        },
+                    },
+                    accent: "#3b82f6", // blue-500
+                    border: {
+                        light: "#e2e8f0", // slate-200
+                        dark: "#334155",  // slate-700
+                    },
+                },
                 border: {
                     light: "#e1e8ff",
                     dark: "#720455",
