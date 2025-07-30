@@ -56,7 +56,7 @@ export default function ReceiverDashboard() {
       setIsLoading(true);
       let response;
       let parcelData;
-      
+
       try {
         // First try /parcels/me endpoint (for parcels where user is recipient)
         response = await api.get("/parcels/me");
@@ -66,10 +66,10 @@ export default function ReceiverDashboard() {
         // Fallback: Get all parcels and filter by recipient email
         response = await api.get("/parcels");
         const allParcels = response.data.data || response.data;
-        
+
         // Filter parcels where the current user is the recipient
-        parcelData = allParcels.filter((parcel: Parcel) => 
-          parcel.recipientEmail === user?.email
+        parcelData = allParcels.filter(
+          (parcel: Parcel) => parcel.recipientEmail === user?.email
         );
       }
 
@@ -88,8 +88,10 @@ export default function ReceiverDashboard() {
       setStats(stats);
     } catch (error) {
       console.error("Error fetching parcels:", error);
-      const errorMsg = error instanceof Error ? error.message : "Failed to fetch parcels";
-      const statusCode = (error as { response?: { status?: number } })?.response?.status;
+      const errorMsg =
+        error instanceof Error ? error.message : "Failed to fetch parcels";
+      const statusCode = (error as { response?: { status?: number } })?.response
+        ?.status;
       toast.error(`Error ${statusCode ? `(${statusCode})` : ""}: ${errorMsg}`);
     } finally {
       setIsLoading(false);

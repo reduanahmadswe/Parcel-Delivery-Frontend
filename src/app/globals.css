@@ -17,9 +17,26 @@
   --brand-light: #910a67;
 
   /* Gradients */
-  --gradient-brand: linear-gradient(135deg, #030637 0%, #3c0753 25%, #720455 75%, #910a67 100%);
-  --gradient-brand-reverse: linear-gradient(135deg, #910a67 0%, #720455 25%, #3c0753 75%, #030637 100%);
-  --gradient-brand-light: linear-gradient(135deg, #f8f9ff 0%, #e1e8ff 50%, #c7d2ff 100%);
+  --gradient-brand: linear-gradient(
+    135deg,
+    #030637 0%,
+    #3c0753 25%,
+    #720455 75%,
+    #910a67 100%
+  );
+  --gradient-brand-reverse: linear-gradient(
+    135deg,
+    #910a67 0%,
+    #720455 25%,
+    #3c0753 75%,
+    #030637 100%
+  );
+  --gradient-brand-light: linear-gradient(
+    135deg,
+    #f8f9ff 0%,
+    #e1e8ff 50%,
+    #c7d2ff 100%
+  );
 }
 
 /* Dark mode */
@@ -33,7 +50,12 @@
   --text-muted: #c7d2ff;
 
   /* Dark mode gradients */
-  --gradient-brand-light: linear-gradient(135deg, #3c0753 0%, #720455 50%, #910a67 100%);
+  --gradient-brand-light: linear-gradient(
+    135deg,
+    #3c0753 0%,
+    #720455 50%,
+    #910a67 100%
+  );
 }
 
 /* Custom utility classes */
@@ -76,6 +98,8 @@
 /* Global styles */
 * {
   border-color: var(--border);
+  transition: background-color 0.3s ease, color 0.3s ease,
+    border-color 0.3s ease;
 }
 
 body {
@@ -84,12 +108,7 @@ body {
   font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
 }
 
-/* Smooth transitions for theme changes */
-* {
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-}
-
-/* Ensure all input fields maintain readability */
+/* Input field styling */
 input,
 textarea,
 select {
@@ -116,13 +135,4 @@ select:focus {
 .dark textarea:focus,
 .dark select:focus {
   box-shadow: 0 0 0 3px rgba(145, 10, 103, 0.1);
-}
-
-/* Dark mode override for inputs */
-@media (prefers-color-scheme: dark) {
-  input,
-  textarea,
-  select {
-    color: #111827 !important; /* Force black text even in dark mode for better contrast */
-  }
 }

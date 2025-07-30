@@ -1,7 +1,7 @@
 "use client";
 
-import { useAuth } from "@/contexts/AuthContext";
 import ThemeToggle from "@/components/ThemeToggle";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   BarChart3,
   Bell,
@@ -178,18 +178,14 @@ export default function Navigation() {
           <div className="flex items-center space-x-3">
             {/* Theme Toggle */}
             <ThemeToggle />
-            
+
             {user ? (
               <>
                 {/* Notifications */}
-                <button
-                  className="relative p-2 text-theme-secondary hover:text-white hover:shadow-brand-md rounded-lg transition-all duration-200 hover:gradient-brand"
-                >
+                <button className="relative p-2 text-theme-secondary hover:text-white hover:shadow-brand-md rounded-lg transition-all duration-200 hover:gradient-brand">
                   <Bell className="h-5 w-5" />
                   {notifications > 0 && (
-                    <span
-                      className="absolute -top-1 -right-1 h-5 w-5 text-white text-xs rounded-full flex items-center justify-center animate-pulse gradient-brand"
-                    >
+                    <span className="absolute -top-1 -right-1 h-5 w-5 text-white text-xs rounded-full flex items-center justify-center animate-pulse gradient-brand">
                       {notifications}
                     </span>
                   )}
@@ -212,7 +208,9 @@ export default function Navigation() {
                         {user.name.charAt(0).toUpperCase()}
                       </div>
                       <div className="hidden md:block text-left">
-                        <div className="text-sm font-medium text-theme-primary">{user.name}</div>
+                        <div className="text-sm font-medium text-theme-primary">
+                          {user.name}
+                        </div>
                         <div className="text-xs text-theme-muted capitalize">
                           {user.role}
                         </div>
@@ -236,9 +234,7 @@ export default function Navigation() {
                           {user.email}
                         </div>
                         <div className="mt-1">
-                          <span
-                            className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium text-white gradient-brand"
-                          >
+                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium text-white gradient-brand">
                             {user.role}
                           </span>
                         </div>
@@ -343,26 +339,17 @@ export default function Navigation() {
                 <>
                   <div className="border-t border-theme pt-4 mt-4">
                     <div className="flex items-center space-x-3 px-3 py-2">
-                      <div
-                        className="h-10 w-10 rounded-full flex items-center justify-center text-white font-semibold gradient-brand"
-                        }}
-                      >
+                      <div className="h-10 w-10 rounded-full flex items-center justify-center text-white font-semibold gradient-brand">
                         {user.name.charAt(0).toUpperCase()}
                       </div>
                       <div>
-                        <div className="text-sm font-medium text-gray-900">
+                        <div className="text-sm font-medium text-theme-primary">
                           {user.name}
                         </div>
-                        <div className="text-xs text-gray-500">
+                        <div className="text-xs text-theme-secondary">
                           {user.email}
                         </div>
-                        <span
-                          className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium text-white capitalize mt-1"
-                          style={{
-                            background:
-                              "linear-gradient(135deg, #720455, #910A67)",
-                          }}
-                        >
+                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium text-white capitalize mt-1 gradient-brand">
                           {user.role}
                         </span>
                       </div>
@@ -398,17 +385,17 @@ export default function Navigation() {
               )}
 
               {!user && (
-                <div className="border-t border-gray-200 pt-4 mt-4 space-y-2">
+                <div className="border-t border-theme pt-4 mt-4 space-y-2">
                   <Link
                     href="/login"
-                    className="block text-gray-700 hover:text-blue-600 hover:bg-blue-50 px-3 py-3 rounded-lg text-sm font-medium transition-colors"
+                    className="block text-theme-secondary hover:text-brand-light hover:bg-brand-light/10 px-3 py-3 rounded-lg text-sm font-medium transition-colors"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     Sign in
                   </Link>
                   <Link
                     href="/register"
-                    className="block bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 px-3 py-3 rounded-lg text-sm font-medium transition-all duration-200 text-center"
+                    className="block gradient-brand text-white hover:opacity-90 px-3 py-3 rounded-lg text-sm font-medium transition-all duration-200 text-center"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     Get Started

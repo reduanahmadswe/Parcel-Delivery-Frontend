@@ -23,7 +23,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className} antialiased bg-theme text-theme-primary`}>
+      <body
+        className={`${inter.className} antialiased bg-theme text-theme-primary`}
+      >
         <ThemeProvider>
           <AuthProvider>
             <div className="min-h-screen bg-theme">
