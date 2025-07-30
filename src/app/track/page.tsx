@@ -1,17 +1,10 @@
-"use client";
+'use client';
 
-import api from "@/lib/api";
-import { formatDate, getStatusColor, getStatusIcon } from "@/lib/utils";
-import { Parcel } from "@/types";
-import {
-  CheckCircle,
-  Clock,
-  MapPin,
-  Package,
-  Search,
-  XCircle,
-} from "lucide-react";
-import { useState } from "react";
+import { useState } from 'react';
+import { Search, Package, MapPin, Clock, CheckCircle, XCircle } from 'lucide-react';
+import { formatDate, getStatusColor, getStatusIcon } from '@/lib/utils';
+import api from '@/lib/api';
+import { Parcel } from '@/types';
 
 interface ApiError {
   response?: {
@@ -22,40 +15,31 @@ interface ApiError {
 }
 
 export default function TrackPage() {
-  const [trackingId, setTrackingId] = useState("");
+  const [trackingId, setTrackingId] = useState('');
   const [parcel, setParcel] = useState<Parcel | null>(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
 
   const handleTrack = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!trackingId.trim()) return;
 
     setLoading(true);
-    setError("");
+    setError('');
     setParcel(null);
 
     try {
       const response = await api.get(`/parcels/track/${trackingId.trim()}`);
       setParcel(response.data.data);
     } catch (err) {
-      setError(
-        (err as ApiError).response?.data?.message ||
-          "Parcel not found. Please check your tracking ID."
-      );
+      setError((err as ApiError).response?.data?.message || 'Parcel not found. Please check your tracking ID.');
     } finally {
       setLoading(false);
     }
   };
 
   const getStatusStep = (status: string) => {
-    const steps = [
-      "requested",
-      "approved",
-      "dispatched",
-      "in-transit",
-      "delivered",
-    ];
+    const steps = ['requested', 'approved', 'dispatched', 'in-transit', 'delivered'];
     return steps.indexOf(status);
   };
 
@@ -68,21 +52,15 @@ export default function TrackPage() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">
-            Track Your Parcel
-          </h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-4">Track Your Parcel</h1>
           <p className="text-lg text-gray-600">
-            Enter your tracking ID to get real-time updates on your parcel
-            delivery
+            Enter your tracking ID to get real-time updates on your parcel delivery
           </p>
         </div>
 
         {/* Search Form */}
         <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
-          <form
-            onSubmit={handleTrack}
-            className="flex flex-col sm:flex-row gap-4"
-          >
+          <form onSubmit={handleTrack} className="flex flex-col sm:flex-row gap-4">
             <div className="flex-1">
               <label htmlFor="trackingId" className="sr-only">
                 Tracking ID
@@ -129,77 +107,52 @@ export default function TrackPage() {
             {/* Parcel Details Card */}
             <div className="bg-white rounded-lg shadow-sm p-6">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-semibold text-gray-900">
-                  Parcel Details
-                </h2>
-                <span
-                  className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(
-                    parcel.currentStatus
-                  )}`}
-                >
-                  {getStatusIcon(parcel.currentStatus)}{" "}
-                  {parcel.currentStatus.replace("-", " ").toUpperCase()}
+                <h2 className="text-xl font-semibold text-gray-900">Parcel Details</h2>
+                <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(parcel.currentStatus)}`}>
+                  {getStatusIcon(parcel.currentStatus)} {parcel.currentStatus.replace('-', ' ').toUpperCase()}
                 </span>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <h3 className="font-medium text-gray-900 mb-2">
-                    Tracking Information
-                  </h3>
+                  <h3 className="font-medium text-gray-900 mb-2">Tracking Information</h3>
                   <div className="space-y-2 text-sm">
                     <div>
                       <span className="text-gray-500">Tracking ID:</span>
-                      <span className="ml-2 font-mono font-medium">
-                        {parcel.trackingId}
-                      </span>
+                      <span className="ml-2 font-mono font-medium">{parcel.trackingId}</span>
                     </div>
                     <div>
                       <span className="text-gray-500">Type:</span>
-                      <span className="ml-2 capitalize">
-                        {parcel.parcelDetails.type}
-                      </span>
+                      <span className="ml-2 capitalize">{parcel.parcelDetails.type}</span>
                     </div>
                     <div>
                       <span className="text-gray-500">Weight:</span>
-                      <span className="ml-2">
-                        {parcel.parcelDetails.weight} kg
-                      </span>
+                      <span className="ml-2">{parcel.parcelDetails.weight} kg</span>
                     </div>
                     {parcel.deliveryInfo.isUrgent && (
                       <div className="flex items-center">
                         <Clock className="h-4 w-4 text-orange-500 mr-1" />
-                        <span className="text-orange-600 font-medium">
-                          Urgent Delivery
-                        </span>
+                        <span className="text-orange-600 font-medium">Urgent Delivery</span>
                       </div>
                     )}
                   </div>
                 </div>
 
                 <div>
-                  <h3 className="font-medium text-gray-900 mb-2">
-                    Delivery Details
-                  </h3>
+                  <h3 className="font-medium text-gray-900 mb-2">Delivery Details</h3>
                   <div className="space-y-2 text-sm">
                     <div>
                       <span className="text-gray-500">From:</span>
                       <div className="ml-2">
                         <div>{parcel.senderInfo.name}</div>
-                        <div className="text-gray-600">
-                          {parcel.senderInfo.address.city},{" "}
-                          {parcel.senderInfo.address.state}
-                        </div>
+                        <div className="text-gray-600">{parcel.senderInfo.address.city}, {parcel.senderInfo.address.state}</div>
                       </div>
                     </div>
                     <div>
                       <span className="text-gray-500">To:</span>
                       <div className="ml-2">
                         <div>{parcel.receiverInfo.name}</div>
-                        <div className="text-gray-600">
-                          {parcel.receiverInfo.address.city},{" "}
-                          {parcel.receiverInfo.address.state}
-                        </div>
+                        <div className="text-gray-600">{parcel.receiverInfo.address.city}, {parcel.receiverInfo.address.state}</div>
                       </div>
                     </div>
                   </div>
@@ -209,29 +162,18 @@ export default function TrackPage() {
 
             {/* Status Timeline */}
             <div className="bg-white rounded-lg shadow-sm p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-6">
-                Delivery Timeline
-              </h2>
-
+              <h2 className="text-xl font-semibold text-gray-900 mb-6">Delivery Timeline</h2>
+              
               {/* Progress Bar */}
               <div className="mb-8">
                 <div className="flex items-center justify-between mb-2">
-                  {[
-                    "requested",
-                    "approved",
-                    "dispatched",
-                    "in-transit",
-                    "delivered",
-                  ].map((status, index) => (
-                    <div
-                      key={status}
-                      className="flex flex-col items-center flex-1"
-                    >
+                  {['requested', 'approved', 'dispatched', 'in-transit', 'delivered'].map((status, index) => (
+                    <div key={status} className="flex flex-col items-center flex-1">
                       <div
                         className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
                           isStatusCompleted(parcel.currentStatus, status)
-                            ? "bg-blue-600 text-white"
-                            : "bg-gray-200 text-gray-500"
+                            ? 'bg-blue-600 text-white'
+                            : 'bg-gray-200 text-gray-500'
                         }`}
                       >
                         {isStatusCompleted(parcel.currentStatus, status) ? (
@@ -241,7 +183,7 @@ export default function TrackPage() {
                         )}
                       </div>
                       <span className="text-xs text-gray-500 mt-1 capitalize text-center">
-                        {status.replace("-", " ")}
+                        {status.replace('-', ' ')}
                       </span>
                     </div>
                   ))}
@@ -251,9 +193,7 @@ export default function TrackPage() {
                   <div
                     className="absolute top-0 left-0 h-1 bg-blue-600 transition-all duration-500"
                     style={{
-                      width: `${
-                        (getStatusStep(parcel.currentStatus) / 4) * 100
-                      }%`,
+                      width: `${(getStatusStep(parcel.currentStatus) / 4) * 100}%`
                     }}
                   ></div>
                 </div>
@@ -267,19 +207,12 @@ export default function TrackPage() {
                     .slice()
                     .reverse()
                     .map((status, index) => (
-                      <div
-                        key={index}
-                        className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg"
-                      >
-                        <div
-                          className={`w-3 h-3 rounded-full mt-1 ${
-                            getStatusColor(status.status).split(" ")[0]
-                          }`}
-                        ></div>
+                      <div key={index} className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg">
+                        <div className={`w-3 h-3 rounded-full mt-1 ${getStatusColor(status.status).split(' ')[0]}`}></div>
                         <div className="flex-1">
                           <div className="flex items-center justify-between">
                             <span className="font-medium text-gray-900 capitalize">
-                              {status.status.replace("-", " ")}
+                              {status.status.replace('-', ' ')}
                             </span>
                             <span className="text-sm text-gray-500">
                               {formatDate(status.timestamp)}
@@ -292,9 +225,7 @@ export default function TrackPage() {
                             </div>
                           )}
                           {status.note && (
-                            <p className="text-sm text-gray-600 mt-1">
-                              {status.note}
-                            </p>
+                            <p className="text-sm text-gray-600 mt-1">{status.note}</p>
                           )}
                         </div>
                       </div>
@@ -306,12 +237,8 @@ export default function TrackPage() {
             {/* Parcel Description */}
             {parcel.parcelDetails.description && (
               <div className="bg-white rounded-lg shadow-sm p-6">
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">
-                  Parcel Description
-                </h2>
-                <p className="text-gray-700">
-                  {parcel.parcelDetails.description}
-                </p>
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">Parcel Description</h2>
+                <p className="text-gray-700">{parcel.parcelDetails.description}</p>
               </div>
             )}
           </div>
@@ -321,19 +248,12 @@ export default function TrackPage() {
         {!parcel && !loading && (
           <div className="bg-blue-50 rounded-lg p-6 text-center">
             <Package className="h-12 w-12 text-blue-600 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-blue-900 mb-2">
-              Need a sample tracking ID?
-            </h3>
+            <h3 className="text-lg font-medium text-blue-900 mb-2">Need a sample tracking ID?</h3>
             <p className="text-blue-700 mb-4">
-              Try one of these sample tracking IDs to see how the tracking
-              system works:
+              Try one of these sample tracking IDs to see how the tracking system works:
             </p>
             <div className="flex flex-wrap justify-center gap-2">
-              {[
-                "TRK-20240115-ABC123",
-                "TRK-20240116-DEF456",
-                "TRK-20240117-GHI789",
-              ].map((sampleId) => (
+              {['TRK-20240115-ABC123', 'TRK-20240116-DEF456', 'TRK-20240117-GHI789'].map((sampleId) => (
                 <button
                   key={sampleId}
                   onClick={() => setTrackingId(sampleId)}

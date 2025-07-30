@@ -1,62 +1,60 @@
-"use client";
+'use client';
 
-import { useAuth } from "@/contexts/AuthContext";
-import { Eye, EyeOff, Package, UserPlus } from "lucide-react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { Eye, EyeOff, UserPlus, Package } from 'lucide-react';
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-    phone: "",
-    role: "sender" as "sender" | "receiver",
+    name: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+    phone: '',
+    role: 'sender' as 'sender' | 'receiver',
     address: {
-      street: "",
-      city: "",
-      state: "",
-      zipCode: "",
-      country: "Bangladesh",
-    },
+      street: '',
+      city: '',
+      state: '',
+      zipCode: '',
+      country: 'Bangladesh'
+    }
   });
-
+  
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
-
+  
   const { register } = useAuth();
   const router = useRouter();
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-
-    if (name.startsWith("address.")) {
-      const addressField = name.split(".")[1];
-      setFormData((prev) => ({
+    
+    if (name.startsWith('address.')) {
+      const addressField = name.split('.')[1];
+      setFormData(prev => ({
         ...prev,
         address: {
           ...prev.address,
-          [addressField]: value,
-        },
+          [addressField]: value
+        }
       }));
     } else {
-      setFormData((prev) => ({
+      setFormData(prev => ({
         ...prev,
-        [name]: value,
+        [name]: value
       }));
     }
-
+    
     // Clear error when user starts typing
     if (errors[name]) {
-      setErrors((prev) => ({
+      setErrors(prev => ({
         ...prev,
-        [name]: "",
+        [name]: ''
       }));
     }
   };
@@ -64,23 +62,18 @@ export default function RegisterPage() {
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
 
-    if (!formData.name.trim()) newErrors.name = "Name is required";
-    if (!formData.email.trim()) newErrors.email = "Email is required";
-    if (!formData.password) newErrors.password = "Password is required";
-    if (formData.password.length < 8)
-      newErrors.password = "Password must be at least 8 characters";
+    if (!formData.name.trim()) newErrors.name = 'Name is required';
+    if (!formData.email.trim()) newErrors.email = 'Email is required';
+    if (!formData.password) newErrors.password = 'Password is required';
+    if (formData.password.length < 8) newErrors.password = 'Password must be at least 8 characters';
     if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = "Passwords do not match";
+      newErrors.confirmPassword = 'Passwords do not match';
     }
-    if (!formData.phone.trim()) newErrors.phone = "Phone number is required";
-    if (!formData.address.street.trim())
-      newErrors["address.street"] = "Street address is required";
-    if (!formData.address.city.trim())
-      newErrors["address.city"] = "City is required";
-    if (!formData.address.state.trim())
-      newErrors["address.state"] = "State is required";
-    if (!formData.address.zipCode.trim())
-      newErrors["address.zipCode"] = "ZIP code is required";
+    if (!formData.phone.trim()) newErrors.phone = 'Phone number is required';
+    if (!formData.address.street.trim()) newErrors['address.street'] = 'Street address is required';
+    if (!formData.address.city.trim()) newErrors['address.city'] = 'City is required';
+    if (!formData.address.state.trim()) newErrors['address.state'] = 'State is required';
+    if (!formData.address.zipCode.trim()) newErrors['address.zipCode'] = 'ZIP code is required';
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -88,19 +81,19 @@ export default function RegisterPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    
     if (!validateForm()) return;
-
+    
     setLoading(true);
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { confirmPassword, ...registrationData } = formData;
     const success = await register(registrationData);
-
+    
     if (success) {
-      router.push("/login");
+      router.push('/login');
     }
-
+    
     setLoading(false);
   };
 
@@ -114,11 +107,8 @@ export default function RegisterPage() {
           Create your account
         </h2>
         <p className="mt-2 text-center text-sm text-gray-600">
-          Or{" "}
-          <Link
-            href="/login"
-            className="font-medium text-blue-600 hover:text-blue-500"
-          >
+          Or{' '}
+          <Link href="/login" className="font-medium text-blue-600 hover:text-blue-500">
             sign in to your existing account
           </Link>
         </p>
@@ -129,10 +119,7 @@ export default function RegisterPage() {
           <form className="space-y-6" onSubmit={handleSubmit}>
             {/* Basic Information */}
             <div>
-              <label
-                htmlFor="name"
-                className="block text-sm font-medium text-gray-700"
-              >
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700">
                 Full Name
               </label>
               <div className="mt-1">
@@ -146,17 +133,12 @@ export default function RegisterPage() {
                   className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                   placeholder="Enter your full name"
                 />
-                {errors.name && (
-                  <p className="mt-1 text-sm text-red-600">{errors.name}</p>
-                )}
+                {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name}</p>}
               </div>
             </div>
 
             <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700"
-              >
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                 Email address
               </label>
               <div className="mt-1">
@@ -171,17 +153,12 @@ export default function RegisterPage() {
                   className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                   placeholder="Enter your email"
                 />
-                {errors.email && (
-                  <p className="mt-1 text-sm text-red-600">{errors.email}</p>
-                )}
+                {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email}</p>}
               </div>
             </div>
 
             <div>
-              <label
-                htmlFor="phone"
-                className="block text-sm font-medium text-gray-700"
-              >
+              <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
                 Phone Number
               </label>
               <div className="mt-1">
@@ -195,17 +172,12 @@ export default function RegisterPage() {
                   className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                   placeholder="+880123456789"
                 />
-                {errors.phone && (
-                  <p className="mt-1 text-sm text-red-600">{errors.phone}</p>
-                )}
+                {errors.phone && <p className="mt-1 text-sm text-red-600">{errors.phone}</p>}
               </div>
             </div>
 
             <div>
-              <label
-                htmlFor="role"
-                className="block text-sm font-medium text-gray-700"
-              >
+              <label htmlFor="role" className="block text-sm font-medium text-gray-700">
                 Account Type
               </label>
               <div className="mt-1">
@@ -216,29 +188,22 @@ export default function RegisterPage() {
                   onChange={handleInputChange}
                   className="block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 >
-                  <option value="sender">
-                    Sender - Send parcels to others
-                  </option>
-                  <option value="receiver">
-                    Receiver - Receive parcels from others
-                  </option>
+                  <option value="sender">Sender - Send parcels to others</option>
+                  <option value="receiver">Receiver - Receive parcels from others</option>
                 </select>
               </div>
             </div>
 
             {/* Password */}
             <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-700"
-              >
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                 Password
               </label>
               <div className="mt-1 relative">
                 <input
                   id="password"
                   name="password"
-                  type={showPassword ? "text" : "password"}
+                  type={showPassword ? 'text' : 'password'}
                   autoComplete="new-password"
                   required
                   value={formData.password}
@@ -258,23 +223,18 @@ export default function RegisterPage() {
                   )}
                 </button>
               </div>
-              {errors.password && (
-                <p className="mt-1 text-sm text-red-600">{errors.password}</p>
-              )}
+              {errors.password && <p className="mt-1 text-sm text-red-600">{errors.password}</p>}
             </div>
 
             <div>
-              <label
-                htmlFor="confirmPassword"
-                className="block text-sm font-medium text-gray-700"
-              >
+              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
                 Confirm Password
               </label>
               <div className="mt-1 relative">
                 <input
                   id="confirmPassword"
                   name="confirmPassword"
-                  type={showConfirmPassword ? "text" : "password"}
+                  type={showConfirmPassword ? 'text' : 'password'}
                   autoComplete="new-password"
                   required
                   value={formData.confirmPassword}
@@ -294,24 +254,15 @@ export default function RegisterPage() {
                   )}
                 </button>
               </div>
-              {errors.confirmPassword && (
-                <p className="mt-1 text-sm text-red-600">
-                  {errors.confirmPassword}
-                </p>
-              )}
+              {errors.confirmPassword && <p className="mt-1 text-sm text-red-600">{errors.confirmPassword}</p>}
             </div>
 
             {/* Address */}
             <div className="space-y-4">
-              <h3 className="text-lg font-medium text-gray-900">
-                Address Information
-              </h3>
-
+              <h3 className="text-lg font-medium text-gray-900">Address Information</h3>
+              
               <div>
-                <label
-                  htmlFor="address.street"
-                  className="block text-sm font-medium text-gray-700"
-                >
+                <label htmlFor="address.street" className="block text-sm font-medium text-gray-700">
                   Street Address
                 </label>
                 <div className="mt-1">
@@ -325,20 +276,13 @@ export default function RegisterPage() {
                     className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                     placeholder="123 Main Street"
                   />
-                  {errors["address.street"] && (
-                    <p className="mt-1 text-sm text-red-600">
-                      {errors["address.street"]}
-                    </p>
-                  )}
+                  {errors['address.street'] && <p className="mt-1 text-sm text-red-600">{errors['address.street']}</p>}
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label
-                    htmlFor="address.city"
-                    className="block text-sm font-medium text-gray-700"
-                  >
+                  <label htmlFor="address.city" className="block text-sm font-medium text-gray-700">
                     City
                   </label>
                   <div className="mt-1">
@@ -352,19 +296,12 @@ export default function RegisterPage() {
                       className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                       placeholder="Dhaka"
                     />
-                    {errors["address.city"] && (
-                      <p className="mt-1 text-sm text-red-600">
-                        {errors["address.city"]}
-                      </p>
-                    )}
+                    {errors['address.city'] && <p className="mt-1 text-sm text-red-600">{errors['address.city']}</p>}
                   </div>
                 </div>
 
                 <div>
-                  <label
-                    htmlFor="address.state"
-                    className="block text-sm font-medium text-gray-700"
-                  >
+                  <label htmlFor="address.state" className="block text-sm font-medium text-gray-700">
                     State/Division
                   </label>
                   <div className="mt-1">
@@ -378,21 +315,14 @@ export default function RegisterPage() {
                       className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                       placeholder="Dhaka Division"
                     />
-                    {errors["address.state"] && (
-                      <p className="mt-1 text-sm text-red-600">
-                        {errors["address.state"]}
-                      </p>
-                    )}
+                    {errors['address.state'] && <p className="mt-1 text-sm text-red-600">{errors['address.state']}</p>}
                   </div>
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label
-                    htmlFor="address.zipCode"
-                    className="block text-sm font-medium text-gray-700"
-                  >
+                  <label htmlFor="address.zipCode" className="block text-sm font-medium text-gray-700">
                     ZIP Code
                   </label>
                   <div className="mt-1">
@@ -406,19 +336,12 @@ export default function RegisterPage() {
                       className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                       placeholder="1000"
                     />
-                    {errors["address.zipCode"] && (
-                      <p className="mt-1 text-sm text-red-600">
-                        {errors["address.zipCode"]}
-                      </p>
-                    )}
+                    {errors['address.zipCode'] && <p className="mt-1 text-sm text-red-600">{errors['address.zipCode']}</p>}
                   </div>
                 </div>
 
                 <div>
-                  <label
-                    htmlFor="address.country"
-                    className="block text-sm font-medium text-gray-700"
-                  >
+                  <label htmlFor="address.country" className="block text-sm font-medium text-gray-700">
                     Country
                   </label>
                   <div className="mt-1">

@@ -1,9 +1,9 @@
-import Navigation from "@/components/Navigation";
-import { AuthProvider } from "@/contexts/AuthContext";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { Toaster } from "react-hot-toast";
 import "./globals.css";
+import { AuthProvider } from '@/contexts/AuthContext';
+import Navigation from '@/components/Navigation';
+import { Toaster } from 'react-hot-toast';
 
 const inter = Inter({
   subsets: ["latin"],
@@ -11,8 +11,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "ParcelTrack - Modern Parcel Delivery Service",
-  description:
-    "Track, send, and manage your parcels with our comprehensive delivery service platform",
+  description: "Track, send, and manage your parcels with our comprehensive delivery service platform",
 };
 
 export default function RootLayout({
@@ -32,8 +31,8 @@ export default function RootLayout({
               toastOptions={{
                 duration: 4000,
                 style: {
-                  background: "#363636",
-                  color: "#fff",
+                  background: '#363636',
+                  color: '#fff',
                 },
               }}
             />

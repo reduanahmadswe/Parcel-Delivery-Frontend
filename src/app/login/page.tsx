@@ -1,17 +1,17 @@
-"use client";
+'use client';
 
-import { useAuth } from "@/contexts/AuthContext";
-import { Eye, EyeOff, LogIn, Package } from "lucide-react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { Eye, EyeOff, LogIn, Package } from 'lucide-react';
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-
+  
   const { login } = useAuth();
   const router = useRouter();
 
@@ -20,19 +20,19 @@ export default function LoginPage() {
     setLoading(true);
 
     const success = await login(email, password);
-
+    
     if (success) {
-      router.push("/");
+      router.push('/');
     }
-
+    
     setLoading(false);
   };
 
   // Test credentials for easy testing
   const testCredentials = [
-    { role: "Admin", email: "admin@test.com", password: "Admin123!" },
-    { role: "Sender", email: "sender@test.com", password: "Sender123!" },
-    { role: "Receiver", email: "receiver@test.com", password: "Receiver123!" },
+    { role: 'Admin', email: 'admin@test.com', password: 'Admin123!' },
+    { role: 'Sender', email: 'sender@test.com', password: 'Sender123!' },
+    { role: 'Receiver', email: 'receiver@test.com', password: 'Receiver123!' }
   ];
 
   const fillTestCredentials = (email: string, password: string) => {
@@ -50,11 +50,8 @@ export default function LoginPage() {
           Sign in to your account
         </h2>
         <p className="mt-2 text-center text-sm text-gray-600">
-          Or{" "}
-          <Link
-            href="/register"
-            className="font-medium text-blue-600 hover:text-blue-500"
-          >
+          Or{' '}
+          <Link href="/register" className="font-medium text-blue-600 hover:text-blue-500">
             create a new account
           </Link>
         </p>
@@ -64,9 +61,7 @@ export default function LoginPage() {
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
           {/* Test Credentials */}
           <div className="mb-6 p-4 bg-blue-50 rounded-lg">
-            <h3 className="text-sm font-medium text-blue-900 mb-2">
-              Test Credentials:
-            </h3>
+            <h3 className="text-sm font-medium text-blue-900 mb-2">Test Credentials:</h3>
             <div className="grid gap-2">
               {testCredentials.map((cred, index) => (
                 <button
@@ -82,10 +77,7 @@ export default function LoginPage() {
 
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700"
-              >
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                 Email address
               </label>
               <div className="mt-1">
@@ -104,17 +96,14 @@ export default function LoginPage() {
             </div>
 
             <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-700"
-              >
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                 Password
               </label>
               <div className="mt-1 relative">
                 <input
                   id="password"
                   name="password"
-                  type={showPassword ? "text" : "password"}
+                  type={showPassword ? 'text' : 'password'}
                   autoComplete="current-password"
                   required
                   value={password}
@@ -160,9 +149,7 @@ export default function LoginPage() {
                 <div className="w-full border-t border-gray-300" />
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-gray-500">
-                  Don&apos;t have an account?
-                </span>
+                <span className="px-2 bg-white text-gray-500">Don&apos;t have an account?</span>
               </div>
             </div>
 

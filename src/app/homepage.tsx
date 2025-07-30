@@ -1,55 +1,35 @@
-import { Clock, MapPin, Package, Search, Shield, Users } from "lucide-react";
-import Link from "next/link";
+import Link from 'next/link';
+import { Package, Search, Shield, Clock, MapPin, Users } from 'lucide-react';
 
 export default function HomePage() {
   const features = [
     {
       icon: <Package className="h-8 w-8 text-blue-600" />,
       title: "Easy Parcel Booking",
-      description:
-        "Book your parcel delivery in just a few clicks with our user-friendly interface.",
+      description: "Book your parcel delivery in just a few clicks with our user-friendly interface."
     },
     {
       icon: <Search className="h-8 w-8 text-blue-600" />,
       title: "Real-time Tracking",
-      description:
-        "Track your parcels in real-time with detailed status updates and location information.",
+      description: "Track your parcels in real-time with detailed status updates and location information."
     },
     {
       icon: <Shield className="h-8 w-8 text-blue-600" />,
       title: "Secure & Reliable",
-      description:
-        "Your parcels are safe with our secure handling and reliable delivery network.",
+      description: "Your parcels are safe with our secure handling and reliable delivery network."
     },
     {
       icon: <Clock className="h-8 w-8 text-blue-600" />,
       title: "Fast Delivery",
-      description:
-        "Express delivery options available for urgent parcels with same-day delivery.",
-    },
+      description: "Express delivery options available for urgent parcels with same-day delivery."
+    }
   ];
 
   const stats = [
-    {
-      label: "Parcels Delivered",
-      value: "10,000+",
-      icon: <Package className="h-6 w-6" />,
-    },
-    {
-      label: "Happy Customers",
-      value: "5,000+",
-      icon: <Users className="h-6 w-6" />,
-    },
-    {
-      label: "Cities Covered",
-      value: "50+",
-      icon: <MapPin className="h-6 w-6" />,
-    },
-    {
-      label: "Success Rate",
-      value: "99.9%",
-      icon: <Shield className="h-6 w-6" />,
-    },
+    { label: "Parcels Delivered", value: "10,000+", icon: <Package className="h-6 w-6" /> },
+    { label: "Happy Customers", value: "5,000+", icon: <Users className="h-6 w-6" /> },
+    { label: "Cities Covered", value: "50+", icon: <MapPin className="h-6 w-6" /> },
+    { label: "Success Rate", value: "99.9%", icon: <Shield className="h-6 w-6" /> }
   ];
 
   return (
@@ -63,9 +43,8 @@ export default function HomePage() {
               <span className="block text-blue-200">Parcel Delivery</span>
             </h1>
             <p className="text-xl md:text-2xl mb-8 text-blue-100 max-w-3xl mx-auto">
-              Send and track your parcels with confidence. Our comprehensive
-              delivery platform ensures your packages reach their destination
-              safely and on time.
+              Send and track your parcels with confidence. Our comprehensive delivery platform 
+              ensures your packages reach their destination safely and on time.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
@@ -91,12 +70,8 @@ export default function HomePage() {
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              Track Your Parcel
-            </h2>
-            <p className="text-lg text-gray-600">
-              Enter your tracking ID to get real-time updates
-            </p>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Track Your Parcel</h2>
+            <p className="text-lg text-gray-600">Enter your tracking ID to get real-time updates</p>
           </div>
           <div className="max-w-md mx-auto">
             <Link
@@ -113,24 +88,17 @@ export default function HomePage() {
       <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              Why Choose ParcelTrack?
-            </h2>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Why Choose ParcelTrack?</h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              We provide comprehensive parcel delivery solutions with
-              cutting-edge technology and exceptional customer service.
+              We provide comprehensive parcel delivery solutions with cutting-edge technology 
+              and exceptional customer service.
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {features.map((feature, index) => (
-              <div
-                key={index}
-                className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow"
-              >
+              <div key={index} className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow">
                 <div className="mb-4">{feature.icon}</div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                  {feature.title}
-                </h3>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">{feature.title}</h3>
                 <p className="text-gray-600">{feature.description}</p>
               </div>
             ))}
@@ -156,12 +124,9 @@ export default function HomePage() {
       {/* CTA Section */}
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
-            Ready to Get Started?
-          </h2>
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">Ready to Get Started?</h2>
           <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
-            Join thousands of satisfied customers who trust us with their parcel
-            delivery needs.
+            Join thousands of satisfied customers who trust us with their parcel delivery needs.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
