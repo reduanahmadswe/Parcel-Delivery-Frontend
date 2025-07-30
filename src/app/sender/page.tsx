@@ -1,15 +1,15 @@
 "use client";
 
 import ProtectedRoute from "@/components/ProtectedRoute";
-import { useAuth } from "@/contexts/AuthContext";
-import api from "@/lib/api";
+import { useAuth } from "@/contexts/AuthenticationContext";
+import api from "@/lib/ApiConfiguration";
 import {
   formatCurrency,
   formatDate,
   getStatusColor,
   getStatusIcon,
-} from "@/lib/utils";
-import { Parcel } from "@/types";
+} from "@/lib/HelperUtilities";
+import { Parcel } from "@/types/GlobalTypeDefinitions";
 import {
   Calendar,
   Eye,

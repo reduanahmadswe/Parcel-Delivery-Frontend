@@ -1,6 +1,6 @@
 import Navigation from "@/components/Navigation";
-import { AuthProvider } from "@/contexts/AuthContext";
-import { ThemeProvider } from "@/contexts/ThemeContext";
+import { AuthProvider } from "@/contexts/AuthenticationContext";
+import { ThemeProvider } from "@/contexts/ThemePreferenceContext";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Toaster } from "react-hot-toast";

@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -42,8 +42,13 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     router.push("/login");
   };
 
+  useEffect(() => {
+    if (!user || user.role !== "admin") {
+      router.push("/login");
+    }
+  }, [user, router]);
+
   if (!user || user.role !== "admin") {
-    router.push("/login");
     return null;
   }
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/contexts/AuthenticationContext";
 import api from "@/lib/api";
 import { Eye, EyeOff, Mail, MapPin, Phone, Save, User } from "lucide-react";
 import { useEffect, useState } from "react";

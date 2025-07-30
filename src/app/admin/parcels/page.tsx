@@ -1,11 +1,11 @@
 "use client";
 
-import AdminLayout from "@/components/admin/AdminLayout";
-import ConfirmDialog from "@/components/admin/ConfirmDialog";
-import DataTable, { Column } from "@/components/admin/DataTable";
-import Modal from "@/components/admin/Modal";
-import StatusBadge from "@/components/admin/StatusBadge";
-import api from "@/lib/api";
+import AdminLayout from "@/components/admin/AdminDashboardLayout";
+import ConfirmDialog from "@/components/admin/ConfirmationDialog";
+import Modal from "@/components/admin/ModalDialogComponent";
+import DataTable, { Column } from "@/components/admin/ReusableDataTable";
+import StatusBadge from "@/components/admin/StatusIndicatorBadge";
+import api from "@/lib/ApiConfiguration";
 import {
   Edit,
   Eye,
@@ -250,7 +250,7 @@ export default function AdminParcelsPage() {
       sortable: true,
       render: (_, parcel) => (
         <div className="font-medium text-slate-900 dark:text-slate-100">
-          {parcel.trackingNumber}
+          {parcel?.trackingNumber || "N/A"}
         </div>
       ),
     },
@@ -270,13 +270,13 @@ export default function AdminParcelsPage() {
       sortable: true,
       render: (_, parcel) => (
         <div className="flex items-center space-x-2">
-          <StatusBadge status={parcel.status} variant="parcel" />
-          {parcel.isFlagged && (
+          <StatusBadge status={parcel?.status} variant="parcel" />
+          {parcel?.isFlagged && (
             <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
               🚩 Flagged
             </span>
           )}
-          {parcel.isOnHold && (
+          {parcel?.isOnHold && (
             <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
               🔒 Hold
             </span>
@@ -289,7 +289,7 @@ export default function AdminParcelsPage() {
       header: "Priority",
       sortable: true,
       render: (_, parcel) =>
-        parcel.isUrgent ? (
+        parcel?.isUrgent ? (
           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
             Urgent
           </span>
@@ -303,13 +303,16 @@ export default function AdminParcelsPage() {
       key: "cost",
       header: "Cost",
       sortable: true,
-      render: (_, parcel) => `$${parcel.cost}`,
+      render: (_, parcel) => `$${parcel?.cost ?? 0}`,
     },
     {
       key: "createdAt",
       header: "Created",
       sortable: true,
-      render: (_, parcel) => new Date(parcel.createdAt).toLocaleDateString(),
+      render: (_, parcel) =>
+        parcel?.createdAt
+          ? new Date(parcel.createdAt).toLocaleDateString()
+          : "N/A",
     },
     {
       key: "actions",
@@ -334,22 +337,22 @@ export default function AdminParcelsPage() {
           <button
             onClick={() => handleFlagParcel(parcel)}
             className={`p-2 ${
-              parcel.isFlagged
+              parcel?.isFlagged
                 ? "text-red-600 hover:text-red-700"
                 : "text-slate-600 hover:text-orange-600 dark:text-slate-400 dark:hover:text-orange-400"
             }`}
-            title={parcel.isFlagged ? "Unflag Parcel" : "Flag Parcel"}
+            title={parcel?.isFlagged ? "Unflag Parcel" : "Flag Parcel"}
           >
             <Flag className="h-4 w-4" />
           </button>
           <button
             onClick={() => handleHoldParcel(parcel)}
             className={`p-2 ${
-              parcel.isOnHold
+              parcel?.isOnHold
                 ? "text-yellow-600 hover:text-yellow-700"
                 : "text-slate-600 hover:text-yellow-600 dark:text-slate-400 dark:hover:text-yellow-400"
             }`}
-            title={parcel.isOnHold ? "Release Hold" : "Put on Hold"}
+            title={parcel?.isOnHold ? "Release Hold" : "Put on Hold"}
           >
             <Lock className="h-4 w-4" />
           </button>
@@ -365,7 +368,7 @@ export default function AdminParcelsPage() {
                 <button
                   onClick={() => {
                     setSelectedParcel(parcel);
-                    setAssignedPersonnel(parcel.assignedPersonnel || "");
+                    setAssignedPersonnel(parcel?.assignedPersonnel || "");
                     setShowAssignModal(true);
                   }}
                   className="flex items-center px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 w-full text-left"

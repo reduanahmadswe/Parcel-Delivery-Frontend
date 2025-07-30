@@ -1,6 +1,6 @@
 "use client";
 
-import AdminLayout from "@/components/admin/AdminLayout";
+import AdminLayout from "@/components/admin/AdminDashboardLayout";
 import { Bell, Database, Lock, Mail, Server, Users } from "lucide-react";
 import { useState } from "react";
 

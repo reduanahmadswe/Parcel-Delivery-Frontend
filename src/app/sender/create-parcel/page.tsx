@@ -1,7 +1,7 @@
 "use client";
 
 import ProtectedRoute from "@/components/ProtectedRoute";
-import api from "@/lib/api";
+import api from "@/lib/ApiConfiguration";
 import { ArrowLeft, Calculator, Package } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";

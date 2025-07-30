@@ -1,8 +1,12 @@
 "use client";
 
-import api from "@/lib/api";
-import { formatDate, getStatusColor, getStatusIcon } from "@/lib/utils";
-import { Parcel } from "@/types";
+import api from "@/lib/ApiConfiguration";
+import {
+  formatDate,
+  getStatusColor,
+  getStatusIcon,
+} from "@/lib/HelperUtilities";
+import { Parcel } from "@/types/GlobalTypeDefinitions";
 import {
   CheckCircle,
   Clock,

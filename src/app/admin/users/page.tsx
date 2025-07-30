@@ -1,11 +1,11 @@
 "use client";
 
-import AdminLayout from "@/components/admin/AdminLayout";
-import ConfirmDialog from "@/components/admin/ConfirmDialog";
-import DataTable, { Column } from "@/components/admin/DataTable";
-import Modal from "@/components/admin/Modal";
-import StatusBadge from "@/components/admin/StatusBadge";
-import api from "@/lib/api";
+import AdminLayout from "@/components/admin/AdminDashboardLayout";
+import ConfirmDialog from "@/components/admin/ConfirmationDialog";
+import Modal from "@/components/admin/ModalDialogComponent";
+import DataTable, { Column } from "@/components/admin/ReusableDataTable";
+import StatusBadge from "@/components/admin/StatusIndicatorBadge";
+import api from "@/lib/ApiConfiguration";
 import { Edit, Eye, Shield, Trash2, UserPlus } from "lucide-react";
 import { useEffect, useState } from "react";
 

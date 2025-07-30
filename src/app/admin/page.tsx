@@ -1,8 +1,8 @@
 "use client";
 
-import AdminLayout from "@/components/admin/AdminLayout";
-import StatusBadge from "@/components/admin/StatusBadge";
-import api from "@/lib/api";
+import AdminLayout from "@/components/admin/AdminDashboardLayout";
+import StatusBadge from "@/components/admin/StatusIndicatorBadge";
+import api from "@/lib/ApiConfiguration";
 import { BarChart3, Package, TrendingUp, Users } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -149,11 +149,13 @@ export default function AdminDashboard() {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {statCards.map((card, index) => {
+          {statCards.map((card) => {
             const Icon = card.icon;
             return (
               <div
-                key={`stat-card-${index}`}
+                key={`stat-card-${card.title
+                  .toLowerCase()
+                  .replace(/\s+/g, "-")}`}
                 className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow border border-slate-200 dark:border-slate-700"
               >
                 <div className="flex items-center justify-between">
@@ -162,7 +164,9 @@ export default function AdminDashboard() {
                       {card.title}
                     </p>
                     <p className="text-2xl font-bold text-slate-900 dark:text-slate-100">
-                      {typeof card.value === "number" && !isNaN(card.value) ? card.value : 0}
+                      {typeof card.value === "number" && !isNaN(card.value)
+                        ? card.value
+                        : 0}
                     </p>
                     <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
                       {card.change}
@@ -221,7 +225,9 @@ export default function AdminDashboard() {
                           width: `${
                             (stats.parcels.total || 0) > 0
                               ? Math.round(
-                                  ((item.value || 0) / (stats.parcels.total || 1)) * 100
+                                  ((item.value || 0) /
+                                    (stats.parcels.total || 1)) *
+                                    100
                                 )
                               : 0
                           }%`,
@@ -229,7 +235,9 @@ export default function AdminDashboard() {
                       ></div>
                     </div>
                     <span className="text-sm font-medium text-slate-900 dark:text-slate-100">
-                      {typeof item.value === "number" && !isNaN(item.value) ? item.value : 0}
+                      {typeof item.value === "number" && !isNaN(item.value)
+                        ? item.value
+                        : 0}
                     </span>
                   </div>
                 </div>
@@ -248,7 +256,8 @@ export default function AdminDashboard() {
                   Active Users
                 </span>
                 <span className="text-lg font-semibold text-green-600 dark:text-green-400">
-                  {typeof stats.users.active === "number" && !isNaN(stats.users.active)
+                  {typeof stats.users.active === "number" &&
+                  !isNaN(stats.users.active)
                     ? stats.users.active
                     : 0}
                 </span>
@@ -258,7 +267,8 @@ export default function AdminDashboard() {
                   Blocked Users
                 </span>
                 <span className="text-lg font-semibold text-red-600 dark:text-red-400">
-                  {typeof stats.users.blocked === "number" && !isNaN(stats.users.blocked)
+                  {typeof stats.users.blocked === "number" &&
+                  !isNaN(stats.users.blocked)
                     ? stats.users.blocked
                     : 0}
                 </span>
@@ -268,7 +278,8 @@ export default function AdminDashboard() {
                   New This Month
                 </span>
                 <span className="text-lg font-semibold text-blue-600 dark:text-blue-400">
-                  {typeof stats.users.newThisMonth === "number" && !isNaN(stats.users.newThisMonth)
+                  {typeof stats.users.newThisMonth === "number" &&
+                  !isNaN(stats.users.newThisMonth)
                     ? stats.users.newThisMonth
                     : 0}
                 </span>
@@ -316,9 +327,13 @@ export default function AdminDashboard() {
                     </td>
                   </tr>
                 ) : (
-                  recentParcels.map((parcel) => (
+                  recentParcels.map((parcel, index) => (
                     <tr
-                      key={parcel.id}
+                      key={
+                        parcel.id
+                          ? `parcel-${parcel.id}`
+                          : `parcel-row-${index}`
+                      }
                       className="hover:bg-slate-50 dark:hover:bg-slate-700"
                     >
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900 dark:text-slate-100">
