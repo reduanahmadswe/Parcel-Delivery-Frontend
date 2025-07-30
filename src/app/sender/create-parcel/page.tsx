@@ -340,7 +340,7 @@ export default function CreateParcelPage() {
                     name="receiverInfo.name"
                     value={formData.receiverInfo.name}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="Enter receiver's full name"
                   />
                   {errors["receiverInfo.name"] && (
@@ -359,7 +359,7 @@ export default function CreateParcelPage() {
                     name="receiverInfo.email"
                     value={formData.receiverInfo.email}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="receiver@example.com"
                   />
                   {errors["receiverInfo.email"] && (
@@ -378,7 +378,7 @@ export default function CreateParcelPage() {
                     name="receiverInfo.phone"
                     value={formData.receiverInfo.phone}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="+880123456789"
                   />
                   {errors["receiverInfo.phone"] && (
@@ -405,7 +405,7 @@ export default function CreateParcelPage() {
                       name="receiverInfo.address.street"
                       value={formData.receiverInfo.address.street}
                       onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       placeholder="123 Main Street"
                     />
                     {errors["receiverInfo.address.street"] && (
@@ -425,7 +425,7 @@ export default function CreateParcelPage() {
                         name="receiverInfo.address.city"
                         value={formData.receiverInfo.address.city}
                         onChange={handleInputChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         placeholder="Dhaka"
                       />
                       {errors["receiverInfo.address.city"] && (
@@ -444,7 +444,7 @@ export default function CreateParcelPage() {
                         name="receiverInfo.address.state"
                         value={formData.receiverInfo.address.state}
                         onChange={handleInputChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         placeholder="Dhaka Division"
                       />
                       {errors["receiverInfo.address.state"] && (
@@ -463,7 +463,7 @@ export default function CreateParcelPage() {
                         name="receiverInfo.address.zipCode"
                         value={formData.receiverInfo.address.zipCode}
                         onChange={handleInputChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         placeholder="1000"
                       />
                       {errors["receiverInfo.address.zipCode"] && (
@@ -492,7 +492,7 @@ export default function CreateParcelPage() {
                     name="parcelDetails.type"
                     value={formData.parcelDetails.type}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   >
                     <option value="document">Document</option>
                     <option value="package">Package</option>
@@ -514,7 +514,7 @@ export default function CreateParcelPage() {
                     name="parcelDetails.weight"
                     value={formData.parcelDetails.weight}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="0.5"
                   />
                   {errors["parcelDetails.weight"] && (
@@ -539,7 +539,7 @@ export default function CreateParcelPage() {
                       name="parcelDetails.dimensions.length"
                       value={formData.parcelDetails.dimensions.length}
                       onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       placeholder="Length"
                     />
                     {errors["parcelDetails.dimensions.length"] && (
@@ -556,7 +556,7 @@ export default function CreateParcelPage() {
                       name="parcelDetails.dimensions.width"
                       value={formData.parcelDetails.dimensions.width}
                       onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       placeholder="Width"
                     />
                     {errors["parcelDetails.dimensions.width"] && (
@@ -573,7 +573,7 @@ export default function CreateParcelPage() {
                       name="parcelDetails.dimensions.height"
                       value={formData.parcelDetails.dimensions.height}
                       onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       placeholder="Height"
                     />
                     {errors["parcelDetails.dimensions.height"] && (
@@ -597,7 +597,7 @@ export default function CreateParcelPage() {
                     name="parcelDetails.value"
                     value={formData.parcelDetails.value}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="0.00"
                   />
                 </div>
@@ -612,7 +612,7 @@ export default function CreateParcelPage() {
                   value={formData.parcelDetails.description}
                   onChange={handleInputChange}
                   rows={3}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Describe the contents of your parcel..."
                 />
                 {errors["parcelDetails.description"] && (
@@ -644,7 +644,7 @@ export default function CreateParcelPage() {
                         .toISOString()
                         .split("T")[0]
                     }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
 
@@ -675,7 +675,7 @@ export default function CreateParcelPage() {
                   value={formData.deliveryInfo.deliveryInstructions}
                   onChange={handleInputChange}
                   rows={3}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Any special instructions for delivery..."
                 />
               </div>

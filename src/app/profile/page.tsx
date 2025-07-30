@@ -298,7 +298,7 @@ export default function ProfilePage() {
                           name="name"
                           value={formData?.name || ""}
                           onChange={handleInputChange}
-                          className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                          className={`w-full px-3 py-2 border rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
                             errors.name ? "border-red-500" : "border-gray-300"
                           }`}
                         />
@@ -318,7 +318,7 @@ export default function ProfilePage() {
                           name="phone"
                           value={formData?.phone || ""}
                           onChange={handleInputChange}
-                          className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                          className={`w-full px-3 py-2 border rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
                             errors.phone ? "border-red-500" : "border-gray-300"
                           }`}
                         />
@@ -339,7 +339,7 @@ export default function ProfilePage() {
                         name="address.street"
                         value={formData?.address?.street || ""}
                         onChange={handleInputChange}
-                        className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                        className={`w-full px-3 py-2 border rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
                           errors["address.street"]
                             ? "border-red-500"
                             : "border-gray-300"
@@ -362,7 +362,7 @@ export default function ProfilePage() {
                           name="address.city"
                           value={formData?.address?.city || ""}
                           onChange={handleInputChange}
-                          className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                          className={`w-full px-3 py-2 border rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
                             errors["address.city"]
                               ? "border-red-500"
                               : "border-gray-300"
@@ -384,7 +384,7 @@ export default function ProfilePage() {
                           name="address.state"
                           value={formData?.address?.state || ""}
                           onChange={handleInputChange}
-                          className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                          className={`w-full px-3 py-2 border rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
                             errors["address.state"]
                               ? "border-red-500"
                               : "border-gray-300"
@@ -406,7 +406,7 @@ export default function ProfilePage() {
                           name="address.zipCode"
                           value={formData?.address?.zipCode || ""}
                           onChange={handleInputChange}
-                          className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                          className={`w-full px-3 py-2 border rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
                             errors["address.zipCode"]
                               ? "border-red-500"
                               : "border-gray-300"
@@ -510,7 +510,7 @@ export default function ProfilePage() {
                           name="currentPassword"
                           value={passwordData.currentPassword}
                           onChange={handlePasswordChange}
-                          className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-10 ${
+                          className={`w-full px-3 py-2 border rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-10 ${
                             errors.currentPassword
                               ? "border-red-500"
                               : "border-gray-300"
@@ -547,7 +547,7 @@ export default function ProfilePage() {
                           name="newPassword"
                           value={passwordData.newPassword}
                           onChange={handlePasswordChange}
-                          className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-10 ${
+                          className={`w-full px-3 py-2 border rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-10 ${
                             errors.newPassword
                               ? "border-red-500"
                               : "border-gray-300"
@@ -582,7 +582,7 @@ export default function ProfilePage() {
                           name="confirmPassword"
                           value={passwordData.confirmPassword}
                           onChange={handlePasswordChange}
-                          className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-10 ${
+                          className={`w-full px-3 py-2 border rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-10 ${
                             errors.confirmPassword
                               ? "border-red-500"
                               : "border-gray-300"

@@ -30,9 +30,13 @@ export default function LoginPage() {
 
   // Test credentials for easy testing
   const testCredentials = [
-    { role: "Admin", email: "admin@test.com", password: "Admin123!" },
-    { role: "Sender", email: "sender@test.com", password: "Sender123!" },
-    { role: "Receiver", email: "receiver@test.com", password: "Receiver123!" },
+    { role: "Admin", email: "admin@parceldelivery.com", password: "Admin123!" },
+    { role: "Sender", email: "sender@example.com", password: "password123" },
+    {
+      role: "Receiver",
+      email: "receiver@example.com",
+      password: "password123",
+    },
   ];
 
   const fillTestCredentials = (email: string, password: string) => {
@@ -63,21 +67,26 @@ export default function LoginPage() {
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
           {/* Test Credentials */}
-          <div className="mb-6 p-4 bg-blue-50 rounded-lg">
-            <h3 className="text-sm font-medium text-blue-900 mb-2">
-              Test Credentials:
+          <div className="mb-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200">
+            <h3 className="text-sm font-semibold text-blue-900 mb-3 flex items-center">
+              🔑 Test Credentials - Click to Auto-fill:
             </h3>
             <div className="grid gap-2">
               {testCredentials.map((cred, index) => (
                 <button
                   key={index}
                   onClick={() => fillTestCredentials(cred.email, cred.password)}
-                  className="text-left text-xs bg-white px-2 py-1 rounded border hover:bg-blue-50 transition-colors"
+                  className="text-left text-xs bg-white px-3 py-2 rounded-md border border-blue-200 hover:bg-blue-50 hover:border-blue-300 transition-all duration-200 shadow-sm"
                 >
-                  <span className="font-medium">{cred.role}:</span> {cred.email}
+                  <div className="font-medium text-blue-900">{cred.role}</div>
+                  <div className="text-gray-600">{cred.email}</div>
+                  <div className="text-gray-500">Password: {cred.password}</div>
                 </button>
               ))}
             </div>
+            <p className="text-xs text-blue-700 mt-2 font-medium">
+              💡 Click any credential above to automatically fill the login form
+            </p>
           </div>
 
           <form className="space-y-6" onSubmit={handleSubmit}>
@@ -97,7 +106,7 @@ export default function LoginPage() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                   placeholder="Enter your email"
                 />
               </div>
@@ -119,7 +128,7 @@ export default function LoginPage() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="appearance-none block w-full px-3 py-2 pr-10 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  className="appearance-none block w-full px-3 py-2 pr-10 border border-gray-300 rounded-md placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                   placeholder="Enter your password"
                 />
                 <button

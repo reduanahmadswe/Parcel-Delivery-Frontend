@@ -100,14 +100,14 @@ export default function AdminDashboard() {
     try {
       setIsLoading(true);
       const [statsRes, parcelsRes, usersRes] = await Promise.all([
-        api.get("/admin/stats"),
-        api.get("/admin/parcels"),
-        api.get("/admin/users"),
+        api.get("/users/stats"),
+        api.get("/parcels"),
+        api.get("/users"),
       ]);
 
-      setStats(statsRes.data);
-      setParcels(parcelsRes.data);
-      setUsers(usersRes.data);
+      setStats(statsRes.data.data || statsRes.data);
+      setParcels(parcelsRes.data.data || parcelsRes.data);
+      setUsers(usersRes.data.data || usersRes.data);
     } catch (error) {
       console.error("Error fetching dashboard data:", error);
       toast.error("Failed to load dashboard data");
@@ -119,7 +119,7 @@ export default function AdminDashboard() {
   const updateParcelStatus = async (parcelId: number, newStatus: string) => {
     try {
       setIsUpdating(true);
-      await api.put(`/admin/parcels/${parcelId}/status`, { status: newStatus });
+      await api.put(`/parcels/${parcelId}/status`, { status: newStatus });
       toast.success("Parcel status updated successfully");
       fetchDashboardData();
       setSelectedParcel(null);
@@ -135,7 +135,7 @@ export default function AdminDashboard() {
     if (!confirm("Are you sure you want to delete this parcel?")) return;
 
     try {
-      await api.delete(`/admin/parcels/${parcelId}`);
+      await api.delete(`/parcels/${parcelId}`);
       toast.success("Parcel deleted successfully");
       fetchDashboardData();
       setSelectedParcel(null);
