@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { useAuth } from '@/contexts/AuthContext';
-import { Package, User, LogOut, Menu, X } from 'lucide-react';
-import { useState } from 'react';
+import { useAuth } from "@/contexts/AuthContext";
+import { LogOut, Menu, Package, User, X } from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
 
 export default function Navigation() {
   const { user, logout } = useAuth();
@@ -14,15 +14,23 @@ export default function Navigation() {
   };
 
   const navigationItems = [
-    { href: '/', label: 'Home' },
-    { href: '/track', label: 'Track Parcel' },
+    { href: "/", label: "Home" },
+    { href: "/track", label: "Track Parcel" },
   ];
 
-  const dashboardItems = user ? [
-    ...(user.role === 'admin' ? [{ href: '/admin', label: 'Admin Dashboard' }] : []),
-    ...(user.role === 'sender' ? [{ href: '/sender', label: 'Sender Dashboard' }] : []),
-    ...(user.role === 'receiver' ? [{ href: '/receiver', label: 'Receiver Dashboard' }] : []),
-  ] : [];
+  const dashboardItems = user
+    ? [
+        ...(user.role === "admin"
+          ? [{ href: "/admin", label: "Admin Dashboard" }]
+          : []),
+        ...(user.role === "sender"
+          ? [{ href: "/sender", label: "Sender Dashboard" }]
+          : []),
+        ...(user.role === "receiver"
+          ? [{ href: "/receiver", label: "Receiver Dashboard" }]
+          : []),
+      ]
+    : [];
 
   return (
     <nav className="bg-white shadow-sm border-b">
@@ -31,7 +39,9 @@ export default function Navigation() {
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-2">
               <Package className="h-8 w-8 text-blue-600" />
-              <span className="text-xl font-bold text-gray-900">ParcelTrack</span>
+              <span className="text-xl font-bold text-gray-900">
+                ParcelTrack
+              </span>
             </Link>
           </div>
 
@@ -59,7 +69,7 @@ export default function Navigation() {
 
             {user ? (
               <div className="flex items-center space-x-4">
-                {user.role === 'admin' && (
+                {user.role === "admin" && (
                   <Link
                     href="/admin"
                     className="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors"
@@ -67,7 +77,7 @@ export default function Navigation() {
                     Admin Dashboard
                   </Link>
                 )}
-                {user.role === 'sender' && (
+                {user.role === "sender" && (
                   <Link
                     href="/sender"
                     className="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors"
@@ -75,7 +85,7 @@ export default function Navigation() {
                     Sender Dashboard
                   </Link>
                 )}
-                {user.role === 'receiver' && (
+                {user.role === "receiver" && (
                   <Link
                     href="/receiver"
                     className="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors"
@@ -122,7 +132,11 @@ export default function Navigation() {
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className="text-gray-700 hover:text-blue-600 p-2"
             >
-              {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              {isMobileMenuOpen ? (
+                <X className="h-6 w-6" />
+              ) : (
+                <Menu className="h-6 w-6" />
+              )}
             </button>
           </div>
         </div>

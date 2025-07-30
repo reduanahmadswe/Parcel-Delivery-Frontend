@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
-import api from '@/lib/api';
-import { Package, Clock, MapPin, User, CheckCircle2, X } from 'lucide-react';
-import { toast } from 'react-hot-toast';
+import { useAuth } from "@/contexts/AuthContext";
+import api from "@/lib/api";
+import { CheckCircle2, Clock, MapPin, Package, User, X } from "lucide-react";
+import { useEffect, useState } from "react";
+import { toast } from "react-hot-toast";
 
 interface Parcel {
   id: number;
@@ -44,11 +44,11 @@ export default function ReceiverDashboard() {
     total: 0,
     pending: 0,
     inTransit: 0,
-    delivered: 0
+    delivered: 0,
   });
   const [isLoading, setIsLoading] = useState(true);
   const [selectedParcel, setSelectedParcel] = useState<Parcel | null>(null);
-  const [filter, setFilter] = useState('all');
+  const [filter, setFilter] = useState("all");
   const [isConfirming, setIsConfirming] = useState(false);
 
   useEffect(() => {
@@ -60,22 +60,25 @@ export default function ReceiverDashboard() {
   const fetchParcels = async () => {
     try {
       setIsLoading(true);
-      const response = await api.get('/parcels/received');
+      const response = await api.get("/parcels/received");
       const parcelData = response.data;
-      
+
       setParcels(parcelData);
-      
+
       // Calculate stats
       const stats = {
         total: parcelData.length,
-        pending: parcelData.filter((p: Parcel) => p.status === 'pending').length,
-        inTransit: parcelData.filter((p: Parcel) => p.status === 'in_transit').length,
-        delivered: parcelData.filter((p: Parcel) => p.status === 'delivered').length
+        pending: parcelData.filter((p: Parcel) => p.status === "pending")
+          .length,
+        inTransit: parcelData.filter((p: Parcel) => p.status === "in_transit")
+          .length,
+        delivered: parcelData.filter((p: Parcel) => p.status === "delivered")
+          .length,
       };
       setStats(stats);
     } catch (error) {
-      console.error('Error fetching parcels:', error);
-      toast.error('Failed to load parcels');
+      console.error("Error fetching parcels:", error);
+      toast.error("Failed to load parcels");
     } finally {
       setIsLoading(false);
     }
@@ -85,12 +88,12 @@ export default function ReceiverDashboard() {
     try {
       setIsConfirming(true);
       await api.put(`/parcels/${parcelId}/confirm-delivery`);
-      toast.success('Delivery confirmed successfully');
+      toast.success("Delivery confirmed successfully");
       fetchParcels();
       setSelectedParcel(null);
     } catch (error) {
-      console.error('Error confirming delivery:', error);
-      toast.error('Failed to confirm delivery');
+      console.error("Error confirming delivery:", error);
+      toast.error("Failed to confirm delivery");
     } finally {
       setIsConfirming(false);
     }
@@ -98,25 +101,34 @@ export default function ReceiverDashboard() {
 
   const getStatusBadge = (status: string) => {
     const statusConfig = {
-      'pending': { color: 'bg-yellow-100 text-yellow-800', text: 'Pending' },
-      'confirmed': { color: 'bg-blue-100 text-blue-800', text: 'Confirmed' },
-      'picked_up': { color: 'bg-purple-100 text-purple-800', text: 'Picked Up' },
-      'in_transit': { color: 'bg-orange-100 text-orange-800', text: 'In Transit' },
-      'out_for_delivery': { color: 'bg-indigo-100 text-indigo-800', text: 'Out for Delivery' },
-      'delivered': { color: 'bg-green-100 text-green-800', text: 'Delivered' },
-      'cancelled': { color: 'bg-red-100 text-red-800', text: 'Cancelled' }
+      pending: { color: "bg-yellow-100 text-yellow-800", text: "Pending" },
+      confirmed: { color: "bg-blue-100 text-blue-800", text: "Confirmed" },
+      picked_up: { color: "bg-purple-100 text-purple-800", text: "Picked Up" },
+      in_transit: {
+        color: "bg-orange-100 text-orange-800",
+        text: "In Transit",
+      },
+      out_for_delivery: {
+        color: "bg-indigo-100 text-indigo-800",
+        text: "Out for Delivery",
+      },
+      delivered: { color: "bg-green-100 text-green-800", text: "Delivered" },
+      cancelled: { color: "bg-red-100 text-red-800", text: "Cancelled" },
     };
 
-    const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.pending;
+    const config =
+      statusConfig[status as keyof typeof statusConfig] || statusConfig.pending;
     return (
-      <span className={`px-2 py-1 rounded-full text-xs font-medium ${config.color}`}>
+      <span
+        className={`px-2 py-1 rounded-full text-xs font-medium ${config.color}`}
+      >
         {config.text}
       </span>
     );
   };
 
-  const filteredParcels = parcels.filter(parcel => {
-    if (filter === 'all') return true;
+  const filteredParcels = parcels.filter((parcel) => {
+    if (filter === "all") return true;
     return parcel.status === filter;
   });
 
@@ -133,7 +145,9 @@ export default function ReceiverDashboard() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Receiver Dashboard</h1>
+          <h1 className="text-3xl font-bold text-gray-900">
+            Receiver Dashboard
+          </h1>
           <p className="mt-2 text-gray-600">Welcome back, {user?.name}</p>
         </div>
 
@@ -143,8 +157,12 @@ export default function ReceiverDashboard() {
             <div className="flex items-center">
               <Package className="h-8 w-8 text-blue-600" />
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Total Parcels</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.total}</p>
+                <p className="text-sm font-medium text-gray-600">
+                  Total Parcels
+                </p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {stats.total}
+                </p>
               </div>
             </div>
           </div>
@@ -154,7 +172,9 @@ export default function ReceiverDashboard() {
               <Clock className="h-8 w-8 text-yellow-600" />
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600">Pending</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.pending}</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {stats.pending}
+                </p>
               </div>
             </div>
           </div>
@@ -164,7 +184,9 @@ export default function ReceiverDashboard() {
               <MapPin className="h-8 w-8 text-orange-600" />
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600">In Transit</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.inTransit}</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {stats.inTransit}
+                </p>
               </div>
             </div>
           </div>
@@ -174,7 +196,9 @@ export default function ReceiverDashboard() {
               <CheckCircle2 className="h-8 w-8 text-green-600" />
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600">Delivered</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.delivered}</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {stats.delivered}
+                </p>
               </div>
             </div>
           </div>
@@ -184,17 +208,27 @@ export default function ReceiverDashboard() {
         <div className="bg-white rounded-lg shadow mb-6">
           <div className="px-6 py-4 border-b border-gray-200">
             <div className="flex flex-wrap gap-2">
-              {['all', 'pending', 'in_transit', 'out_for_delivery', 'delivered'].map((status) => (
+              {[
+                "all",
+                "pending",
+                "in_transit",
+                "out_for_delivery",
+                "delivered",
+              ].map((status) => (
                 <button
                   key={status}
                   onClick={() => setFilter(status)}
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                     filter === status
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      ? "bg-blue-600 text-white"
+                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                   }`}
                 >
-                  {status === 'all' ? 'All Parcels' : status.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                  {status === "all"
+                    ? "All Parcels"
+                    : status
+                        .replace("_", " ")
+                        .replace(/\b\w/g, (l) => l.toUpperCase())}
                 </button>
               ))}
             </div>
@@ -204,7 +238,9 @@ export default function ReceiverDashboard() {
         {/* Parcels List */}
         <div className="bg-white rounded-lg shadow">
           <div className="px-6 py-4 border-b border-gray-200">
-            <h2 className="text-lg font-semibold text-gray-900">Your Parcels</h2>
+            <h2 className="text-lg font-semibold text-gray-900">
+              Your Parcels
+            </h2>
           </div>
 
           {filteredParcels.length === 0 ? (
@@ -226,7 +262,9 @@ export default function ReceiverDashboard() {
                             </h3>
                             {getStatusBadge(parcel.status)}
                           </div>
-                          <p className="text-sm text-gray-600 mt-1">{parcel.description}</p>
+                          <p className="text-sm text-gray-600 mt-1">
+                            {parcel.description}
+                          </p>
                           <div className="flex items-center space-x-4 mt-2 text-xs text-gray-500">
                             <span className="flex items-center">
                               <User className="h-3 w-3 mr-1" />
@@ -234,7 +272,9 @@ export default function ReceiverDashboard() {
                             </span>
                             <span>{parcel.weight}kg</span>
                             <span>${parcel.cost}</span>
-                            <span>{new Date(parcel.createdAt).toLocaleDateString()}</span>
+                            <span>
+                              {new Date(parcel.createdAt).toLocaleDateString()}
+                            </span>
                           </div>
                         </div>
                       </div>
@@ -246,13 +286,13 @@ export default function ReceiverDashboard() {
                       >
                         View Details
                       </button>
-                      {parcel.status === 'out_for_delivery' && (
+                      {parcel.status === "out_for_delivery" && (
                         <button
                           onClick={() => confirmDelivery(parcel.id)}
                           disabled={isConfirming}
                           className="px-3 py-1 text-sm bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-50"
                         >
-                          {isConfirming ? 'Confirming...' : 'Confirm Delivery'}
+                          {isConfirming ? "Confirming..." : "Confirm Delivery"}
                         </button>
                       )}
                     </div>
@@ -269,7 +309,9 @@ export default function ReceiverDashboard() {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
-              <h2 className="text-lg font-semibold text-gray-900">Parcel Details</h2>
+              <h2 className="text-lg font-semibold text-gray-900">
+                Parcel Details
+              </h2>
               <button
                 onClick={() => setSelectedParcel(null)}
                 className="text-gray-400 hover:text-gray-600"
@@ -281,39 +323,55 @@ export default function ReceiverDashboard() {
             <div className="p-6 space-y-6">
               {/* Status */}
               <div>
-                <h3 className="text-sm font-medium text-gray-900 mb-2">Status</h3>
+                <h3 className="text-sm font-medium text-gray-900 mb-2">
+                  Status
+                </h3>
                 {getStatusBadge(selectedParcel.status)}
               </div>
 
               {/* Tracking Info */}
               <div>
-                <h3 className="text-sm font-medium text-gray-900 mb-2">Tracking Information</h3>
+                <h3 className="text-sm font-medium text-gray-900 mb-2">
+                  Tracking Information
+                </h3>
                 <div className="bg-gray-50 rounded-lg p-4">
-                  <p className="font-mono text-lg">{selectedParcel.trackingNumber}</p>
+                  <p className="font-mono text-lg">
+                    {selectedParcel.trackingNumber}
+                  </p>
                 </div>
               </div>
 
               {/* Parcel Details */}
               <div>
-                <h3 className="text-sm font-medium text-gray-900 mb-2">Parcel Details</h3>
+                <h3 className="text-sm font-medium text-gray-900 mb-2">
+                  Parcel Details
+                </h3>
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
                     <span className="text-gray-600">Type:</span>
-                    <span className="ml-2 font-medium">{selectedParcel.type}</span>
+                    <span className="ml-2 font-medium">
+                      {selectedParcel.type}
+                    </span>
                   </div>
                   <div>
                     <span className="text-gray-600">Weight:</span>
-                    <span className="ml-2 font-medium">{selectedParcel.weight}kg</span>
+                    <span className="ml-2 font-medium">
+                      {selectedParcel.weight}kg
+                    </span>
                   </div>
                   <div>
                     <span className="text-gray-600">Dimensions:</span>
                     <span className="ml-2 font-medium">
-                      {selectedParcel.dimensions.length} × {selectedParcel.dimensions.width} × {selectedParcel.dimensions.height} cm
+                      {selectedParcel.dimensions.length} ×{" "}
+                      {selectedParcel.dimensions.width} ×{" "}
+                      {selectedParcel.dimensions.height} cm
                     </span>
                   </div>
                   <div>
                     <span className="text-gray-600">Cost:</span>
-                    <span className="ml-2 font-medium">${selectedParcel.cost}</span>
+                    <span className="ml-2 font-medium">
+                      ${selectedParcel.cost}
+                    </span>
                   </div>
                 </div>
                 <div className="mt-2">
@@ -324,32 +382,54 @@ export default function ReceiverDashboard() {
 
               {/* Sender Information */}
               <div>
-                <h3 className="text-sm font-medium text-gray-900 mb-2">Sender Information</h3>
+                <h3 className="text-sm font-medium text-gray-900 mb-2">
+                  Sender Information
+                </h3>
                 <div className="bg-gray-50 rounded-lg p-4 text-sm space-y-1">
-                  <p><span className="font-medium">Name:</span> {selectedParcel.senderName}</p>
-                  <p><span className="font-medium">Email:</span> {selectedParcel.senderEmail}</p>
-                  <p><span className="font-medium">Phone:</span> {selectedParcel.senderPhone}</p>
+                  <p>
+                    <span className="font-medium">Name:</span>{" "}
+                    {selectedParcel.senderName}
+                  </p>
+                  <p>
+                    <span className="font-medium">Email:</span>{" "}
+                    {selectedParcel.senderEmail}
+                  </p>
+                  <p>
+                    <span className="font-medium">Phone:</span>{" "}
+                    {selectedParcel.senderPhone}
+                  </p>
                 </div>
               </div>
 
               {/* Delivery Information */}
               <div>
-                <h3 className="text-sm font-medium text-gray-900 mb-2">Delivery Information</h3>
+                <h3 className="text-sm font-medium text-gray-900 mb-2">
+                  Delivery Information
+                </h3>
                 <div className="bg-gray-50 rounded-lg p-4 text-sm space-y-1">
-                  <p><span className="font-medium">Type:</span> {selectedParcel.deliveryType}</p>
-                  <p><span className="font-medium">Insurance:</span> {selectedParcel.isInsured ? 'Yes' : 'No'}</p>
+                  <p>
+                    <span className="font-medium">Type:</span>{" "}
+                    {selectedParcel.deliveryType}
+                  </p>
+                  <p>
+                    <span className="font-medium">Insurance:</span>{" "}
+                    {selectedParcel.isInsured ? "Yes" : "No"}
+                  </p>
                   <div className="mt-2">
                     <p className="font-medium">Delivery Address:</p>
                     <p className="text-gray-600">
-                      {selectedParcel.recipientAddress.street}<br />
-                      {selectedParcel.recipientAddress.city}, {selectedParcel.recipientAddress.state} {selectedParcel.recipientAddress.zipCode}
+                      {selectedParcel.recipientAddress.street}
+                      <br />
+                      {selectedParcel.recipientAddress.city},{" "}
+                      {selectedParcel.recipientAddress.state}{" "}
+                      {selectedParcel.recipientAddress.zipCode}
                     </p>
                   </div>
                 </div>
               </div>
 
               {/* Actions */}
-              {selectedParcel.status === 'out_for_delivery' && (
+              {selectedParcel.status === "out_for_delivery" && (
                 <div className="flex justify-end space-x-3 pt-4 border-t border-gray-200">
                   <button
                     onClick={() => setSelectedParcel(null)}
@@ -362,7 +442,7 @@ export default function ReceiverDashboard() {
                     disabled={isConfirming}
                     className="px-4 py-2 text-sm bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-50"
                   >
-                    {isConfirming ? 'Confirming...' : 'Confirm Delivery'}
+                    {isConfirming ? "Confirming..." : "Confirm Delivery"}
                   </button>
                 </div>
               )}

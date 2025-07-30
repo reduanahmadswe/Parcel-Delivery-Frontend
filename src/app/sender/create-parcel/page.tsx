@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import ProtectedRoute from '@/components/ProtectedRoute';
-import { Package, ArrowLeft, Calculator } from 'lucide-react';
-import Link from 'next/link';
-import api from '@/lib/api';
-import toast from 'react-hot-toast';
+import ProtectedRoute from "@/components/ProtectedRoute";
+import api from "@/lib/api";
+import { ArrowLeft, Calculator, Package } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import toast from "react-hot-toast";
 
 interface ApiError {
   response?: {
@@ -18,110 +18,122 @@ interface ApiError {
 
 export default function CreateParcelPage() {
   const router = useRouter();
-  
+
   const [formData, setFormData] = useState({
     receiverInfo: {
-      name: '',
-      email: '',
-      phone: '',
+      name: "",
+      email: "",
+      phone: "",
       address: {
-        street: '',
-        city: '',
-        state: '',
-        zipCode: '',
-        country: 'Bangladesh'
-      }
+        street: "",
+        city: "",
+        state: "",
+        zipCode: "",
+        country: "Bangladesh",
+      },
     },
     parcelDetails: {
-      type: 'package' as 'document' | 'package' | 'fragile' | 'electronics' | 'clothing' | 'other',
-      weight: '',
+      type: "package" as
+        | "document"
+        | "package"
+        | "fragile"
+        | "electronics"
+        | "clothing"
+        | "other",
+      weight: "",
       dimensions: {
-        length: '',
-        width: '',
-        height: ''
+        length: "",
+        width: "",
+        height: "",
       },
-      description: '',
-      value: ''
+      description: "",
+      value: "",
     },
     deliveryInfo: {
-      preferredDeliveryDate: '',
-      deliveryInstructions: '',
-      isUrgent: false
-    }
+      preferredDeliveryDate: "",
+      deliveryInstructions: "",
+      isUrgent: false,
+    },
   });
 
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >
+  ) => {
     const { name, value, type } = e.target;
-    const isCheckbox = type === 'checkbox';
-    const actualValue = isCheckbox ? (e.target as HTMLInputElement).checked : value;
+    const isCheckbox = type === "checkbox";
+    const actualValue = isCheckbox
+      ? (e.target as HTMLInputElement).checked
+      : value;
 
-    if (name.includes('.')) {
-      const [section, field, subfield] = name.split('.');
-      
-      if (section === 'receiverInfo') {
-        if (field === 'address' && subfield) {
-          setFormData(prev => ({
+    if (name.includes(".")) {
+      const [section, field, subfield] = name.split(".");
+
+      if (section === "receiverInfo") {
+        if (field === "address" && subfield) {
+          setFormData((prev) => ({
             ...prev,
             receiverInfo: {
               ...prev.receiverInfo,
               address: {
                 ...prev.receiverInfo.address,
-                [subfield]: actualValue as string
-              }
-            }
+                [subfield]: actualValue as string,
+              },
+            },
           }));
         } else {
-          setFormData(prev => ({
+          setFormData((prev) => ({
             ...prev,
             receiverInfo: {
               ...prev.receiverInfo,
-              [field]: actualValue as string
-            }
+              [field]: actualValue as string,
+            },
           }));
         }
-      } else if (section === 'parcelDetails') {
-        if (field === 'dimensions' && subfield) {
-          setFormData(prev => ({
+      } else if (section === "parcelDetails") {
+        if (field === "dimensions" && subfield) {
+          setFormData((prev) => ({
             ...prev,
             parcelDetails: {
               ...prev.parcelDetails,
               dimensions: {
                 ...prev.parcelDetails.dimensions,
-                [subfield]: actualValue as string
-              }
-            }
+                [subfield]: actualValue as string,
+              },
+            },
           }));
         } else {
-          setFormData(prev => ({
+          setFormData((prev) => ({
             ...prev,
             parcelDetails: {
               ...prev.parcelDetails,
-              [field]: actualValue as string
-            }
+              [field]: actualValue as string,
+            },
           }));
         }
-      } else if (section === 'deliveryInfo') {
-        setFormData(prev => ({
+      } else if (section === "deliveryInfo") {
+        setFormData((prev) => ({
           ...prev,
           deliveryInfo: {
             ...prev.deliveryInfo,
-            [field]: actualValue as string | boolean
-          }
+            [field]: actualValue as string | boolean,
+          },
         }));
       }
     } else {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        [name]: actualValue
+        [name]: actualValue,
       }));
     }
 
     // Clear error when user starts typing
     if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
+      setErrors((prev) => ({ ...prev, [name]: "" }));
     }
   };
 
@@ -137,28 +149,48 @@ export default function CreateParcelPage() {
     const newErrors: Record<string, string> = {};
 
     // Receiver Info Validation
-    if (!formData.receiverInfo.name.trim()) newErrors['receiverInfo.name'] = 'Receiver name is required';
-    if (!formData.receiverInfo.email.trim()) newErrors['receiverInfo.email'] = 'Receiver email is required';
-    if (!formData.receiverInfo.phone.trim()) newErrors['receiverInfo.phone'] = 'Receiver phone is required';
-    if (!formData.receiverInfo.address.street.trim()) newErrors['receiverInfo.address.street'] = 'Street address is required';
-    if (!formData.receiverInfo.address.city.trim()) newErrors['receiverInfo.address.city'] = 'City is required';
-    if (!formData.receiverInfo.address.state.trim()) newErrors['receiverInfo.address.state'] = 'State is required';
-    if (!formData.receiverInfo.address.zipCode.trim()) newErrors['receiverInfo.address.zipCode'] = 'ZIP code is required';
+    if (!formData.receiverInfo.name.trim())
+      newErrors["receiverInfo.name"] = "Receiver name is required";
+    if (!formData.receiverInfo.email.trim())
+      newErrors["receiverInfo.email"] = "Receiver email is required";
+    if (!formData.receiverInfo.phone.trim())
+      newErrors["receiverInfo.phone"] = "Receiver phone is required";
+    if (!formData.receiverInfo.address.street.trim())
+      newErrors["receiverInfo.address.street"] = "Street address is required";
+    if (!formData.receiverInfo.address.city.trim())
+      newErrors["receiverInfo.address.city"] = "City is required";
+    if (!formData.receiverInfo.address.state.trim())
+      newErrors["receiverInfo.address.state"] = "State is required";
+    if (!formData.receiverInfo.address.zipCode.trim())
+      newErrors["receiverInfo.address.zipCode"] = "ZIP code is required";
 
     // Parcel Details Validation
-    if (!formData.parcelDetails.weight || parseFloat(formData.parcelDetails.weight) <= 0) {
-      newErrors['parcelDetails.weight'] = 'Valid weight is required';
+    if (
+      !formData.parcelDetails.weight ||
+      parseFloat(formData.parcelDetails.weight) <= 0
+    ) {
+      newErrors["parcelDetails.weight"] = "Valid weight is required";
     }
-    if (!formData.parcelDetails.dimensions.length || parseFloat(formData.parcelDetails.dimensions.length) <= 0) {
-      newErrors['parcelDetails.dimensions.length'] = 'Valid length is required';
+    if (
+      !formData.parcelDetails.dimensions.length ||
+      parseFloat(formData.parcelDetails.dimensions.length) <= 0
+    ) {
+      newErrors["parcelDetails.dimensions.length"] = "Valid length is required";
     }
-    if (!formData.parcelDetails.dimensions.width || parseFloat(formData.parcelDetails.dimensions.width) <= 0) {
-      newErrors['parcelDetails.dimensions.width'] = 'Valid width is required';
+    if (
+      !formData.parcelDetails.dimensions.width ||
+      parseFloat(formData.parcelDetails.dimensions.width) <= 0
+    ) {
+      newErrors["parcelDetails.dimensions.width"] = "Valid width is required";
     }
-    if (!formData.parcelDetails.dimensions.height || parseFloat(formData.parcelDetails.dimensions.height) <= 0) {
-      newErrors['parcelDetails.dimensions.height'] = 'Valid height is required';
+    if (
+      !formData.parcelDetails.dimensions.height ||
+      parseFloat(formData.parcelDetails.dimensions.height) <= 0
+    ) {
+      newErrors["parcelDetails.dimensions.height"] = "Valid height is required";
     }
-    if (!formData.parcelDetails.description.trim()) newErrors['parcelDetails.description'] = 'Description is required';
+    if (!formData.parcelDetails.description.trim())
+      newErrors["parcelDetails.description"] = "Description is required";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -166,9 +198,9 @@ export default function CreateParcelPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) return;
-    
+
     setLoading(true);
 
     try {
@@ -181,25 +213,29 @@ export default function CreateParcelPage() {
           dimensions: {
             length: parseFloat(formData.parcelDetails.dimensions.length),
             width: parseFloat(formData.parcelDetails.dimensions.width),
-            height: parseFloat(formData.parcelDetails.dimensions.height)
+            height: parseFloat(formData.parcelDetails.dimensions.height),
           },
-          value: parseFloat(formData.parcelDetails.value) || 0
+          value: parseFloat(formData.parcelDetails.value) || 0,
         },
         deliveryInfo: {
           ...formData.deliveryInfo,
-          preferredDeliveryDate: formData.deliveryInfo.preferredDeliveryDate ? 
-            new Date(formData.deliveryInfo.preferredDeliveryDate).toISOString() : 
-            new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString() // Default to tomorrow
-        }
+          preferredDeliveryDate: formData.deliveryInfo.preferredDeliveryDate
+            ? new Date(
+                formData.deliveryInfo.preferredDeliveryDate
+              ).toISOString()
+            : new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // Default to tomorrow
+        },
       };
 
-      const response = await api.post('/parcels', payload);
+      const response = await api.post("/parcels", payload);
       const parcel = response.data.data;
-      
-      toast.success('Parcel created successfully!');
+
+      toast.success("Parcel created successfully!");
       router.push(`/track?id=${parcel.trackingId}`);
     } catch (error) {
-      toast.error((error as ApiError).response?.data?.message || 'Failed to create parcel');
+      toast.error(
+        (error as ApiError).response?.data?.message || "Failed to create parcel"
+      );
     } finally {
       setLoading(false);
     }
@@ -208,7 +244,7 @@ export default function CreateParcelPage() {
   const estimatedFee = calculateEstimatedFee();
 
   return (
-    <ProtectedRoute allowedRoles={['sender']}>
+    <ProtectedRoute allowedRoles={["sender"]}>
       <div className="min-h-screen bg-gray-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Header */}
@@ -222,15 +258,21 @@ export default function CreateParcelPage() {
                 Back to Dashboard
               </Link>
             </div>
-            <h1 className="text-3xl font-bold text-gray-900">Create New Parcel</h1>
-            <p className="mt-2 text-gray-600">Fill in the details to create a new parcel delivery request.</p>
+            <h1 className="text-3xl font-bold text-gray-900">
+              Create New Parcel
+            </h1>
+            <p className="mt-2 text-gray-600">
+              Fill in the details to create a new parcel delivery request.
+            </p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-8">
             {/* Receiver Information */}
             <div className="bg-white rounded-lg shadow-sm p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-6">Receiver Information</h2>
-              
+              <h2 className="text-xl font-semibold text-gray-900 mb-6">
+                Receiver Information
+              </h2>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -244,8 +286,10 @@ export default function CreateParcelPage() {
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="Enter receiver's full name"
                   />
-                  {errors['receiverInfo.name'] && (
-                    <p className="mt-1 text-sm text-red-600">{errors['receiverInfo.name']}</p>
+                  {errors["receiverInfo.name"] && (
+                    <p className="mt-1 text-sm text-red-600">
+                      {errors["receiverInfo.name"]}
+                    </p>
                   )}
                 </div>
 
@@ -261,8 +305,10 @@ export default function CreateParcelPage() {
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="receiver@example.com"
                   />
-                  {errors['receiverInfo.email'] && (
-                    <p className="mt-1 text-sm text-red-600">{errors['receiverInfo.email']}</p>
+                  {errors["receiverInfo.email"] && (
+                    <p className="mt-1 text-sm text-red-600">
+                      {errors["receiverInfo.email"]}
+                    </p>
                   )}
                 </div>
 
@@ -278,16 +324,20 @@ export default function CreateParcelPage() {
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="+880123456789"
                   />
-                  {errors['receiverInfo.phone'] && (
-                    <p className="mt-1 text-sm text-red-600">{errors['receiverInfo.phone']}</p>
+                  {errors["receiverInfo.phone"] && (
+                    <p className="mt-1 text-sm text-red-600">
+                      {errors["receiverInfo.phone"]}
+                    </p>
                   )}
                 </div>
               </div>
 
               {/* Address */}
               <div className="mt-6">
-                <h3 className="text-lg font-medium text-gray-900 mb-4">Delivery Address</h3>
-                
+                <h3 className="text-lg font-medium text-gray-900 mb-4">
+                  Delivery Address
+                </h3>
+
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -301,8 +351,10 @@ export default function CreateParcelPage() {
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       placeholder="123 Main Street"
                     />
-                    {errors['receiverInfo.address.street'] && (
-                      <p className="mt-1 text-sm text-red-600">{errors['receiverInfo.address.street']}</p>
+                    {errors["receiverInfo.address.street"] && (
+                      <p className="mt-1 text-sm text-red-600">
+                        {errors["receiverInfo.address.street"]}
+                      </p>
                     )}
                   </div>
 
@@ -319,8 +371,10 @@ export default function CreateParcelPage() {
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         placeholder="Dhaka"
                       />
-                      {errors['receiverInfo.address.city'] && (
-                        <p className="mt-1 text-sm text-red-600">{errors['receiverInfo.address.city']}</p>
+                      {errors["receiverInfo.address.city"] && (
+                        <p className="mt-1 text-sm text-red-600">
+                          {errors["receiverInfo.address.city"]}
+                        </p>
                       )}
                     </div>
 
@@ -336,8 +390,10 @@ export default function CreateParcelPage() {
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         placeholder="Dhaka Division"
                       />
-                      {errors['receiverInfo.address.state'] && (
-                        <p className="mt-1 text-sm text-red-600">{errors['receiverInfo.address.state']}</p>
+                      {errors["receiverInfo.address.state"] && (
+                        <p className="mt-1 text-sm text-red-600">
+                          {errors["receiverInfo.address.state"]}
+                        </p>
                       )}
                     </div>
 
@@ -353,8 +409,10 @@ export default function CreateParcelPage() {
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         placeholder="1000"
                       />
-                      {errors['receiverInfo.address.zipCode'] && (
-                        <p className="mt-1 text-sm text-red-600">{errors['receiverInfo.address.zipCode']}</p>
+                      {errors["receiverInfo.address.zipCode"] && (
+                        <p className="mt-1 text-sm text-red-600">
+                          {errors["receiverInfo.address.zipCode"]}
+                        </p>
                       )}
                     </div>
                   </div>
@@ -364,8 +422,10 @@ export default function CreateParcelPage() {
 
             {/* Parcel Details */}
             <div className="bg-white rounded-lg shadow-sm p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-6">Parcel Details</h2>
-              
+              <h2 className="text-xl font-semibold text-gray-900 mb-6">
+                Parcel Details
+              </h2>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -400,8 +460,10 @@ export default function CreateParcelPage() {
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="0.5"
                   />
-                  {errors['parcelDetails.weight'] && (
-                    <p className="mt-1 text-sm text-red-600">{errors['parcelDetails.weight']}</p>
+                  {errors["parcelDetails.weight"] && (
+                    <p className="mt-1 text-sm text-red-600">
+                      {errors["parcelDetails.weight"]}
+                    </p>
                   )}
                 </div>
               </div>
@@ -423,8 +485,10 @@ export default function CreateParcelPage() {
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       placeholder="Length"
                     />
-                    {errors['parcelDetails.dimensions.length'] && (
-                      <p className="mt-1 text-sm text-red-600">{errors['parcelDetails.dimensions.length']}</p>
+                    {errors["parcelDetails.dimensions.length"] && (
+                      <p className="mt-1 text-sm text-red-600">
+                        {errors["parcelDetails.dimensions.length"]}
+                      </p>
                     )}
                   </div>
                   <div>
@@ -438,8 +502,10 @@ export default function CreateParcelPage() {
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       placeholder="Width"
                     />
-                    {errors['parcelDetails.dimensions.width'] && (
-                      <p className="mt-1 text-sm text-red-600">{errors['parcelDetails.dimensions.width']}</p>
+                    {errors["parcelDetails.dimensions.width"] && (
+                      <p className="mt-1 text-sm text-red-600">
+                        {errors["parcelDetails.dimensions.width"]}
+                      </p>
                     )}
                   </div>
                   <div>
@@ -453,8 +519,10 @@ export default function CreateParcelPage() {
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       placeholder="Height"
                     />
-                    {errors['parcelDetails.dimensions.height'] && (
-                      <p className="mt-1 text-sm text-red-600">{errors['parcelDetails.dimensions.height']}</p>
+                    {errors["parcelDetails.dimensions.height"] && (
+                      <p className="mt-1 text-sm text-red-600">
+                        {errors["parcelDetails.dimensions.height"]}
+                      </p>
                     )}
                   </div>
                 </div>
@@ -490,16 +558,20 @@ export default function CreateParcelPage() {
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Describe the contents of your parcel..."
                 />
-                {errors['parcelDetails.description'] && (
-                  <p className="mt-1 text-sm text-red-600">{errors['parcelDetails.description']}</p>
+                {errors["parcelDetails.description"] && (
+                  <p className="mt-1 text-sm text-red-600">
+                    {errors["parcelDetails.description"]}
+                  </p>
                 )}
               </div>
             </div>
 
             {/* Delivery Options */}
             <div className="bg-white rounded-lg shadow-sm p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-6">Delivery Options</h2>
-              
+              <h2 className="text-xl font-semibold text-gray-900 mb-6">
+                Delivery Options
+              </h2>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -510,7 +582,7 @@ export default function CreateParcelPage() {
                     name="deliveryInfo.preferredDeliveryDate"
                     value={formData.deliveryInfo.preferredDeliveryDate}
                     onChange={handleInputChange}
-                    min={new Date().toISOString().split('T')[0]}
+                    min={new Date().toISOString().split("T")[0]}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
@@ -524,7 +596,10 @@ export default function CreateParcelPage() {
                     onChange={handleInputChange}
                     className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                   />
-                  <label htmlFor="isUrgent" className="ml-2 block text-sm text-gray-900">
+                  <label
+                    htmlFor="isUrgent"
+                    className="ml-2 block text-sm text-gray-900"
+                  >
                     Urgent Delivery (+100 BDT)
                   </label>
                 </div>
@@ -549,7 +624,9 @@ export default function CreateParcelPage() {
             <div className="bg-blue-50 rounded-lg p-6">
               <div className="flex items-center">
                 <Calculator className="h-6 w-6 text-blue-600 mr-3" />
-                <h3 className="text-lg font-semibold text-blue-900">Estimated Delivery Fee</h3>
+                <h3 className="text-lg font-semibold text-blue-900">
+                  Estimated Delivery Fee
+                </h3>
               </div>
               <div className="mt-4 space-y-2">
                 <div className="flex justify-between text-sm">
@@ -557,8 +634,13 @@ export default function CreateParcelPage() {
                   <span>50 BDT</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span>Weight Fee ({formData.parcelDetails.weight || 0} kg × 20 BDT):</span>
-                  <span>{(parseFloat(formData.parcelDetails.weight) || 0) * 20} BDT</span>
+                  <span>
+                    Weight Fee ({formData.parcelDetails.weight || 0} kg × 20
+                    BDT):
+                  </span>
+                  <span>
+                    {(parseFloat(formData.parcelDetails.weight) || 0) * 20} BDT
+                  </span>
                 </div>
                 {formData.deliveryInfo.isUrgent && (
                   <div className="flex justify-between text-sm">

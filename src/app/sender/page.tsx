@@ -1,14 +1,28 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
-import ProtectedRoute from '@/components/ProtectedRoute';
-import { Package, Plus, Search, Filter, Eye, X, Calendar, Truck } from 'lucide-react';
-import Link from 'next/link';
-import { Parcel } from '@/types';
-import { formatDate, formatCurrency, getStatusColor, getStatusIcon } from '@/lib/utils';
-import api from '@/lib/api';
-import toast from 'react-hot-toast';
+import ProtectedRoute from "@/components/ProtectedRoute";
+import { useAuth } from "@/contexts/AuthContext";
+import api from "@/lib/api";
+import {
+  formatCurrency,
+  formatDate,
+  getStatusColor,
+  getStatusIcon,
+} from "@/lib/utils";
+import { Parcel } from "@/types";
+import {
+  Calendar,
+  Eye,
+  Filter,
+  Package,
+  Plus,
+  Search,
+  Truck,
+  X,
+} from "lucide-react";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 interface ApiError {
   response?: {
@@ -22,8 +36,8 @@ export default function SenderDashboard() {
   const { user } = useAuth();
   const [parcels, setParcels] = useState<Parcel[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState('all');
-  const [searchTerm, setSearchTerm] = useState('');
+  const [filter, setFilter] = useState("all");
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     fetchParcels();
@@ -31,42 +45,49 @@ export default function SenderDashboard() {
 
   const fetchParcels = async () => {
     try {
-      const response = await api.get('/parcels/me');
+      const response = await api.get("/parcels/me");
       setParcels(response.data.data);
     } catch (error) {
-      console.error('Error fetching parcels:', error);
-      toast.error('Failed to fetch parcels');
+      console.error("Error fetching parcels:", error);
+      toast.error("Failed to fetch parcels");
     } finally {
       setLoading(false);
     }
   };
 
   const handleCancelParcel = async (parcelId: string) => {
-    if (!confirm('Are you sure you want to cancel this parcel?')) return;
-    
+    if (!confirm("Are you sure you want to cancel this parcel?")) return;
+
     try {
       await api.patch(`/parcels/cancel/${parcelId}`, {
-        note: 'Cancelled by sender'
+        note: "Cancelled by sender",
       });
-      toast.success('Parcel cancelled successfully');
+      toast.success("Parcel cancelled successfully");
       fetchParcels();
     } catch (error) {
-      toast.error((error as ApiError).response?.data?.message || 'Failed to cancel parcel');
+      toast.error(
+        (error as ApiError).response?.data?.message || "Failed to cancel parcel"
+      );
     }
   };
 
-  const filteredParcels = parcels.filter(parcel => {
-    const matchesFilter = filter === 'all' || parcel.currentStatus === filter;
-    const matchesSearch = parcel.trackingId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         parcel.receiverInfo.name.toLowerCase().includes(searchTerm.toLowerCase());
+  const filteredParcels = parcels.filter((parcel) => {
+    const matchesFilter = filter === "all" || parcel.currentStatus === filter;
+    const matchesSearch =
+      parcel.trackingId.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      parcel.receiverInfo.name.toLowerCase().includes(searchTerm.toLowerCase());
     return matchesFilter && matchesSearch;
   });
 
   const stats = {
     total: parcels.length,
-    pending: parcels.filter(p => ['requested', 'approved'].includes(p.currentStatus)).length,
-    inTransit: parcels.filter(p => ['dispatched', 'in-transit'].includes(p.currentStatus)).length,
-    delivered: parcels.filter(p => p.currentStatus === 'delivered').length,
+    pending: parcels.filter((p) =>
+      ["requested", "approved"].includes(p.currentStatus)
+    ).length,
+    inTransit: parcels.filter((p) =>
+      ["dispatched", "in-transit"].includes(p.currentStatus)
+    ).length,
+    delivered: parcels.filter((p) => p.currentStatus === "delivered").length,
   };
 
   if (loading) {
@@ -78,13 +99,17 @@ export default function SenderDashboard() {
   }
 
   return (
-    <ProtectedRoute allowedRoles={['sender']}>
+    <ProtectedRoute allowedRoles={["sender"]}>
       <div className="min-h-screen bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900">Sender Dashboard</h1>
-            <p className="mt-2 text-gray-600">Welcome back, {user?.name}! Manage your parcel deliveries.</p>
+            <h1 className="text-3xl font-bold text-gray-900">
+              Sender Dashboard
+            </h1>
+            <p className="mt-2 text-gray-600">
+              Welcome back, {user?.name}! Manage your parcel deliveries.
+            </p>
           </div>
 
           {/* Stats Cards */}
@@ -95,8 +120,12 @@ export default function SenderDashboard() {
                   <Package className="h-6 w-6 text-blue-600" />
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Total Parcels</p>
-                  <p className="text-2xl font-bold text-gray-900">{stats.total}</p>
+                  <p className="text-sm font-medium text-gray-600">
+                    Total Parcels
+                  </p>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {stats.total}
+                  </p>
                 </div>
               </div>
             </div>
@@ -108,7 +137,9 @@ export default function SenderDashboard() {
                 </div>
                 <div className="ml-4">
                   <p className="text-sm font-medium text-gray-600">Pending</p>
-                  <p className="text-2xl font-bold text-gray-900">{stats.pending}</p>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {stats.pending}
+                  </p>
                 </div>
               </div>
             </div>
@@ -119,8 +150,12 @@ export default function SenderDashboard() {
                   <Truck className="h-6 w-6 text-purple-600" />
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">In Transit</p>
-                  <p className="text-2xl font-bold text-gray-900">{stats.inTransit}</p>
+                  <p className="text-sm font-medium text-gray-600">
+                    In Transit
+                  </p>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {stats.inTransit}
+                  </p>
                 </div>
               </div>
             </div>
@@ -132,7 +167,9 @@ export default function SenderDashboard() {
                 </div>
                 <div className="ml-4">
                   <p className="text-sm font-medium text-gray-600">Delivered</p>
-                  <p className="text-2xl font-bold text-gray-900">{stats.delivered}</p>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {stats.delivered}
+                  </p>
                 </div>
               </div>
             </div>
@@ -141,8 +178,10 @@ export default function SenderDashboard() {
           {/* Actions */}
           <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-              <h2 className="text-xl font-semibold text-gray-900">My Parcels</h2>
-              
+              <h2 className="text-xl font-semibold text-gray-900">
+                My Parcels
+              </h2>
+
               <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
                 {/* Search */}
                 <div className="relative">
@@ -191,10 +230,12 @@ export default function SenderDashboard() {
             {filteredParcels.length === 0 ? (
               <div className="text-center py-12">
                 <Package className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">No parcels found</h3>
+                <h3 className="text-lg font-medium text-gray-900 mb-2">
+                  No parcels found
+                </h3>
                 <p className="text-gray-600 mb-4">
-                  {parcels.length === 0 
-                    ? "You haven't created any parcels yet." 
+                  {parcels.length === 0
+                    ? "You haven't created any parcels yet."
                     : "No parcels match your current filter."}
                 </p>
                 {parcels.length === 0 && (
@@ -248,13 +289,21 @@ export default function SenderDashboard() {
                               {parcel.receiverInfo.name}
                             </div>
                             <div className="text-sm text-gray-500">
-                              {parcel.receiverInfo.address.city}, {parcel.receiverInfo.address.state}
+                              {parcel.receiverInfo.address.city},{" "}
+                              {parcel.receiverInfo.address.state}
                             </div>
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(parcel.currentStatus)}`}>
-                            {getStatusIcon(parcel.currentStatus)} {parcel.currentStatus.replace('-', ' ').toUpperCase()}
+                          <span
+                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(
+                              parcel.currentStatus
+                            )}`}
+                          >
+                            {getStatusIcon(parcel.currentStatus)}{" "}
+                            {parcel.currentStatus
+                              .replace("-", " ")
+                              .toUpperCase()}
                           </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -272,7 +321,9 @@ export default function SenderDashboard() {
                               <Eye className="h-4 w-4 mr-1" />
                               View
                             </Link>
-                            {['requested', 'approved'].includes(parcel.currentStatus) && (
+                            {["requested", "approved"].includes(
+                              parcel.currentStatus
+                            ) && (
                               <button
                                 onClick={() => handleCancelParcel(parcel._id)}
                                 className="text-red-600 hover:text-red-900 flex items-center"
