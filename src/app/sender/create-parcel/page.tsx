@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { Package, ArrowLeft, Calculator } from 'lucide-react';
 import Link from 'next/link';
-import { useAuth } from '@/contexts/AuthContext';
 import api from '@/lib/api';
 import toast from 'react-hot-toast';
 
@@ -61,16 +60,23 @@ export default function CreateParcelPage() {
 
     if (name.includes('.')) {
       const [section, field, subfield] = name.split('.');
-      setFormData(prev => ({
-        ...prev,
-        [section]: {
-          ...prev[section as keyof typeof prev],
-          [field]: subfield ? {
-            ...(prev[section as keyof typeof prev] as any)[field],
+      setFormData(prev => {
+        const newData = { ...prev };
+        const sectionData = newData[section as keyof typeof newData];
+        
+        if (subfield) {
+          // Handle nested objects like address
+          (sectionData as any)[field] = {
+            ...(sectionData as any)[field],
             [subfield]: actualValue
-          } : actualValue
+          };
+        } else {
+          // Handle direct field update
+          (sectionData as any)[field] = actualValue;
         }
-      }));
+        
+        return newData;
+      });
     } else {
       setFormData(prev => ({
         ...prev,
