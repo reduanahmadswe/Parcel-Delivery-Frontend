@@ -1,56 +1,121 @@
 @import "tailwindcss";
 
 :root {
+  /* Light mode colors */
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #030637;
+  --surface: #f8f9ff;
+  --border: #e1e8ff;
+  --text-primary: #030637;
+  --text-secondary: #3c0753;
+  --text-muted: #720455;
 
-  /* Custom Color Palette */
-  --color-primary-darkest: #030637;
-  --color-primary-dark: #3c0753;
-  --color-primary-medium: #720455;
-  --color-primary-light: #910a67;
+  /* Custom Brand Colors */
+  --brand-darkest: #030637;
+  --brand-dark: #3c0753;
+  --brand-medium: #720455;
+  --brand-light: #910a67;
 
   /* Gradients */
-  --gradient-primary: linear-gradient(
-    135deg,
-    #030637 0%,
-    #3c0753 25%,
-    #720455 75%,
-    #910a67 100%
-  );
-  --gradient-primary-light: linear-gradient(
-    135deg,
-    #3c0753 0%,
-    #720455 50%,
-    #910a67 100%
-  );
+  --gradient-brand: linear-gradient(135deg, #030637 0%, #3c0753 25%, #720455 75%, #910a67 100%);
+  --gradient-brand-reverse: linear-gradient(135deg, #910a67 0%, #720455 25%, #3c0753 75%, #030637 100%);
+  --gradient-brand-light: linear-gradient(135deg, #f8f9ff 0%, #e1e8ff 50%, #c7d2ff 100%);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* Dark mode */
+.dark {
+  --background: #030637;
+  --foreground: #ffffff;
+  --surface: #3c0753;
+  --border: #720455;
+  --text-primary: #ffffff;
+  --text-secondary: #e1e8ff;
+  --text-muted: #c7d2ff;
+
+  /* Dark mode gradients */
+  --gradient-brand-light: linear-gradient(135deg, #3c0753 0%, #720455 50%, #910a67 100%);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Custom utility classes */
+.bg-theme {
+  background-color: var(--background);
+}
+
+.bg-surface {
+  background-color: var(--surface);
+}
+
+.text-theme-primary {
+  color: var(--text-primary);
+}
+
+.text-theme-secondary {
+  color: var(--text-secondary);
+}
+
+.text-theme-muted {
+  color: var(--text-muted);
+}
+
+.border-theme {
+  border-color: var(--border);
+}
+
+.gradient-brand {
+  background: var(--gradient-brand);
+}
+
+.gradient-brand-reverse {
+  background: var(--gradient-brand-reverse);
+}
+
+.gradient-brand-light {
+  background: var(--gradient-brand-light);
+}
+
+/* Global styles */
+* {
+  border-color: var(--border);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--background);
+  color: var(--text-primary);
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
 }
 
-/* Ensure all input fields have black text */
+/* Smooth transitions for theme changes */
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Ensure all input fields maintain readability */
 input,
 textarea,
 select {
-  color: #111827; /* text-gray-900 */
+  background-color: var(--background);
+  color: var(--text-primary);
+  border-color: var(--border);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-muted);
+}
+
+/* Focus states */
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: var(--brand-medium);
+  box-shadow: 0 0 0 3px rgba(114, 4, 85, 0.1);
+}
+
+.dark input:focus,
+.dark textarea:focus,
+.dark select:focus {
+  box-shadow: 0 0 0 3px rgba(145, 10, 103, 0.1);
 }
 
 /* Dark mode override for inputs */

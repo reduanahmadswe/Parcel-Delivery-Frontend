@@ -1,5 +1,6 @@
 import Navigation from "@/components/Navigation";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { ThemeProvider } from "@/contexts/ThemeContext";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Toaster } from "react-hot-toast";
@@ -22,23 +23,26 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className} antialiased`}>
-        <AuthProvider>
-          <div className="min-h-screen bg-gray-50">
-            <Navigation />
-            <main>{children}</main>
-            <Toaster
-              position="top-right"
-              toastOptions={{
-                duration: 4000,
-                style: {
-                  background: "#363636",
-                  color: "#fff",
-                },
-              }}
-            />
-          </div>
-        </AuthProvider>
+      <body className={`${inter.className} antialiased bg-theme text-theme-primary`}>
+        <ThemeProvider>
+          <AuthProvider>
+            <div className="min-h-screen bg-theme">
+              <Navigation />
+              <main>{children}</main>
+              <Toaster
+                position="top-right"
+                toastOptions={{
+                  duration: 4000,
+                  style: {
+                    background: "var(--surface)",
+                    color: "var(--text-primary)",
+                    border: "1px solid var(--border)",
+                  },
+                }}
+              />
+            </div>
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

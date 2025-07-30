@@ -3,7 +3,7 @@
 import { useAuth } from "@/contexts/AuthContext";
 import api from "@/lib/api";
 import { CheckCircle2, Clock, MapPin, Package, User, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 
 interface Parcel {
@@ -51,17 +51,27 @@ export default function ReceiverDashboard() {
   const [filter, setFilter] = useState("all");
   const [isConfirming, setIsConfirming] = useState(false);
 
-  useEffect(() => {
-    if (!loading && user) {
-      fetchParcels();
-    }
-  }, [user, loading]);
-
-  const fetchParcels = async () => {
+  const fetchParcels = useCallback(async () => {
     try {
       setIsLoading(true);
-      const response = await api.get("/parcels/received");
-      const parcelData = response.data;
+      let response;
+      let parcelData;
+      
+      try {
+        // First try /parcels/me endpoint (for parcels where user is recipient)
+        response = await api.get("/parcels/me");
+        parcelData = response.data.data || response.data;
+      } catch {
+        console.log("Trying fallback endpoint...");
+        // Fallback: Get all parcels and filter by recipient email
+        response = await api.get("/parcels");
+        const allParcels = response.data.data || response.data;
+        
+        // Filter parcels where the current user is the recipient
+        parcelData = allParcels.filter((parcel: Parcel) => 
+          parcel.recipientEmail === user?.email
+        );
+      }
 
       setParcels(parcelData);
 
@@ -78,11 +88,19 @@ export default function ReceiverDashboard() {
       setStats(stats);
     } catch (error) {
       console.error("Error fetching parcels:", error);
-      toast.error("Failed to load parcels");
+      const errorMsg = error instanceof Error ? error.message : "Failed to fetch parcels";
+      const statusCode = (error as { response?: { status?: number } })?.response?.status;
+      toast.error(`Error ${statusCode ? `(${statusCode})` : ""}: ${errorMsg}`);
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [user?.email]);
+
+  useEffect(() => {
+    if (!loading && user) {
+      fetchParcels();
+    }
+  }, [user, loading, fetchParcels]);
 
   const confirmDelivery = async (parcelId: number) => {
     try {
