@@ -222,7 +222,7 @@ export default function AdminParcelsPage() {
 
   const openStatusModal = (parcel: Parcel) => {
     setSelectedParcel(parcel);
-    setNewStatus(parcel.status);
+    setNewStatus(parcel?.status || "pending");
     setShowStatusModal(true);
   };
 
@@ -258,11 +258,13 @@ export default function AdminParcelsPage() {
       key: "senderName",
       header: "Sender",
       sortable: true,
+      render: (_, parcel) => parcel?.senderName || "N/A",
     },
     {
       key: "recipientName",
       header: "Recipient",
       sortable: true,
+      render: (_, parcel) => parcel?.recipientName || "N/A",
     },
     {
       key: "status",
@@ -311,7 +313,7 @@ export default function AdminParcelsPage() {
       sortable: true,
       render: (_, parcel) =>
         parcel?.createdAt
-          ? new Date(parcel.createdAt).toLocaleDateString()
+          ? new Date(parcel?.createdAt).toLocaleDateString()
           : "N/A",
     },
     {
@@ -578,7 +580,7 @@ export default function AdminParcelsPage() {
                     Status
                   </label>
                   <StatusBadge
-                    status={selectedParcel.status}
+                    status={selectedParcel?.status}
                     variant="parcel"
                   />
                 </div>
@@ -752,7 +754,7 @@ export default function AdminParcelsPage() {
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                 Current Status
               </label>
-              <StatusBadge status={selectedParcel.status} variant="parcel" />
+              <StatusBadge status={selectedParcel?.status} variant="parcel" />
             </div>
 
             <div>
@@ -787,7 +789,7 @@ export default function AdminParcelsPage() {
               </button>
               <button
                 onClick={handleUpdateStatus}
-                disabled={actionLoading || newStatus === selectedParcel.status}
+                disabled={actionLoading || newStatus === selectedParcel?.status}
                 className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 transition-colors"
               >
                 {actionLoading ? "Updating..." : "Update Status"}
@@ -909,17 +911,22 @@ export default function AdminParcelsPage() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between">
-                          <StatusBadge status={entry.status} variant="parcel" />
+                          <StatusBadge
+                            status={entry?.status}
+                            variant="parcel"
+                          />
                           <span className="text-sm text-slate-500 dark:text-slate-400">
-                            {new Date(entry.timestamp).toLocaleString()}
+                            {entry?.timestamp
+                              ? new Date(entry.timestamp).toLocaleString()
+                              : "N/A"}
                           </span>
                         </div>
-                        {entry.updatedBy && (
+                        {entry?.updatedBy && (
                           <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
                             Updated by: {entry.updatedBy}
                           </p>
                         )}
-                        {entry.notes && (
+                        {entry?.notes && (
                           <p className="mt-1 text-sm text-slate-900 dark:text-slate-100">
                             {entry.notes}
                           </p>
