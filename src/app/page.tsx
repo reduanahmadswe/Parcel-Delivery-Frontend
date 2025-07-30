@@ -76,19 +76,11 @@ export default function HomePage() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 href="/register"
-                className="px-8 py-4 rounded-lg text-lg font-semibold transition-all duration-200 inline-flex items-center justify-center text-white"
+                className="px-8 py-4 rounded-lg text-lg font-semibold transition-all duration-200 inline-flex items-center justify-center text-white hover:transform hover:-translate-y-1 hover:shadow-lg"
                 style={{
                   background: "rgba(255, 255, 255, 0.1)",
                   border: "1px solid rgba(255, 255, 255, 0.2)",
                   backdropFilter: "blur(10px)",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = "rgba(255, 255, 255, 0.2)";
-                  e.currentTarget.style.transform = "translateY(-2px)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = "rgba(255, 255, 255, 0.1)";
-                  e.currentTarget.style.transform = "";
                 }}
               >
                 <Package className="mr-2 h-5 w-5" />
@@ -96,15 +88,7 @@ export default function HomePage() {
               </Link>
               <Link
                 href="/track"
-                className="border-2 border-white text-white px-8 py-4 rounded-lg text-lg font-semibold transition-all duration-200 inline-flex items-center justify-center"
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = "rgba(255, 255, 255, 0.1)";
-                  e.currentTarget.style.transform = "translateY(-2px)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = "";
-                  e.currentTarget.style.transform = "";
-                }}
+                className="border-2 border-white text-white px-8 py-4 rounded-lg text-lg font-semibold transition-all duration-200 inline-flex items-center justify-center hover:bg-white hover:text-purple-800 hover:transform hover:-translate-y-1"
               >
                 <Search className="mr-2 h-5 w-5" />
                 Track Parcel
@@ -128,22 +112,9 @@ export default function HomePage() {
           <div className="max-w-md mx-auto">
             <Link
               href="/track"
-              className="block w-full text-white text-center py-4 px-6 rounded-lg text-lg font-semibold transition-all duration-200"
+              className="block w-full text-white text-center py-4 px-6 rounded-lg text-lg font-semibold transition-all duration-200 hover:transform hover:-translate-y-1 hover:shadow-lg"
               style={{
                 background: "linear-gradient(135deg, #720455 0%, #910A67 100%)",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background =
-                  "linear-gradient(135deg, #3C0753 0%, #720455 100%)";
-                e.currentTarget.style.transform = "translateY(-2px)";
-                e.currentTarget.style.boxShadow =
-                  "0 4px 8px rgba(114, 4, 85, 0.3)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background =
-                  "linear-gradient(135deg, #720455 0%, #910A67 100%)";
-                e.currentTarget.style.transform = "";
-                e.currentTarget.style.boxShadow = "";
               }}
             >
               Go to Tracking Page
@@ -218,43 +189,19 @@ export default function HomePage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/register"
-              className="text-white px-8 py-4 rounded-lg text-lg font-semibold transition-all duration-200"
+              className="text-white px-8 py-4 rounded-lg text-lg font-semibold transition-all duration-200 hover:transform hover:-translate-y-1 hover:shadow-lg"
               style={{
                 background: "linear-gradient(135deg, #720455 0%, #910A67 100%)",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background =
-                  "linear-gradient(135deg, #3C0753 0%, #720455 100%)";
-                e.currentTarget.style.transform = "translateY(-2px)";
-                e.currentTarget.style.boxShadow =
-                  "0 4px 8px rgba(114, 4, 85, 0.3)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background =
-                  "linear-gradient(135deg, #720455 0%, #910A67 100%)";
-                e.currentTarget.style.transform = "";
-                e.currentTarget.style.boxShadow = "";
               }}
             >
               Create Account
             </Link>
             <Link
               href="/track"
-              className="border-2 px-8 py-4 rounded-lg text-lg font-semibold transition-all duration-200"
+              className="border-2 px-8 py-4 rounded-lg text-lg font-semibold transition-all duration-200 hover:bg-purple-600 hover:text-white hover:transform hover:-translate-y-1"
               style={{
                 borderColor: "#720455",
                 color: "#720455",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background =
-                  "linear-gradient(135deg, #720455 0%, #910A67 100%)";
-                e.currentTarget.style.color = "white";
-                e.currentTarget.style.transform = "translateY(-2px)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = "";
-                e.currentTarget.style.color = "#720455";
-                e.currentTarget.style.transform = "";
               }}
             >
               Track Existing Parcel

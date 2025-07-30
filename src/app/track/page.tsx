@@ -239,7 +239,11 @@ export default function TrackPage() {
               <div className="mt-6 text-center">
                 <Link
                   href={`/status-history?id=${parcel._id}`}
-                  className="inline-flex items-center px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
+                  className="inline-flex items-center px-4 py-2 text-sm font-medium text-white rounded-lg transition-all duration-200 hover:transform hover:-translate-y-1 hover:shadow-lg"
+                  style={{
+                    background:
+                      "linear-gradient(135deg, #720455 0%, #910A67 100%)",
+                  }}
                 >
                   <Clock className="h-4 w-4 mr-2" />
                   View Detailed Status History
@@ -270,9 +274,17 @@ export default function TrackPage() {
                       <div
                         className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
                           isStatusCompleted(parcel.currentStatus, status)
-                            ? "bg-blue-600 text-white"
+                            ? "text-white"
                             : "bg-gray-200 text-gray-500"
                         }`}
+                        style={
+                          isStatusCompleted(parcel.currentStatus, status)
+                            ? {
+                                background:
+                                  "linear-gradient(135deg, #720455 0%, #910A67 100%)",
+                              }
+                            : {}
+                        }
                       >
                         {isStatusCompleted(parcel.currentStatus, status) ? (
                           <CheckCircle className="h-5 w-5" />
@@ -289,8 +301,10 @@ export default function TrackPage() {
                 <div className="relative">
                   <div className="absolute top-0 left-0 h-1 bg-gray-200 w-full"></div>
                   <div
-                    className="absolute top-0 left-0 h-1 bg-blue-600 transition-all duration-500"
+                    className="absolute top-0 left-0 h-1 transition-all duration-500"
                     style={{
+                      background:
+                        "linear-gradient(135deg, #720455 0%, #910A67 100%)",
                       width: `${
                         (getStatusStep(parcel.currentStatus) / 4) * 100
                       }%`,
@@ -359,12 +373,25 @@ export default function TrackPage() {
 
         {/* Sample Tracking IDs for Testing */}
         {!parcel && !loading && (
-          <div className="bg-blue-50 rounded-lg p-6 text-center">
-            <Package className="h-12 w-12 text-blue-600 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-blue-900 mb-2">
+          <div
+            className="rounded-lg p-6 text-center"
+            style={{
+              background:
+                "linear-gradient(135deg, rgba(114, 4, 85, 0.1) 0%, rgba(145, 10, 103, 0.1) 100%)",
+              border: "1px solid rgba(114, 4, 85, 0.2)",
+            }}
+          >
+            <Package
+              className="h-12 w-12 mx-auto mb-4"
+              style={{ color: "#720455" }}
+            />
+            <h3
+              className="text-lg font-medium mb-2"
+              style={{ color: "#720455" }}
+            >
               Need a sample tracking ID?
             </h3>
-            <p className="text-blue-700 mb-4">
+            <p className="mb-4" style={{ color: "#3C0753" }}>
               Try one of these sample tracking IDs to see how the tracking
               system works:
             </p>
@@ -377,7 +404,11 @@ export default function TrackPage() {
                 <button
                   key={sampleId}
                   onClick={() => setTrackingId(sampleId)}
-                  className="px-3 py-1 bg-white text-blue-700 border border-blue-200 rounded-md text-sm hover:bg-blue-100 transition-colors font-mono"
+                  className="px-3 py-1 bg-white rounded-md text-sm transition-all duration-200 font-mono hover:transform hover:-translate-y-1 hover:shadow-md"
+                  style={{
+                    color: "#720455",
+                    border: "1px solid #720455",
+                  }}
                 >
                   {sampleId}
                 </button>
