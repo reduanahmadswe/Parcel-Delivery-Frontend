@@ -60,23 +60,58 @@ export default function CreateParcelPage() {
 
     if (name.includes('.')) {
       const [section, field, subfield] = name.split('.');
-      setFormData(prev => {
-        const newData = { ...prev };
-        const sectionData = newData[section as keyof typeof newData];
-        
-        if (subfield) {
-          // Handle nested objects like address
-          (sectionData as any)[field] = {
-            ...(sectionData as any)[field],
-            [subfield]: actualValue
-          };
+      
+      if (section === 'receiverInfo') {
+        if (field === 'address' && subfield) {
+          setFormData(prev => ({
+            ...prev,
+            receiverInfo: {
+              ...prev.receiverInfo,
+              address: {
+                ...prev.receiverInfo.address,
+                [subfield]: actualValue as string
+              }
+            }
+          }));
         } else {
-          // Handle direct field update
-          (sectionData as any)[field] = actualValue;
+          setFormData(prev => ({
+            ...prev,
+            receiverInfo: {
+              ...prev.receiverInfo,
+              [field]: actualValue as string
+            }
+          }));
         }
-        
-        return newData;
-      });
+      } else if (section === 'parcelDetails') {
+        if (field === 'dimensions' && subfield) {
+          setFormData(prev => ({
+            ...prev,
+            parcelDetails: {
+              ...prev.parcelDetails,
+              dimensions: {
+                ...prev.parcelDetails.dimensions,
+                [subfield]: actualValue as string
+              }
+            }
+          }));
+        } else {
+          setFormData(prev => ({
+            ...prev,
+            parcelDetails: {
+              ...prev.parcelDetails,
+              [field]: actualValue as string
+            }
+          }));
+        }
+      } else if (section === 'deliveryInfo') {
+        setFormData(prev => ({
+          ...prev,
+          deliveryInfo: {
+            ...prev.deliveryInfo,
+            [field]: actualValue as string | boolean
+          }
+        }));
+      }
     } else {
       setFormData(prev => ({
         ...prev,
