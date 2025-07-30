@@ -94,13 +94,41 @@ export default function TrackPage() {
                 value={trackingId}
                 onChange={(e) => setTrackingId(e.target.value)}
                 placeholder="Enter tracking ID (e.g., TRK-20240115-ABC123)"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-lg transition-all duration-200"
+                onFocus={(e) => {
+                  e.target.style.borderColor = "#720455";
+                  e.target.style.boxShadow = "0 0 0 2px rgba(114, 4, 85, 0.2)";
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = "#d1d5db";
+                  e.target.style.boxShadow = "";
+                }}
               />
             </div>
             <button
               type="submit"
               disabled={loading}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+              className="text-white px-8 py-3 rounded-lg font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+              style={{
+                background: "linear-gradient(135deg, #720455 0%, #910A67 100%)",
+              }}
+              onMouseEnter={(e) => {
+                if (!loading) {
+                  e.currentTarget.style.background =
+                    "linear-gradient(135deg, #3C0753 0%, #720455 100%)";
+                  e.currentTarget.style.transform = "translateY(-1px)";
+                  e.currentTarget.style.boxShadow =
+                    "0 4px 8px rgba(114, 4, 85, 0.3)";
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!loading) {
+                  e.currentTarget.style.background =
+                    "linear-gradient(135deg, #720455 0%, #910A67 100%)";
+                  e.currentTarget.style.transform = "";
+                  e.currentTarget.style.boxShadow = "";
+                }
+              }}
             >
               {loading ? (
                 <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>

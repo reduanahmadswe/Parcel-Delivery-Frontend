@@ -92,11 +92,35 @@ export default function Navigation() {
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-3 group">
               <div className="relative">
-                <Package className="h-8 w-8" style={{background: 'linear-gradient(135deg, #030637 0%, #3C0753 25%, #720455 75%, #910A67 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text', color: 'transparent'}} />
-                <div className="absolute -top-1 -right-1 h-3 w-3 rounded-full animate-pulse" style={{background: 'linear-gradient(135deg, #720455, #910A67)'}}></div>
+                <Package
+                  className="h-8 w-8"
+                  style={{
+                    background:
+                      "linear-gradient(135deg, #030637 0%, #3C0753 25%, #720455 75%, #910A67 100%)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                    backgroundClip: "text",
+                    color: "transparent",
+                  }}
+                />
+                <div
+                  className="absolute -top-1 -right-1 h-3 w-3 rounded-full animate-pulse"
+                  style={{
+                    background: "linear-gradient(135deg, #720455, #910A67)",
+                  }}
+                ></div>
               </div>
               <div className="flex flex-col">
-                <span className="text-xl font-bold text-gray-900 group-hover:opacity-80 transition-all duration-300" style={{background: 'linear-gradient(135deg, #030637 0%, #910A67 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text'}}>
+                <span
+                  className="text-xl font-bold text-gray-900 group-hover:opacity-80 transition-all duration-300"
+                  style={{
+                    background:
+                      "linear-gradient(135deg, #030637 0%, #910A67 100%)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                    backgroundClip: "text",
+                  }}
+                >
                   ParcelTrack
                 </span>
                 <span className="text-xs text-gray-500 hidden sm:block">
@@ -115,13 +139,9 @@ export default function Navigation() {
                   key={item.href}
                   href={item.href}
                   className="flex items-center space-x-2 text-gray-700 hover:text-white px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:shadow-md"
-                  style={{
-                    ":hover": {
-                      background: "linear-gradient(135deg, #030637 0%, #720455 100%)"
-                    }
-                  }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.background = "linear-gradient(135deg, #030637 0%, #720455 100%)";
+                    e.currentTarget.style.background =
+                      "linear-gradient(135deg, #030637 0%, #720455 100%)";
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.background = "";
@@ -141,7 +161,8 @@ export default function Navigation() {
                   href={item.href}
                   className="flex items-center space-x-2 text-gray-700 hover:text-white px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:shadow-md"
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.background = "linear-gradient(135deg, #030637 0%, #720455 100%)";
+                    e.currentTarget.style.background =
+                      "linear-gradient(135deg, #030637 0%, #720455 100%)";
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.background = "";
@@ -159,10 +180,24 @@ export default function Navigation() {
             {user ? (
               <>
                 {/* Notifications */}
-                <button className="relative p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200">
+                <button
+                  className="relative p-2 text-gray-600 hover:text-white hover:shadow-md rounded-lg transition-all duration-200"
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background =
+                      "linear-gradient(135deg, #720455 0%, #910A67 100%)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = "";
+                  }}
+                >
                   <Bell className="h-5 w-5" />
                   {notifications > 0 && (
-                    <span className="absolute -top-1 -right-1 h-5 w-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center animate-pulse">
+                    <span
+                      className="absolute -top-1 -right-1 h-5 w-5 text-white text-xs rounded-full flex items-center justify-center animate-pulse"
+                      style={{
+                        background: "linear-gradient(135deg, #910A67, #720455)",
+                      }}
+                    >
                       {notifications}
                     </span>
                   )}
@@ -175,7 +210,13 @@ export default function Navigation() {
                     className="flex items-center space-x-3 text-gray-700 hover:text-blue-600 hover:bg-blue-50 px-3 py-2 rounded-lg transition-all duration-200"
                   >
                     <div className="flex items-center space-x-2">
-                      <div className="h-8 w-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold text-sm">
+                      <div
+                        className="h-8 w-8 rounded-full flex items-center justify-center text-white font-semibold text-sm"
+                        style={{
+                          background:
+                            "linear-gradient(135deg, #030637 0%, #3C0753 25%, #720455 75%, #910A67 100%)",
+                        }}
+                      >
                         {user.name.charAt(0).toUpperCase()}
                       </div>
                       <div className="hidden md:block text-left">
@@ -203,7 +244,13 @@ export default function Navigation() {
                           {user.email}
                         </div>
                         <div className="mt-1">
-                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 capitalize">
+                          <span
+                            className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium text-white"
+                            style={{
+                              background:
+                                "linear-gradient(135deg, #720455, #910A67)",
+                            }}
+                          >
                             {user.role}
                           </span>
                         </div>
@@ -247,7 +294,11 @@ export default function Navigation() {
                 </Link>
                 <Link
                   href="/register"
-                  className="bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 shadow-md hover:shadow-lg"
+                  className="text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105"
+                  style={{
+                    background:
+                      "linear-gradient(135deg, #030637 0%, #3C0753 25%, #720455 75%, #910A67 100%)",
+                  }}
                 >
                   Get Started
                 </Link>
@@ -308,7 +359,13 @@ export default function Navigation() {
                 <>
                   <div className="border-t border-gray-200 pt-4 mt-4">
                     <div className="flex items-center space-x-3 px-3 py-2">
-                      <div className="h-10 w-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold">
+                      <div
+                        className="h-10 w-10 rounded-full flex items-center justify-center text-white font-semibold"
+                        style={{
+                          background:
+                            "linear-gradient(135deg, #030637 0%, #3C0753 25%, #720455 75%, #910A67 100%)",
+                        }}
+                      >
                         {user.name.charAt(0).toUpperCase()}
                       </div>
                       <div>
@@ -318,7 +375,13 @@ export default function Navigation() {
                         <div className="text-xs text-gray-500">
                           {user.email}
                         </div>
-                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 capitalize mt-1">
+                        <span
+                          className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium text-white capitalize mt-1"
+                          style={{
+                            background:
+                              "linear-gradient(135deg, #720455, #910A67)",
+                          }}
+                        >
                           {user.role}
                         </span>
                       </div>

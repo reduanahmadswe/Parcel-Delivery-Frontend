@@ -105,19 +105,25 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div
+      className="min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8"
+      style={{
+        background:
+          "linear-gradient(135deg, #030637 0%, #3C0753 25%, #720455 75%, #910A67 100%)",
+      }}
+    >
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="flex justify-center">
-          <Package className="h-12 w-12 text-blue-600" />
+          <Package className="h-12 w-12 text-white" />
         </div>
-        <h2 className="mt-6 text-center text-3xl font-bold text-gray-900">
+        <h2 className="mt-6 text-center text-3xl font-bold text-white">
           Create your account
         </h2>
-        <p className="mt-2 text-center text-sm text-gray-600">
+        <p className="mt-2 text-center text-sm text-gray-200">
           Or{" "}
           <Link
             href="/login"
-            className="font-medium text-blue-600 hover:text-blue-500"
+            className="font-medium text-white hover:text-gray-300 underline transition-colors duration-200"
           >
             sign in to your existing account
           </Link>
@@ -125,7 +131,13 @@ export default function RegisterPage() {
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+        <div
+          className="py-8 px-4 shadow-2xl sm:rounded-lg sm:px-10 backdrop-blur-sm"
+          style={{
+            background: "rgba(255, 255, 255, 0.95)",
+            border: "1px solid rgba(255, 255, 255, 0.2)",
+          }}
+        >
           <form className="space-y-6" onSubmit={handleSubmit}>
             {/* Basic Information */}
             <div>
@@ -143,7 +155,16 @@ export default function RegisterPage() {
                   required
                   value={formData.name}
                   onChange={handleInputChange}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-2 focus:border-transparent sm:text-sm transition-all duration-200"
+                  onFocus={(e) => {
+                    e.target.style.borderColor = "#720455";
+                    e.target.style.boxShadow =
+                      "0 0 0 2px rgba(114, 4, 85, 0.2)";
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.borderColor = "#d1d5db";
+                    e.target.style.boxShadow = "";
+                  }}
                   placeholder="Enter your full name"
                 />
                 {errors.name && (
@@ -441,7 +462,28 @@ export default function RegisterPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full flex justify-center items-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full flex justify-center items-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                style={{
+                  background:
+                    "linear-gradient(135deg, #720455 0%, #910A67 100%)",
+                }}
+                onMouseEnter={(e) => {
+                  if (!loading) {
+                    e.currentTarget.style.background =
+                      "linear-gradient(135deg, #3C0753 0%, #720455 100%)";
+                    e.currentTarget.style.transform = "translateY(-1px)";
+                    e.currentTarget.style.boxShadow =
+                      "0 4px 8px rgba(114, 4, 85, 0.3)";
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!loading) {
+                    e.currentTarget.style.background =
+                      "linear-gradient(135deg, #720455 0%, #910A67 100%)";
+                    e.currentTarget.style.transform = "";
+                    e.currentTarget.style.boxShadow = "";
+                  }
+                }}
               >
                 {loading ? (
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>

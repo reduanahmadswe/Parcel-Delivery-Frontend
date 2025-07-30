@@ -4,25 +4,25 @@ import Link from "next/link";
 export default function HomePage() {
   const features = [
     {
-      icon: <Package className="h-8 w-8 text-blue-600" />,
+      icon: <Package className="h-8 w-8 text-white" />,
       title: "Easy Parcel Booking",
       description:
         "Book your parcel delivery in just a few clicks with our user-friendly interface.",
     },
     {
-      icon: <Search className="h-8 w-8 text-blue-600" />,
+      icon: <Search className="h-8 w-8 text-white" />,
       title: "Real-time Tracking",
       description:
         "Track your parcels in real-time with detailed status updates and location information.",
     },
     {
-      icon: <Shield className="h-8 w-8 text-blue-600" />,
+      icon: <Shield className="h-8 w-8 text-white" />,
       title: "Secure & Reliable",
       description:
         "Your parcels are safe with our secure handling and reliable delivery network.",
     },
     {
-      icon: <Clock className="h-8 w-8 text-blue-600" />,
+      icon: <Clock className="h-8 w-8 text-white" />,
       title: "Fast Delivery",
       description:
         "Express delivery options available for urgent parcels with same-day delivery.",
@@ -55,14 +55,20 @@ export default function HomePage() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-blue-600 to-blue-800 text-white">
+      <section
+        className="text-white"
+        style={{
+          background:
+            "linear-gradient(135deg, #030637 0%, #3C0753 25%, #720455 75%, #910A67 100%)",
+        }}
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
           <div className="text-center">
             <h1 className="text-4xl md:text-6xl font-bold mb-6">
               Fast, Secure & Reliable
-              <span className="block text-blue-200">Parcel Delivery</span>
+              <span className="block text-gray-200">Parcel Delivery</span>
             </h1>
-            <p className="text-xl md:text-2xl mb-8 text-blue-100 max-w-3xl mx-auto">
+            <p className="text-xl md:text-2xl mb-8 text-gray-100 max-w-3xl mx-auto">
               Send and track your parcels with confidence. Our comprehensive
               delivery platform ensures your packages reach their destination
               safely and on time.
@@ -70,14 +76,35 @@ export default function HomePage() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 href="/register"
-                className="bg-white text-blue-600 hover:bg-blue-50 px-8 py-4 rounded-lg text-lg font-semibold transition-colors inline-flex items-center justify-center"
+                className="px-8 py-4 rounded-lg text-lg font-semibold transition-all duration-200 inline-flex items-center justify-center text-white"
+                style={{
+                  background: "rgba(255, 255, 255, 0.1)",
+                  border: "1px solid rgba(255, 255, 255, 0.2)",
+                  backdropFilter: "blur(10px)",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = "rgba(255, 255, 255, 0.2)";
+                  e.currentTarget.style.transform = "translateY(-2px)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = "rgba(255, 255, 255, 0.1)";
+                  e.currentTarget.style.transform = "";
+                }}
               >
                 <Package className="mr-2 h-5 w-5" />
                 Book a Delivery
               </Link>
               <Link
                 href="/track"
-                className="border-2 border-white text-white hover:bg-white hover:text-blue-600 px-8 py-4 rounded-lg text-lg font-semibold transition-colors inline-flex items-center justify-center"
+                className="border-2 border-white text-white px-8 py-4 rounded-lg text-lg font-semibold transition-all duration-200 inline-flex items-center justify-center"
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = "rgba(255, 255, 255, 0.1)";
+                  e.currentTarget.style.transform = "translateY(-2px)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = "";
+                  e.currentTarget.style.transform = "";
+                }}
               >
                 <Search className="mr-2 h-5 w-5" />
                 Track Parcel
@@ -101,7 +128,23 @@ export default function HomePage() {
           <div className="max-w-md mx-auto">
             <Link
               href="/track"
-              className="block w-full bg-blue-600 hover:bg-blue-700 text-white text-center py-4 px-6 rounded-lg text-lg font-semibold transition-colors"
+              className="block w-full text-white text-center py-4 px-6 rounded-lg text-lg font-semibold transition-all duration-200"
+              style={{
+                background: "linear-gradient(135deg, #720455 0%, #910A67 100%)",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background =
+                  "linear-gradient(135deg, #3C0753 0%, #720455 100%)";
+                e.currentTarget.style.transform = "translateY(-2px)";
+                e.currentTarget.style.boxShadow =
+                  "0 4px 8px rgba(114, 4, 85, 0.3)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background =
+                  "linear-gradient(135deg, #720455 0%, #910A67 100%)";
+                e.currentTarget.style.transform = "";
+                e.currentTarget.style.boxShadow = "";
+              }}
             >
               Go to Tracking Page
             </Link>
@@ -125,13 +168,17 @@ export default function HomePage() {
             {features.map((feature, index) => (
               <div
                 key={index}
-                className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow"
+                className="p-6 rounded-lg shadow-sm hover:shadow-md transition-all duration-200"
+                style={{
+                  background:
+                    "linear-gradient(135deg, #720455 0%, #910A67 100%)",
+                }}
               >
                 <div className="mb-4">{feature.icon}</div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                <h3 className="text-xl font-semibold text-white mb-2">
                   {feature.title}
                 </h3>
-                <p className="text-gray-600">{feature.description}</p>
+                <p className="text-gray-200">{feature.description}</p>
               </div>
             ))}
           </div>
@@ -139,14 +186,19 @@ export default function HomePage() {
       </section>
 
       {/* Stats Section */}
-      <section className="py-16 bg-blue-600 text-white">
+      <section
+        className="py-16 text-white"
+        style={{
+          background: "linear-gradient(135deg, #3C0753 0%, #720455 100%)",
+        }}
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 text-center">
             {stats.map((stat, index) => (
               <div key={index} className="flex flex-col items-center">
-                <div className="mb-2 text-blue-200">{stat.icon}</div>
+                <div className="mb-2 text-gray-200">{stat.icon}</div>
                 <div className="text-3xl font-bold mb-1">{stat.value}</div>
-                <div className="text-blue-200">{stat.label}</div>
+                <div className="text-gray-200">{stat.label}</div>
               </div>
             ))}
           </div>
@@ -166,13 +218,44 @@ export default function HomePage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/register"
-              className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-colors"
+              className="text-white px-8 py-4 rounded-lg text-lg font-semibold transition-all duration-200"
+              style={{
+                background: "linear-gradient(135deg, #720455 0%, #910A67 100%)",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background =
+                  "linear-gradient(135deg, #3C0753 0%, #720455 100%)";
+                e.currentTarget.style.transform = "translateY(-2px)";
+                e.currentTarget.style.boxShadow =
+                  "0 4px 8px rgba(114, 4, 85, 0.3)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background =
+                  "linear-gradient(135deg, #720455 0%, #910A67 100%)";
+                e.currentTarget.style.transform = "";
+                e.currentTarget.style.boxShadow = "";
+              }}
             >
               Create Account
             </Link>
             <Link
               href="/track"
-              className="border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white px-8 py-4 rounded-lg text-lg font-semibold transition-colors"
+              className="border-2 px-8 py-4 rounded-lg text-lg font-semibold transition-all duration-200"
+              style={{
+                borderColor: "#720455",
+                color: "#720455",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background =
+                  "linear-gradient(135deg, #720455 0%, #910A67 100%)";
+                e.currentTarget.style.color = "white";
+                e.currentTarget.style.transform = "translateY(-2px)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "";
+                e.currentTarget.style.color = "#720455";
+                e.currentTarget.style.transform = "";
+              }}
             >
               Track Existing Parcel
             </Link>

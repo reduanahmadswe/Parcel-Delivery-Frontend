@@ -3,16 +3,27 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
-  
+
   /* Custom Color Palette */
   --color-primary-darkest: #030637;
-  --color-primary-dark: #3C0753;
+  --color-primary-dark: #3c0753;
   --color-primary-medium: #720455;
-  --color-primary-light: #910A67;
-  
+  --color-primary-light: #910a67;
+
   /* Gradients */
-  --gradient-primary: linear-gradient(135deg, #030637 0%, #3C0753 25%, #720455 75%, #910A67 100%);
-  --gradient-primary-light: linear-gradient(135deg, #3C0753 0%, #720455 50%, #910A67 100%);
+  --gradient-primary: linear-gradient(
+    135deg,
+    #030637 0%,
+    #3c0753 25%,
+    #720455 75%,
+    #910a67 100%
+  );
+  --gradient-primary-light: linear-gradient(
+    135deg,
+    #3c0753 0%,
+    #720455 50%,
+    #910a67 100%
+  );
 }
 
 @theme inline {
