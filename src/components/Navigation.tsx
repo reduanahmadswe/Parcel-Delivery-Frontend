@@ -59,6 +59,30 @@ export default function Navigation() {
 
             {user ? (
               <div className="flex items-center space-x-4">
+                {user.role === 'admin' && (
+                  <Link
+                    href="/admin"
+                    className="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors"
+                  >
+                    Admin Dashboard
+                  </Link>
+                )}
+                {user.role === 'sender' && (
+                  <Link
+                    href="/sender"
+                    className="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors"
+                  >
+                    Sender Dashboard
+                  </Link>
+                )}
+                {user.role === 'receiver' && (
+                  <Link
+                    href="/receiver"
+                    className="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors"
+                  >
+                    Receiver Dashboard
+                  </Link>
+                )}
                 <div className="flex items-center space-x-2 text-sm text-gray-700">
                   <User className="h-4 w-4" />
                   <span>{user.name}</span>
