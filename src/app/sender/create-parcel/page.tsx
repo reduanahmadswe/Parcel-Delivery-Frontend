@@ -8,14 +8,6 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
-interface ApiError {
-  response?: {
-    data?: {
-      message?: string;
-    };
-  };
-}
-
 export default function CreateParcelPage() {
   const router = useRouter();
 
@@ -204,38 +196,103 @@ export default function CreateParcelPage() {
     setLoading(true);
 
     try {
-      // Convert string values to numbers
+      // Convert string values to numbers and format according to backend API
       const payload = {
-        ...formData,
+        receiverInfo: {
+          name: formData.receiverInfo.name,
+          email: formData.receiverInfo.email,
+          phone: formData.receiverInfo.phone,
+          address: {
+            street: formData.receiverInfo.address.street,
+            city: formData.receiverInfo.address.city,
+            state: formData.receiverInfo.address.state,
+            zipCode: formData.receiverInfo.address.zipCode,
+            country: formData.receiverInfo.address.country || "Bangladesh",
+          },
+        },
         parcelDetails: {
-          ...formData.parcelDetails,
+          type: formData.parcelDetails.type,
           weight: parseFloat(formData.parcelDetails.weight),
           dimensions: {
             length: parseFloat(formData.parcelDetails.dimensions.length),
             width: parseFloat(formData.parcelDetails.dimensions.width),
             height: parseFloat(formData.parcelDetails.dimensions.height),
           },
+          description: formData.parcelDetails.description,
           value: parseFloat(formData.parcelDetails.value) || 0,
         },
         deliveryInfo: {
-          ...formData.deliveryInfo,
           preferredDeliveryDate: formData.deliveryInfo.preferredDeliveryDate
             ? new Date(
                 formData.deliveryInfo.preferredDeliveryDate
               ).toISOString()
-            : new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // Default to tomorrow
+            : new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString(), // 48 hours from now
+          deliveryInstructions:
+            formData.deliveryInfo.deliveryInstructions || "",
+          isUrgent: formData.deliveryInfo.isUrgent || false,
         },
       };
+
+      console.log("Sending payload to backend:", payload);
 
       const response = await api.post("/parcels", payload);
       const parcel = response.data.data;
 
       toast.success("Parcel created successfully!");
       router.push(`/track?id=${parcel.trackingId}`);
-    } catch (error) {
-      toast.error(
-        (error as ApiError).response?.data?.message || "Failed to create parcel"
-      );
+    } catch (error: unknown) {
+      console.error("Full error object:", error);
+
+      const apiError = error as {
+        response?: {
+          data?: {
+            message?: string;
+            details?: string;
+            errors?: Array<{ field: string; message: string }>;
+            data?: {
+              errorSources?: Array<{ path: string; message: string }>;
+              stack?: string;
+            };
+            statusCode?: number;
+            success?: boolean;
+          };
+          status?: number;
+        };
+      };
+
+      let errorMessage = "Failed to create parcel";
+
+      if (apiError.response?.data) {
+        console.log("Backend error response:", apiError.response.data);
+        console.log(
+          "Backend error data details:",
+          JSON.stringify(apiError.response.data, null, 2)
+        );
+
+        if (apiError.response.data.message) {
+          errorMessage = apiError.response.data.message;
+        } else if (apiError.response.data.errors) {
+          errorMessage = apiError.response.data.errors
+            .map((err) => `${err.field}: ${err.message}`)
+            .join(", ");
+        } else if (apiError.response.data.details) {
+          errorMessage = apiError.response.data.details;
+        } else if (apiError.response.data.data?.errorSources) {
+          // Handle backend validation errors
+          const validationErrors = apiError.response.data.data.errorSources;
+          errorMessage = validationErrors
+            .map(
+              (err: { path: string; message: string }) =>
+                `${err.path}: ${err.message}`
+            )
+            .join(", ");
+        } else if (apiError.response.data.data) {
+          console.log("Validation errors:", apiError.response.data.data);
+          errorMessage = "Validation failed. Check console for details.";
+        }
+      }
+
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -582,7 +639,11 @@ export default function CreateParcelPage() {
                     name="deliveryInfo.preferredDeliveryDate"
                     value={formData.deliveryInfo.preferredDeliveryDate}
                     onChange={handleInputChange}
-                    min={new Date().toISOString().split("T")[0]}
+                    min={
+                      new Date(Date.now() + 24 * 60 * 60 * 1000)
+                        .toISOString()
+                        .split("T")[0]
+                    }
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>

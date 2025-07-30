@@ -11,6 +11,7 @@ import {
   Search,
   XCircle,
 } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 
 interface ApiError {
@@ -204,6 +205,17 @@ export default function TrackPage() {
                     </div>
                   </div>
                 </div>
+              </div>
+
+              {/* Status History Link */}
+              <div className="mt-6 text-center">
+                <Link
+                  href={`/status-history?id=${parcel._id}`}
+                  className="inline-flex items-center px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
+                >
+                  <Clock className="h-4 w-4 mr-2" />
+                  View Detailed Status History
+                </Link>
               </div>
             </div>
 

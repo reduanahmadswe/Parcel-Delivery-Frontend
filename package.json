@@ -1,13 +1,28 @@
 {
   "name": "parcel-delivery-frontend",
-  "version": "0.1.0",
+  "version": "1.0.0",
+  "description": "A modern, responsive web application for a comprehensive parcel delivery system built with Next.js 15, TypeScript, and Tailwind CSS",
+  "main": "next.config.js",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "type-check": "tsc --noEmit"
   },
+  "keywords": [
+    "parcel-delivery",
+    "nextjs",
+    "typescript",
+    "tailwind-css",
+    "react",
+    "tracking",
+    "logistics",
+    "frontend"
+  ],
+  "author": "Reduan Ahmad <your-email@example.com>",
+  "license": "MIT",
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",
     "@types/js-cookie": "^3.0.6",

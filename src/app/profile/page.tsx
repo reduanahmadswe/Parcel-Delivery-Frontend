@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
-import api from '@/lib/api';
-import { User, MapPin, Phone, Mail, Save, Eye, EyeOff } from 'lucide-react';
-import { toast } from 'react-hot-toast';
+import { useAuth } from "@/contexts/AuthContext";
+import api from "@/lib/api";
+import { Eye, EyeOff, Mail, MapPin, Phone, Save, User } from "lucide-react";
+import { useEffect, useState } from "react";
+import { toast } from "react-hot-toast";
 
 interface UserProfile {
   name: string;
@@ -38,9 +38,9 @@ export default function ProfilePage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [formData, setFormData] = useState<UserProfile | null>(null);
   const [passwordData, setPasswordData] = useState<PasswordUpdateData>({
-    currentPassword: '',
-    newPassword: '',
-    confirmPassword: ''
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
   });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
@@ -51,13 +51,13 @@ export default function ProfilePage() {
   const fetchProfile = async () => {
     try {
       setIsLoading(true);
-      const response = await api.get('/users/profile');
+      const response = await api.get("/users/profile");
       const profileData = response.data.data;
       setProfile(profileData);
       setFormData(profileData);
     } catch (error) {
-      console.error('Error fetching profile:', error);
-      toast.error('Failed to load profile');
+      console.error("Error fetching profile:", error);
+      toast.error("Failed to load profile");
     } finally {
       setIsLoading(false);
     }
@@ -67,35 +67,37 @@ export default function ProfilePage() {
     const { name, value } = e.target;
     if (!formData) return;
 
-    if (name.includes('.')) {
-      const [section, field] = name.split('.');
-      setFormData(prev => ({
-        ...prev!,
-        [section]: {
-          ...prev![section as keyof UserProfile],
-          [field]: value
-        }
-      }));
+    if (name.includes(".")) {
+      const [section, field] = name.split(".");
+      if (section === "address") {
+        setFormData((prev) => ({
+          ...prev!,
+          address: {
+            ...prev!.address,
+            [field]: value,
+          },
+        }));
+      }
     } else {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev!,
-        [name]: value
+        [name]: value,
       }));
     }
 
     // Clear error when user starts typing
     if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
+      setErrors((prev) => ({ ...prev, [name]: "" }));
     }
   };
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setPasswordData(prev => ({ ...prev, [name]: value }));
+    setPasswordData((prev) => ({ ...prev, [name]: value }));
 
     // Clear error when user starts typing
     if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
+      setErrors((prev) => ({ ...prev, [name]: "" }));
     }
   };
 
@@ -103,27 +105,27 @@ export default function ProfilePage() {
     const newErrors: { [key: string]: string } = {};
 
     if (!formData?.name?.trim()) {
-      newErrors.name = 'Name is required';
+      newErrors.name = "Name is required";
     }
 
     if (!formData?.phone?.trim()) {
-      newErrors.phone = 'Phone is required';
+      newErrors.phone = "Phone is required";
     }
 
     if (!formData?.address?.street?.trim()) {
-      newErrors['address.street'] = 'Street address is required';
+      newErrors["address.street"] = "Street address is required";
     }
 
     if (!formData?.address?.city?.trim()) {
-      newErrors['address.city'] = 'City is required';
+      newErrors["address.city"] = "City is required";
     }
 
     if (!formData?.address?.state?.trim()) {
-      newErrors['address.state'] = 'State is required';
+      newErrors["address.state"] = "State is required";
     }
 
     if (!formData?.address?.zipCode?.trim()) {
-      newErrors['address.zipCode'] = 'ZIP code is required';
+      newErrors["address.zipCode"] = "ZIP code is required";
     }
 
     setErrors(newErrors);
@@ -134,19 +136,19 @@ export default function ProfilePage() {
     const newErrors: { [key: string]: string } = {};
 
     if (!passwordData.currentPassword) {
-      newErrors.currentPassword = 'Current password is required';
+      newErrors.currentPassword = "Current password is required";
     }
 
     if (!passwordData.newPassword) {
-      newErrors.newPassword = 'New password is required';
+      newErrors.newPassword = "New password is required";
     } else if (passwordData.newPassword.length < 6) {
-      newErrors.newPassword = 'Password must be at least 6 characters';
+      newErrors.newPassword = "Password must be at least 6 characters";
     }
 
     if (!passwordData.confirmPassword) {
-      newErrors.confirmPassword = 'Please confirm your new password';
+      newErrors.confirmPassword = "Please confirm your new password";
     } else if (passwordData.newPassword !== passwordData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
+      newErrors.confirmPassword = "Passwords do not match";
     }
 
     setErrors(newErrors);
@@ -159,14 +161,16 @@ export default function ProfilePage() {
 
     try {
       setIsUpdating(true);
-      const response = await api.patch('/users/profile', formData);
+      const response = await api.patch("/users/profile", formData);
       setProfile(response.data.data);
       setIsEditing(false);
-      toast.success('Profile updated successfully');
+      toast.success("Profile updated successfully");
     } catch (error: unknown) {
-      console.error('Error updating profile:', error);
+      console.error("Error updating profile:", error);
       const apiError = error as { response?: { data?: { message?: string } } };
-      toast.error(apiError.response?.data?.message || 'Failed to update profile');
+      toast.error(
+        apiError.response?.data?.message || "Failed to update profile"
+      );
     } finally {
       setIsUpdating(false);
     }
@@ -178,17 +182,23 @@ export default function ProfilePage() {
 
     try {
       setIsUpdating(true);
-      await api.patch('/users/change-password', {
+      await api.patch("/users/change-password", {
         currentPassword: passwordData.currentPassword,
-        newPassword: passwordData.newPassword
+        newPassword: passwordData.newPassword,
       });
-      setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
+      setPasswordData({
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      });
       setIsChangingPassword(false);
-      toast.success('Password changed successfully');
+      toast.success("Password changed successfully");
     } catch (error: unknown) {
-      console.error('Error changing password:', error);
+      console.error("Error changing password:", error);
       const apiError = error as { response?: { data?: { message?: string } } };
-      toast.error(apiError.response?.data?.message || 'Failed to change password');
+      toast.error(
+        apiError.response?.data?.message || "Failed to change password"
+      );
     } finally {
       setIsUpdating(false);
     }
@@ -212,8 +222,12 @@ export default function ProfilePage() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Profile Not Found</h2>
-          <p className="text-gray-600">Unable to load your profile information.</p>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+            Profile Not Found
+          </h2>
+          <p className="text-gray-600">
+            Unable to load your profile information.
+          </p>
         </div>
       </div>
     );
@@ -225,7 +239,9 @@ export default function ProfilePage() {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Profile Settings</h1>
-          <p className="mt-2 text-gray-600">Manage your account information and preferences</p>
+          <p className="mt-2 text-gray-600">
+            Manage your account information and preferences
+          </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -236,13 +252,16 @@ export default function ProfilePage() {
                 <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <User className="h-10 w-10 text-blue-600" />
                 </div>
-                <h2 className="text-xl font-bold text-gray-900">{profile.name}</h2>
+                <h2 className="text-xl font-bold text-gray-900">
+                  {profile.name}
+                </h2>
                 <p className="text-gray-600">{profile.email}</p>
                 <span className="inline-block mt-2 px-3 py-1 bg-blue-100 text-blue-800 text-sm font-medium rounded-full capitalize">
                   {profile.role}
                 </span>
                 <p className="text-sm text-gray-500 mt-4">
-                  Member since {new Date(profile.createdAt).toLocaleDateString()}
+                  Member since{" "}
+                  {new Date(profile.createdAt).toLocaleDateString()}
                 </p>
               </div>
             </div>
@@ -253,7 +272,9 @@ export default function ProfilePage() {
             {/* Personal Information */}
             <div className="bg-white rounded-lg shadow">
               <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
-                <h3 className="text-lg font-semibold text-gray-900">Personal Information</h3>
+                <h3 className="text-lg font-semibold text-gray-900">
+                  Personal Information
+                </h3>
                 {!isEditing && (
                   <button
                     onClick={() => setIsEditing(true)}
@@ -275,13 +296,17 @@ export default function ProfilePage() {
                         <input
                           type="text"
                           name="name"
-                          value={formData?.name || ''}
+                          value={formData?.name || ""}
                           onChange={handleInputChange}
                           className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                            errors.name ? 'border-red-500' : 'border-gray-300'
+                            errors.name ? "border-red-500" : "border-gray-300"
                           }`}
                         />
-                        {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
+                        {errors.name && (
+                          <p className="text-red-500 text-sm mt-1">
+                            {errors.name}
+                          </p>
+                        )}
                       </div>
 
                       <div>
@@ -291,13 +316,17 @@ export default function ProfilePage() {
                         <input
                           type="text"
                           name="phone"
-                          value={formData?.phone || ''}
+                          value={formData?.phone || ""}
                           onChange={handleInputChange}
                           className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                            errors.phone ? 'border-red-500' : 'border-gray-300'
+                            errors.phone ? "border-red-500" : "border-gray-300"
                           }`}
                         />
-                        {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone}</p>}
+                        {errors.phone && (
+                          <p className="text-red-500 text-sm mt-1">
+                            {errors.phone}
+                          </p>
+                        )}
                       </div>
                     </div>
 
@@ -308,13 +337,19 @@ export default function ProfilePage() {
                       <input
                         type="text"
                         name="address.street"
-                        value={formData?.address?.street || ''}
+                        value={formData?.address?.street || ""}
                         onChange={handleInputChange}
                         className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                          errors['address.street'] ? 'border-red-500' : 'border-gray-300'
+                          errors["address.street"]
+                            ? "border-red-500"
+                            : "border-gray-300"
                         }`}
                       />
-                      {errors['address.street'] && <p className="text-red-500 text-sm mt-1">{errors['address.street']}</p>}
+                      {errors["address.street"] && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors["address.street"]}
+                        </p>
+                      )}
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -325,13 +360,19 @@ export default function ProfilePage() {
                         <input
                           type="text"
                           name="address.city"
-                          value={formData?.address?.city || ''}
+                          value={formData?.address?.city || ""}
                           onChange={handleInputChange}
                           className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                            errors['address.city'] ? 'border-red-500' : 'border-gray-300'
+                            errors["address.city"]
+                              ? "border-red-500"
+                              : "border-gray-300"
                           }`}
                         />
-                        {errors['address.city'] && <p className="text-red-500 text-sm mt-1">{errors['address.city']}</p>}
+                        {errors["address.city"] && (
+                          <p className="text-red-500 text-sm mt-1">
+                            {errors["address.city"]}
+                          </p>
+                        )}
                       </div>
 
                       <div>
@@ -341,13 +382,19 @@ export default function ProfilePage() {
                         <input
                           type="text"
                           name="address.state"
-                          value={formData?.address?.state || ''}
+                          value={formData?.address?.state || ""}
                           onChange={handleInputChange}
                           className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                            errors['address.state'] ? 'border-red-500' : 'border-gray-300'
+                            errors["address.state"]
+                              ? "border-red-500"
+                              : "border-gray-300"
                           }`}
                         />
-                        {errors['address.state'] && <p className="text-red-500 text-sm mt-1">{errors['address.state']}</p>}
+                        {errors["address.state"] && (
+                          <p className="text-red-500 text-sm mt-1">
+                            {errors["address.state"]}
+                          </p>
+                        )}
                       </div>
 
                       <div>
@@ -357,13 +404,19 @@ export default function ProfilePage() {
                         <input
                           type="text"
                           name="address.zipCode"
-                          value={formData?.address?.zipCode || ''}
+                          value={formData?.address?.zipCode || ""}
                           onChange={handleInputChange}
                           className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                            errors['address.zipCode'] ? 'border-red-500' : 'border-gray-300'
+                            errors["address.zipCode"]
+                              ? "border-red-500"
+                              : "border-gray-300"
                           }`}
                         />
-                        {errors['address.zipCode'] && <p className="text-red-500 text-sm mt-1">{errors['address.zipCode']}</p>}
+                        {errors["address.zipCode"] && (
+                          <p className="text-red-500 text-sm mt-1">
+                            {errors["address.zipCode"]}
+                          </p>
+                        )}
                       </div>
                     </div>
 
@@ -374,7 +427,7 @@ export default function ProfilePage() {
                         className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50 flex items-center"
                       >
                         <Save className="h-4 w-4 mr-2" />
-                        {isUpdating ? 'Saving...' : 'Save Changes'}
+                        {isUpdating ? "Saving..." : "Save Changes"}
                       </button>
                       <button
                         type="button"
@@ -416,8 +469,10 @@ export default function ProfilePage() {
                       <div>
                         <p className="text-sm text-gray-600">Address</p>
                         <p className="font-medium">
-                          {profile.address.street}<br />
-                          {profile.address.city}, {profile.address.state} {profile.address.zipCode}
+                          {profile.address.street}
+                          <br />
+                          {profile.address.city}, {profile.address.state}{" "}
+                          {profile.address.zipCode}
                         </p>
                       </div>
                     </div>
@@ -429,7 +484,9 @@ export default function ProfilePage() {
             {/* Change Password */}
             <div className="bg-white rounded-lg shadow">
               <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
-                <h3 className="text-lg font-semibold text-gray-900">Security</h3>
+                <h3 className="text-lg font-semibold text-gray-900">
+                  Security
+                </h3>
                 {!isChangingPassword && (
                   <button
                     onClick={() => setIsChangingPassword(true)}
@@ -449,23 +506,35 @@ export default function ProfilePage() {
                       </label>
                       <div className="relative">
                         <input
-                          type={showCurrentPassword ? 'text' : 'password'}
+                          type={showCurrentPassword ? "text" : "password"}
                           name="currentPassword"
                           value={passwordData.currentPassword}
                           onChange={handlePasswordChange}
                           className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-10 ${
-                            errors.currentPassword ? 'border-red-500' : 'border-gray-300'
+                            errors.currentPassword
+                              ? "border-red-500"
+                              : "border-gray-300"
                           }`}
                         />
                         <button
                           type="button"
-                          onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                          onClick={() =>
+                            setShowCurrentPassword(!showCurrentPassword)
+                          }
                           className="absolute inset-y-0 right-0 pr-3 flex items-center"
                         >
-                          {showCurrentPassword ? <EyeOff className="h-4 w-4 text-gray-400" /> : <Eye className="h-4 w-4 text-gray-400" />}
+                          {showCurrentPassword ? (
+                            <EyeOff className="h-4 w-4 text-gray-400" />
+                          ) : (
+                            <Eye className="h-4 w-4 text-gray-400" />
+                          )}
                         </button>
                       </div>
-                      {errors.currentPassword && <p className="text-red-500 text-sm mt-1">{errors.currentPassword}</p>}
+                      {errors.currentPassword && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.currentPassword}
+                        </p>
+                      )}
                     </div>
 
                     <div>
@@ -474,12 +543,14 @@ export default function ProfilePage() {
                       </label>
                       <div className="relative">
                         <input
-                          type={showNewPassword ? 'text' : 'password'}
+                          type={showNewPassword ? "text" : "password"}
                           name="newPassword"
                           value={passwordData.newPassword}
                           onChange={handlePasswordChange}
                           className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-10 ${
-                            errors.newPassword ? 'border-red-500' : 'border-gray-300'
+                            errors.newPassword
+                              ? "border-red-500"
+                              : "border-gray-300"
                           }`}
                         />
                         <button
@@ -487,10 +558,18 @@ export default function ProfilePage() {
                           onClick={() => setShowNewPassword(!showNewPassword)}
                           className="absolute inset-y-0 right-0 pr-3 flex items-center"
                         >
-                          {showNewPassword ? <EyeOff className="h-4 w-4 text-gray-400" /> : <Eye className="h-4 w-4 text-gray-400" />}
+                          {showNewPassword ? (
+                            <EyeOff className="h-4 w-4 text-gray-400" />
+                          ) : (
+                            <Eye className="h-4 w-4 text-gray-400" />
+                          )}
                         </button>
                       </div>
-                      {errors.newPassword && <p className="text-red-500 text-sm mt-1">{errors.newPassword}</p>}
+                      {errors.newPassword && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.newPassword}
+                        </p>
+                      )}
                     </div>
 
                     <div>
@@ -499,23 +578,35 @@ export default function ProfilePage() {
                       </label>
                       <div className="relative">
                         <input
-                          type={showConfirmPassword ? 'text' : 'password'}
+                          type={showConfirmPassword ? "text" : "password"}
                           name="confirmPassword"
                           value={passwordData.confirmPassword}
                           onChange={handlePasswordChange}
                           className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-10 ${
-                            errors.confirmPassword ? 'border-red-500' : 'border-gray-300'
+                            errors.confirmPassword
+                              ? "border-red-500"
+                              : "border-gray-300"
                           }`}
                         />
                         <button
                           type="button"
-                          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                          onClick={() =>
+                            setShowConfirmPassword(!showConfirmPassword)
+                          }
                           className="absolute inset-y-0 right-0 pr-3 flex items-center"
                         >
-                          {showConfirmPassword ? <EyeOff className="h-4 w-4 text-gray-400" /> : <Eye className="h-4 w-4 text-gray-400" />}
+                          {showConfirmPassword ? (
+                            <EyeOff className="h-4 w-4 text-gray-400" />
+                          ) : (
+                            <Eye className="h-4 w-4 text-gray-400" />
+                          )}
                         </button>
                       </div>
-                      {errors.confirmPassword && <p className="text-red-500 text-sm mt-1">{errors.confirmPassword}</p>}
+                      {errors.confirmPassword && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.confirmPassword}
+                        </p>
+                      )}
                     </div>
 
                     <div className="flex space-x-4">
@@ -524,13 +615,17 @@ export default function ProfilePage() {
                         disabled={isUpdating}
                         className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50"
                       >
-                        {isUpdating ? 'Updating...' : 'Update Password'}
+                        {isUpdating ? "Updating..." : "Update Password"}
                       </button>
                       <button
                         type="button"
                         onClick={() => {
                           setIsChangingPassword(false);
-                          setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
+                          setPasswordData({
+                            currentPassword: "",
+                            newPassword: "",
+                            confirmPassword: "",
+                          });
                           setErrors({});
                         }}
                         className="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-400"
@@ -542,8 +637,8 @@ export default function ProfilePage() {
                 ) : (
                   <div>
                     <p className="text-gray-600">
-                      Keep your account secure by using a strong password. 
-                      Last changed: {new Date().toLocaleDateString()}
+                      Keep your account secure by using a strong password. Last
+                      changed: {new Date().toLocaleDateString()}
                     </p>
                   </div>
                 )}

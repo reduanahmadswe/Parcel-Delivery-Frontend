@@ -15,6 +15,7 @@ A modern, responsive web application for a comprehensive parcel delivery system 
 ## 🚀 Features
 
 ### 🔐 Authentication & Authorization
+
 - **Secure Login/Register**: Form validation with comprehensive error handling
 - **JWT Token Management**: Automatic token refresh and secure storage
 - **Role-Based Access**: Three distinct user roles with specific permissions
@@ -22,6 +23,7 @@ A modern, responsive web application for a comprehensive parcel delivery system 
 - **Session Management**: Automatic logout on token expiration
 
 ### 📦 Parcel Management
+
 - **Real-Time Tracking**: Track parcels using unique tracking IDs
 - **Status Timeline**: Visual progress tracking with status indicators
 - **Comprehensive Forms**: Advanced parcel creation with fee calculation
@@ -29,6 +31,7 @@ A modern, responsive web application for a comprehensive parcel delivery system 
 - **Bulk Operations**: Admin capabilities for managing multiple parcels
 
 ### 👤 User Management
+
 - **Profile Management**: Complete user profile editing capabilities
 - **Address Management**: Full address validation and management
 - **Password Changes**: Secure password update functionality
@@ -66,18 +69,18 @@ src/
 
 ## 🛠 Technology Stack
 
-| Category | Technology | Purpose |
-|----------|------------|---------|
-| **Frontend Framework** | Next.js 15 | React framework with App Router |
-| **Language** | TypeScript | Type-safe development |
-| **Styling** | Tailwind CSS | Utility-first CSS framework |
-| **HTTP Client** | Axios | API communication with interceptors |
-| **Form Management** | React Hook Form | Advanced form handling |
-| **Validation** | Zod | Runtime schema validation |
-| **Authentication** | JWT + Cookies | Secure token-based authentication |
-| **Icons** | Lucide React | Modern icon library |
-| **Notifications** | React Hot Toast | User feedback and notifications |
-| **State Management** | React Context | Global authentication state |
+| Category               | Technology      | Purpose                             |
+| ---------------------- | --------------- | ----------------------------------- |
+| **Frontend Framework** | Next.js 15      | React framework with App Router     |
+| **Language**           | TypeScript      | Type-safe development               |
+| **Styling**            | Tailwind CSS    | Utility-first CSS framework         |
+| **HTTP Client**        | Axios           | API communication with interceptors |
+| **Form Management**    | React Hook Form | Advanced form handling              |
+| **Validation**         | Zod             | Runtime schema validation           |
+| **Authentication**     | JWT + Cookies   | Secure token-based authentication   |
+| **Icons**              | Lucide React    | Modern icon library                 |
+| **Notifications**      | React Hot Toast | User feedback and notifications     |
+| **State Management**   | React Context   | Global authentication state         |
 
 ## 🚦 Getting Started
 
@@ -90,12 +93,14 @@ src/
 ### 🔧 Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/reduanahmadswe/Parcel-Delivery-Frontend.git
    cd Parcel-Delivery-Frontend
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    # or
@@ -103,14 +108,16 @@ src/
    ```
 
 3. **Environment setup**
-   
+
    Create a `.env.local` file in the root directory:
+
    ```env
    NEXT_PUBLIC_API_URL=http://localhost:5000/api
    NEXT_PUBLIC_APP_URL=http://localhost:3000
    ```
 
 4. **Start the development server**
+
    ```bash
    npm run dev
    # or
@@ -118,7 +125,7 @@ src/
    ```
 
 5. **Open your browser**
-   
+
    Navigate to [http://localhost:3000](http://localhost:3000)
 
 ### 🏥 Health Check
@@ -128,6 +135,7 @@ Visit the homepage to verify the application is running correctly. The homepage 
 ## 📊 Page Overview
 
 ### 🏠 Public Pages
+
 - **Homepage (`/`)**: Landing page with features and call-to-action
 - **Track Parcel (`/track`)**: Public tracking interface
 - **Login (`/login`)**: User authentication
@@ -136,20 +144,24 @@ Visit the homepage to verify the application is running correctly. The homepage 
 ### 🔒 Protected Pages
 
 #### 👤 User Pages (All Roles)
+
 - **Profile (`/profile`)**: Personal information and settings management
 
 #### 📦 Sender Dashboard (`/sender`)
+
 - **Dashboard Overview**: Statistics and parcel management
 - **Create Parcel (`/sender/create-parcel`)**: New parcel creation form
 - **My Parcels**: View and manage own parcels
 - **Cancel Parcels**: Cancel parcels before dispatch
 
 #### 📨 Receiver Dashboard (`/receiver`)
+
 - **Incoming Parcels**: View parcels addressed to user
 - **Delivery Confirmation**: Confirm parcel delivery
 - **Tracking History**: View complete delivery timeline
 
 #### 👨‍💼 Admin Dashboard (`/admin`)
+
 - **System Overview**: Comprehensive statistics and metrics
 - **User Management**: View and manage all users
 - **Parcel Management**: Full parcel oversight and control
@@ -158,6 +170,7 @@ Visit the homepage to verify the application is running correctly. The homepage 
 ## 🎭 Role-Based Access Control
 
 ### 👤 Sender Permissions
+
 - ✅ Create new parcel delivery requests
 - ✅ View all their created parcels
 - ✅ Cancel parcels (only before dispatch)
@@ -167,6 +180,7 @@ Visit the homepage to verify the application is running correctly. The homepage 
 - ❌ Cannot perform admin functions
 
 ### 📨 Receiver Permissions
+
 - ✅ View parcels addressed to their email
 - ✅ Confirm delivery for parcels
 - ✅ Track parcels using tracking ID
@@ -176,6 +190,7 @@ Visit the homepage to verify the application is running correctly. The homepage 
 - ❌ Cannot access other users' parcels
 
 ### 👨‍💼 Admin Permissions
+
 - ✅ **Full User Management**: View, update, manage all users
 - ✅ **Complete Parcel Oversight**: View and manage all parcels
 - ✅ **Status Management**: Update parcel statuses and workflow
@@ -186,6 +201,7 @@ Visit the homepage to verify the application is running correctly. The homepage 
 ## 🔒 Security Features
 
 ### Authentication Security
+
 - **JWT Dual Tokens**: Access and refresh token system
 - **HTTP-Only Cookies**: Secure token storage
 - **Automatic Refresh**: Seamless token renewal
@@ -193,6 +209,7 @@ Visit the homepage to verify the application is running correctly. The homepage 
 - **Route Protection**: Middleware-based access control
 
 ### Input Security
+
 - **Form Validation**: Comprehensive client-side validation
 - **Type Safety**: TypeScript for compile-time safety
 - **Sanitization**: Input cleaning and validation
@@ -233,6 +250,7 @@ npm run type-check   # Run TypeScript compiler check
 The frontend integrates with the following backend endpoints:
 
 ### Authentication Endpoints
+
 - `POST /auth/login` - User login
 - `POST /auth/register` - User registration
 - `POST /auth/logout` - User logout
@@ -240,11 +258,13 @@ The frontend integrates with the following backend endpoints:
 - `GET /auth/me` - Get current user
 
 ### User Management
+
 - `GET /users/profile` - Get user profile
 - `PATCH /users/profile` - Update user profile
 - `PATCH /users/change-password` - Change password
 
 ### Parcel Management
+
 - `GET /parcels/track/:trackingId` - Track parcel (public)
 - `POST /parcels` - Create new parcel (sender)
 - `GET /parcels/me` - Get user's parcels
@@ -252,6 +272,7 @@ The frontend integrates with the following backend endpoints:
 - `PUT /parcels/:id/confirm-delivery` - Confirm delivery (receiver)
 
 ### Admin Endpoints
+
 - `GET /admin/stats` - System statistics
 - `GET /admin/parcels` - All parcels
 - `GET /admin/users` - All users
@@ -261,17 +282,20 @@ The frontend integrates with the following backend endpoints:
 ## 🚀 Deployment
 
 ### Vercel (Recommended)
+
 1. Connect your GitHub repository to Vercel
 2. Configure environment variables
 3. Deploy automatically on push to main branch
 
 ### Manual Deployment
+
 ```bash
 npm run build
 npm run start
 ```
 
 ### Environment Variables for Production
+
 ```env
 NEXT_PUBLIC_API_URL=https://your-api-domain.com/api
 NEXT_PUBLIC_APP_URL=https://your-frontend-domain.com
@@ -312,7 +336,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👥 Authors
 
-- **Reduan Ahmad** - *Initial work* - [@reduanahmadswe](https://github.com/reduanahmadswe)
+- **Reduan Ahmad** - _Initial work_ - [@reduanahmadswe](https://github.com/reduanahmadswe)
 
 ## 🙏 Acknowledgments
 
