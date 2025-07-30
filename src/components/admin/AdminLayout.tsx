@@ -39,11 +39,11 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
   const handleLogout = async () => {
     await logout();
-    router.push("/admin/login");
+    router.push("/login");
   };
 
   if (!user || user.role !== "admin") {
-    router.push("/admin/login");
+    router.push("/login");
     return null;
   }
 
