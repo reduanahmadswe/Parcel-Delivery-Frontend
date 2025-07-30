@@ -93,6 +93,12 @@ export default function Navigation() {
                     Receiver Dashboard
                   </Link>
                 )}
+                <Link
+                  href="/profile"
+                  className="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors"
+                >
+                  Profile
+                </Link>
                 <div className="flex items-center space-x-2 text-sm text-gray-700">
                   <User className="h-4 w-4" />
                   <span>{user.name}</span>
