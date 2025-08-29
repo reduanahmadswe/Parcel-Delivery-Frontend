@@ -1,7 +1,7 @@
 "use client";
 
-import { useAuth } from "@/contexts/AuthenticationContext";
-import api from "@/lib/api";
+
+import api from "@/lib/ApiConfiguration";
 import { Eye, EyeOff, Mail, MapPin, Phone, Save, User } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
@@ -27,7 +27,6 @@ interface PasswordUpdateData {
 }
 
 export default function ProfilePage() {
-  const { user } = useAuth();
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
