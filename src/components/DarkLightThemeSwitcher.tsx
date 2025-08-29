@@ -1,15 +1,34 @@
 "use client";
 
-import { useTheme } from "@/contexts/ThemePreferenceContext";
 import { Moon, Sun } from "lucide-react";
+import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
 
-export default function ThemeToggle() {
-  const { theme, toggleTheme } = useTheme();
+export default function DarkLightThemeSwitcher() {
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  // Avoid hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <div className="p-2 w-9 h-9 rounded-lg bg-card border border-border">
+        <div className="w-5 h-5" />
+      </div>
+    );
+  }
+
+  const toggleTheme = () => {
+    setTheme(theme === "light" ? "dark" : "light");
+  };
 
   return (
     <button
       onClick={toggleTheme}
-      className="relative p-2 rounded-lg bg-surface border border-theme hover:bg-gradient-to-r hover:from-brand-medium hover:to-brand-light hover:text-white transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-brand-medium focus:ring-offset-2"
+      className="relative p-2 rounded-lg bg-card border border-border hover:bg-accent hover:text-accent-foreground transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
       aria-label="Toggle theme"
     >
       <div className="relative w-5 h-5">

@@ -10,91 +10,79 @@ const config: Config = {
     theme: {
         extend: {
             colors: {
+                // Shadcn/UI CSS variables
+                background: "hsl(var(--background))",
+                foreground: "hsl(var(--foreground))",
+                card: {
+                    DEFAULT: "hsl(var(--card))",
+                    foreground: "hsl(var(--card-foreground))",
+                },
+                popover: {
+                    DEFAULT: "hsl(var(--popover))",
+                    foreground: "hsl(var(--popover-foreground))",
+                },
                 primary: {
-                    50: "#f8f9ff",
-                    100: "#f0f3ff",
-                    200: "#e1e8ff",
-                    300: "#c7d2ff",
-                    400: "#a5b4ff",
-                    500: "#7c3aed",
-                    600: "#910A67",
-                    700: "#720455",
-                    800: "#3C0753",
-                    900: "#030637",
-                    950: "#020423",
+                    DEFAULT: "hsl(var(--primary))",
+                    foreground: "hsl(var(--primary-foreground))",
                 },
-                // Custom brand colors using your palette
+                secondary: {
+                    DEFAULT: "hsl(var(--secondary))",
+                    foreground: "hsl(var(--secondary-foreground))",
+                },
+                muted: {
+                    DEFAULT: "hsl(var(--muted))",
+                    foreground: "hsl(var(--muted-foreground))",
+                },
+                accent: {
+                    DEFAULT: "hsl(var(--accent))",
+                    foreground: "hsl(var(--accent-foreground))",
+                },
+                destructive: {
+                    DEFAULT: "hsl(var(--destructive))",
+                    foreground: "hsl(var(--destructive-foreground))",
+                },
+                border: "hsl(var(--border))",
+                input: "hsl(var(--input))",
+                ring: "hsl(var(--ring))",
+                chart: {
+                    "1": "hsl(var(--chart-1))",
+                    "2": "hsl(var(--chart-2))",
+                    "3": "hsl(var(--chart-3))",
+                    "4": "hsl(var(--chart-4))",
+                    "5": "hsl(var(--chart-5))",
+                },
+                sidebar: {
+                    DEFAULT: "hsl(var(--sidebar))",
+                    foreground: "hsl(var(--sidebar-foreground))",
+                    primary: "hsl(var(--sidebar-primary))",
+                    "primary-foreground": "hsl(var(--sidebar-primary-foreground))",
+                    accent: "hsl(var(--sidebar-accent))",
+                    "accent-foreground": "hsl(var(--sidebar-accent-foreground))",
+                    border: "hsl(var(--sidebar-border))",
+                    ring: "hsl(var(--sidebar-ring))",
+                },
+
+                // Legacy colors for backwards compatibility
                 brand: {
-                    darkest: "#030637",
-                    dark: "#3C0753",
-                    medium: "#720455",
-                    light: "#910A67",
+                    darkest: "hsl(var(--brand-darkest))",
+                    dark: "hsl(var(--brand-dark))",
+                    medium: "hsl(var(--brand-medium))",
+                    light: "hsl(var(--brand-light))",
                 },
-                // Semantic colors for light/dark modes
-                background: {
-                    light: "#ffffff",
-                    dark: "#030637",
-                },
-                surface: {
-                    light: "#f8f9ff",
-                    dark: "#3C0753",
-                },
-                text: {
-                    primary: {
-                        light: "#030637",
-                        dark: "#ffffff",
-                    },
-                    secondary: {
-                        light: "#3C0753",
-                        dark: "#e1e8ff",
-                    },
-                    muted: {
-                        light: "#720455",
-                        dark: "#c7d2ff",
-                    },
-                },
-                // Admin Dashboard Colors
-                admin: {
-                    background: {
-                        light: "#f8fafc", // slate-50
-                        dark: "#0f172a",  // slate-900
-                    },
-                    surface: {
-                        light: "#ffffff", // white
-                        dark: "#1e293b",  // slate-800
-                    },
-                    text: {
-                        primary: {
-                            light: "#0f172a", // slate-900
-                            dark: "#f8fafc",  // slate-100
-                        },
-                        secondary: {
-                            light: "#475569", // slate-600
-                            dark: "#cbd5e1",  // slate-300
-                        },
-                    },
-                    accent: "#3b82f6", // blue-500
-                    border: {
-                        light: "#e2e8f0", // slate-200
-                        dark: "#334155",  // slate-700
-                    },
-                },
-                border: {
-                    light: "#e1e8ff",
-                    dark: "#720455",
-                },
+                surface: "hsl(var(--surface))",
+                "text-primary": "hsl(var(--text-primary))",
+                "text-secondary": "hsl(var(--text-secondary))",
+                "text-muted": "hsl(var(--text-muted))",
+            },
+            borderRadius: {
+                lg: "var(--radius)",
+                md: "calc(var(--radius) - 2px)",
+                sm: "calc(var(--radius) - 4px)",
             },
             backgroundImage: {
-                "gradient-brand": "linear-gradient(135deg, #030637 0%, #3C0753 25%, #720455 75%, #910A67 100%)",
-                "gradient-brand-reverse": "linear-gradient(135deg, #910A67 0%, #720455 25%, #3C0753 75%, #030637 100%)",
-                "gradient-brand-light": "linear-gradient(135deg, #f8f9ff 0%, #e1e8ff 50%, #c7d2ff 100%)",
-            },
-            boxShadow: {
-                "brand-sm": "0 1px 2px 0 rgb(3 6 55 / 0.05)",
-                "brand": "0 1px 3px 0 rgb(3 6 55 / 0.1), 0 1px 2px -1px rgb(3 6 55 / 0.1)",
-                "brand-md": "0 4px 6px -1px rgb(3 6 55 / 0.1), 0 2px 4px -2px rgb(3 6 55 / 0.1)",
-                "brand-lg": "0 10px 15px -3px rgb(3 6 55 / 0.1), 0 4px 6px -4px rgb(3 6 55 / 0.1)",
-                "brand-xl": "0 20px 25px -5px rgb(3 6 55 / 0.1), 0 8px 10px -6px rgb(3 6 55 / 0.1)",
+                "gradient-brand": "var(--gradient-brand)",
+                "gradient-brand-reverse": "var(--gradient-brand-reverse)",
+                "gradient-brand-light": "var(--gradient-brand-light)",
             },
         },
     },

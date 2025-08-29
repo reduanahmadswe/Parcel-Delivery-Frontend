@@ -1,86 +1,149 @@
 @import "tailwindcss";
 
 :root {
-  /* Light mode colors */
-  --background: #ffffff;
-  --foreground: #030637;
-  --surface: #f8f9ff;
-  --border: #e1e8ff;
-  --text-primary: #030637;
-  --text-secondary: #3c0753;
-  --text-muted: #720455;
+  --radius: 0.65rem;
+  --background: 0 0% 100%;
+  --foreground: 222.2 84% 4.9%;
+  --card: 0 0% 100%;
+  --card-foreground: 222.2 84% 4.9%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 222.2 84% 4.9%;
+  --primary: 221.2 83.2% 53.3%;
+  --primary-foreground: 210 40% 98%;
+  --secondary: 210 40% 96%;
+  --secondary-foreground: 222.2 84% 4.9%;
+  --muted: 210 40% 96%;
+  --muted-foreground: 215.4 16.3% 46.9%;
+  --accent: 210 40% 96%;
+  --accent-foreground: 222.2 84% 4.9%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 214.3 31.8% 91.4%;
+  --input: 214.3 31.8% 91.4%;
+  --ring: 221.2 83.2% 53.3%;
+  --chart-1: 12 76% 61%;
+  --chart-2: 173 58% 39%;
+  --chart-3: 197 37% 24%;
+  --chart-4: 43 74% 66%;
+  --chart-5: 27 87% 67%;
+  --sidebar: 0 0% 98%;
+  --sidebar-foreground: 222.2 84% 4.9%;
+  --sidebar-primary: 221.2 83.2% 53.3%;
+  --sidebar-primary-foreground: 210 40% 98%;
+  --sidebar-accent: 210 40% 96%;
+  --sidebar-accent-foreground: 222.2 84% 4.9%;
+  --sidebar-border: 214.3 31.8% 91.4%;
+  --sidebar-ring: 221.2 83.2% 53.3%;
 
-  /* Custom Brand Colors */
-  --brand-darkest: #030637;
-  --brand-dark: #3c0753;
-  --brand-medium: #720455;
-  --brand-light: #910a67;
+  /* Legacy variables for backwards compatibility */
+  --surface: 0 0% 100%;
+  --text-primary: 222.2 84% 4.9%;
+  --text-secondary: 222.2 84% 4.9%;
+  --text-muted: 215.4 16.3% 46.9%;
+  --brand-darkest: 222.2 84% 4.9%;
+  --brand-dark: 222.2 84% 4.9%;
+  --brand-medium: 221.2 83.2% 53.3%;
+  --brand-light: 43 74% 66%;
 
-  /* Gradients */
+  /* Gradients using new colors */
   --gradient-brand: linear-gradient(
     135deg,
-    #030637 0%,
-    #3c0753 25%,
-    #720455 75%,
-    #910a67 100%
+    hsl(222.2 84% 4.9%) 0%,
+    hsl(222.2 84% 4.9%) 25%,
+    hsl(221.2 83.2% 53.3%) 75%,
+    hsl(43 74% 66%) 100%
   );
   --gradient-brand-reverse: linear-gradient(
     135deg,
-    #910a67 0%,
-    #720455 25%,
-    #3c0753 75%,
-    #030637 100%
+    hsl(43 74% 66%) 0%,
+    hsl(221.2 83.2% 53.3%) 25%,
+    hsl(222.2 84% 4.9%) 75%,
+    hsl(222.2 84% 4.9%) 100%
   );
   --gradient-brand-light: linear-gradient(
     135deg,
-    #f8f9ff 0%,
-    #e1e8ff 50%,
-    #c7d2ff 100%
+    hsl(0 0% 98%) 0%,
+    hsl(210 40% 96%) 50%,
+    hsl(214.3 31.8% 91.4%) 100%
   );
 }
 
-/* Dark mode */
 .dark {
-  --background: #030637;
-  --foreground: #ffffff;
-  --surface: #3c0753;
-  --border: #720455;
-  --text-primary: #ffffff;
-  --text-secondary: #e1e8ff;
-  --text-muted: #c7d2ff;
+  --background: 222.2 84% 4.9%;
+  --foreground: 210 40% 98%;
+  --card: 222.2 84% 4.9%;
+  --card-foreground: 210 40% 98%;
+  --popover: 222.2 84% 4.9%;
+  --popover-foreground: 210 40% 98%;
+  --primary: 217.2 91.2% 59.8%;
+  --primary-foreground: 222.2 84% 4.9%;
+  --secondary: 217.2 32.6% 17.5%;
+  --secondary-foreground: 210 40% 98%;
+  --muted: 217.2 32.6% 17.5%;
+  --muted-foreground: 215 20.2% 65.1%;
+  --accent: 217.2 32.6% 17.5%;
+  --accent-foreground: 210 40% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 217.2 32.6% 17.5%;
+  --input: 217.2 32.6% 17.5%;
+  --ring: 217.2 91.2% 59.8%;
+  --chart-1: 220 70% 50%;
+  --chart-2: 160 60% 45%;
+  --chart-3: 30 80% 55%;
+  --chart-4: 280 65% 60%;
+  --chart-5: 340 75% 55%;
+  --sidebar: 222.2 84% 4.9%;
+  --sidebar-foreground: 210 40% 98%;
+  --sidebar-primary: 217.2 91.2% 59.8%;
+  --sidebar-primary-foreground: 222.2 84% 4.9%;
+  --sidebar-accent: 217.2 32.6% 17.5%;
+  --sidebar-accent-foreground: 210 40% 98%;
+  --sidebar-border: 217.2 32.6% 17.5%;
+  --sidebar-ring: 217.2 91.2% 59.8%;
+
+  /* Legacy variables for backwards compatibility */
+  --surface: 222.2 84% 4.9%;
+  --text-primary: 210 40% 98%;
+  --text-secondary: 215 20.2% 65.1%;
+  --text-muted: 215 20.2% 65.1%;
+  --brand-darkest: 222.2 84% 4.9%;
+  --brand-dark: 222.2 84% 4.9%;
+  --brand-medium: 217.2 91.2% 59.8%;
+  --brand-light: 30 80% 55%;
 
   /* Dark mode gradients */
   --gradient-brand-light: linear-gradient(
     135deg,
-    #3c0753 0%,
-    #720455 50%,
-    #910a67 100%
+    hsl(222.2 84% 4.9%) 0%,
+    hsl(217.2 32.6% 17.5%) 50%,
+    hsl(217.2 91.2% 59.8%) 100%
   );
 }
 
-/* Custom utility classes */
+/* Custom utility classes for backward compatibility */
 .bg-theme {
-  background-color: var(--background);
+  background-color: hsl(var(--background));
 }
 
 .bg-surface {
-  background-color: var(--surface);
+  background-color: hsl(var(--card));
 }
 
 .text-theme-primary {
-  color: var(--text-primary);
+  color: hsl(var(--foreground));
 }
 
 .text-theme-secondary {
-  color: var(--text-secondary);
+  color: hsl(var(--muted-foreground));
 }
 
 .text-theme-muted {
-  color: var(--text-muted);
+  color: hsl(var(--muted-foreground));
 }
 
 .border-theme {
-  border-color: var(--border);
+  border-color: hsl(var(--border));
 }
 
 .gradient-brand {

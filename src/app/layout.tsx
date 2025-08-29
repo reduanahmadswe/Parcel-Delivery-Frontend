@@ -1,6 +1,7 @@
 import Navigation from "@/components/Navigation";
+import { ThemeProvider } from "@/components/theme-provider";
+import { Toaster as Sonner } from "@/components/ui/sonner";
 import { AuthProvider } from "@/contexts/AuthenticationContext";
-import { ThemeProvider } from "@/contexts/ThemePreferenceContext";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Toaster } from "react-hot-toast";
@@ -22,13 +23,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
-        className={`${inter.className} antialiased bg-theme text-theme-primary`}
+        className={`${inter.className} antialiased bg-background text-foreground`}
       >
-        <ThemeProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
           <AuthProvider>
-            <div className="min-h-screen bg-theme">
+            <div className="min-h-screen bg-background">
               <Navigation />
               <main>{children}</main>
               <Toaster
@@ -36,12 +42,13 @@ export default function RootLayout({
                 toastOptions={{
                   duration: 4000,
                   style: {
-                    background: "var(--surface)",
-                    color: "var(--text-primary)",
-                    border: "1px solid var(--border)",
+                    background: "hsl(var(--card))",
+                    color: "hsl(var(--card-foreground))",
+                    border: "1px solid hsl(var(--border))",
                   },
                 }}
               />
+              <Sonner />
             </div>
           </AuthProvider>
         </ThemeProvider>
