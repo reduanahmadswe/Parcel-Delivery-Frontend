@@ -10,6 +10,7 @@ import {
   Home,
   LogOut,
   Menu,
+  MessageSquare,
   Package,
   Search,
   Settings,
@@ -52,6 +53,8 @@ export default function Navigation() {
   const navigationItems = [
     { href: "/", label: "Home", icon: Home },
     { href: "/track", label: "Track Parcel", icon: Search },
+    { href: "/partners", label: "Partners", icon: Users },
+    { href: "/contact", label: "Contact", icon: MessageSquare },
   ];
 
   const dashboardItems = user

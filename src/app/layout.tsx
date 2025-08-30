@@ -1,4 +1,4 @@
-import Navigation from "@/components/Navigation";
+import ConditionalNavigation from "@/components/ConditionalNavigation";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { AuthProvider } from "@/contexts/AuthenticationContext";
@@ -35,7 +35,7 @@ export default function RootLayout({
         >
           <AuthProvider>
             <div className="min-h-screen bg-background">
-              <Navigation />
+              <ConditionalNavigation />
               <main>{children}</main>
               <Toaster
                 position="top-right"
