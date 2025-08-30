@@ -86,43 +86,23 @@ export default function Navigation() {
   ];
 
   return (
-    <nav className="bg-surface/95 backdrop-blur-sm shadow-brand border-b border-theme sticky top-0 z-50">
+    <nav className="bg-background/95 backdrop-blur-xl shadow-lg border-b border-border sticky top-0 z-50 transition-all duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           {/* Logo and Brand */}
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-3 group">
               <div className="relative">
-                <Package
-                  className="h-8 w-8 text-brand-light"
-                  style={{
-                    background: "var(--gradient-brand)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    backgroundClip: "text",
-                    color: "transparent",
-                  }}
-                />
-                <div
-                  className="absolute -top-1 -right-1 h-3 w-3 rounded-full animate-pulse"
-                  style={{
-                    background: "linear-gradient(135deg, #720455, #910A67)",
-                  }}
-                ></div>
+                <div className="w-10 h-10 bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                  <Package className="h-6 w-6 text-white" />
+                </div>
+                <div className="absolute -top-1 -right-1 h-3 w-3 bg-gradient-to-r from-green-400 to-green-500 rounded-full animate-pulse shadow-sm"></div>
               </div>
               <div className="flex flex-col">
-                <span
-                  className="text-xl font-bold text-theme-primary group-hover:opacity-80 transition-all duration-300"
-                  style={{
-                    background: "var(--gradient-brand)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    backgroundClip: "text",
-                  }}
-                >
+                <span className="text-xl font-bold text-foreground group-hover:text-red-500 transition-colors duration-300">
                   ParcelTrack
                 </span>
-                <span className="text-xs text-theme-muted hidden sm:block">
+                <span className="text-xs text-muted-foreground hidden sm:block">
                   Professional Delivery
                 </span>
               </div>
@@ -137,17 +117,11 @@ export default function Navigation() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="flex items-center space-x-2 text-theme-secondary hover:text-white px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:shadow-brand-md"
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background =
-                      "linear-gradient(135deg, #030637 0%, #720455 100%)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = "";
-                  }}
+                  className="flex items-center space-x-2 text-muted-foreground hover:text-foreground hover:bg-accent/50 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 group relative overflow-hidden"
                 >
-                  <Icon className="h-4 w-4" />
+                  <Icon className="h-4 w-4 group-hover:scale-110 transition-transform duration-300" />
                   <span>{item.label}</span>
+                  <div className="absolute inset-0 bg-gradient-to-r from-red-500/10 to-red-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
                 </Link>
               );
             })}
@@ -158,17 +132,11 @@ export default function Navigation() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="flex items-center space-x-2 text-gray-700 hover:text-white px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:shadow-md"
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background =
-                      "linear-gradient(135deg, #030637 0%, #720455 100%)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = "";
-                  }}
+                  className="flex items-center space-x-2 text-muted-foreground hover:text-foreground hover:bg-accent/50 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 group relative overflow-hidden"
                 >
-                  <Icon className="h-4 w-4" />
+                  <Icon className="h-4 w-4 group-hover:scale-110 transition-transform duration-300" />
                   <span>{item.label}</span>
+                  <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-blue-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
                 </Link>
               );
             })}
@@ -182,42 +150,38 @@ export default function Navigation() {
             {user ? (
               <>
                 {/* Notifications */}
-                <button className="relative p-2 text-theme-secondary hover:text-white hover:shadow-brand-md rounded-lg transition-all duration-200 hover:gradient-brand">
-                  <Bell className="h-5 w-5" />
-                  {notifications > 0 && (
-                    <span className="absolute -top-1 -right-1 h-5 w-5 text-white text-xs rounded-full flex items-center justify-center animate-pulse gradient-brand">
-                      {notifications}
-                    </span>
-                  )}
-                </button>
+                <div className="relative">
+                  <button className="relative p-2 text-muted-foreground hover:text-foreground hover:bg-accent/50 rounded-xl transition-all duration-300 group">
+                    <Bell className="h-5 w-5 group-hover:scale-110 transition-transform duration-300" />
+                    {notifications > 0 && (
+                      <span className="absolute -top-1 -right-1 h-5 w-5 bg-gradient-to-r from-red-500 to-red-600 text-white text-xs rounded-full flex items-center justify-center animate-pulse font-semibold shadow-lg">
+                        {notifications}
+                      </span>
+                    )}
+                  </button>
+                </div>
 
                 {/* User Menu */}
                 <div className="relative" ref={userMenuRef}>
                   <button
                     onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                    className="flex items-center space-x-3 text-gray-700 hover:text-blue-600 hover:bg-blue-50 px-3 py-2 rounded-lg transition-all duration-200"
+                    className="flex items-center space-x-3 text-muted-foreground hover:text-foreground hover:bg-accent/50 px-3 py-2 rounded-xl transition-all duration-300 group"
                   >
-                    <div className="flex items-center space-x-2">
-                      <div
-                        className="h-8 w-8 rounded-full flex items-center justify-center text-white font-semibold text-sm"
-                        style={{
-                          background:
-                            "linear-gradient(135deg, #030637 0%, #3C0753 25%, #720455 75%, #910A67 100%)",
-                        }}
-                      >
+                    <div className="flex items-center space-x-3">
+                      <div className="h-8 w-8 bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 rounded-xl flex items-center justify-center text-white font-semibold text-sm shadow-lg group-hover:scale-110 transition-transform duration-300">
                         {user.name.charAt(0).toUpperCase()}
                       </div>
                       <div className="hidden md:block text-left">
-                        <div className="text-sm font-medium text-theme-primary">
+                        <div className="text-sm font-semibold text-foreground">
                           {user.name}
                         </div>
-                        <div className="text-xs text-theme-muted capitalize">
+                        <div className="text-xs text-muted-foreground capitalize">
                           {user.role}
                         </div>
                       </div>
                     </div>
                     <ChevronDown
-                      className={`h-4 w-4 transition-transform duration-200 ${
+                      className={`h-4 w-4 transition-transform duration-300 ${
                         isUserMenuOpen ? "rotate-180" : ""
                       }`}
                     />
@@ -225,42 +189,51 @@ export default function Navigation() {
 
                   {/* User Dropdown */}
                   {isUserMenuOpen && (
-                    <div className="absolute right-0 mt-2 w-56 bg-surface rounded-lg shadow-brand-lg border border-theme py-2 z-50">
-                      <div className="px-4 py-3 border-b border-theme">
-                        <div className="text-sm font-medium text-theme-primary">
-                          {user.name}
-                        </div>
-                        <div className="text-sm text-theme-secondary">
-                          {user.email}
-                        </div>
-                        <div className="mt-1">
-                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium text-white gradient-brand">
-                            {user.role}
-                          </span>
+                    <div className="absolute right-0 mt-3 w-64 bg-background/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-border py-2 z-50 animate-in fade-in-0 zoom-in-95 slide-in-from-top-2 duration-200">
+                      <div className="px-4 py-4 border-b border-border">
+                        <div className="flex items-center space-x-3">
+                          <div className="h-12 w-12 bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 rounded-xl flex items-center justify-center text-white font-bold shadow-lg">
+                            {user.name.charAt(0).toUpperCase()}
+                          </div>
+                          <div className="flex-1">
+                            <div className="text-sm font-semibold text-foreground">
+                              {user.name}
+                            </div>
+                            <div className="text-sm text-muted-foreground truncate">
+                              {user.email}
+                            </div>
+                            <div className="mt-1">
+                              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium text-white bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 shadow-sm">
+                                {user.role}
+                              </span>
+                            </div>
+                          </div>
                         </div>
                       </div>
 
-                      {userMenuItems.map((item) => {
-                        const Icon = item.icon;
-                        return (
-                          <Link
-                            key={item.href}
-                            href={item.href}
-                            className="flex items-center space-x-3 px-4 py-2 text-sm text-theme-secondary hover:bg-brand-light/10 hover:text-brand-light transition-colors"
-                            onClick={() => setIsUserMenuOpen(false)}
-                          >
-                            <Icon className="h-4 w-4" />
-                            <span>{item.label}</span>
-                          </Link>
-                        );
-                      })}
+                      <div className="py-2">
+                        {userMenuItems.map((item) => {
+                          const Icon = item.icon;
+                          return (
+                            <Link
+                              key={item.href}
+                              href={item.href}
+                              className="flex items-center space-x-3 px-4 py-3 text-sm text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-all duration-200 group"
+                              onClick={() => setIsUserMenuOpen(false)}
+                            >
+                              <Icon className="h-4 w-4 group-hover:scale-110 transition-transform duration-200" />
+                              <span>{item.label}</span>
+                            </Link>
+                          );
+                        })}
+                      </div>
 
-                      <div className="border-t border-theme mt-2 pt-2">
+                      <div className="border-t border-border pt-2">
                         <button
                           onClick={handleLogout}
-                          className="flex items-center space-x-3 w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                          className="flex items-center space-x-3 w-full px-4 py-3 text-sm text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/20 transition-all duration-200 group"
                         >
-                          <LogOut className="h-4 w-4" />
+                          <LogOut className="h-4 w-4 group-hover:scale-110 transition-transform duration-200" />
                           <span>Sign out</span>
                         </button>
                       </div>
@@ -272,13 +245,13 @@ export default function Navigation() {
               <div className="flex items-center space-x-3">
                 <Link
                   href="/login"
-                  className="text-theme-secondary hover:text-brand-light px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                  className="text-muted-foreground hover:text-foreground px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 hover:bg-accent/50"
                 >
                   Sign in
                 </Link>
                 <Link
                   href="/register"
-                  className="text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 shadow-brand-md hover:shadow-brand-lg transform hover:scale-105 gradient-brand"
+                  className="bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 hover:from-red-600 hover:to-red-700 dark:hover:from-red-700 dark:hover:to-red-800 text-white px-6 py-2 rounded-xl text-sm font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 hover:-translate-y-0.5"
                 >
                   Get Started
                 </Link>
@@ -289,12 +262,12 @@ export default function Navigation() {
             <div className="lg:hidden">
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="text-theme-secondary hover:text-brand-light hover:bg-brand-light/10 p-2 rounded-lg transition-all duration-200"
+                className="text-muted-foreground hover:text-foreground hover:bg-accent/50 p-2 rounded-xl transition-all duration-300 group"
               >
                 {isMobileMenuOpen ? (
-                  <X className="h-6 w-6" />
+                  <X className="h-6 w-6 group-hover:scale-110 transition-transform duration-300" />
                 ) : (
-                  <Menu className="h-6 w-6" />
+                  <Menu className="h-6 w-6 group-hover:scale-110 transition-transform duration-300" />
                 )}
               </button>
             </div>
@@ -303,18 +276,18 @@ export default function Navigation() {
 
         {/* Mobile Navigation */}
         {isMobileMenuOpen && (
-          <div className="lg:hidden border-t border-theme bg-surface">
-            <div className="px-4 py-4 space-y-2">
+          <div className="lg:hidden border-t border-border bg-background/95 backdrop-blur-xl animate-in slide-in-from-top-2 duration-200">
+            <div className="px-4 py-4 space-y-1">
               {navigationItems.map((item) => {
                 const Icon = item.icon;
                 return (
                   <Link
                     key={item.href}
                     href={item.href}
-                    className="flex items-center space-x-3 text-theme-secondary hover:text-brand-light hover:bg-brand-light/10 px-3 py-3 rounded-lg text-sm font-medium transition-colors"
+                    className="flex items-center space-x-3 text-muted-foreground hover:text-foreground hover:bg-accent/50 px-3 py-3 rounded-xl text-sm font-medium transition-all duration-300 group"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
-                    <Icon className="h-5 w-5" />
+                    <Icon className="h-5 w-5 group-hover:scale-110 transition-transform duration-300" />
                     <span>{item.label}</span>
                   </Link>
                 );
@@ -326,10 +299,10 @@ export default function Navigation() {
                   <Link
                     key={item.href}
                     href={item.href}
-                    className="flex items-center space-x-3 text-theme-secondary hover:text-brand-light hover:bg-brand-light/10 px-3 py-3 rounded-lg text-sm font-medium transition-colors"
+                    className="flex items-center space-x-3 text-muted-foreground hover:text-foreground hover:bg-accent/50 px-3 py-3 rounded-xl text-sm font-medium transition-all duration-300 group"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
-                    <Icon className="h-5 w-5" />
+                    <Icon className="h-5 w-5 group-hover:scale-110 transition-transform duration-300" />
                     <span>{item.label}</span>
                   </Link>
                 );
@@ -337,65 +310,67 @@ export default function Navigation() {
 
               {user && (
                 <>
-                  <div className="border-t border-theme pt-4 mt-4">
-                    <div className="flex items-center space-x-3 px-3 py-2">
-                      <div className="h-10 w-10 rounded-full flex items-center justify-center text-white font-semibold gradient-brand">
+                  <div className="border-t border-border pt-4 mt-4">
+                    <div className="flex items-center space-x-3 px-3 py-3 bg-accent/20 rounded-xl">
+                      <div className="h-12 w-12 bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 rounded-xl flex items-center justify-center text-white font-bold shadow-lg">
                         {user.name.charAt(0).toUpperCase()}
                       </div>
-                      <div>
-                        <div className="text-sm font-medium text-theme-primary">
+                      <div className="flex-1">
+                        <div className="text-sm font-semibold text-foreground">
                           {user.name}
                         </div>
-                        <div className="text-xs text-theme-secondary">
+                        <div className="text-xs text-muted-foreground truncate">
                           {user.email}
                         </div>
-                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium text-white capitalize mt-1 gradient-brand">
+                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium text-white bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 capitalize mt-1 shadow-sm">
                           {user.role}
                         </span>
                       </div>
                     </div>
                   </div>
 
-                  {userMenuItems.map((item) => {
-                    const Icon = item.icon;
-                    return (
-                      <Link
-                        key={item.href}
-                        href={item.href}
-                        className="flex items-center space-x-3 text-gray-700 hover:text-blue-600 hover:bg-blue-50 px-3 py-3 rounded-lg text-sm font-medium transition-colors"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                      >
-                        <Icon className="h-5 w-5" />
-                        <span>{item.label}</span>
-                      </Link>
-                    );
-                  })}
+                  <div className="space-y-1 mt-4">
+                    {userMenuItems.map((item) => {
+                      const Icon = item.icon;
+                      return (
+                        <Link
+                          key={item.href}
+                          href={item.href}
+                          className="flex items-center space-x-3 text-muted-foreground hover:text-foreground hover:bg-accent/50 px-3 py-3 rounded-xl text-sm font-medium transition-all duration-300 group"
+                          onClick={() => setIsMobileMenuOpen(false)}
+                        >
+                          <Icon className="h-5 w-5 group-hover:scale-110 transition-transform duration-300" />
+                          <span>{item.label}</span>
+                        </Link>
+                      );
+                    })}
 
-                  <button
-                    onClick={() => {
-                      handleLogout();
-                      setIsMobileMenuOpen(false);
-                    }}
-                    className="flex items-center space-x-3 w-full text-left text-red-600 hover:bg-red-50 px-3 py-3 rounded-lg text-sm font-medium transition-colors"
-                  >
-                    <LogOut className="h-5 w-5" />
-                    <span>Sign out</span>
-                  </button>
+                    <button
+                      onClick={() => {
+                        handleLogout();
+                        setIsMobileMenuOpen(false);
+                      }}
+                      className="flex items-center space-x-3 w-full text-left text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/20 px-3 py-3 rounded-xl text-sm font-medium transition-all duration-300 group"
+                    >
+                      <LogOut className="h-5 w-5 group-hover:scale-110 transition-transform duration-300" />
+                      <span>Sign out</span>
+                    </button>
+                  </div>
                 </>
               )}
 
               {!user && (
-                <div className="border-t border-theme pt-4 mt-4 space-y-2">
+                <div className="border-t border-border pt-4 mt-4 space-y-2">
                   <Link
                     href="/login"
-                    className="block text-theme-secondary hover:text-brand-light hover:bg-brand-light/10 px-3 py-3 rounded-lg text-sm font-medium transition-colors"
+                    className="block text-muted-foreground hover:text-foreground hover:bg-accent/50 px-3 py-3 rounded-xl text-sm font-medium transition-all duration-300"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     Sign in
                   </Link>
                   <Link
                     href="/register"
-                    className="block gradient-brand text-white hover:opacity-90 px-3 py-3 rounded-lg text-sm font-medium transition-all duration-200 text-center"
+                    className="block bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 text-white hover:from-red-600 hover:to-red-700 dark:hover:from-red-700 dark:hover:to-red-800 px-3 py-3 rounded-xl text-sm font-semibold transition-all duration-300 text-center shadow-lg"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     Get Started

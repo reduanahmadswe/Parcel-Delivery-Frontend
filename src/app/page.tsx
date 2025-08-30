@@ -1,11 +1,12 @@
-import { 
+import {
   CTASection,
   CustomerSatisfactionSection,
   FooterSection,
   HeroSection,
   KeyFeaturesSection,
+  LiveTrackingSection,
   OurServicesSection,
-  PricingPlansSection
+  PricingPlansSection,
 } from "@/components/sections";
 
 export default function Page() {
@@ -13,6 +14,7 @@ export default function Page() {
     <main>
       <HeroSection />
       <KeyFeaturesSection />
+      <LiveTrackingSection />
       <OurServicesSection />
       <PricingPlansSection />
       <CustomerSatisfactionSection />
