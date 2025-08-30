@@ -1,5 +1,5 @@
 import axios from 'axios';
-import Cookies from 'js-cookie';
+import { TokenManager } from './TokenManager';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
@@ -15,7 +15,7 @@ const api = axios.create({
 // Request interceptor to add auth token
 api.interceptors.request.use(
   (config) => {
-    const token = Cookies.get('accessToken');
+    const token = TokenManager.getAccessToken();
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -36,12 +36,20 @@ api.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        await api.post('/auth/refresh-token');
+        const refreshResponse = await api.post('/auth/refresh-token');
+
+        // Update the access token if provided
+        if (refreshResponse.data?.accessToken) {
+          TokenManager.setTokens(
+            refreshResponse.data.accessToken,
+            TokenManager.getRefreshToken() || undefined
+          );
+        }
+
         return api(originalRequest);
       } catch (refreshError) {
         // Refresh failed, redirect to login
-        Cookies.remove('accessToken');
-        Cookies.remove('refreshToken');
+        TokenManager.clearTokens();
         if (typeof window !== 'undefined') {
           window.location.href = '/login';
         }

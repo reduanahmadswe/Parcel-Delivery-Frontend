@@ -1,7 +1,7 @@
 import ConditionalNavigation from "@/components/ConditionalNavigation";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster as Sonner } from "@/components/ui/sonner";
-import { AuthProvider } from "@/contexts/AuthenticationContext";
+import { AuthProvider } from "@/contexts/AuthContext";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Toaster } from "react-hot-toast";

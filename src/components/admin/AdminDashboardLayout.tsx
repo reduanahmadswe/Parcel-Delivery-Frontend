@@ -1,6 +1,6 @@
 "use client";
 
-import { useAuth } from "@/contexts/AuthenticationContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { BarChart3, Package, Settings, Users, X } from "lucide-react";
 import { useTheme } from "next-themes";
 import Link from "next/link";

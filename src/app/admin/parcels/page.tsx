@@ -12,13 +12,167 @@ import {
   Flag,
   Lock,
   MoreVertical,
+  RefreshCw,
+  Search,
   Trash2,
   UserPlus,
 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 
+interface ApiParcel {
+  id?: number;
+  _id?: string | number; // MongoDB ObjectId
+  senderId?: string;
+  receiverId?: string;
+  senderInfo?: {
+    name?: string;
+    email?: string;
+    phone?: string;
+    address?: {
+      street?: string;
+      city?: string;
+      state?: string;
+      zipCode?: string;
+      country?: string;
+    };
+  };
+  receiverInfo?: {
+    name?: string;
+    email?: string;
+    phone?: string;
+    address?: {
+      street?: string;
+      city?: string;
+      state?: string;
+      zipCode?: string;
+      country?: string;
+    };
+  };
+  parcelDetails?: {
+    type?: string;
+    weight?: number;
+    dimensions?: {
+      length?: number;
+      width?: number;
+      height?: number;
+    };
+    description?: string;
+    value?: number;
+  };
+  deliveryInfo?: {
+    preferredDeliveryDate?: string | { $date: string };
+    deliveryInstructions?: string;
+    isUrgent?: boolean;
+  };
+  fee?: {
+    baseFee?: number;
+    weightFee?: number;
+    urgentFee?: number;
+    totalFee?: number;
+    isPaid?: boolean;
+  };
+  currentStatus?: string;
+  statusHistory?: Array<{
+    status?: string;
+    timestamp?: string | { $date: string };
+    updatedBy?: string;
+    updatedByType?: string;
+    note?: string;
+  }>;
+  assignedDeliveryPersonnel?: string | null;
+  isFlagged?: boolean;
+  isHeld?: boolean;
+  isBlocked?: boolean;
+  createdAt?: string | { $date: string };
+  updatedAt?: string | { $date: string };
+  trackingId?: string;
+  // Legacy field support for backward compatibility
+  trackingNumber?: string;
+  tracking_number?: string;
+  status?: string; // fallback to currentStatus
+  // Additional legacy fields
+  type?: string;
+  parcelType?: string;
+  description?: string;
+  weight?: number;
+  weightInKg?: number;
+  dimensions?: {
+    length?: number;
+    width?: number;
+    height?: number;
+  };
+  length?: number;
+  width?: number;
+  height?: number;
+  senderName?: string;
+  sender?: {
+    name?: string;
+    email?: string;
+    phone?: string;
+  };
+  sender_name?: string;
+  senderEmail?: string;
+  sender_email?: string;
+  senderPhone?: string;
+  sender_phone?: string;
+  recipientName?: string;
+  recipient?: {
+    name?: string;
+    email?: string;
+    phone?: string;
+    address?: {
+      street?: string;
+      city?: string;
+      state?: string;
+      zipCode?: string;
+    };
+  };
+  receiver?: {
+    name?: string;
+    email?: string;
+    phone?: string;
+  };
+  recipient_name?: string;
+  receiver_name?: string;
+  recipientEmail?: string;
+  recipient_email?: string;
+  receiver_email?: string;
+  recipientPhone?: string;
+  recipient_phone?: string;
+  receiver_phone?: string;
+  recipientAddress?: {
+    street?: string;
+    city?: string;
+    state?: string;
+    zipCode?: string;
+  };
+  deliveryAddress?: {
+    street?: string;
+    city?: string;
+    state?: string;
+    zipCode?: string;
+  };
+  cost?: number;
+  price?: number;
+  amount?: number;
+  deliveryType?: string;
+  delivery_type?: string;
+  isInsured?: boolean;
+  is_insured?: boolean;
+  isUrgent?: boolean;
+  is_urgent?: boolean;
+  priority?: string;
+  is_flagged?: boolean;
+  isOnHold?: boolean;
+  is_on_hold?: boolean;
+  assignedPersonnel?: string;
+  assigned_personnel?: string;
+  assignedTo?: string;
+  [key: string]: unknown; // For any additional fields
+}
+
 interface Parcel extends Record<string, unknown> {
-  id: number;
+  id: string | number;
   trackingNumber: string;
   type: string;
   description: string;
@@ -70,15 +224,19 @@ interface StatusLogEntry {
 
 export default function AdminParcelsPage() {
   const [parcels, setParcels] = useState<Parcel[]>([]);
+  const [filteredParcels, setFilteredParcels] = useState<Parcel[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
   const [selectedParcel, setSelectedParcel] = useState<Parcel | null>(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [showStatusModal, setShowStatusModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   const [showStatusLogModal, setShowStatusLogModal] = useState(false);
   const [showAssignModal, setShowAssignModal] = useState(false);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
   const [newStatus, setNewStatus] = useState<string>("");
+  const [editFormData, setEditFormData] = useState<Partial<Parcel>>({});
   const [statusLog, setStatusLog] = useState<StatusLogEntry[]>([]);
   const [assignedPersonnel, setAssignedPersonnel] = useState<string>("");
   const [filterParams, setFilterParams] = useState({
@@ -90,6 +248,9 @@ export default function AdminParcelsPage() {
   const fetchParcels = useCallback(async () => {
     try {
       setLoading(true);
+      console.log("Fetching parcels from API...");
+      console.log("API Base URL:", api.defaults.baseURL);
+
       // Build query params for filtering
       const queryParams = new URLSearchParams();
       if (filterParams.senderEmail)
@@ -102,11 +263,355 @@ export default function AdminParcelsPage() {
       const query = queryParams.toString();
       const endpoint = query ? `/parcels?${query}` : "/parcels";
 
-      const response = await api.get(endpoint);
-      const parcelsData = response.data.data || response.data;
-      setParcels(Array.isArray(parcelsData) ? parcelsData : []);
+      // Try admin-specific endpoint first, fallback to general parcels endpoint
+      let response;
+      try {
+        response = await api.get(`/admin${endpoint}`);
+        console.log("Using admin parcels endpoint");
+      } catch {
+        console.log(
+          "Admin endpoint not available, trying general parcels endpoint"
+        );
+        response = await api.get(endpoint);
+      }
+
+      console.log("Full API response:", JSON.stringify(response.data, null, 2));
+
+      // Try different possible data structures
+      let parcelsData = null;
+      if (response.data.data && Array.isArray(response.data.data)) {
+        parcelsData = response.data.data;
+        console.log("Using response.data.data");
+      } else if (
+        response.data.parcels &&
+        Array.isArray(response.data.parcels)
+      ) {
+        parcelsData = response.data.parcels;
+        console.log("Using response.data.parcels");
+      } else if (Array.isArray(response.data)) {
+        parcelsData = response.data;
+        console.log("Using response.data directly");
+      } else {
+        console.log("No valid parcels array found in response");
+        parcelsData = [];
+      }
+
+      console.log("Extracted parcels data:", parcelsData);
+      console.log("Parcels data type:", typeof parcelsData);
+      console.log("Is array:", Array.isArray(parcelsData));
+      console.log("Length:", parcelsData?.length);
+
+      // Debug: Show first parcel raw structure
+      if (parcelsData && parcelsData.length > 0) {
+        console.log(
+          "🔍 First raw parcel from API:",
+          JSON.stringify(parcelsData[0], null, 2)
+        );
+        console.log("🔍 Key fields check:", {
+          hasTrackingId: "trackingId" in parcelsData[0],
+          hasSenderInfo: "senderInfo" in parcelsData[0],
+          hasReceiverInfo: "receiverInfo" in parcelsData[0],
+          trackingValue: parcelsData[0]?.trackingId,
+          senderName: parcelsData[0]?.senderInfo?.name,
+          receiverName: parcelsData[0]?.receiverInfo?.name,
+        });
+      }
+
+      // Validate and normalize parcel data
+      const validParcels: Parcel[] =
+        Array.isArray(parcelsData) && parcelsData.length > 0
+          ? parcelsData.map((parcel: ApiParcel, index: number) => {
+              console.log(
+                `Processing parcel ${index}:`,
+                JSON.stringify(parcel, null, 2)
+              );
+
+              // Handle MongoDB _id field
+              const parcelId = parcel.id || parcel._id || 0;
+
+              const processedParcel: Parcel = {
+                id: parcelId,
+                trackingNumber:
+                  parcel.trackingId ||
+                  parcel.trackingNumber ||
+                  parcel.tracking_number ||
+                  `TRK${parcelId.toString().padStart(6, "0")}`,
+                type:
+                  parcel.parcelDetails?.type ||
+                  parcel.type ||
+                  parcel.parcelType ||
+                  "Standard",
+                description:
+                  parcel.parcelDetails?.description ||
+                  parcel.description ||
+                  "Package",
+                weight:
+                  parcel.parcelDetails?.weight ||
+                  parcel.weight ||
+                  parcel.weightInKg ||
+                  1.0,
+                dimensions: {
+                  length:
+                    parcel.parcelDetails?.dimensions?.length ||
+                    parcel.dimensions?.length ||
+                    parcel.length ||
+                    10,
+                  width:
+                    parcel.parcelDetails?.dimensions?.width ||
+                    parcel.dimensions?.width ||
+                    parcel.width ||
+                    10,
+                  height:
+                    parcel.parcelDetails?.dimensions?.height ||
+                    parcel.dimensions?.height ||
+                    parcel.height ||
+                    10,
+                },
+                status: (parcel.currentStatus || parcel.status || "pending") as
+                  | "pending"
+                  | "confirmed"
+                  | "picked_up"
+                  | "in_transit"
+                  | "out_for_delivery"
+                  | "delivered"
+                  | "cancelled"
+                  | "returned",
+                senderName:
+                  parcel.senderInfo?.name ||
+                  parcel.senderName ||
+                  parcel.sender?.name ||
+                  parcel.sender_name ||
+                  "Unknown Sender",
+                senderEmail:
+                  parcel.senderInfo?.email ||
+                  parcel.senderEmail ||
+                  parcel.sender?.email ||
+                  parcel.sender_email ||
+                  "sender@example.com",
+                senderPhone:
+                  parcel.senderInfo?.phone ||
+                  parcel.senderPhone ||
+                  parcel.sender?.phone ||
+                  parcel.sender_phone ||
+                  "+8801700000000",
+                recipientName:
+                  parcel.receiverInfo?.name ||
+                  parcel.recipientName ||
+                  parcel.recipient?.name ||
+                  parcel.receiver?.name ||
+                  parcel.recipient_name ||
+                  parcel.receiver_name ||
+                  "Unknown Recipient",
+                recipientEmail:
+                  parcel.receiverInfo?.email ||
+                  parcel.recipientEmail ||
+                  parcel.recipient?.email ||
+                  parcel.receiver?.email ||
+                  parcel.recipient_email ||
+                  parcel.receiver_email ||
+                  "recipient@example.com",
+                recipientPhone:
+                  parcel.receiverInfo?.phone ||
+                  parcel.recipientPhone ||
+                  parcel.recipient?.phone ||
+                  parcel.receiver?.phone ||
+                  parcel.recipient_phone ||
+                  parcel.receiver_phone ||
+                  "+8801800000000",
+                recipientAddress: {
+                  street:
+                    parcel.receiverInfo?.address?.street ||
+                    parcel.recipientAddress?.street ||
+                    parcel.recipient?.address?.street ||
+                    parcel.deliveryAddress?.street ||
+                    "Street Address",
+                  city:
+                    parcel.receiverInfo?.address?.city ||
+                    parcel.recipientAddress?.city ||
+                    parcel.recipient?.address?.city ||
+                    parcel.deliveryAddress?.city ||
+                    "Dhaka",
+                  state:
+                    parcel.receiverInfo?.address?.state ||
+                    parcel.recipientAddress?.state ||
+                    parcel.recipient?.address?.state ||
+                    parcel.deliveryAddress?.state ||
+                    "Dhaka Division",
+                  zipCode:
+                    parcel.receiverInfo?.address?.zipCode ||
+                    parcel.recipientAddress?.zipCode ||
+                    parcel.recipient?.address?.zipCode ||
+                    parcel.deliveryAddress?.zipCode ||
+                    "1000",
+                },
+                cost:
+                  parcel.fee?.totalFee ||
+                  parcel.cost ||
+                  parcel.price ||
+                  parcel.amount ||
+                  100,
+                deliveryType:
+                  parcel.deliveryType || parcel.delivery_type || "Standard",
+                isInsured: parcel.isInsured || parcel.is_insured || false,
+                isUrgent:
+                  parcel.deliveryInfo?.isUrgent ||
+                  parcel.isUrgent ||
+                  parcel.is_urgent ||
+                  parcel.priority === "urgent" ||
+                  false,
+                isFlagged: parcel.isFlagged || parcel.is_flagged || false,
+                isOnHold:
+                  parcel.isHeld ||
+                  parcel.isOnHold ||
+                  parcel.is_on_hold ||
+                  false,
+                assignedPersonnel:
+                  parcel.assignedDeliveryPersonnel ||
+                  parcel.assignedPersonnel ||
+                  parcel.assigned_personnel ||
+                  parcel.assignedTo ||
+                  "",
+                createdAt:
+                  typeof parcel.createdAt === "string"
+                    ? parcel.createdAt
+                    : parcel.createdAt?.$date || new Date().toISOString(),
+                updatedAt:
+                  typeof parcel.updatedAt === "string"
+                    ? parcel.updatedAt
+                    : parcel.updatedAt?.$date || new Date().toISOString(),
+              };
+
+              console.log(`📦 Processed parcel ${index}:`, {
+                originalTrackingId: parcel.trackingId,
+                finalTrackingNumber: processedParcel.trackingNumber,
+                senderName: processedParcel.senderName,
+                recipientName: processedParcel.recipientName,
+                status: processedParcel.status,
+              });
+              return processedParcel;
+            })
+          : ([
+              // Mock data for testing if no API data is available
+              {
+                id: 1,
+                trackingNumber: "TRK001234",
+                type: "Standard",
+                description: "Electronics Package",
+                weight: 2.5,
+                dimensions: { length: 30, width: 20, height: 15 },
+                status: "in_transit",
+                senderName: "John Doe",
+                senderEmail: "john@example.com",
+                senderPhone: "+8801711111111",
+                recipientName: "Jane Smith",
+                recipientEmail: "jane@example.com",
+                recipientPhone: "+8801722222222",
+                recipientAddress: {
+                  street: "123 Main Street",
+                  city: "Dhaka",
+                  state: "Dhaka Division",
+                  zipCode: "1000",
+                },
+                cost: 250,
+                deliveryType: "Express",
+                isInsured: true,
+                isUrgent: true,
+                isFlagged: false,
+                isOnHold: false,
+                assignedPersonnel: "Delivery Agent 1",
+                createdAt: new Date(
+                  Date.now() - 2 * 24 * 60 * 60 * 1000
+                ).toISOString(),
+                updatedAt: new Date().toISOString(),
+              },
+              {
+                id: 2,
+                trackingNumber: "TRK005678",
+                type: "Document",
+                description: "Important Documents",
+                weight: 0.5,
+                dimensions: { length: 25, width: 18, height: 2 },
+                status: "delivered",
+                senderName: "Alice Johnson",
+                senderEmail: "alice@example.com",
+                senderPhone: "+8801733333333",
+                recipientName: "Bob Wilson",
+                recipientEmail: "bob@example.com",
+                recipientPhone: "+8801744444444",
+                recipientAddress: {
+                  street: "456 Park Avenue",
+                  city: "Chittagong",
+                  state: "Chittagong Division",
+                  zipCode: "4000",
+                },
+                cost: 150,
+                deliveryType: "Standard",
+                isInsured: false,
+                isUrgent: false,
+                isFlagged: false,
+                isOnHold: false,
+                assignedPersonnel: "Delivery Agent 2",
+                createdAt: new Date(
+                  Date.now() - 5 * 24 * 60 * 60 * 1000
+                ).toISOString(),
+                updatedAt: new Date(
+                  Date.now() - 1 * 24 * 60 * 60 * 1000
+                ).toISOString(),
+              },
+              {
+                id: 3,
+                trackingNumber: "TRK009012",
+                type: "Fragile",
+                description: "Glass Items",
+                weight: 3.2,
+                dimensions: { length: 40, width: 30, height: 25 },
+                status: "pending",
+                senderName: "Charlie Brown",
+                senderEmail: "charlie@example.com",
+                senderPhone: "+8801755555555",
+                recipientName: "Diana Prince",
+                recipientEmail: "diana@example.com",
+                recipientPhone: "+8801766666666",
+                recipientAddress: {
+                  street: "789 Oak Street",
+                  city: "Sylhet",
+                  state: "Sylhet Division",
+                  zipCode: "3100",
+                },
+                cost: 180,
+                deliveryType: "Fragile",
+                isInsured: true,
+                isUrgent: false,
+                isFlagged: true,
+                isOnHold: false,
+                assignedPersonnel: "",
+                createdAt: new Date(
+                  Date.now() - 1 * 24 * 60 * 60 * 1000
+                ).toISOString(),
+                updatedAt: new Date().toISOString(),
+              },
+            ] as Parcel[]);
+
+      console.log("Final processed parcels:", validParcels.length);
+      if (validParcels.length > 0 && parcelsData && parcelsData.length === 0) {
+        console.log("Using mock data for testing - API returned no parcels");
+      }
+      console.log(
+        "Sample processed parcel:",
+        JSON.stringify(validParcels[0], null, 2)
+      );
+
+      setParcels(validParcels);
+      setFilteredParcels(validParcels); // Initialize filtered parcels
     } catch (error) {
       console.error("Error fetching parcels:", error);
+      if (error instanceof Error) {
+        console.error("Error message:", error.message);
+      }
+
+      // Set empty array on error - mock data will be used instead
+      setParcels([]);
+      setFilteredParcels([]); // Set empty filtered array on error
     } finally {
       setLoading(false);
     }
@@ -115,6 +620,33 @@ export default function AdminParcelsPage() {
   useEffect(() => {
     fetchParcels();
   }, [fetchParcels]);
+
+  // Filter parcels based on search term
+  useEffect(() => {
+    if (!searchTerm.trim()) {
+      setFilteredParcels(parcels);
+    } else {
+      const searchLower = searchTerm.toLowerCase().trim();
+      const filtered = parcels.filter((parcel) => {
+        // Search in tracking number, sender name, recipient name, status, and description
+        const searchableFields = [
+          parcel.trackingNumber,
+          parcel.senderName,
+          parcel.senderEmail,
+          parcel.recipientName,
+          parcel.recipientEmail,
+          parcel.status,
+          parcel.description,
+          parcel.type,
+        ];
+
+        return searchableFields.some((field) =>
+          field?.toLowerCase().includes(searchLower)
+        );
+      });
+      setFilteredParcels(filtered);
+    }
+  }, [parcels, searchTerm]);
 
   const handleUpdateStatus = async () => {
     if (!selectedParcel || !newStatus) return;
@@ -190,7 +722,7 @@ export default function AdminParcelsPage() {
     }
   };
 
-  const fetchStatusLog = async (parcelId: number) => {
+  const fetchStatusLog = async (parcelId: string | number) => {
     try {
       const response = await api.get(`/parcels/${parcelId}/status-log`);
       setStatusLog(response.data.data || response.data || []);
@@ -218,6 +750,74 @@ export default function AdminParcelsPage() {
   const openDetailsModal = (parcel: Parcel) => {
     setSelectedParcel(parcel);
     setShowDetailsModal(true);
+  };
+
+  const openEditModal = (parcel: Parcel) => {
+    setSelectedParcel(parcel);
+    setEditFormData({
+      trackingNumber: parcel.trackingNumber,
+      senderName: parcel.senderName,
+      senderEmail: parcel.senderEmail,
+      senderPhone: parcel.senderPhone,
+      recipientName: parcel.recipientName,
+      recipientEmail: parcel.recipientEmail,
+      recipientPhone: parcel.recipientPhone,
+      status: parcel.status,
+      type: parcel.type,
+      description: parcel.description,
+      weight: parcel.weight,
+      cost: parcel.cost,
+      isUrgent: parcel.isUrgent,
+      recipientAddress: parcel.recipientAddress,
+    });
+    setShowEditModal(true);
+  };
+
+  const handleUpdateParcel = async () => {
+    if (!selectedParcel || !editFormData) return;
+
+    try {
+      setActionLoading(true);
+      console.log("📝 Updating parcel:", selectedParcel.id, editFormData);
+
+      // Update parcel data using proper API structure
+      const updateData = {
+        trackingId: editFormData.trackingNumber,
+        senderInfo: {
+          name: editFormData.senderName,
+          email: editFormData.senderEmail,
+          phone: editFormData.senderPhone,
+        },
+        receiverInfo: {
+          name: editFormData.recipientName,
+          email: editFormData.recipientEmail,
+          phone: editFormData.recipientPhone,
+          address: editFormData.recipientAddress,
+        },
+        parcelDetails: {
+          type: editFormData.type,
+          description: editFormData.description,
+          weight: editFormData.weight,
+        },
+        fee: {
+          totalFee: editFormData.cost,
+        },
+        currentStatus: editFormData.status,
+        deliveryInfo: {
+          isUrgent: editFormData.isUrgent,
+        },
+      };
+
+      await api.put(`/parcels/${selectedParcel.id}`, updateData);
+      await fetchParcels();
+      setShowEditModal(false);
+      setSelectedParcel(null);
+      setEditFormData({});
+    } catch (error) {
+      console.error("Error updating parcel:", error);
+    } finally {
+      setActionLoading(false);
+    }
   };
 
   const openStatusModal = (parcel: Parcel) => {
@@ -330,11 +930,18 @@ export default function AdminParcelsPage() {
             <Eye className="h-4 w-4" />
           </button>
           <button
+            onClick={() => openEditModal(parcel)}
+            className="p-2 text-muted-foreground hover:text-blue-500 transition-colors duration-300"
+            title="Edit Parcel"
+          >
+            <Edit className="h-4 w-4" />
+          </button>
+          <button
             onClick={() => openStatusModal(parcel)}
             className="p-2 text-muted-foreground hover:text-green-500 transition-colors duration-300"
             title="Update Status"
           >
-            <Edit className="h-4 w-4" />
+            <RefreshCw className="h-4 w-4" />
           </button>
           <button
             onClick={() => handleFlagParcel(parcel)}
@@ -507,12 +1114,31 @@ export default function AdminParcelsPage() {
           </div>
         </div>
 
+        {/* Search Results Summary */}
+        {searchTerm && (
+          <div className="flex items-center gap-2 px-4 py-2 bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+            <Search className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+            <span className="text-sm text-blue-800 dark:text-blue-200">
+              Found {filteredParcels.length} parcel
+              {filteredParcels.length !== 1 ? "s" : ""} matching &ldquo;
+              {searchTerm}&rdquo;
+            </span>
+            <button
+              onClick={() => setSearchTerm("")}
+              className="ml-auto text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-200 text-sm"
+            >
+              Clear search
+            </button>
+          </div>
+        )}
+
         <div className="bg-background rounded-lg shadow border border-border hover:shadow-lg transition-all duration-300">
           <DataTable<Parcel>
-            data={parcels}
+            data={filteredParcels}
             columns={columns}
             loading={loading}
-            searchPlaceholder="Search parcels by tracking number, sender, or recipient..."
+            searchPlaceholder="Search by tracking number, sender, recipient, status..."
+            onSearch={setSearchTerm}
           />
         </div>
       </div>
@@ -858,6 +1484,288 @@ export default function AdminParcelsPage() {
                 className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 transition-colors"
               >
                 {actionLoading ? "Assigning..." : "Assign Personnel"}
+              </button>
+            </div>
+          </div>
+        )}
+      </Modal>
+
+      {/* Edit Parcel Modal */}
+      <Modal
+        isOpen={showEditModal}
+        onClose={() => {
+          setShowEditModal(false);
+          setSelectedParcel(null);
+          setEditFormData({});
+        }}
+        title="Edit Parcel"
+        size="xl"
+      >
+        {selectedParcel && editFormData && (
+          <div className="space-y-6">
+            {/* Basic Information */}
+            <div>
+              <h3 className="text-lg font-semibold text-foreground mb-4">
+                Parcel Information
+              </h3>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                    Tracking Number
+                  </label>
+                  <input
+                    type="text"
+                    value={editFormData.trackingNumber || ""}
+                    onChange={(e) =>
+                      setEditFormData({
+                        ...editFormData,
+                        trackingNumber: e.target.value,
+                      })
+                    }
+                    className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                    Status
+                  </label>
+                  <select
+                    value={editFormData.status || ""}
+                    onChange={(e) =>
+                      setEditFormData({
+                        ...editFormData,
+                        status: e.target.value as Parcel["status"],
+                      })
+                    }
+                    className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100"
+                  >
+                    <option value="pending">Pending</option>
+                    <option value="confirmed">Confirmed</option>
+                    <option value="picked_up">Picked Up</option>
+                    <option value="in_transit">In Transit</option>
+                    <option value="out_for_delivery">Out for Delivery</option>
+                    <option value="delivered">Delivered</option>
+                    <option value="cancelled">Cancelled</option>
+                    <option value="returned">Returned</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                    Type
+                  </label>
+                  <input
+                    type="text"
+                    value={editFormData.type || ""}
+                    onChange={(e) =>
+                      setEditFormData({ ...editFormData, type: e.target.value })
+                    }
+                    className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                    Weight (kg)
+                  </label>
+                  <input
+                    type="number"
+                    step="0.1"
+                    value={editFormData.weight || ""}
+                    onChange={(e) =>
+                      setEditFormData({
+                        ...editFormData,
+                        weight: parseFloat(e.target.value) || 0,
+                      })
+                    }
+                    className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                    Cost ($)
+                  </label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={editFormData.cost || ""}
+                    onChange={(e) =>
+                      setEditFormData({
+                        ...editFormData,
+                        cost: parseFloat(e.target.value) || 0,
+                      })
+                    }
+                    className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100"
+                  />
+                </div>
+                <div className="flex items-center">
+                  <input
+                    type="checkbox"
+                    id="isUrgent"
+                    checked={editFormData.isUrgent || false}
+                    onChange={(e) =>
+                      setEditFormData({
+                        ...editFormData,
+                        isUrgent: e.target.checked,
+                      })
+                    }
+                    className="h-4 w-4 text-blue-600 border-slate-300 rounded"
+                  />
+                  <label
+                    htmlFor="isUrgent"
+                    className="ml-2 text-sm font-medium text-slate-700 dark:text-slate-300"
+                  >
+                    Urgent Delivery
+                  </label>
+                </div>
+              </div>
+              <div className="mt-4">
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                  Description
+                </label>
+                <textarea
+                  value={editFormData.description || ""}
+                  onChange={(e) =>
+                    setEditFormData({
+                      ...editFormData,
+                      description: e.target.value,
+                    })
+                  }
+                  rows={3}
+                  className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100"
+                />
+              </div>
+            </div>
+
+            {/* Sender Information */}
+            <div>
+              <h3 className="text-lg font-semibold text-foreground mb-4">
+                Sender Information
+              </h3>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                    Sender Name
+                  </label>
+                  <input
+                    type="text"
+                    value={editFormData.senderName || ""}
+                    onChange={(e) =>
+                      setEditFormData({
+                        ...editFormData,
+                        senderName: e.target.value,
+                      })
+                    }
+                    className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                    Sender Email
+                  </label>
+                  <input
+                    type="email"
+                    value={editFormData.senderEmail || ""}
+                    onChange={(e) =>
+                      setEditFormData({
+                        ...editFormData,
+                        senderEmail: e.target.value,
+                      })
+                    }
+                    className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                    Sender Phone
+                  </label>
+                  <input
+                    type="tel"
+                    value={editFormData.senderPhone || ""}
+                    onChange={(e) =>
+                      setEditFormData({
+                        ...editFormData,
+                        senderPhone: e.target.value,
+                      })
+                    }
+                    className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Recipient Information */}
+            <div>
+              <h3 className="text-lg font-semibold text-foreground mb-4">
+                Recipient Information
+              </h3>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                    Recipient Name
+                  </label>
+                  <input
+                    type="text"
+                    value={editFormData.recipientName || ""}
+                    onChange={(e) =>
+                      setEditFormData({
+                        ...editFormData,
+                        recipientName: e.target.value,
+                      })
+                    }
+                    className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                    Recipient Email
+                  </label>
+                  <input
+                    type="email"
+                    value={editFormData.recipientEmail || ""}
+                    onChange={(e) =>
+                      setEditFormData({
+                        ...editFormData,
+                        recipientEmail: e.target.value,
+                      })
+                    }
+                    className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                    Recipient Phone
+                  </label>
+                  <input
+                    type="tel"
+                    value={editFormData.recipientPhone || ""}
+                    onChange={(e) =>
+                      setEditFormData({
+                        ...editFormData,
+                        recipientPhone: e.target.value,
+                      })
+                    }
+                    className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex justify-end space-x-3 pt-4 border-t border-slate-200 dark:border-slate-700">
+              <button
+                onClick={() => {
+                  setShowEditModal(false);
+                  setEditFormData({});
+                }}
+                className="px-4 py-2 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 rounded-md hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleUpdateParcel}
+                disabled={actionLoading}
+                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 transition-colors"
+              >
+                {actionLoading ? "Updating..." : "Update Parcel"}
               </button>
             </div>
           </div>

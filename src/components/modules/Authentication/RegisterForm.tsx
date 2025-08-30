@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import Password from "@/components/ui/Password";
-import { useAuth } from "@/contexts/AuthenticationContext";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   getCitiesList,
   getDivisionsByCity,

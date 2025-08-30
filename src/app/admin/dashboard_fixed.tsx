@@ -71,75 +71,27 @@ interface ApiUser {
 }
 
 interface ApiParcelForDashboard {
+  id?: number;
   _id?: string;
-  senderId?: string;
-  receiverId?: string;
-  senderInfo?: {
-    name?: string;
-    email?: string;
-    phone?: string;
-    address?: {
-      street?: string;
-      city?: string;
-      state?: string;
-      zipCode?: string;
-      country?: string;
-    };
-  };
-  receiverInfo?: {
-    name?: string;
-    email?: string;
-    phone?: string;
-    address?: {
-      street?: string;
-      city?: string;
-      state?: string;
-      zipCode?: string;
-      country?: string;
-    };
-  };
-  parcelDetails?: {
-    type?: string;
-    weight?: number;
-    dimensions?: {
-      length?: number;
-      width?: number;
-      height?: number;
-    };
-    description?: string;
-    value?: number;
-  };
-  deliveryInfo?: {
-    preferredDeliveryDate?: string | { $date: string };
-    deliveryInstructions?: string;
-    isUrgent?: boolean;
-  };
-  fee?: {
-    baseFee?: number;
-    weightFee?: number;
-    urgentFee?: number;
-    totalFee?: number;
-    isPaid?: boolean;
-  };
-  currentStatus?: string;
-  statusHistory?: Array<{
-    status?: string;
-    timestamp?: string | { $date: string };
-    updatedBy?: string;
-    updatedByType?: string;
-    note?: string;
-  }>;
-  assignedDeliveryPersonnel?: string | null;
+  status?: string;
   isFlagged?: boolean;
-  isHeld?: boolean;
-  isBlocked?: boolean;
-  createdAt?: string | { $date: string };
-  updatedAt?: string | { $date: string };
-  trackingId?: string;
-  // Legacy field support for backward compatibility
+  is_flagged?: boolean;
+  isUrgent?: boolean;
+  is_urgent?: boolean;
+  priority?: string;
   trackingNumber?: string;
   tracking_number?: string;
-  status?: string; // fallback to currentStatus
+  senderName?: string;
+  sender?: { name?: string };
+  sender_name?: string;
+  recipientName?: string;
+  recipient?: { name?: string };
+  receiver?: { name?: string };
+  recipient_name?: string;
+  receiver_name?: string;
+  createdAt?: string;
+  created_at?: string;
+  createdDate?: string;
 }
 
 // Helper function to calculate relative time
@@ -254,94 +206,65 @@ export default function AdminDashboard() {
           ? parcelsResponse.data
           : parcelsResponse.data.data || [];
 
-        console.log("📦 Raw parcels data received:", {
-          responseDataType: typeof parcelsResponse.data,
-          isArray: Array.isArray(parcelsResponse.data),
-          parcelsCount: parcels.length,
-          firstParcel: parcels[0],
-          statuses: parcels.map(
-            (p: ApiParcelForDashboard) => p.currentStatus || p.status
-          ),
-        });
-
         processedParcelStats = {
           total: parcels.length,
           pending: parcels.filter(
             (p: ApiParcelForDashboard) =>
-              (p.currentStatus || p.status || "").toLowerCase() === "pending"
+              (p.status || "").toLowerCase() === "pending"
           ).length,
           inTransit: parcels.filter((p: ApiParcelForDashboard) =>
-            [
-              "in_transit",
-              "shipped",
-              "on_the_way",
-              "in transit",
-              "out-for-delivery",
-            ].includes((p.currentStatus || p.status || "").toLowerCase())
+            ["in_transit", "shipped", "on_the_way"].includes(
+              (p.status || "").toLowerCase()
+            )
           ).length,
           delivered: parcels.filter(
             (p: ApiParcelForDashboard) =>
-              (p.currentStatus || p.status || "").toLowerCase() === "delivered"
+              (p.status || "").toLowerCase() === "delivered"
           ).length,
-          flagged: parcels.filter((p: ApiParcelForDashboard) => p.isFlagged)
-            .length,
+          flagged: parcels.filter(
+            (p: ApiParcelForDashboard) => p.isFlagged || p.is_flagged
+          ).length,
           urgent: parcels.filter(
-            (p: ApiParcelForDashboard) => p.deliveryInfo?.isUrgent
+            (p: ApiParcelForDashboard) =>
+              p.isUrgent ||
+              p.is_urgent ||
+              (p.priority || "").toLowerCase() === "urgent"
           ).length,
         };
 
-        // Process recent parcels with enhanced tracking number handling using actual database structure
+        // Process recent parcels
         processedRecentParcels = parcels
-          .sort((a: ApiParcelForDashboard, b: ApiParcelForDashboard) => {
-            // Sort by creation date, newest first
-            const dateA = new Date(
-              typeof a.createdAt === "string"
-                ? a.createdAt
-                : a.createdAt?.$date || ""
-            );
-            const dateB = new Date(
-              typeof b.createdAt === "string"
-                ? b.createdAt
-                : b.createdAt?.$date || ""
-            );
-            return dateB.getTime() - dateA.getTime();
-          })
           .slice(0, 5)
-          .map((parcel: ApiParcelForDashboard, index: number) => {
-            const trackingNumber =
-              parcel.trackingId ||
+          .map((parcel: ApiParcelForDashboard, index: number) => ({
+            id: parcel._id || parcel.id || index,
+            trackingNumber:
               parcel.trackingNumber ||
               parcel.tracking_number ||
-              parcel._id ||
-              `PKG-${new Date().getFullYear()}-${String(Date.now()).slice(-6)}`;
+              `PKG-${Date.now()}-${index}`,
+            senderName:
+              parcel.senderName ||
+              parcel.sender?.name ||
+              parcel.sender_name ||
+              "Unknown Sender",
+            recipientName:
+              parcel.recipientName ||
+              parcel.recipient?.name ||
+              parcel.receiver?.name ||
+              parcel.recipient_name ||
+              parcel.receiver_name ||
+              "Unknown Recipient",
+            status: parcel.status || "pending",
+            isUrgent:
+              parcel.isUrgent ||
+              parcel.is_urgent ||
+              (parcel.priority || "").toLowerCase() === "urgent",
+            createdAt:
+              parcel.createdAt ||
+              parcel.created_at ||
+              parcel.createdDate ||
+              new Date().toISOString(),
+          }));
 
-            const processedParcel = {
-              id: parcel._id || `temp-${index}`,
-              trackingNumber: trackingNumber,
-              senderName: parcel.senderInfo?.name || "Unknown Sender",
-              recipientName: parcel.receiverInfo?.name || "Unknown Recipient",
-              status: parcel.currentStatus || parcel.status || "pending",
-              isUrgent: parcel.deliveryInfo?.isUrgent || false,
-              createdAt:
-                typeof parcel.createdAt === "string"
-                  ? parcel.createdAt
-                  : parcel.createdAt?.$date || new Date().toISOString(),
-            };
-
-            console.log(`📦 Processed parcel ${index + 1}:`, {
-              originalTrackingId: parcel.trackingId,
-              processedTrackingNumber: processedParcel.trackingNumber,
-              senderName: processedParcel.senderName,
-              status: processedParcel.status,
-            });
-
-            return processedParcel;
-          });
-
-        console.log("✅ Recent parcels processed:", {
-          count: processedRecentParcels.length,
-          trackingNumbers: processedRecentParcels.map((p) => p.trackingNumber),
-        });
         console.log("✅ Parcel stats processed:", processedParcelStats);
       } catch (error) {
         console.warn("⚠️ Failed to fetch parcels, using mock data:", error);
@@ -353,80 +276,26 @@ export default function AdminDashboard() {
           flagged: 5,
           urgent: 18,
         };
-        console.log("🎭 Using mock parcel stats:", processedParcelStats);
-        // Enhanced mock data with realistic tracking numbers
         processedRecentParcels = [
           {
             id: 1,
-            trackingNumber: `TRK-${new Date().getFullYear()}-00${Math.floor(
-              Math.random() * 1000
-            )
-              .toString()
-              .padStart(3, "0")}`,
-            senderName: "আহমেদ হাসান",
-            recipientName: "ফাতিমা খাতুন",
+            trackingNumber: "PKG-2025-001",
+            senderName: "John Doe",
+            recipientName: "Jane Smith",
             status: "pending",
             isUrgent: false,
             createdAt: new Date().toISOString(),
           },
           {
             id: 2,
-            trackingNumber: `TRK-${new Date().getFullYear()}-00${Math.floor(
-              Math.random() * 1000
-            )
-              .toString()
-              .padStart(3, "0")}`,
-            senderName: "রহিম উদ্দিন",
-            recipientName: "নাসির আলী",
+            trackingNumber: "PKG-2025-002",
+            senderName: "Alice Johnson",
+            recipientName: "Bob Wilson",
             status: "in_transit",
             isUrgent: true,
             createdAt: new Date(Date.now() - 3600000).toISOString(),
           },
-          {
-            id: 3,
-            trackingNumber: `TRK-${new Date().getFullYear()}-00${Math.floor(
-              Math.random() * 1000
-            )
-              .toString()
-              .padStart(3, "0")}`,
-            senderName: "সালমা বেগম",
-            recipientName: "করিম মিয়া",
-            status: "delivered",
-            isUrgent: false,
-            createdAt: new Date(Date.now() - 7200000).toISOString(),
-          },
-          {
-            id: 4,
-            trackingNumber: `TRK-${new Date().getFullYear()}-00${Math.floor(
-              Math.random() * 1000
-            )
-              .toString()
-              .padStart(3, "0")}`,
-            senderName: "মোহাম্মদ শফিক",
-            recipientName: "রওশন আরা",
-            status: "pending",
-            isUrgent: false,
-            createdAt: new Date(Date.now() - 10800000).toISOString(),
-          },
-          {
-            id: 5,
-            trackingNumber: `TRK-${new Date().getFullYear()}-00${Math.floor(
-              Math.random() * 1000
-            )
-              .toString()
-              .padStart(3, "0")}`,
-            senderName: "তানভীর হোসেন",
-            recipientName: "শাহানা পারভীন",
-            status: "in_transit",
-            isUrgent: true,
-            createdAt: new Date(Date.now() - 14400000).toISOString(),
-          },
         ];
-
-        console.log("🎭 Mock recent parcels created:", {
-          count: processedRecentParcels.length,
-          trackingNumbers: processedRecentParcels.map((p) => p.trackingNumber),
-        });
       }
 
       // Step 3: Update states
@@ -435,71 +304,6 @@ export default function AdminDashboard() {
         parcels: processedParcelStats,
       });
       setRecentParcels(processedRecentParcels);
-
-      console.log("🔄 State updated with:", {
-        users: processedUserStats,
-        parcels: processedParcelStats,
-        recentParcelsCount: processedRecentParcels.length,
-      });
-
-      // Ensure we have some data to show (fallback if all stats are 0)
-      if (processedParcelStats.total === 0) {
-        console.log("⚠️ No parcel data found, using demo data");
-        processedParcelStats = {
-          total: 334,
-          pending: 67,
-          inTransit: 89,
-          delivered: 178,
-          flagged: 5,
-          urgent: 18,
-        };
-
-        // Update state again with demo data
-        setStats((prevStats) => ({
-          ...prevStats,
-          parcels: processedParcelStats,
-        }));
-      }
-
-      // Ensure we have recent parcels data (even if just demo data)
-      if (processedRecentParcels.length === 0) {
-        console.log("⚠️ No recent parcels found, adding demo data");
-        processedRecentParcels = [
-          {
-            id: 1,
-            trackingNumber: `TRK-${new Date().getFullYear()}-001`,
-            senderName: "আহমেদ হাসান",
-            recipientName: "ফাতিমা খাতুন",
-            status: "pending",
-            isUrgent: false,
-            createdAt: new Date().toISOString(),
-          },
-          {
-            id: 2,
-            trackingNumber: `TRK-${new Date().getFullYear()}-002`,
-            senderName: "রহিম উদ্দিন",
-            recipientName: "নাসির আলী",
-            status: "in_transit",
-            isUrgent: true,
-            createdAt: new Date(Date.now() - 3600000).toISOString(),
-          },
-          {
-            id: 3,
-            trackingNumber: `TRK-${new Date().getFullYear()}-003`,
-            senderName: "সালমা বেগম",
-            recipientName: "করিম মিয়া",
-            status: "delivered",
-            isUrgent: false,
-            createdAt: new Date(Date.now() - 7200000).toISOString(),
-          },
-        ];
-
-        setRecentParcels(processedRecentParcels);
-        console.log(
-          "🎭 Demo recent parcels set:",
-          processedRecentParcels.map((p) => p.trackingNumber)
-        );
-      }
 
       // Step 4: Generate dynamic activities
       const generatedActivities: Activity[] = [];
@@ -861,16 +665,10 @@ export default function AdminDashboard() {
                 const percentage =
                   (stats.parcels.total || 0) > 0
                     ? Math.round(
-                        (item.value / (stats.parcels.total || 1)) * 100
+                        ((item.value || 0) / (stats.parcels.total || 1)) * 100
                       )
                     : 0;
                 const ItemIcon = item.icon;
-
-                console.log(`📊 ${item.label} Status:`, {
-                  value: item.value,
-                  total: stats.parcels.total,
-                  percentage,
-                });
 
                 return (
                   <div
@@ -892,7 +690,9 @@ export default function AdminDashboard() {
                       </div>
                       <div className="text-right">
                         <div className="text-lg font-bold text-foreground">
-                          {item.value.toLocaleString()}
+                          {typeof item.value === "number" && !isNaN(item.value)
+                            ? item.value.toLocaleString()
+                            : 0}
                         </div>
                         <div
                           className={`text-sm text-${item.color}-600 font-medium`}
@@ -905,7 +705,7 @@ export default function AdminDashboard() {
                     <div className="w-full bg-white/50 dark:bg-black/20 rounded-full h-3">
                       <div
                         className={`bg-gradient-to-r from-${item.color}-500 to-${item.color}-600 h-3 rounded-full transition-all duration-1000 ease-out shadow-lg`}
-                        style={{ width: `${Math.max(percentage, 2)}%` }}
+                        style={{ width: `${percentage}%` }}
                       ></div>
                     </div>
                   </div>
@@ -1080,14 +880,9 @@ export default function AdminDashboard() {
                           <div className="p-2 rounded-lg bg-gradient-to-br from-blue-500/10 to-blue-600/10 group-hover:scale-105 transition-transform duration-200">
                             <Package className="h-4 w-4 text-blue-600" />
                           </div>
-                          <div className="flex flex-col">
-                            <span className="text-sm font-bold text-blue-600 font-mono tracking-wide">
-                              {parcel.trackingNumber}
-                            </span>
-                            <span className="text-xs text-muted-foreground">
-                              Tracking ID
-                            </span>
-                          </div>
+                          <span className="text-sm font-medium text-foreground font-mono">
+                            {parcel.trackingNumber}
+                          </span>
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">

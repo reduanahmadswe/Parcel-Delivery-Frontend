@@ -1,7 +1,7 @@
 "use client";
 
 import ThemeToggle from "@/components/DarkLightThemeSwitcher";
-import { useAuth } from "@/contexts/AuthenticationContext";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   BarChart3,
   Bell,
@@ -212,14 +212,14 @@ export default function Navigation() {
                             "linear-gradient(135deg, #030637 0%, #3C0753 25%, #720455 75%, #910A67 100%)",
                         }}
                       >
-                        {user.name.charAt(0).toUpperCase()}
+                        {user?.name?.charAt(0)?.toUpperCase()}
                       </div>
                       <div className="hidden md:block text-left">
                         <div className="text-sm font-medium text-theme-primary">
-                          {user.name}
+                          {user?.name}
                         </div>
                         <div className="text-xs text-theme-muted capitalize">
-                          {user.role}
+                          {user?.role}
                         </div>
                       </div>
                     </div>
@@ -235,14 +235,14 @@ export default function Navigation() {
                     <div className="absolute right-0 mt-2 w-56 bg-surface rounded-lg shadow-brand-lg border border-theme py-2 z-50">
                       <div className="px-4 py-3 border-b border-theme">
                         <div className="text-sm font-medium text-theme-primary">
-                          {user.name}
+                          {user?.name}
                         </div>
                         <div className="text-sm text-theme-secondary">
-                          {user.email}
+                          {user?.email}
                         </div>
                         <div className="mt-1">
                           <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium text-white gradient-brand">
-                            {user.role}
+                            {user?.role}
                           </span>
                         </div>
                       </div>
@@ -347,17 +347,17 @@ export default function Navigation() {
                   <div className="border-t border-theme pt-4 mt-4">
                     <div className="flex items-center space-x-3 px-3 py-2">
                       <div className="h-10 w-10 rounded-full flex items-center justify-center text-white font-semibold gradient-brand">
-                        {user.name.charAt(0).toUpperCase()}
+                        {user?.name?.charAt(0)?.toUpperCase()}
                       </div>
                       <div>
                         <div className="text-sm font-medium text-theme-primary">
-                          {user.name}
+                          {user?.name}
                         </div>
                         <div className="text-xs text-theme-secondary">
-                          {user.email}
+                          {user?.email}
                         </div>
                         <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium text-white capitalize mt-1 gradient-brand">
-                          {user.role}
+                          {user?.role}
                         </span>
                       </div>
                     </div>

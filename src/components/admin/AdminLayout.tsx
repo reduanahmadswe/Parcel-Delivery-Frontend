@@ -176,14 +176,14 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
               <div className="flex items-center space-x-3">
                 <div className="text-right">
                   <div className="text-sm font-medium text-slate-900 dark:text-slate-100">
-                    {user.name}
+                    {user?.name}
                   </div>
                   <div className="text-xs text-slate-500 dark:text-slate-400">
                     Administrator
                   </div>
                 </div>
                 <div className="h-8 w-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold text-sm">
-                  {user.name.charAt(0).toUpperCase()}
+                  {user?.name?.charAt(0)?.toUpperCase()}
                 </div>
                 <button
                   onClick={handleLogout}

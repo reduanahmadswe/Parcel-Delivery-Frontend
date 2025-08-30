@@ -14,6 +14,8 @@ import {
   RefreshCw,
   Search,
   Shield,
+  ShieldCheck,
+  ShieldX,
   Trash2,
   UserPlus,
   Users,
@@ -498,16 +500,29 @@ export default function AdminUsersPage() {
     try {
       setActionLoading(true);
       console.log("Deleting user with ID:", selectedUser.id);
+      console.log("Deleting user:", selectedUser.name);
 
       // Use DELETE method for user deletion
       await api.delete(`/users/${selectedUser.id}`);
 
-      console.log("User deleted successfully");
+      console.log(`User ${selectedUser.name} deleted successfully`);
+
+      // Show detailed success feedback
+      const successMessage = `✅ User "${selectedUser.name}" has been deleted successfully!\n\n🗑️ The following data has been removed:\n• User account and profile\n• All personal information\n• Associated parcel history\n• Access permissions\n\n⚠️ This action cannot be undone.`;
+      alert(successMessage);
+
       await fetchUsers(); // This will automatically update stats
       setShowConfirmDialog(false);
       setSelectedUser(null);
     } catch (error) {
       console.error("Error deleting user:", error);
+
+      // Show detailed error feedback
+      const errorMessage = `❌ Failed to delete user "${
+        selectedUser?.name || "Unknown"
+      }"\n\n🔧 Possible reasons:\n• User has active parcels\n• Network connection issue\n• Server temporarily unavailable\n• Insufficient permissions\n\n💡 Try blocking the user first or contact support.`;
+      alert(errorMessage);
+
       if ((error as AxiosError)?.response) {
         const axiosError = error as AxiosError;
         console.error("Delete Error details:", {
@@ -527,15 +542,37 @@ export default function AdminUsersPage() {
       console.log("Toggling status for user with ID:", user.id);
       console.log("Current user status:", user.status);
 
+      const currentStatus = user.status || "pending";
+      const actionText = currentStatus === "active" ? "blocking" : "activating";
+      const newStatus = currentStatus === "active" ? "blocked" : "active";
+
+      console.log(`${actionText} user: ${user.name}`);
+
       // Use PATCH method for block/unblock status
       const response = await api.patch(`/users/${user.id}/block-status`);
 
       console.log("Status toggle response:", response.data);
-      console.log("User status updated successfully");
+      console.log(`User ${user.name} ${newStatus} successfully`);
+
+      // Show detailed success feedback
+      const successMessage =
+        currentStatus === "active"
+          ? `✅ User "${user.name}" has been blocked successfully!\n\n🚫 This user can no longer:\n• Log into the system\n• Create new parcels\n• Access their account\n\n⚡ You can unblock them anytime.`
+          : `✅ User "${user.name}" has been activated successfully!\n\n✅ This user can now:\n• Log into the system\n• Create and manage parcels\n• Access all features\n\n🎉 They have full access restored!`;
+
+      alert(successMessage);
 
       await fetchUsers(); // This will automatically update stats
     } catch (error) {
       console.error("Error updating user status:", error);
+
+      const currentStatus = user.status || "pending";
+      const actionText = currentStatus === "active" ? "block" : "activate";
+
+      // Show detailed error feedback
+      const errorMessage = `❌ Failed to ${actionText} user "${user.name}"\n\n🔧 Possible reasons:\n• Network connection issue\n• Server temporarily unavailable\n• User may not exist\n• Insufficient permissions\n\n💡 Please try again or contact support.`;
+      alert(errorMessage);
+
       if ((error as AxiosError)?.response) {
         const axiosError = error as AxiosError;
         console.error("Status Toggle Error details:", {
@@ -680,26 +717,42 @@ export default function AdminUsersPage() {
               <Edit className="h-4 w-4" />
             </button>
             <button
-              onClick={() => handleStatusToggle(user)}
-              className={`p-2 transition-colors duration-300 ${
+              onClick={() => {
+                const currentStatus = user.status || "pending";
+                const detailedMessage =
+                  currentStatus === "active"
+                    ? `🚫 Block User: ${user.name}\n\nThis will:\n• Prevent login access\n• Disable parcel creation\n• Suspend all activities\n\n⚠️ You can unblock them later.\n\nProceed?`
+                    : `✅ Activate User: ${user.name}\n\nThis will:\n• Enable login access\n• Allow parcel creation\n• Restore full functionality\n\n🎉 User will have complete access.\n\nProceed?`;
+
+                if (window.confirm(detailedMessage)) {
+                  handleStatusToggle(user);
+                }
+              }}
+              disabled={actionLoading}
+              className={`p-2 transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed ${
                 (user.status || "pending") === "active"
                   ? "text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
                   : "text-green-500 hover:text-green-600"
               }`}
               title={
                 (user.status || "pending") === "active"
-                  ? "Block User"
-                  : "Activate User"
+                  ? "Block User - Disable access"
+                  : "Activate User - Enable access"
               }
             >
-              <Shield className="h-4 w-4" />
+              {(user.status || "pending") === "active" ? (
+                <ShieldX className="h-4 w-4" />
+              ) : (
+                <ShieldCheck className="h-4 w-4" />
+              )}
             </button>
             <button
               onClick={() => {
                 setSelectedUser(user);
                 setShowConfirmDialog(true);
               }}
-              className="p-2 text-red-600 hover:text-red-700"
+              disabled={actionLoading}
+              className="p-2 text-red-600 hover:text-red-700 transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
               title="Delete User"
             >
               <Trash2 className="h-4 w-4" />
@@ -760,6 +813,40 @@ export default function AdminUsersPage() {
               <UserPlus className="h-4 w-4" />
               <span>Add User</span>
             </button>
+          </div>
+        </div>
+
+        {/* Quick Actions Guide */}
+        <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+          <div className="flex items-start gap-3">
+            <div className="text-blue-600 dark:text-blue-400 mt-1">
+              <Eye className="h-5 w-5" />
+            </div>
+            <div>
+              <h3 className="text-sm font-medium text-blue-900 dark:text-blue-100 mb-2">
+                User Management Actions
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs text-blue-800 dark:text-blue-200">
+                <div className="flex items-center gap-2">
+                  <ShieldCheck className="h-3 w-3 text-green-500" />
+                  <span>
+                    <strong>Activate:</strong> Enable user access
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <ShieldX className="h-3 w-3 text-red-500" />
+                  <span>
+                    <strong>Block:</strong> Disable user access
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Trash2 className="h-3 w-3 text-red-600" />
+                  <span>
+                    <strong>Delete:</strong> Permanently remove user
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 

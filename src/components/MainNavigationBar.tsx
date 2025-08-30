@@ -1,7 +1,7 @@
 "use client";
 
 import ThemeToggle from "@/components/DarkLightThemeSwitcher";
-import { useAuth } from "@/contexts/AuthenticationContext";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   BarChart3,
   Bell,
@@ -198,14 +198,14 @@ export default function Navigation() {
                   >
                     <div className="flex items-center space-x-3">
                       <div className="h-8 w-8 bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 rounded-xl flex items-center justify-center text-white font-semibold text-sm shadow-lg group-hover:scale-110 transition-transform duration-300">
-                        {user.name.charAt(0).toUpperCase()}
+                        {user?.name?.charAt(0)?.toUpperCase()}
                       </div>
                       <div className="hidden md:block text-left">
                         <div className="text-sm font-semibold text-foreground">
-                          {user.name}
+                          {user?.name}
                         </div>
                         <div className="text-xs text-muted-foreground capitalize">
-                          {user.role}
+                          {user?.role}
                         </div>
                       </div>
                     </div>
@@ -222,18 +222,18 @@ export default function Navigation() {
                       <div className="px-4 py-4 border-b border-border">
                         <div className="flex items-center space-x-3">
                           <div className="h-12 w-12 bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 rounded-xl flex items-center justify-center text-white font-bold shadow-lg">
-                            {user.name.charAt(0).toUpperCase()}
+                            {user?.name?.charAt(0)?.toUpperCase()}
                           </div>
                           <div className="flex-1">
                             <div className="text-sm font-semibold text-foreground">
-                              {user.name}
+                              {user?.name}
                             </div>
                             <div className="text-sm text-muted-foreground truncate">
-                              {user.email}
+                              {user?.email}
                             </div>
                             <div className="mt-1">
                               <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium text-white bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 shadow-sm">
-                                {user.role}
+                                {user?.role}
                               </span>
                             </div>
                           </div>
@@ -354,17 +354,17 @@ export default function Navigation() {
                   <div className="border-t border-border pt-4 mt-4">
                     <div className="flex items-center space-x-3 px-3 py-3 bg-accent/20 rounded-xl">
                       <div className="h-12 w-12 bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 rounded-xl flex items-center justify-center text-white font-bold shadow-lg">
-                        {user.name.charAt(0).toUpperCase()}
+                        {user?.name?.charAt(0)?.toUpperCase()}
                       </div>
                       <div className="flex-1">
                         <div className="text-sm font-semibold text-foreground">
-                          {user.name}
+                          {user?.name}
                         </div>
                         <div className="text-xs text-muted-foreground truncate">
-                          {user.email}
+                          {user?.email}
                         </div>
                         <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium text-white bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 capitalize mt-1 shadow-sm">
-                          {user.role}
+                          {user?.role}
                         </span>
                       </div>
                     </div>

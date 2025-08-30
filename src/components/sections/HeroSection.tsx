@@ -12,6 +12,7 @@ import {
 import { motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
+import FloatingParticles from "./FloatingParticles";
 
 export default function HeroSection() {
   return (
@@ -33,26 +34,7 @@ export default function HeroSection() {
       </div>
 
       {/* Floating Particles Animation */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {[...Array(6)].map((_, i) => (
-          <motion.div
-            key={i}
-            initial={{ opacity: 0, x: -100, y: Math.random() * 100 }}
-            animate={{
-              opacity: [0, 1, 0],
-              x: window?.innerWidth || 1200,
-              y: Math.random() * 100 + i * 100,
-            }}
-            transition={{
-              duration: 8 + i,
-              repeat: Infinity,
-              ease: "linear",
-              delay: i * 2,
-            }}
-            className="absolute w-1 h-1 bg-white rounded-full"
-          />
-        ))}
-      </div>
+      <FloatingParticles />
 
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
