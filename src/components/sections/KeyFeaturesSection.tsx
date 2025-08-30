@@ -11,21 +11,21 @@ export default function KeyFeaturesSection() {
       description:
         "Real-time GPS tracking with instant updates and delivery notifications for complete peace of mind.",
       icon: <MapPin className="h-12 w-12 text-green-500" />,
-      link: "#",
+      link: "#live-tracking",
     },
     {
       title: "100% Safe Delivery",
       description:
         "Advanced security measures with insurance coverage and verified delivery confirmation system.",
       icon: <Shield className="h-12 w-12 text-green-500" />,
-      link: "#",
+      link: "#safe-delivery",
     },
     {
       title: "24/7 Call Center Support",
       description:
         "Round-the-clock expert customer support with multilingual assistance and quick resolution.",
       icon: <HeadphonesIcon className="h-12 w-12 text-green-500" />,
-      link: "#",
+      link: "#support",
     },
   ];
 

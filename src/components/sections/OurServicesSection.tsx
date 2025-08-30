@@ -9,42 +9,42 @@ export default function OurServicesSection() {
       title: "Express Delivery & Standard Delivery",
       description:
         "Fast and reliable delivery services with multiple speed options to meet your needs.",
-      link: "#",
+      link: "#express-delivery",
       icon: <Truck className="h-16 w-16 text-green-500" />,
     },
     {
       title: "Nationwide Delivery All Districts",
       description:
         "Complete coverage across all districts of Bangladesh with extensive delivery network.",
-      link: "#",
+      link: "#nationwide-delivery",
       icon: <Globe className="h-16 w-16 text-green-500" />,
     },
     {
       title: "Fulfillment Solution",
       description:
         "End-to-end fulfillment services including warehousing, packing, and distribution.",
-      link: "#",
+      link: "#fulfillment-solution",
       icon: <Package className="h-16 w-16 text-green-500" />,
     },
     {
       title: "Same Day Delivery",
       description:
         "Ultra-fast same-day delivery service for urgent packages within city limits.",
-      link: "#",
+      link: "#same-day-delivery",
       icon: <Clock className="h-16 w-16 text-green-500" />,
     },
     {
       title: "Corporate Service (Merchant Logistics)",
       description:
         "Dedicated logistics solutions for businesses with bulk shipping requirements.",
-      link: "#",
+      link: "#corporate-service",
       icon: <Truck className="h-16 w-16 text-green-500" />,
     },
     {
       title: "Damage and Loss Coverage",
       description:
         "Comprehensive insurance coverage protecting your valuable shipments against damage and loss.",
-      link: "#",
+      link: "#insurance-coverage",
       icon: <Shield className="h-16 w-16 text-green-500" />,
     },
   ];

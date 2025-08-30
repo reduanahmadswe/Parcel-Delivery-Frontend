@@ -422,14 +422,14 @@ export function RegisterForm({
               <p className="px-4 text-xs text-muted-foreground text-center">
                 By clicking continue, you agree to our{" "}
                 <a
-                  href="#"
+                  href="#terms-of-service"
                   className="underline underline-offset-4 hover:text-primary"
                 >
                   Terms of Service
                 </a>{" "}
                 and{" "}
                 <a
-                  href="#"
+                  href="#privacy-policy"
                   className="underline underline-offset-4 hover:text-primary"
                 >
                   Privacy Policy

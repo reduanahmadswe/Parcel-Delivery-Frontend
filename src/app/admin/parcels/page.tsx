@@ -324,24 +324,24 @@ export default function AdminParcelsPage() {
         <div className="flex items-center space-x-1">
           <button
             onClick={() => openDetailsModal(parcel)}
-            className="p-2 text-slate-600 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400"
+            className="p-2 text-muted-foreground hover:text-green-500 transition-colors duration-300"
             title="View Details"
           >
             <Eye className="h-4 w-4" />
           </button>
           <button
             onClick={() => openStatusModal(parcel)}
-            className="p-2 text-slate-600 hover:text-green-600 dark:text-slate-400 dark:hover:text-green-400"
+            className="p-2 text-muted-foreground hover:text-green-500 transition-colors duration-300"
             title="Update Status"
           >
             <Edit className="h-4 w-4" />
           </button>
           <button
             onClick={() => handleFlagParcel(parcel)}
-            className={`p-2 ${
+            className={`p-2 transition-colors duration-300 ${
               parcel?.isFlagged
-                ? "text-red-600 hover:text-red-700"
-                : "text-slate-600 hover:text-orange-600 dark:text-slate-400 dark:hover:text-orange-400"
+                ? "text-red-600 hover:text-red-700 dark:text-red-400"
+                : "text-muted-foreground hover:text-green-500"
             }`}
             title={parcel?.isFlagged ? "Unflag Parcel" : "Flag Parcel"}
           >
@@ -349,10 +349,10 @@ export default function AdminParcelsPage() {
           </button>
           <button
             onClick={() => handleHoldParcel(parcel)}
-            className={`p-2 ${
+            className={`p-2 transition-colors duration-300 ${
               parcel?.isOnHold
-                ? "text-yellow-600 hover:text-yellow-700"
-                : "text-slate-600 hover:text-yellow-600 dark:text-slate-400 dark:hover:text-yellow-400"
+                ? "text-red-600 hover:text-red-700 dark:text-red-400"
+                : "text-muted-foreground hover:text-green-500"
             }`}
             title={parcel?.isOnHold ? "Release Hold" : "Put on Hold"}
           >
@@ -360,7 +360,7 @@ export default function AdminParcelsPage() {
           </button>
           <div className="relative group">
             <button
-              className="p-2 text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100"
+              className="p-2 text-muted-foreground hover:text-foreground transition-colors duration-300"
               title="More Actions"
             >
               <MoreVertical className="h-4 w-4" />
@@ -411,13 +411,13 @@ export default function AdminParcelsPage() {
 
   return (
     <AdminLayout>
-      <div className="space-y-6">
+      <div className="space-y-6 bg-background">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
+            <h1 className="text-2xl font-bold text-foreground">
               Parcel Management
             </h1>
-            <p className="text-slate-600 dark:text-slate-400">
+            <p className="text-muted-foreground">
               Track and manage all parcels in the system
             </p>
           </div>
@@ -430,13 +430,13 @@ export default function AdminParcelsPage() {
                   status: "",
                 })
               }
-              className="px-4 py-2 bg-slate-600 text-white rounded-md hover:bg-slate-700 transition-colors"
+              className="px-4 py-2 bg-muted text-muted-foreground rounded-md hover:bg-gradient-to-r hover:from-red-50/10 hover:to-green-50/10 dark:hover:from-red-950/5 dark:hover:to-green-950/5 transition-all duration-300"
             >
               Clear Filters
             </button>
             <button
               onClick={fetchParcels}
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+              className="px-4 py-2 bg-gradient-to-br from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 text-white rounded-md hover:shadow-lg transition-all duration-300"
             >
               Refresh
             </button>
@@ -444,13 +444,13 @@ export default function AdminParcelsPage() {
         </div>
 
         {/* Filter Panel */}
-        <div className="bg-white dark:bg-slate-800 rounded-lg shadow border border-slate-200 dark:border-slate-700 p-4">
-          <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">
+        <div className="bg-background rounded-lg shadow border border-border p-4 hover:shadow-lg transition-all duration-300">
+          <h3 className="text-lg font-semibold text-foreground mb-4">
             Filter Parcels
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+              <label className="block text-sm font-medium text-muted-foreground mb-2">
                 Sender Email
               </label>
               <input
@@ -463,11 +463,11 @@ export default function AdminParcelsPage() {
                     senderEmail: e.target.value,
                   })
                 }
-                className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-slate-700 dark:text-slate-100"
+                className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 bg-background text-foreground transition-all duration-300"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+              <label className="block text-sm font-medium text-muted-foreground mb-2">
                 Receiver Email
               </label>
               <input
@@ -480,11 +480,11 @@ export default function AdminParcelsPage() {
                     receiverEmail: e.target.value,
                   })
                 }
-                className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-slate-700 dark:text-slate-100"
+                className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 bg-background text-foreground transition-all duration-300"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+              <label className="block text-sm font-medium text-muted-foreground mb-2">
                 Status
               </label>
               <select
@@ -492,7 +492,7 @@ export default function AdminParcelsPage() {
                 onChange={(e) =>
                   setFilterParams({ ...filterParams, status: e.target.value })
                 }
-                className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-slate-700 dark:text-slate-100"
+                className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 bg-background text-foreground transition-all duration-300"
               >
                 <option value="">All Status</option>
                 {statusOptions.map((status) => (
@@ -507,7 +507,7 @@ export default function AdminParcelsPage() {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-800 rounded-lg shadow border border-slate-200 dark:border-slate-700">
+        <div className="bg-background rounded-lg shadow border border-border hover:shadow-lg transition-all duration-300">
           <DataTable<Parcel>
             data={parcels}
             columns={columns}
@@ -531,25 +531,23 @@ export default function AdminParcelsPage() {
           <div className="space-y-6">
             {/* Basic Information */}
             <div>
-              <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">
+              <h3 className="text-lg font-semibold text-foreground mb-4">
                 Basic Information
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+                  <label className="block text-sm font-medium text-muted-foreground">
                     Tracking Number
                   </label>
-                  <p className="text-slate-900 dark:text-slate-100 font-mono">
+                  <p className="text-foreground font-mono">
                     {selectedParcel.trackingNumber}
                   </p>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+                  <label className="block text-sm font-medium text-muted-foreground">
                     Type
                   </label>
-                  <p className="text-slate-900 dark:text-slate-100">
-                    {selectedParcel.type}
-                  </p>
+                  <p className="text-foreground">{selectedParcel.type}</p>
                 </div>
                 <div className="md:col-span-2">
                   <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">

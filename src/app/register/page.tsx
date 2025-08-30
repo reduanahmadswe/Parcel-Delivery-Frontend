@@ -5,10 +5,12 @@ import { ArrowLeft, Package, Shield, Star, Users } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 
-const RegisterForm = React.lazy(() =>
-  import("@/components/modules/Authentication/RegisterForm").then((module) => ({
-    default: module.RegisterForm,
-  }))
+const MultiStepRegisterForm = React.lazy(() =>
+  import("@/components/modules/Authentication/MultiStepRegisterForm").then(
+    (module) => ({
+      default: module.MultiStepRegisterForm,
+    })
+  )
 );
 
 export default function RegisterPage() {
@@ -55,14 +57,6 @@ export default function RegisterPage() {
           <div className="relative z-10 flex-1 flex items-center justify-center p-6 lg:p-8">
             <div className="w-full max-w-md">
               <div className="space-y-6">
-                <div className="text-center space-y-2">
-                  <h1 className="text-3xl font-bold text-foreground">
-                    Create Account
-                  </h1>
-                  <p className="text-muted-foreground">
-                    Join thousands of satisfied customers
-                  </p>
-                </div>
                 <React.Suspense
                   fallback={
                     <div className="flex items-center justify-center p-12">
@@ -70,7 +64,7 @@ export default function RegisterPage() {
                     </div>
                   }
                 >
-                  <RegisterForm />
+                  <MultiStepRegisterForm />
                 </React.Suspense>
               </div>
             </div>

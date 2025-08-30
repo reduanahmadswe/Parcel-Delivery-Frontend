@@ -52,10 +52,15 @@ export function LoginForm({
 
   const onSubmit = async (data: z.infer<typeof loginSchema>) => {
     try {
-      const success = await login(data.email, data.password);
-      if (success) {
+      const result = await login(data.email, data.password);
+      if (result.success && result.user) {
         toast.success("Welcome back!");
-        router.push("/");
+        // Redirect admin to admin dashboard, others to home
+        if (result.user.role === "admin") {
+          router.push("/admin");
+        } else {
+          router.push("/");
+        }
       } else {
         toast.error("Invalid email or password");
       }

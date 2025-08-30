@@ -24,11 +24,11 @@ export default function AdminLoginPage() {
     e.preventDefault();
     setLoading(true);
 
-    const success = await login(email, password);
+    const result = await login(email, password);
 
-    if (success && user?.role === "admin") {
+    if (result.success && result.user?.role === "admin") {
       router.push("/admin");
-    } else if (success && user?.role !== "admin") {
+    } else if (result.success && result.user?.role !== "admin") {
       // Not an admin user
       router.push("/login");
     }

@@ -49,41 +49,46 @@ export default function Navigation() {
     };
   }, []);
 
-  const navigationItems = [
-    { href: "/", label: "Home", icon: Home },
-    { href: "/track", label: "Track Parcel", icon: Search },
-  ];
+  const navigationItems =
+    user?.role === "admin"
+      ? [
+          { href: "/track", label: "Track Parcel", icon: Search },
+          { href: "/admin", label: "Admin Dashboard", icon: BarChart3 },
+          { href: "/admin/users", label: "Users", icon: Users },
+          { href: "/admin/reports", label: "Reports", icon: FileText },
+        ]
+      : [
+          { href: "/", label: "Home", icon: Home },
+          { href: "/track", label: "Track Parcel", icon: Search },
+        ];
 
-  const dashboardItems = user
-    ? [
-        ...(user.role === "admin"
-          ? [
-              { href: "/admin", label: "Admin Dashboard", icon: BarChart3 },
-              { href: "/admin/users", label: "Users", icon: Users },
-              { href: "/admin/reports", label: "Reports", icon: FileText },
-            ]
-          : []),
-        ...(user.role === "sender"
-          ? [
-              { href: "/sender", label: "Dashboard", icon: BarChart3 },
-              {
-                href: "/sender/create-parcel",
-                label: "Create Parcel",
-                icon: Package,
-              },
-            ]
-          : []),
-        ...(user.role === "receiver"
-          ? [{ href: "/receiver", label: "Dashboard", icon: BarChart3 }]
-          : []),
-      ]
-    : [];
+  const dashboardItems =
+    user && user.role !== "admin"
+      ? [
+          ...(user.role === "sender"
+            ? [
+                { href: "/sender", label: "Dashboard", icon: BarChart3 },
+                {
+                  href: "/sender/create-parcel",
+                  label: "Create Parcel",
+                  icon: Package,
+                },
+              ]
+            : []),
+          ...(user.role === "receiver"
+            ? [{ href: "/receiver", label: "Dashboard", icon: BarChart3 }]
+            : []),
+        ]
+      : [];
 
-  const userMenuItems = [
-    { href: "/profile", label: "Profile", icon: User },
-    { href: "/status-history", label: "Status History", icon: FileText },
-    { href: "/settings", label: "Settings", icon: Settings },
-  ];
+  const userMenuItems =
+    user?.role === "admin"
+      ? [{ href: "/profile", label: "Profile", icon: User }]
+      : [
+          { href: "/profile", label: "Profile", icon: User },
+          { href: "/status-history", label: "Status History", icon: FileText },
+          { href: "/settings", label: "Settings", icon: Settings },
+        ];
 
   return (
     <nav className="bg-surface/95 backdrop-blur-sm shadow-brand border-b border-theme sticky top-0 z-50">
@@ -181,15 +186,17 @@ export default function Navigation() {
 
             {user ? (
               <>
-                {/* Notifications */}
-                <button className="relative p-2 text-theme-secondary hover:text-white hover:shadow-brand-md rounded-lg transition-all duration-200 hover:gradient-brand">
-                  <Bell className="h-5 w-5" />
-                  {notifications > 0 && (
-                    <span className="absolute -top-1 -right-1 h-5 w-5 text-white text-xs rounded-full flex items-center justify-center animate-pulse gradient-brand">
-                      {notifications}
-                    </span>
-                  )}
-                </button>
+                {/* Notifications - Only for admin */}
+                {user.role === "admin" && (
+                  <button className="relative p-2 text-theme-secondary hover:text-white hover:shadow-brand-md rounded-lg transition-all duration-200 hover:gradient-brand">
+                    <Bell className="h-5 w-5" />
+                    {notifications > 0 && (
+                      <span className="absolute -top-1 -right-1 h-5 w-5 text-white text-xs rounded-full flex items-center justify-center animate-pulse gradient-brand">
+                        {notifications}
+                      </span>
+                    )}
+                  </button>
+                )}
 
                 {/* User Menu */}
                 <div className="relative" ref={userMenuRef}>

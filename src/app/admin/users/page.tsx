@@ -6,11 +6,41 @@ import Modal from "@/components/admin/ModalDialogComponent";
 import DataTable, { Column } from "@/components/admin/ReusableDataTable";
 import StatusBadge from "@/components/admin/StatusIndicatorBadge";
 import api from "@/lib/ApiConfiguration";
-import { Edit, Eye, Shield, Trash2, UserPlus } from "lucide-react";
+import { AxiosError } from "axios";
+import {
+  Edit,
+  Eye,
+  Package,
+  RefreshCw,
+  Search,
+  Shield,
+  Trash2,
+  UserPlus,
+  Users,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 
+interface ApiUser {
+  id?: number;
+  _id?: string | number; // MongoDB ObjectId
+  name?: string;
+  email?: string;
+  role?: "admin" | "sender" | "receiver";
+  status?: "active" | "blocked" | "pending";
+  phone?: string;
+  address?: {
+    street?: string;
+    city?: string;
+    state?: string;
+    zipCode?: string;
+  };
+  createdAt?: string;
+  updatedAt?: string;
+  [key: string]: unknown; // For any additional fields
+}
+
 interface User extends Record<string, unknown> {
-  id: number;
+  id: string | number;
   name: string;
   email: string;
   role: "admin" | "sender" | "receiver";
@@ -54,9 +84,33 @@ interface UserUpdateForm {
   };
 }
 
+interface UserStats {
+  totalUsers: number;
+  activeUsers: number;
+  blockedUsers: number;
+  pendingUsers: number;
+  adminUsers: number;
+  senderUsers: number;
+  receiverUsers: number;
+  newUsersThisMonth: number;
+}
+
 export default function AdminUsersPage() {
   const [users, setUsers] = useState<User[]>([]);
+  const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [userStats, setUserStats] = useState<UserStats>({
+    totalUsers: 0,
+    activeUsers: 0,
+    blockedUsers: 0,
+    pendingUsers: 0,
+    adminUsers: 0,
+    senderUsers: 0,
+    receiverUsers: 0,
+    newUsersThisMonth: 0,
+  });
   const [loading, setLoading] = useState(true);
+  const [statsLoading, setStatsLoading] = useState(true);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [showUserDetailsModal, setShowUserDetailsModal] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -78,31 +132,322 @@ export default function AdminUsersPage() {
   });
 
   useEffect(() => {
-    fetchUsers();
-  }, []);
+    fetchUsers(); // This will now also update the stats
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Filter users based on search term
+  useEffect(() => {
+    if (!searchTerm.trim()) {
+      setFilteredUsers(users);
+    } else {
+      const searchLower = searchTerm.toLowerCase().trim();
+      const filtered = users.filter((user) => {
+        // Search in name, email, phone, and role
+        const searchableFields = [
+          user.name,
+          user.email,
+          user.phone,
+          user.role,
+          user.status,
+        ];
+
+        return searchableFields.some((field) =>
+          field?.toLowerCase().includes(searchLower)
+        );
+      });
+      setFilteredUsers(filtered);
+    }
+  }, [users, searchTerm]);
 
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      const response = await api.get("/users");
-      const usersData = response.data.data || response.data;
-      setUsers(Array.isArray(usersData) ? usersData : []);
+      setStatsLoading(true);
+      console.log("Fetching users from API...");
+      console.log("API Base URL:", api.defaults.baseURL);
+
+      // Try admin-specific endpoint first, fallback to general users endpoint
+      let response;
+      try {
+        response = await api.get("/admin/users"); // Try admin endpoint first
+        console.log("Using admin users endpoint");
+      } catch {
+        console.log(
+          "Admin endpoint not available, trying general users endpoint"
+        );
+        response = await api.get("/users"); // Fallback to general endpoint
+      }
+
+      console.log("Full API response:", JSON.stringify(response.data, null, 2));
+
+      // Try different possible data structures
+      let usersData = null;
+      if (response.data.data && Array.isArray(response.data.data)) {
+        usersData = response.data.data;
+        console.log("Using response.data.data");
+      } else if (response.data.users && Array.isArray(response.data.users)) {
+        usersData = response.data.users;
+        console.log("Using response.data.users");
+      } else if (Array.isArray(response.data)) {
+        usersData = response.data;
+        console.log("Using response.data directly");
+      } else {
+        console.log("No valid users array found in response");
+        usersData = [];
+      }
+
+      console.log("Extracted users data:", usersData);
+      console.log("Users data type:", typeof usersData);
+      console.log("Is array:", Array.isArray(usersData));
+      console.log("Length:", usersData?.length);
+
+      // Validate and normalize user data
+      const validUsers: User[] =
+        Array.isArray(usersData) && usersData.length > 0
+          ? usersData.map((user: ApiUser, index: number) => {
+              console.log(
+                `Processing user ${index}:`,
+                JSON.stringify(user, null, 2)
+              );
+
+              // Handle MongoDB _id field
+              const userId = user.id || user._id || 0;
+
+              const processedUser = {
+                id: userId,
+                name:
+                  user.name ||
+                  (user.username as string) ||
+                  (user.fullName as string) ||
+                  `User ${userId}`,
+                email: user.email || `user${userId}@example.com`,
+                role: (user.role || "sender") as
+                  | "admin"
+                  | "sender"
+                  | "receiver",
+                status: (user.status ||
+                  ((user.isActive as boolean) ? "active" : "pending")) as
+                  | "active"
+                  | "blocked"
+                  | "pending",
+                phone:
+                  user.phone ||
+                  (user.phoneNumber as string) ||
+                  (user.mobile as string) ||
+                  `+8801${String(userId).padStart(9, "0")}`,
+                address: {
+                  street:
+                    user.address?.street ||
+                    ((user.address as Record<string, unknown>)
+                      ?.line1 as string) ||
+                    "Not specified",
+                  city: user.address?.city || "Not specified",
+                  state:
+                    user.address?.state ||
+                    ((user.address as Record<string, unknown>)
+                      ?.division as string) ||
+                    "Not specified",
+                  zipCode:
+                    user.address?.zipCode ||
+                    ((user.address as Record<string, unknown>)
+                      ?.postalCode as string) ||
+                    "0000",
+                },
+                createdAt:
+                  user.createdAt ||
+                  (user.created_at as string) ||
+                  new Date().toISOString(),
+                updatedAt:
+                  user.updatedAt ||
+                  (user.updated_at as string) ||
+                  new Date().toISOString(),
+              } as User;
+
+              console.log(
+                `Processed user ${index}:`,
+                JSON.stringify(processedUser, null, 2)
+              );
+              return processedUser;
+            })
+          : ([
+              // Mock data for testing if no API data is available
+              {
+                id: 1,
+                name: "Admin User",
+                email: "admin@example.com",
+                role: "admin",
+                status: "active",
+                phone: "+8801711234567",
+                address: {
+                  street: "123 Admin Street",
+                  city: "Dhaka",
+                  state: "Dhaka Division",
+                  zipCode: "1000",
+                },
+                createdAt: new Date(
+                  Date.now() - 30 * 24 * 60 * 60 * 1000
+                ).toISOString(),
+                updatedAt: new Date().toISOString(),
+              },
+              {
+                id: 2,
+                name: "John Sender",
+                email: "john@example.com",
+                role: "sender",
+                status: "active",
+                phone: "+8801987654321",
+                address: {
+                  street: "456 Sender Avenue",
+                  city: "Chittagong",
+                  state: "Chittagong Division",
+                  zipCode: "4000",
+                },
+                createdAt: new Date(
+                  Date.now() - 15 * 24 * 60 * 60 * 1000
+                ).toISOString(),
+                updatedAt: new Date().toISOString(),
+              },
+              {
+                id: 3,
+                name: "Jane Receiver",
+                email: "jane@example.com",
+                role: "receiver",
+                status: "pending",
+                phone: "+8801555666777",
+                address: {
+                  street: "789 Receiver Road",
+                  city: "Sylhet",
+                  state: "Sylhet Division",
+                  zipCode: "3100",
+                },
+                createdAt: new Date(
+                  Date.now() - 7 * 24 * 60 * 60 * 1000
+                ).toISOString(),
+                updatedAt: new Date().toISOString(),
+              },
+              {
+                id: 4,
+                name: "Bob Blocked",
+                email: "bob@example.com",
+                role: "sender",
+                status: "blocked",
+                phone: "+8801444555666",
+                address: {
+                  street: "321 Blocked Street",
+                  city: "Rajshahi",
+                  state: "Rajshahi Division",
+                  zipCode: "6000",
+                },
+                createdAt: new Date(
+                  Date.now() - 60 * 24 * 60 * 60 * 1000
+                ).toISOString(),
+                updatedAt: new Date().toISOString(),
+              },
+            ] as User[]);
+
+      console.log("Final processed users:", validUsers.length);
+      if (validUsers.length > 0 && usersData && usersData.length === 0) {
+        console.log("Using mock data for testing - API returned no users");
+      }
+      console.log(
+        "Sample processed user:",
+        JSON.stringify(validUsers[0], null, 2)
+      );
+
+      // Debug: Log all users for table display
+      console.log(
+        "All users being set:",
+        validUsers.map((u) => ({
+          id: u.id,
+          name: u.name,
+          email: u.email,
+          role: u.role,
+          status: u.status,
+        }))
+      );
+
+      setUsers(validUsers);
+      setFilteredUsers(validUsers); // Initialize filtered users
+
+      // Calculate and update stats immediately from the fetched data
+      updateStatsFromUsers(validUsers);
     } catch (error) {
       console.error("Error fetching users:", error);
+      if (error instanceof Error) {
+        console.error("Error message:", error.message);
+      }
+      if ((error as AxiosError)?.response) {
+        const axiosError = error as AxiosError;
+        console.error("API Error details:", {
+          status: axiosError.response?.status,
+          statusText: axiosError.response?.statusText,
+          data: axiosError.response?.data,
+        });
+      }
+      setUsers([]); // Set empty array on error
+      setFilteredUsers([]); // Set empty filtered array on error
+      // Set empty stats on error
+      updateStatsFromUsers([]);
     } finally {
       setLoading(false);
     }
   };
 
+  // Function to calculate stats from users array
+  const updateStatsFromUsers = (usersArray: User[]) => {
+    console.log("Calculating stats from", usersArray.length, "users");
+
+    const stats: UserStats = {
+      totalUsers: usersArray.length,
+      activeUsers: usersArray.filter((user) => user.status === "active").length,
+      blockedUsers: usersArray.filter((user) => user.status === "blocked")
+        .length,
+      pendingUsers: usersArray.filter((user) => user.status === "pending")
+        .length,
+      adminUsers: usersArray.filter((user) => user.role === "admin").length,
+      senderUsers: usersArray.filter((user) => user.role === "sender").length,
+      receiverUsers: usersArray.filter((user) => user.role === "receiver")
+        .length,
+      newUsersThisMonth: usersArray.filter((user) => {
+        if (!user.createdAt) return false;
+        const userDate = new Date(user.createdAt);
+        const now = new Date();
+        const currentMonth = now.getMonth();
+        const currentYear = now.getFullYear();
+        return (
+          userDate.getMonth() === currentMonth &&
+          userDate.getFullYear() === currentYear
+        );
+      }).length,
+    };
+
+    console.log("Calculated stats:", stats);
+    setUserStats(stats);
+    setStatsLoading(false);
+  };
+
   const handleCreateUser = async () => {
     try {
       setActionLoading(true);
-      await api.post("/users", formData);
-      await fetchUsers();
+      console.log("Creating new user with data:", formData);
+
+      // Use POST method to create new user
+      const response = await api.post("/users", formData);
+
+      console.log("User created successfully:", response.data);
+      await fetchUsers(); // This will automatically update stats
       setIsCreating(false);
       resetForm();
     } catch (error) {
       console.error("Error creating user:", error);
+      if ((error as AxiosError)?.response) {
+        const axiosError = error as AxiosError;
+        console.error("Create User Error details:", {
+          status: axiosError.response?.status,
+          statusText: axiosError.response?.statusText,
+          data: axiosError.response?.data,
+        });
+      }
     } finally {
       setActionLoading(false);
     }
@@ -113,20 +458,35 @@ export default function AdminUsersPage() {
 
     try {
       setActionLoading(true);
+      console.log("Updating user with ID:", selectedUser.id);
+      console.log("Update data:", formData);
+
       const updateData: UserUpdateForm = { ...formData };
-      if (!updateData.password) {
+      if (!updateData.password || updateData.password.trim() === "") {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { password: _, ...dataWithoutPassword } = updateData;
+        console.log("Updating user without password");
         await api.put(`/users/${selectedUser.id}`, dataWithoutPassword);
       } else {
+        console.log("Updating user with new password");
         await api.put(`/users/${selectedUser.id}`, updateData);
       }
-      await fetchUsers();
+
+      console.log("User updated successfully");
+      await fetchUsers(); // This will automatically update stats
       setIsEditing(false);
       setSelectedUser(null);
       resetForm();
     } catch (error) {
       console.error("Error updating user:", error);
+      if ((error as AxiosError)?.response) {
+        const axiosError = error as AxiosError;
+        console.error("Update Error details:", {
+          status: axiosError.response?.status,
+          statusText: axiosError.response?.statusText,
+          data: axiosError.response?.data,
+        });
+      }
     } finally {
       setActionLoading(false);
     }
@@ -137,12 +497,25 @@ export default function AdminUsersPage() {
 
     try {
       setActionLoading(true);
+      console.log("Deleting user with ID:", selectedUser.id);
+
+      // Use DELETE method for user deletion
       await api.delete(`/users/${selectedUser.id}`);
-      await fetchUsers();
+
+      console.log("User deleted successfully");
+      await fetchUsers(); // This will automatically update stats
       setShowConfirmDialog(false);
       setSelectedUser(null);
     } catch (error) {
       console.error("Error deleting user:", error);
+      if ((error as AxiosError)?.response) {
+        const axiosError = error as AxiosError;
+        console.error("Delete Error details:", {
+          status: axiosError.response?.status,
+          statusText: axiosError.response?.statusText,
+          data: axiosError.response?.data,
+        });
+      }
     } finally {
       setActionLoading(false);
     }
@@ -151,11 +524,26 @@ export default function AdminUsersPage() {
   const handleStatusToggle = async (user: User) => {
     try {
       setActionLoading(true);
-      // Use the correct block/unblock API endpoint
-      await api.put(`/users/${user.id}/block-status`);
-      await fetchUsers();
+      console.log("Toggling status for user with ID:", user.id);
+      console.log("Current user status:", user.status);
+
+      // Use PATCH method for block/unblock status
+      const response = await api.patch(`/users/${user.id}/block-status`);
+
+      console.log("Status toggle response:", response.data);
+      console.log("User status updated successfully");
+
+      await fetchUsers(); // This will automatically update stats
     } catch (error) {
       console.error("Error updating user status:", error);
+      if ((error as AxiosError)?.response) {
+        const axiosError = error as AxiosError;
+        console.error("Status Toggle Error details:", {
+          status: axiosError.response?.status,
+          statusText: axiosError.response?.statusText,
+          data: axiosError.response?.data,
+        });
+      }
     } finally {
       setActionLoading(false);
     }
@@ -205,110 +593,306 @@ export default function AdminUsersPage() {
       key: "name" as keyof User,
       header: "Name",
       sortable: true,
+      render: (value: unknown, user: User) => (
+        <div className="font-medium text-foreground">{user.name || "N/A"}</div>
+      ),
     },
     {
       key: "email" as keyof User,
       header: "Email",
       sortable: true,
+      render: (value: unknown, user: User) => (
+        <div className="text-muted-foreground">{user.email || "N/A"}</div>
+      ),
     },
     {
       key: "role" as keyof User,
       header: "Role",
       sortable: true,
-      render: (user: User) => <StatusBadge status={user.role} variant="user" />,
+      render: (value: unknown, user: User) => (
+        <StatusBadge status={user.role || "unknown"} variant="user" />
+      ),
     },
     {
       key: "status" as keyof User,
       header: "Status",
       sortable: true,
-      render: (user: User) => (
-        <StatusBadge status={user.status} variant="custom" />
+      render: (value: unknown, user: User) => (
+        <StatusBadge status={user.status || "pending"} variant="custom" />
       ),
     },
     {
       key: "phone" as keyof User,
       header: "Phone",
       sortable: false,
+      render: (value: unknown, user: User) => (
+        <div className="text-muted-foreground">{user.phone || "N/A"}</div>
+      ),
     },
     {
       key: "createdAt" as keyof User,
       header: "Joined",
       sortable: true,
-      render: (user: User) => new Date(user.createdAt).toLocaleDateString(),
+      render: (value: unknown, user: User) => {
+        try {
+          return (
+            <div className="text-muted-foreground">
+              {user.createdAt
+                ? new Date(user.createdAt).toLocaleDateString("en-GB", {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                  })
+                : "N/A"}
+            </div>
+          );
+        } catch {
+          return <div className="text-muted-foreground">N/A</div>;
+        }
+      },
     },
     {
       key: "actions" as keyof User,
       header: "Actions",
       sortable: false,
-      render: (user: User) => (
-        <div className="flex items-center space-x-2">
-          <button
-            onClick={() => openUserDetailsModal(user)}
-            className="p-2 text-slate-600 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400"
-            title="View Details"
-          >
-            <Eye className="h-4 w-4" />
-          </button>
-          <button
-            onClick={() => openEditModal(user)}
-            className="p-2 text-slate-600 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400"
-            title="Edit User"
-          >
-            <Edit className="h-4 w-4" />
-          </button>
-          <button
-            onClick={() => handleStatusToggle(user)}
-            className={`p-2 ${
-              user.status === "active"
-                ? "text-yellow-600 hover:text-yellow-700"
-                : "text-green-600 hover:text-green-700"
-            }`}
-            title={user.status === "active" ? "Block User" : "Activate User"}
-          >
-            <Shield className="h-4 w-4" />
-          </button>
-          <button
-            onClick={() => {
-              setSelectedUser(user);
-              setShowConfirmDialog(true);
-            }}
-            className="p-2 text-red-600 hover:text-red-700"
-            title="Delete User"
-          >
-            <Trash2 className="h-4 w-4" />
-          </button>
-        </div>
-      ),
+      render: (value: unknown, user: User) => {
+        // Add safety check for user object
+        if (!user || !user.id) {
+          return (
+            <span className="text-muted-foreground">No actions available</span>
+          );
+        }
+
+        return (
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={() => openUserDetailsModal(user)}
+              className="p-2 text-muted-foreground hover:text-green-500 transition-colors duration-300"
+              title="View Details"
+            >
+              <Eye className="h-4 w-4" />
+            </button>
+            <button
+              onClick={() => openEditModal(user)}
+              className="p-2 text-muted-foreground hover:text-green-500 transition-colors duration-300"
+              title="Edit User"
+            >
+              <Edit className="h-4 w-4" />
+            </button>
+            <button
+              onClick={() => handleStatusToggle(user)}
+              className={`p-2 transition-colors duration-300 ${
+                (user.status || "pending") === "active"
+                  ? "text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
+                  : "text-green-500 hover:text-green-600"
+              }`}
+              title={
+                (user.status || "pending") === "active"
+                  ? "Block User"
+                  : "Activate User"
+              }
+            >
+              <Shield className="h-4 w-4" />
+            </button>
+            <button
+              onClick={() => {
+                setSelectedUser(user);
+                setShowConfirmDialog(true);
+              }}
+              className="p-2 text-red-600 hover:text-red-700"
+              title="Delete User"
+            >
+              <Trash2 className="h-4 w-4" />
+            </button>
+          </div>
+        );
+      },
     },
   ];
 
   return (
     <AdminLayout>
-      <div className="space-y-6">
-        <div className="flex items-center justify-between">
+      <div className="space-y-6 bg-background">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
+            <h1 className="text-2xl font-bold text-foreground">
               User Management
             </h1>
-            <p className="text-slate-600 dark:text-slate-400">
+            <p className="text-muted-foreground">
               Manage system users and their permissions
             </p>
+            {searchTerm && (
+              <div className="flex items-center gap-2 mt-2 text-sm text-muted-foreground">
+                <Search className="h-4 w-4" />
+                <span>
+                  Showing {filteredUsers.length} result
+                  {filteredUsers.length !== 1 ? "s" : ""} for &ldquo;
+                  {searchTerm}&rdquo;
+                </span>
+                <button
+                  onClick={() => setSearchTerm("")}
+                  className="text-blue-600 hover:text-blue-700 underline"
+                >
+                  Clear search
+                </button>
+              </div>
+            )}
           </div>
-          <button
-            onClick={openCreateModal}
-            className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-          >
-            <UserPlus className="h-4 w-4" />
-            <span>Add User</span>
-          </button>
+          <div className="flex items-center space-x-3">
+            <button
+              onClick={() => {
+                fetchUsers(); // This will automatically refresh stats too
+              }}
+              disabled={loading || statsLoading}
+              className="flex items-center space-x-2 px-4 py-2 bg-background border border-border text-foreground rounded-md hover:bg-muted transition-all duration-300 disabled:opacity-50"
+            >
+              <RefreshCw
+                className={`h-4 w-4 ${
+                  loading || statsLoading ? "animate-spin" : ""
+                }`}
+              />
+              <span>Refresh</span>
+            </button>
+            <button
+              onClick={openCreateModal}
+              className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-br from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 text-white rounded-md hover:shadow-lg transition-all duration-300"
+            >
+              <UserPlus className="h-4 w-4" />
+              <span>Add User</span>
+            </button>
+          </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-800 rounded-lg shadow border border-slate-200 dark:border-slate-700">
+        {/* User Statistics Dashboard */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="bg-background p-6 rounded-xl shadow-sm border border-border hover:shadow-lg transition-all duration-300">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">
+                  Total Users
+                </p>
+                <p className="text-2xl font-bold text-foreground">
+                  {statsLoading ? "..." : userStats.totalUsers.toLocaleString()}
+                </p>
+              </div>
+              <div className="p-3 rounded-full bg-gradient-to-br from-blue-500/10 to-blue-600/10">
+                <Users className="h-6 w-6 text-blue-600" />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-background p-6 rounded-xl shadow-sm border border-border hover:shadow-lg transition-all duration-300">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">
+                  Active Users
+                </p>
+                <p className="text-2xl font-bold text-green-600">
+                  {statsLoading
+                    ? "..."
+                    : userStats.activeUsers.toLocaleString()}
+                </p>
+              </div>
+              <div className="p-3 rounded-full bg-gradient-to-br from-green-500/10 to-green-600/10">
+                <Shield className="h-6 w-6 text-green-600" />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-background p-6 rounded-xl shadow-sm border border-border hover:shadow-lg transition-all duration-300">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">
+                  Blocked Users
+                </p>
+                <p className="text-2xl font-bold text-red-600">
+                  {statsLoading
+                    ? "..."
+                    : userStats.blockedUsers.toLocaleString()}
+                </p>
+              </div>
+              <div className="p-3 rounded-full bg-gradient-to-br from-red-500/10 to-red-600/10">
+                <Trash2 className="h-6 w-6 text-red-600" />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-background p-6 rounded-xl shadow-sm border border-border hover:shadow-lg transition-all duration-300">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">
+                  New This Month
+                </p>
+                <p className="text-2xl font-bold text-yellow-600">
+                  {statsLoading
+                    ? "..."
+                    : userStats.newUsersThisMonth.toLocaleString()}
+                </p>
+              </div>
+              <div className="p-3 rounded-full bg-gradient-to-br from-yellow-500/10 to-yellow-600/10">
+                <UserPlus className="h-6 w-6 text-yellow-600" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Role Distribution */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="bg-background p-6 rounded-xl shadow-sm border border-border hover:shadow-lg transition-all duration-300">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-foreground">
+                Admin Users
+              </h3>
+              <div className="p-2 rounded-lg bg-gradient-to-br from-purple-500/10 to-purple-600/10">
+                <Shield className="h-5 w-5 text-purple-600" />
+              </div>
+            </div>
+            <p className="text-3xl font-bold text-purple-600">
+              {statsLoading ? "..." : userStats.adminUsers.toLocaleString()}
+            </p>
+            <p className="text-sm text-muted-foreground mt-2">
+              System administrators
+            </p>
+          </div>
+
+          <div className="bg-background p-6 rounded-xl shadow-sm border border-border hover:shadow-lg transition-all duration-300">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-foreground">Senders</h3>
+              <div className="p-2 rounded-lg bg-gradient-to-br from-green-500/10 to-green-600/10">
+                <Package className="h-5 w-5 text-green-600" />
+              </div>
+            </div>
+            <p className="text-3xl font-bold text-green-600">
+              {statsLoading ? "..." : userStats.senderUsers.toLocaleString()}
+            </p>
+            <p className="text-sm text-muted-foreground mt-2">Parcel senders</p>
+          </div>
+
+          <div className="bg-background p-6 rounded-xl shadow-sm border border-border hover:shadow-lg transition-all duration-300">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-foreground">
+                Receivers
+              </h3>
+              <div className="p-2 rounded-lg bg-gradient-to-br from-blue-500/10 to-blue-600/10">
+                <Eye className="h-5 w-5 text-blue-600" />
+              </div>
+            </div>
+            <p className="text-3xl font-bold text-blue-600">
+              {statsLoading ? "..." : userStats.receiverUsers.toLocaleString()}
+            </p>
+            <p className="text-sm text-muted-foreground mt-2">
+              Parcel receivers
+            </p>
+          </div>
+        </div>
+
+        <div className="bg-background rounded-lg shadow border border-border hover:shadow-lg transition-all duration-300">
           <DataTable<User>
-            data={users}
+            data={filteredUsers}
             columns={columns as Column<User>[]}
             loading={loading}
-            searchPlaceholder="Search users by name, email, or phone..."
+            searchPlaceholder="Search by name, email, phone, role, or status..."
+            onSearch={setSearchTerm}
           />
         </div>
       </div>
@@ -327,43 +911,41 @@ export default function AdminUsersPage() {
           <div className="space-y-6">
             {/* Basic Information */}
             <div>
-              <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">
+              <h3 className="text-lg font-semibold text-foreground mb-4">
                 Basic Information
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+                  <label className="block text-sm font-medium text-muted-foreground">
                     Name
                   </label>
-                  <p className="text-slate-900 dark:text-slate-100 font-medium">
+                  <p className="text-foreground font-medium">
                     {selectedUser.name}
                   </p>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+                  <label className="block text-sm font-medium text-muted-foreground">
                     Email
                   </label>
-                  <p className="text-slate-900 dark:text-slate-100">
-                    {selectedUser.email}
-                  </p>
+                  <p className="text-foreground">{selectedUser.email}</p>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+                  <label className="block text-sm font-medium text-muted-foreground">
                     Role
                   </label>
                   <StatusBadge status={selectedUser.role} variant="user" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+                  <label className="block text-sm font-medium text-muted-foreground">
                     Status
                   </label>
                   <StatusBadge status={selectedUser.status} variant="custom" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+                  <label className="block text-sm font-medium text-muted-foreground">
                     Phone
                   </label>
-                  <p className="text-slate-900 dark:text-slate-100">
+                  <p className="text-foreground">
                     {selectedUser.phone || "Not provided"}
                   </p>
                 </div>

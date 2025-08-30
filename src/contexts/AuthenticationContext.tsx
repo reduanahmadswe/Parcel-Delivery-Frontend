@@ -9,7 +9,10 @@ import toast from "react-hot-toast";
 interface AuthContextType {
   user: User | null;
   loading: boolean;
-  login: (email: string, password: string) => Promise<boolean>;
+  login: (
+    email: string,
+    password: string
+  ) => Promise<{ success: boolean; user?: User }>;
   register: (userData: RegisterData) => Promise<boolean>;
   logout: () => Promise<void>;
   refreshUser: () => Promise<void>;
@@ -68,17 +71,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const login = async (email: string, password: string): Promise<boolean> => {
+  const login = async (
+    email: string,
+    password: string
+  ): Promise<{ success: boolean; user?: User }> => {
     try {
       const response = await api.post("/auth/login", { email, password });
-      setUser(response.data.data.user);
+      const userData = response.data.data.user;
+      setUser(userData);
       toast.success("Login successful");
-      return true;
+      return { success: true, user: userData };
     } catch (error) {
       const message =
         (error as ApiError).response?.data?.message || "Login failed";
       toast.error(message);
-      return false;
+      return { success: false };
     }
   };
 

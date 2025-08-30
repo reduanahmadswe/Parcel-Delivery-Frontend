@@ -51,28 +51,28 @@ export default function AdminSettingsPage() {
 
   return (
     <AdminLayout>
-      <div className="space-y-6">
+      <div className="space-y-6 bg-background">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
+            <h1 className="text-2xl font-bold text-foreground">
               System Settings
             </h1>
-            <p className="text-slate-600 dark:text-slate-400">
+            <p className="text-muted-foreground">
               Configure system-wide settings and preferences
             </p>
           </div>
           <button
             onClick={handleSaveSettings}
             disabled={saving}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 transition-colors"
+            className="px-4 py-2 bg-gradient-to-br from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 text-white rounded-md hover:shadow-lg disabled:opacity-50 transition-all duration-300"
           >
             {saving ? "Saving..." : "Save Changes"}
           </button>
         </div>
 
-        <div className="bg-white dark:bg-slate-800 rounded-lg shadow border border-slate-200 dark:border-slate-700">
+        <div className="bg-background rounded-lg shadow border border-border hover:shadow-lg transition-all duration-300">
           {/* Tab Navigation */}
-          <div className="border-b border-slate-200 dark:border-slate-700">
+          <div className="border-b border-border">
             <nav className="flex space-x-8 px-6">
               {tabs.map((tab) => {
                 const Icon = tab.icon;
@@ -80,10 +80,10 @@ export default function AdminSettingsPage() {
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`flex items-center space-x-2 py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+                    className={`flex items-center space-x-2 py-4 px-1 border-b-2 font-medium text-sm transition-all duration-300 ${
                       activeTab === tab.id
-                        ? "border-blue-500 text-blue-600 dark:text-blue-400"
-                        : "border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 hover:border-slate-300"
+                        ? "border-green-500 text-green-600 dark:text-green-400"
+                        : "border-transparent text-muted-foreground hover:text-foreground hover:border-border"
                     }`}
                   >
                     <Icon className="h-4 w-4" />
@@ -100,12 +100,12 @@ export default function AdminSettingsPage() {
             {activeTab === "general" && (
               <div className="space-y-6">
                 <div>
-                  <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">
+                  <h3 className="text-lg font-semibold text-foreground mb-4">
                     General Settings
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                      <label className="block text-sm font-medium text-muted-foreground mb-2">
                         Site Name
                       </label>
                       <input
@@ -114,11 +114,11 @@ export default function AdminSettingsPage() {
                         onChange={(e) =>
                           setSettings({ ...settings, siteName: e.target.value })
                         }
-                        className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-slate-700 dark:text-slate-100"
+                        className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 bg-background text-foreground transition-all duration-300"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                      <label className="block text-sm font-medium text-muted-foreground mb-2">
                         Max File Size (MB)
                       </label>
                       <input
@@ -130,23 +130,23 @@ export default function AdminSettingsPage() {
                             maxFileSize: parseInt(e.target.value),
                           })
                         }
-                        className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-slate-700 dark:text-slate-100"
+                        className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 bg-background text-foreground transition-all duration-300"
                       />
                     </div>
                   </div>
                 </div>
 
                 <div>
-                  <h4 className="text-md font-medium text-slate-900 dark:text-slate-100 mb-3">
+                  <h4 className="text-md font-medium text-foreground mb-3">
                     System Status
                   </h4>
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
                       <div>
-                        <label className="font-medium text-slate-700 dark:text-slate-300">
+                        <label className="font-medium text-foreground">
                           Maintenance Mode
                         </label>
-                        <p className="text-sm text-slate-500 dark:text-slate-400">
+                        <p className="text-sm text-muted-foreground">
                           Put the system in maintenance mode
                         </p>
                       </div>
@@ -174,16 +174,16 @@ export default function AdminSettingsPage() {
             {activeTab === "users" && (
               <div className="space-y-6">
                 <div>
-                  <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">
+                  <h3 className="text-lg font-semibold text-foreground mb-4">
                     User Management Settings
                   </h3>
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <div>
-                        <label className="font-medium text-slate-700 dark:text-slate-300">
+                        <label className="font-medium text-foreground">
                           Allow User Registration
                         </label>
-                        <p className="text-sm text-slate-500 dark:text-slate-400">
+                        <p className="text-sm text-muted-foreground">
                           Allow new users to register accounts
                         </p>
                       </div>
@@ -199,7 +199,7 @@ export default function AdminSettingsPage() {
                           }
                           className="sr-only peer"
                         />
-                        <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-slate-600 peer-checked:bg-blue-600"></div>
+                        <div className="w-11 h-6 bg-muted peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-300 dark:peer-focus:ring-green-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-border after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-red-500 peer-checked:to-red-600 dark:peer-checked:from-red-600 dark:peer-checked:to-red-700"></div>
                       </label>
                     </div>
                   </div>
@@ -211,18 +211,18 @@ export default function AdminSettingsPage() {
             {activeTab === "notifications" && (
               <div className="space-y-6">
                 <div>
-                  <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">
+                  <h3 className="text-lg font-semibold text-foreground mb-4">
                     Notification Settings
                   </h3>
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-3">
-                        <Mail className="h-5 w-5 text-slate-500" />
+                        <Mail className="h-5 w-5 text-green-500" />
                         <div>
-                          <label className="font-medium text-slate-700 dark:text-slate-300">
+                          <label className="font-medium text-foreground">
                             Email Notifications
                           </label>
-                          <p className="text-sm text-slate-500 dark:text-slate-400">
+                          <p className="text-sm text-muted-foreground">
                             Send email notifications for important events
                           </p>
                         </div>

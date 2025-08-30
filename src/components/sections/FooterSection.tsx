@@ -31,25 +31,25 @@ export default function FooterSection() {
             </p>
             <div className="flex space-x-4">
               <Link
-                href="#"
+                href="#facebook"
                 className="text-muted-foreground hover:text-red-500 transition-colors"
               >
                 <Facebook className="h-5 w-5" />
               </Link>
               <Link
-                href="#"
+                href="#twitter"
                 className="text-muted-foreground hover:text-red-500 transition-colors"
               >
                 <Twitter className="h-5 w-5" />
               </Link>
               <Link
-                href="#"
+                href="#linkedin"
                 className="text-muted-foreground hover:text-red-500 transition-colors"
               >
                 <Linkedin className="h-5 w-5" />
               </Link>
               <Link
-                href="#"
+                href="#instagram"
                 className="text-muted-foreground hover:text-red-500 transition-colors"
               >
                 <Instagram className="h-5 w-5" />
@@ -65,7 +65,7 @@ export default function FooterSection() {
             <ul className="space-y-4">
               <li>
                 <Link
-                  href="#"
+                  href="#express-delivery-service"
                   className="text-muted-foreground hover:text-red-500 transition-colors"
                 >
                   Express Delivery
@@ -73,7 +73,7 @@ export default function FooterSection() {
               </li>
               <li>
                 <Link
-                  href="#"
+                  href="#standard-delivery-service"
                   className="text-muted-foreground hover:text-red-500 transition-colors"
                 >
                   Standard Delivery
@@ -81,7 +81,7 @@ export default function FooterSection() {
               </li>
               <li>
                 <Link
-                  href="#"
+                  href="#same-day-delivery-service"
                   className="text-muted-foreground hover:text-red-500 transition-colors"
                 >
                   Same Day Delivery
@@ -89,7 +89,7 @@ export default function FooterSection() {
               </li>
               <li>
                 <Link
-                  href="#"
+                  href="#corporate-solutions-service"
                   className="text-muted-foreground hover:text-red-500 transition-colors"
                 >
                   Corporate Solutions
@@ -97,7 +97,7 @@ export default function FooterSection() {
               </li>
               <li>
                 <Link
-                  href="#"
+                  href="#international-shipping-service"
                   className="text-muted-foreground hover:text-red-500 transition-colors"
                 >
                   International Shipping
@@ -122,7 +122,7 @@ export default function FooterSection() {
               </li>
               <li>
                 <Link
-                  href="#"
+                  href="#help-center"
                   className="text-muted-foreground hover:text-red-500 transition-colors"
                 >
                   Help Center
@@ -130,7 +130,7 @@ export default function FooterSection() {
               </li>
               <li>
                 <Link
-                  href="#"
+                  href="#contact-us"
                   className="text-muted-foreground hover:text-red-500 transition-colors"
                 >
                   Contact Us
@@ -138,7 +138,7 @@ export default function FooterSection() {
               </li>
               <li>
                 <Link
-                  href="#"
+                  href="#faq"
                   className="text-muted-foreground hover:text-red-500 transition-colors"
                 >
                   FAQ
@@ -146,7 +146,7 @@ export default function FooterSection() {
               </li>
               <li>
                 <Link
-                  href="#"
+                  href="#report-issue"
                   className="text-muted-foreground hover:text-red-500 transition-colors"
                 >
                   Report Issue
@@ -206,19 +206,19 @@ export default function FooterSection() {
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
               <Link
-                href="#"
+                href="#privacy-policy"
                 className="text-muted-foreground hover:text-red-500 text-sm transition-colors"
               >
                 Privacy Policy
               </Link>
               <Link
-                href="#"
+                href="#terms-of-service"
                 className="text-muted-foreground hover:text-red-500 text-sm transition-colors"
               >
                 Terms of Service
               </Link>
               <Link
-                href="#"
+                href="#cookie-policy"
                 className="text-muted-foreground hover:text-red-500 text-sm transition-colors"
               >
                 Cookie Policy

@@ -1,6 +1,5 @@
 "use client";
 
-
 import api from "@/lib/ApiConfiguration";
 import { Eye, EyeOff, Mail, MapPin, Phone, Save, User } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -211,20 +210,20 @@ export default function ProfilePage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-green-500"></div>
       </div>
     );
   }
 
   if (!profile) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+          <h2 className="text-2xl font-bold text-foreground mb-2">
             Profile Not Found
           </h2>
-          <p className="text-gray-600">
+          <p className="text-muted-foreground">
             Unable to load your profile information.
           </p>
         </div>
@@ -233,12 +232,14 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-background py-8">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Profile Settings</h1>
-          <p className="mt-2 text-gray-600">
+          <h1 className="text-3xl font-bold text-foreground">
+            Profile Settings
+          </h1>
+          <p className="mt-2 text-muted-foreground">
             Manage your account information and preferences
           </p>
         </div>
@@ -246,19 +247,19 @@ export default function ProfilePage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Profile Overview */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-lg shadow p-6">
+            <div className="bg-background rounded-lg shadow border border-border p-6 hover:shadow-lg transition-all duration-300">
               <div className="text-center">
-                <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <User className="h-10 w-10 text-blue-600" />
+                <div className="w-20 h-20 bg-gradient-to-br from-red-500/10 to-green-500/10 border border-red-200 dark:border-red-800 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <User className="h-10 w-10 text-green-500" />
                 </div>
-                <h2 className="text-xl font-bold text-gray-900">
+                <h2 className="text-xl font-bold text-foreground">
                   {profile.name}
                 </h2>
-                <p className="text-gray-600">{profile.email}</p>
-                <span className="inline-block mt-2 px-3 py-1 bg-blue-100 text-blue-800 text-sm font-medium rounded-full capitalize">
+                <p className="text-muted-foreground">{profile.email}</p>
+                <span className="inline-block mt-2 px-3 py-1 bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 text-white text-sm font-medium rounded-full capitalize">
                   {profile.role}
                 </span>
-                <p className="text-sm text-gray-500 mt-4">
+                <p className="text-sm text-muted-foreground mt-4">
                   Member since{" "}
                   {new Date(profile.createdAt).toLocaleDateString()}
                 </p>
@@ -269,15 +270,15 @@ export default function ProfilePage() {
           {/* Profile Details */}
           <div className="lg:col-span-2 space-y-6">
             {/* Personal Information */}
-            <div className="bg-white rounded-lg shadow">
-              <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
-                <h3 className="text-lg font-semibold text-gray-900">
+            <div className="bg-background rounded-lg shadow border border-border hover:shadow-lg transition-all duration-300">
+              <div className="px-6 py-4 border-b border-border flex items-center justify-between">
+                <h3 className="text-lg font-semibold text-foreground">
                   Personal Information
                 </h3>
                 {!isEditing && (
                   <button
                     onClick={() => setIsEditing(true)}
-                    className="text-blue-600 hover:text-blue-700 text-sm font-medium"
+                    className="text-green-500 hover:text-green-600 text-sm font-medium transition-colors duration-300"
                   >
                     Edit
                   </button>
@@ -289,7 +290,7 @@ export default function ProfilePage() {
                   <form onSubmit={handleUpdateProfile} className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="block text-sm font-medium text-muted-foreground mb-2">
                           Full Name
                         </label>
                         <input
@@ -297,8 +298,8 @@ export default function ProfilePage() {
                           name="name"
                           value={formData?.name || ""}
                           onChange={handleInputChange}
-                          className={`w-full px-3 py-2 border rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                            errors.name ? "border-red-500" : "border-gray-300"
+                          className={`w-full px-3 py-2 border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-300 ${
+                            errors.name ? "border-red-500" : "border-border"
                           }`}
                         />
                         {errors.name && (
@@ -309,7 +310,7 @@ export default function ProfilePage() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="block text-sm font-medium text-muted-foreground mb-2">
                           Phone Number
                         </label>
                         <input
@@ -317,8 +318,8 @@ export default function ProfilePage() {
                           name="phone"
                           value={formData?.phone || ""}
                           onChange={handleInputChange}
-                          className={`w-full px-3 py-2 border rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                            errors.phone ? "border-red-500" : "border-gray-300"
+                          className={`w-full px-3 py-2 border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-300 ${
+                            errors.phone ? "border-red-500" : "border-border"
                           }`}
                         />
                         {errors.phone && (
@@ -330,7 +331,7 @@ export default function ProfilePage() {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-muted-foreground mb-2">
                         Street Address
                       </label>
                       <input
@@ -338,10 +339,10 @@ export default function ProfilePage() {
                         name="address.street"
                         value={formData?.address?.street || ""}
                         onChange={handleInputChange}
-                        className={`w-full px-3 py-2 border rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                        className={`w-full px-3 py-2 border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-300 ${
                           errors["address.street"]
                             ? "border-red-500"
-                            : "border-gray-300"
+                            : "border-border"
                         }`}
                       />
                       {errors["address.street"] && (
@@ -423,7 +424,7 @@ export default function ProfilePage() {
                       <button
                         type="submit"
                         disabled={isUpdating}
-                        className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50 flex items-center"
+                        className="bg-gradient-to-br from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 text-white px-4 py-2 rounded-lg hover:shadow-lg disabled:opacity-50 flex items-center transition-all duration-300"
                       >
                         <Save className="h-4 w-4 mr-2" />
                         {isUpdating ? "Saving..." : "Save Changes"}
@@ -431,7 +432,7 @@ export default function ProfilePage() {
                       <button
                         type="button"
                         onClick={cancelEdit}
-                        className="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-400"
+                        className="bg-muted text-muted-foreground px-4 py-2 rounded-lg hover:bg-gradient-to-r hover:from-red-50/10 hover:to-green-50/10 dark:hover:from-red-950/5 dark:hover:to-green-950/5 transition-all duration-300"
                       >
                         Cancel
                       </button>
@@ -448,26 +449,34 @@ export default function ProfilePage() {
                     </div>
 
                     <div className="flex items-center">
-                      <Mail className="h-5 w-5 text-gray-400 mr-3" />
+                      <Mail className="h-5 w-5 text-green-500 mr-3" />
                       <div>
-                        <p className="text-sm text-gray-600">Email Address</p>
-                        <p className="font-medium">{profile.email}</p>
+                        <p className="text-sm text-muted-foreground">
+                          Email Address
+                        </p>
+                        <p className="font-medium text-foreground">
+                          {profile.email}
+                        </p>
                       </div>
                     </div>
 
                     <div className="flex items-center">
-                      <Phone className="h-5 w-5 text-gray-400 mr-3" />
+                      <Phone className="h-5 w-5 text-green-500 mr-3" />
                       <div>
-                        <p className="text-sm text-gray-600">Phone Number</p>
-                        <p className="font-medium">{profile.phone}</p>
+                        <p className="text-sm text-muted-foreground">
+                          Phone Number
+                        </p>
+                        <p className="font-medium text-foreground">
+                          {profile.phone}
+                        </p>
                       </div>
                     </div>
 
                     <div className="flex items-start">
-                      <MapPin className="h-5 w-5 text-gray-400 mr-3 mt-1" />
+                      <MapPin className="h-5 w-5 text-green-500 mr-3 mt-1" />
                       <div>
-                        <p className="text-sm text-gray-600">Address</p>
-                        <p className="font-medium">
+                        <p className="text-sm text-muted-foreground">Address</p>
+                        <p className="font-medium text-foreground">
                           {profile.address.street}
                           <br />
                           {profile.address.city}, {profile.address.state}{" "}
@@ -481,15 +490,15 @@ export default function ProfilePage() {
             </div>
 
             {/* Change Password */}
-            <div className="bg-white rounded-lg shadow">
-              <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
-                <h3 className="text-lg font-semibold text-gray-900">
+            <div className="bg-background rounded-lg shadow border border-border hover:shadow-lg transition-all duration-300">
+              <div className="px-6 py-4 border-b border-border flex items-center justify-between">
+                <h3 className="text-lg font-semibold text-foreground">
                   Security
                 </h3>
                 {!isChangingPassword && (
                   <button
                     onClick={() => setIsChangingPassword(true)}
-                    className="text-blue-600 hover:text-blue-700 text-sm font-medium"
+                    className="text-green-500 hover:text-green-600 text-sm font-medium transition-colors duration-300"
                   >
                     Change Password
                   </button>
@@ -500,7 +509,7 @@ export default function ProfilePage() {
                 {isChangingPassword ? (
                   <form onSubmit={handleChangePassword} className="space-y-6">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-foreground mb-2">
                         Current Password
                       </label>
                       <div className="relative">
@@ -509,10 +518,10 @@ export default function ProfilePage() {
                           name="currentPassword"
                           value={passwordData.currentPassword}
                           onChange={handlePasswordChange}
-                          className={`w-full px-3 py-2 border rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-10 ${
+                          className={`w-full px-3 py-2 border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-green-500 focus:border-transparent pr-10 transition-all duration-300 ${
                             errors.currentPassword
                               ? "border-red-500"
-                              : "border-gray-300"
+                              : "border-border hover:border-green-300"
                           }`}
                         />
                         <button
@@ -520,12 +529,12 @@ export default function ProfilePage() {
                           onClick={() =>
                             setShowCurrentPassword(!showCurrentPassword)
                           }
-                          className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                          className="absolute inset-y-0 right-0 pr-3 flex items-center hover:text-green-400 transition-colors duration-300"
                         >
                           {showCurrentPassword ? (
-                            <EyeOff className="h-4 w-4 text-gray-400" />
+                            <EyeOff className="h-4 w-4 text-green-500" />
                           ) : (
-                            <Eye className="h-4 w-4 text-gray-400" />
+                            <Eye className="h-4 w-4 text-green-500" />
                           )}
                         </button>
                       </div>
@@ -537,7 +546,7 @@ export default function ProfilePage() {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-foreground mb-2">
                         New Password
                       </label>
                       <div className="relative">
@@ -546,21 +555,21 @@ export default function ProfilePage() {
                           name="newPassword"
                           value={passwordData.newPassword}
                           onChange={handlePasswordChange}
-                          className={`w-full px-3 py-2 border rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-10 ${
+                          className={`w-full px-3 py-2 border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-green-500 focus:border-transparent pr-10 transition-all duration-300 ${
                             errors.newPassword
                               ? "border-red-500"
-                              : "border-gray-300"
+                              : "border-border hover:border-green-300"
                           }`}
                         />
                         <button
                           type="button"
                           onClick={() => setShowNewPassword(!showNewPassword)}
-                          className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                          className="absolute inset-y-0 right-0 pr-3 flex items-center hover:text-green-400 transition-colors duration-300"
                         >
                           {showNewPassword ? (
-                            <EyeOff className="h-4 w-4 text-gray-400" />
+                            <EyeOff className="h-4 w-4 text-green-500" />
                           ) : (
-                            <Eye className="h-4 w-4 text-gray-400" />
+                            <Eye className="h-4 w-4 text-green-500" />
                           )}
                         </button>
                       </div>
@@ -572,7 +581,7 @@ export default function ProfilePage() {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-foreground mb-2">
                         Confirm New Password
                       </label>
                       <div className="relative">
@@ -581,10 +590,10 @@ export default function ProfilePage() {
                           name="confirmPassword"
                           value={passwordData.confirmPassword}
                           onChange={handlePasswordChange}
-                          className={`w-full px-3 py-2 border rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-10 ${
+                          className={`w-full px-3 py-2 border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-green-500 focus:border-transparent pr-10 transition-all duration-300 ${
                             errors.confirmPassword
                               ? "border-red-500"
-                              : "border-gray-300"
+                              : "border-border hover:border-green-300"
                           }`}
                         />
                         <button
@@ -592,12 +601,12 @@ export default function ProfilePage() {
                           onClick={() =>
                             setShowConfirmPassword(!showConfirmPassword)
                           }
-                          className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                          className="absolute inset-y-0 right-0 pr-3 flex items-center hover:text-green-400 transition-colors duration-300"
                         >
                           {showConfirmPassword ? (
-                            <EyeOff className="h-4 w-4 text-gray-400" />
+                            <EyeOff className="h-4 w-4 text-green-500" />
                           ) : (
-                            <Eye className="h-4 w-4 text-gray-400" />
+                            <Eye className="h-4 w-4 text-green-500" />
                           )}
                         </button>
                       </div>
@@ -612,7 +621,7 @@ export default function ProfilePage() {
                       <button
                         type="submit"
                         disabled={isUpdating}
-                        className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50"
+                        className="bg-gradient-to-br from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 text-white px-4 py-2 rounded-lg hover:shadow-lg disabled:opacity-50 transition-all duration-300"
                       >
                         {isUpdating ? "Updating..." : "Update Password"}
                       </button>
@@ -627,7 +636,7 @@ export default function ProfilePage() {
                           });
                           setErrors({});
                         }}
-                        className="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-400"
+                        className="bg-muted text-muted-foreground px-4 py-2 rounded-lg hover:bg-gradient-to-r hover:from-red-50/10 hover:to-green-50/10 dark:hover:from-red-950/5 dark:hover:to-green-950/5 transition-all duration-300"
                       >
                         Cancel
                       </button>
@@ -635,7 +644,7 @@ export default function ProfilePage() {
                   </form>
                 ) : (
                   <div>
-                    <p className="text-gray-600">
+                    <p className="text-muted-foreground">
                       Keep your account secure by using a strong password. Last
                       changed: {new Date().toLocaleDateString()}
                     </p>
