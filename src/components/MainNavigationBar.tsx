@@ -50,11 +50,20 @@ export default function Navigation() {
     };
   }, []);
 
+  const handleNavClick = (href: string) => {
+    if (href.startsWith("#")) {
+      const element = document.getElementById(href.slice(1));
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  };
+
   const navigationItems = [
     { href: "/", label: "Home", icon: Home },
     { href: "/track", label: "Track Parcel", icon: Search },
-    { href: "/partners", label: "Partners", icon: Users },
-    { href: "/contact", label: "Contact", icon: MessageSquare },
+    { href: "#partners", label: "Partners", icon: Users },
+    { href: "#contact", label: "Contact", icon: MessageSquare },
   ];
 
   const dashboardItems = user
@@ -116,7 +125,17 @@ export default function Navigation() {
           <div className="hidden lg:flex items-center space-x-1">
             {navigationItems.map((item) => {
               const Icon = item.icon;
-              return (
+              return item.href.startsWith("#") ? (
+                <button
+                  key={item.href}
+                  onClick={() => handleNavClick(item.href)}
+                  className="flex items-center space-x-2 text-muted-foreground hover:text-foreground hover:bg-accent/50 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 group relative overflow-hidden"
+                >
+                  <Icon className="h-4 w-4 group-hover:scale-110 transition-transform duration-300" />
+                  <span>{item.label}</span>
+                  <div className="absolute inset-0 bg-gradient-to-r from-red-500/10 to-red-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
+                </button>
+              ) : (
                 <Link
                   key={item.href}
                   href={item.href}
@@ -283,7 +302,19 @@ export default function Navigation() {
             <div className="px-4 py-4 space-y-1">
               {navigationItems.map((item) => {
                 const Icon = item.icon;
-                return (
+                return item.href.startsWith("#") ? (
+                  <button
+                    key={item.href}
+                    onClick={() => {
+                      handleNavClick(item.href);
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className="flex items-center space-x-3 text-muted-foreground hover:text-foreground hover:bg-accent/50 px-3 py-3 rounded-xl text-sm font-medium transition-all duration-300 group w-full text-left"
+                  >
+                    <Icon className="h-5 w-5 group-hover:scale-110 transition-transform duration-300" />
+                    <span>{item.label}</span>
+                  </button>
+                ) : (
                   <Link
                     key={item.href}
                     href={item.href}

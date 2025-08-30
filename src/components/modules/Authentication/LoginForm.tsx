@@ -72,31 +72,25 @@ export function LoginForm({
   };
 
   return (
-    <div className={cn("flex flex-col gap-8", className)} {...props}>
-      {/* Header Section */}
-      <div className="flex flex-col items-center gap-4 text-center">
-        <div className="w-16 h-16 bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 rounded-2xl flex items-center justify-center shadow-lg">
-          <Package className="w-8 h-8 text-white" />
-        </div>
-        <div className="space-y-2">
-          <h1 className="text-3xl font-bold text-foreground">Welcome back</h1>
-          <p className="text-muted-foreground">
-            Sign in to your account to continue your delivery journey
-          </p>
-        </div>
-      </div>
-
-      {/* Test Credentials Section */}
-      <div className="relative overflow-hidden rounded-xl border border-border bg-gradient-to-br from-accent/30 to-accent/10 p-6 backdrop-blur-sm">
-        <div className="absolute inset-0 bg-gradient-to-r from-red-500/5 to-blue-500/5"></div>
+    <div className={cn("flex flex-col gap-6", className)} {...props}>
+      {/* Enhanced Test Credentials Section */}
+      <div className="relative overflow-hidden rounded-2xl border border-border/40 bg-gradient-to-br from-blue-50/50 via-indigo-50/50 to-purple-50/50 dark:from-blue-950/20 dark:via-indigo-950/20 dark:to-purple-950/20 p-6 backdrop-blur-sm shadow-lg">
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 via-indigo-500/5 to-purple-500/5"></div>
         <div className="relative">
-          <div className="flex items-center gap-2 mb-4">
-            <Shield className="w-5 h-5 text-red-500" />
-            <h3 className="text-sm font-semibold text-foreground">
-              🔑 Demo Accounts - Click to Auto-fill
-            </h3>
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-md">
+              <Shield className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h3 className="text-lg font-bold text-foreground">
+                🚀 Demo Accounts
+              </h3>
+              <p className="text-sm text-muted-foreground">
+                Click any account to auto-fill login credentials
+              </p>
+            </div>
           </div>
-          <div className="grid gap-2">
+          <div className="grid gap-3">
             {testCredentials.map((cred, index) => (
               <button
                 key={index}
@@ -137,8 +131,18 @@ export function LoginForm({
         </div>
       </div>
 
-      {/* Login Form Section */}
-      <div className="space-y-6">
+      {/* Enhanced Login Form Section */}
+      <div className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-3xl border border-border/30 p-8 shadow-2xl">
+        <div className="text-center mb-8">
+          <div className="w-16 h-16 bg-gradient-to-r from-red-500 to-orange-600 rounded-3xl flex items-center justify-center mx-auto mb-4 shadow-xl">
+            <Package className="w-8 h-8 text-white" />
+          </div>
+          <h2 className="text-2xl font-bold text-foreground mb-2">Sign In</h2>
+          <p className="text-muted-foreground">
+            Access your delivery dashboard
+          </p>
+        </div>
+
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <FormField

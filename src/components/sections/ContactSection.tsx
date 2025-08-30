@@ -1,19 +1,9 @@
 "use client";
 
-import {
-  ArrowLeft,
-  Clock,
-  Mail,
-  MapPin,
-  MessageSquare,
-  Package,
-  Phone,
-  Send,
-} from "lucide-react";
-import Link from "next/link";
+import { Clock, Mail, MapPin, MessageSquare, Phone, Send } from "lucide-react";
 import { useState } from "react";
 
-export default function ContactPage() {
+export default function ContactSection() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -64,36 +54,12 @@ export default function ContactPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/10">
-      {/* Header */}
-      <div className="border-b border-border/40 bg-background/80 backdrop-blur-xl sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-6 py-4">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-3 text-muted-foreground hover:text-foreground transition-all duration-300 group"
-          >
-            <div className="p-2 rounded-xl bg-accent/50 group-hover:bg-accent transition-colors duration-300">
-              <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform duration-300" />
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-r from-red-500 to-red-600 rounded-xl flex items-center justify-center shadow-lg">
-                <Package className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <span className="font-bold text-xl text-foreground block">
-                  ParcelTrack
-                </span>
-                <span className="text-xs text-muted-foreground">
-                  Back to Home
-                </span>
-              </div>
-            </div>
-          </Link>
-        </div>
-      </div>
-
+    <section
+      id="contact"
+      className="py-20 bg-gradient-to-br from-background via-background to-accent/10"
+    >
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-6 py-16">
+      <div className="max-w-7xl mx-auto px-6">
         {/* Hero Section */}
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 bg-accent/20 text-accent-foreground px-4 py-2 rounded-full text-sm font-medium mb-6">
@@ -101,11 +67,11 @@ export default function ContactPage() {
             Get In Touch
           </div>
 
-          <h1 className="text-5xl md:text-6xl font-bold mb-6">
+          <h2 className="text-4xl md:text-5xl font-bold mb-6">
             <span className="bg-gradient-to-r from-red-600 via-orange-500 to-red-700 bg-clip-text text-transparent">
               Contact Us
             </span>
-          </h1>
+          </h2>
 
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Have questions about our services? Need support? We&apos;re here to
@@ -305,6 +271,6 @@ export default function ContactPage() {
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 }

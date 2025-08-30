@@ -1,4 +1,5 @@
 import {
+  ContactSection,
   CTASection,
   CustomerSatisfactionSection,
   FooterSection,
@@ -6,6 +7,7 @@ import {
   KeyFeaturesSection,
   LiveTrackingSection,
   OurServicesSection,
+  PartnersSection,
   PricingPlansSection,
 } from "@/components/sections";
 
@@ -19,6 +21,8 @@ export default function Page() {
       <PricingPlansSection />
       <CustomerSatisfactionSection />
       <CTASection />
+      <PartnersSection />
+      <ContactSection />
       <FooterSection />
     </main>
   );
