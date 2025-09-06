@@ -1,6 +1,6 @@
 "use client";
 
-import { useAuth } from "@/contexts/AuthenticationContext";
+import { useAuth } from "@/hooks/useAuth";
 import { Eye, EyeOff, LogIn, Package } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";

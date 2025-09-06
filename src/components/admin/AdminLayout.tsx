@@ -1,7 +1,7 @@
 "use client";
 
-import { useAuth } from "@/contexts/AuthenticationContext";
 import { useTheme } from "@/contexts/ThemePreferenceContext";
+import { useAuth } from "@/hooks/useAuth";
 import {
   BarChart3,
   Bell,

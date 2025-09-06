@@ -1,7 +1,8 @@
 import ConditionalNavigation from "@/components/ConditionalNavigation";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster as Sonner } from "@/components/ui/sonner";
-import { AuthProvider } from "@/contexts/AuthContext";
+import { ReduxAuthProvider } from "@/contexts/ReduxAuthContext";
+import { ReduxProvider } from "@/store/ReduxProvider";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Toaster } from "react-hot-toast";
@@ -33,24 +34,26 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <AuthProvider>
-            <div className="min-h-screen bg-background">
-              <ConditionalNavigation />
-              <main>{children}</main>
-              <Toaster
-                position="top-right"
-                toastOptions={{
-                  duration: 4000,
-                  style: {
-                    background: "hsl(var(--card))",
-                    color: "hsl(var(--card-foreground))",
-                    border: "1px solid hsl(var(--border))",
-                  },
-                }}
-              />
-              <Sonner />
-            </div>
-          </AuthProvider>
+          <ReduxProvider>
+            <ReduxAuthProvider>
+              <div className="min-h-screen bg-background">
+                <ConditionalNavigation />
+                <main>{children}</main>
+                <Toaster
+                  position="top-right"
+                  toastOptions={{
+                    duration: 4000,
+                    style: {
+                      background: "hsl(var(--card))",
+                      color: "hsl(var(--card-foreground))",
+                      border: "1px solid hsl(var(--border))",
+                    },
+                  }}
+                />
+                <Sonner />
+              </div>
+            </ReduxAuthProvider>
+          </ReduxProvider>
         </ThemeProvider>
       </body>
     </html>

@@ -91,6 +91,7 @@ export class TokenManager {
             if (typeof window !== 'undefined') {
                 localStorage.removeItem(this.ACCESS_TOKEN_KEY);
                 localStorage.removeItem(this.REFRESH_TOKEN_KEY);
+                localStorage.removeItem('userData'); // Also clear cached user data
             }
         } catch (error) {
             console.error('Failed to clear tokens:', error);

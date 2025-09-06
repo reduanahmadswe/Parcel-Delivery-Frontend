@@ -18,12 +18,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useAuth } from "@/contexts/AuthContext";
 import {
   getCitiesList,
   getDivisionsByCity,
   getPostalCodesByDivision,
 } from "@/data/bangladeshData";
+import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {

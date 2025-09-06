@@ -1,7 +1,7 @@
 "use client";
 
 import ThemeToggle from "@/components/DarkLightThemeSwitcher";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/hooks/useAuth";
 import {
   BarChart3,
   Bell,

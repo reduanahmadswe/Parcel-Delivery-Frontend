@@ -1,7 +1,7 @@
 "use client";
 
 import ProtectedRoute from "@/components/ProtectedRoute";
-import { useAuth } from "@/contexts/AuthenticationContext";
+import { useAuth } from "@/hooks/useAuth";
 import api from "@/lib/ApiConfiguration";
 import {
   formatCurrency,
