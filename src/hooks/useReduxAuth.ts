@@ -8,6 +8,7 @@ import {
 } from '@/store/api/authApi';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import {
+    AuthState,
     loginSuccess,
     logout as logoutAction,
     setLoading,
@@ -16,6 +17,12 @@ import {
 import { User } from '@/types/GlobalTypeDefinitions';
 import toast from 'react-hot-toast';
 import { useReduxAuthPersistence } from './useReduxAuthPersistence';
+
+interface AuthError {
+    data?: {
+        message?: string;
+    };
+}
 
 interface RegisterData {
     name: string;
@@ -41,21 +48,21 @@ export function useReduxAuth() {
     // Get state from Redux store
     const user = useAppSelector((state) => {
         if ('auth' in state && state.auth && typeof state.auth === 'object') {
-            return (state.auth as any).user as User | null;
+            return (state.auth as AuthState).user;
         }
         return null;
     });
 
     const isAuthenticated = useAppSelector((state) => {
         if ('auth' in state && state.auth && typeof state.auth === 'object') {
-            return (state.auth as any).isAuthenticated ?? false;
+            return (state.auth as AuthState).isAuthenticated ?? false;
         }
         return false;
     });
 
     const authLoading = useAppSelector((state) => {
         if ('auth' in state && state.auth && typeof state.auth === 'object') {
-            return (state.auth as any).loading ?? false;
+            return (state.auth as AuthState).loading ?? false;
         }
         return false;
     });
@@ -98,9 +105,10 @@ export function useReduxAuth() {
             }
 
             throw new Error('Login failed');
-        } catch (error: any) {
+        } catch (error: unknown) {
             dispatch(setLoading(false));
-            const message = error?.data?.message || 'Login failed';
+            const authError = error as AuthError;
+            const message = authError?.data?.message || 'Login failed';
             toast.error(message);
             return { success: false };
         }
@@ -116,9 +124,10 @@ export function useReduxAuth() {
             dispatch(setLoading(false));
             toast.success("Registration successful! Please log in.");
             return true;
-        } catch (error: any) {
+        } catch (error: unknown) {
             dispatch(setLoading(false));
-            const message = error?.data?.message || 'Registration failed';
+            const authError = error as AuthError;
+            const message = authError?.data?.message || 'Registration failed';
             toast.error(message);
             return false;
         }

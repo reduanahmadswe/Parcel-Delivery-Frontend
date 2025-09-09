@@ -55,9 +55,13 @@ export function LoginForm({
       const result = await login(data.email, data.password);
       if (result.success && result.user) {
         toast.success("Welcome back!");
-        // Redirect admin to admin dashboard, others to home
+        // Role-based redirect after login
         if (result.user.role === "admin") {
           router.push("/admin");
+        } else if (result.user.role === "sender") {
+          router.push("/sender");
+        } else if (result.user.role === "receiver") {
+          router.push("/receiver");
         } else {
           router.push("/");
         }

@@ -2,7 +2,6 @@
 
 import { useAuth } from "@/hooks/useAuth";
 import { BarChart3, Package, Settings, Users, X } from "lucide-react";
-import { useTheme } from "next-themes";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -12,15 +11,10 @@ interface AdminLayoutProps {
 }
 
 export default function AdminLayout({ children }: AdminLayoutProps) {
-  const { user, logout } = useAuth();
-  const { theme, setTheme } = useTheme();
+  const { user } = useAuth();
   const pathname = usePathname();
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
-  const toggleTheme = () => {
-    setTheme(theme === "dark" ? "light" : "dark");
-  };
 
   const navigation = [
     { name: "Dashboard", href: "/admin", icon: BarChart3 },
@@ -28,11 +22,6 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     { name: "Parcels", href: "/admin/parcels", icon: Package },
     { name: "Settings", href: "/admin/settings", icon: Settings },
   ];
-
-  const handleLogout = async () => {
-    await logout();
-    router.push("/login");
-  };
 
   useEffect(() => {
     if (!user || user.role !== "admin") {

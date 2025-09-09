@@ -135,21 +135,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setLoading(false);
     }
   };
-
-  const checkAuthInBackground = async () => {
-    try {
-      const response = await api.get("/auth/me");
-      if (response.data && response.data.data) {
-        const userData = response.data.data;
-        setUser(userData);
-        setCachedUser(userData);
-      }
-    } catch (error) {
-      console.warn("Background auth check failed:", error);
-      // Don't clear user state on background check failure
-    }
-  };
-
   const checkAuth = async () => {
     try {
       const token = TokenManager.getAccessToken();

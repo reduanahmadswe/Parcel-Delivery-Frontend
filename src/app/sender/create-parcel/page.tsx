@@ -143,8 +143,13 @@ export default function CreateParcelPage() {
     // Receiver Info Validation
     if (!formData.receiverInfo.name.trim())
       newErrors["receiverInfo.name"] = "Receiver name is required";
-    if (!formData.receiverInfo.email.trim())
+    if (!formData.receiverInfo.email.trim()) {
       newErrors["receiverInfo.email"] = "Receiver email is required";
+    } else if (
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.receiverInfo.email)
+    ) {
+      newErrors["receiverInfo.email"] = "Please enter a valid email address";
+    }
     if (!formData.receiverInfo.phone.trim())
       newErrors["receiverInfo.phone"] = "Receiver phone is required";
     if (!formData.receiverInfo.address.street.trim())
@@ -162,6 +167,8 @@ export default function CreateParcelPage() {
       parseFloat(formData.parcelDetails.weight) <= 0
     ) {
       newErrors["parcelDetails.weight"] = "Valid weight is required";
+    } else if (parseFloat(formData.parcelDetails.weight) > 50) {
+      newErrors["parcelDetails.weight"] = "Weight cannot exceed 50kg";
     }
     if (
       !formData.parcelDetails.dimensions.length ||
@@ -198,17 +205,15 @@ export default function CreateParcelPage() {
     try {
       // Convert string values to numbers and format according to backend API
       const payload = {
-        receiverInfo: {
-          name: formData.receiverInfo.name,
-          email: formData.receiverInfo.email,
-          phone: formData.receiverInfo.phone,
-          address: {
-            street: formData.receiverInfo.address.street,
-            city: formData.receiverInfo.address.city,
-            state: formData.receiverInfo.address.state,
-            zipCode: formData.receiverInfo.address.zipCode,
-            country: formData.receiverInfo.address.country || "Bangladesh",
-          },
+        receiverName: formData.receiverInfo.name,
+        receiverEmail: formData.receiverInfo.email,
+        receiverPhone: formData.receiverInfo.phone,
+        receiverAddress: {
+          street: formData.receiverInfo.address.street,
+          city: formData.receiverInfo.address.city,
+          state: formData.receiverInfo.address.state,
+          zipCode: formData.receiverInfo.address.zipCode,
+          country: formData.receiverInfo.address.country || "Bangladesh",
         },
         parcelDetails: {
           type: formData.parcelDetails.type,
@@ -340,7 +345,7 @@ export default function CreateParcelPage() {
                     name="receiverInfo.name"
                     value={formData.receiverInfo.name}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="Enter receiver's full name"
                   />
                   {errors["receiverInfo.name"] && (
@@ -359,7 +364,7 @@ export default function CreateParcelPage() {
                     name="receiverInfo.email"
                     value={formData.receiverInfo.email}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="receiver@example.com"
                   />
                   {errors["receiverInfo.email"] && (
@@ -378,7 +383,7 @@ export default function CreateParcelPage() {
                     name="receiverInfo.phone"
                     value={formData.receiverInfo.phone}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="+880123456789"
                   />
                   {errors["receiverInfo.phone"] && (
@@ -405,7 +410,7 @@ export default function CreateParcelPage() {
                       name="receiverInfo.address.street"
                       value={formData.receiverInfo.address.street}
                       onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       placeholder="123 Main Street"
                     />
                     {errors["receiverInfo.address.street"] && (
@@ -425,7 +430,7 @@ export default function CreateParcelPage() {
                         name="receiverInfo.address.city"
                         value={formData.receiverInfo.address.city}
                         onChange={handleInputChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         placeholder="Dhaka"
                       />
                       {errors["receiverInfo.address.city"] && (
@@ -444,7 +449,7 @@ export default function CreateParcelPage() {
                         name="receiverInfo.address.state"
                         value={formData.receiverInfo.address.state}
                         onChange={handleInputChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         placeholder="Dhaka Division"
                       />
                       {errors["receiverInfo.address.state"] && (
@@ -463,7 +468,7 @@ export default function CreateParcelPage() {
                         name="receiverInfo.address.zipCode"
                         value={formData.receiverInfo.address.zipCode}
                         onChange={handleInputChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         placeholder="1000"
                       />
                       {errors["receiverInfo.address.zipCode"] && (
@@ -511,11 +516,12 @@ export default function CreateParcelPage() {
                     type="number"
                     step="0.1"
                     min="0.1"
+                    max="50"
                     name="parcelDetails.weight"
                     value={formData.parcelDetails.weight}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="0.5"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Enter weight (max 50kg)"
                   />
                   {errors["parcelDetails.weight"] && (
                     <p className="mt-1 text-sm text-red-600">
@@ -539,7 +545,7 @@ export default function CreateParcelPage() {
                       name="parcelDetails.dimensions.length"
                       value={formData.parcelDetails.dimensions.length}
                       onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       placeholder="Length"
                     />
                     {errors["parcelDetails.dimensions.length"] && (
@@ -556,7 +562,7 @@ export default function CreateParcelPage() {
                       name="parcelDetails.dimensions.width"
                       value={formData.parcelDetails.dimensions.width}
                       onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       placeholder="Width"
                     />
                     {errors["parcelDetails.dimensions.width"] && (
@@ -573,7 +579,7 @@ export default function CreateParcelPage() {
                       name="parcelDetails.dimensions.height"
                       value={formData.parcelDetails.dimensions.height}
                       onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       placeholder="Height"
                     />
                     {errors["parcelDetails.dimensions.height"] && (
@@ -597,7 +603,7 @@ export default function CreateParcelPage() {
                     name="parcelDetails.value"
                     value={formData.parcelDetails.value}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="0.00"
                   />
                 </div>
@@ -612,7 +618,7 @@ export default function CreateParcelPage() {
                   value={formData.parcelDetails.description}
                   onChange={handleInputChange}
                   rows={3}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Describe the contents of your parcel..."
                 />
                 {errors["parcelDetails.description"] && (
@@ -675,7 +681,7 @@ export default function CreateParcelPage() {
                   value={formData.deliveryInfo.deliveryInstructions}
                   onChange={handleInputChange}
                   rows={3}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Any special instructions for delivery..."
                 />
               </div>

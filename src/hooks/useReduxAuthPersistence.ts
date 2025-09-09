@@ -40,18 +40,62 @@ export function useReduxAuthPersistence() {
         skip: !hasToken, // Skip if no token available
     });
 
-    // Initialize auth state from storage on mount
+    // Initialize auth state from storage on mount - only run once on app startup
     useEffect(() => {
         const initializeAuth = () => {
             dispatch(setLoading(true));
 
-            // Clear any existing authentication data on app startup
-            // This ensures users start in a logged-out state
-            console.log("Clearing authentication data on startup from persistence hook");
+            // Only clear authentication data on first app load, not on subsequent renders
+            const hasBeenInitialized = sessionStorage.getItem('persistenceInitialized');
 
-            TokenManager.clearTokens();
-            localStorage.removeItem('userData');
-            dispatch(logout());
+            if (!hasBeenInitialized) {
+                console.log("Clearing authentication data on startup from persistence hook (first time only)");
+
+                TokenManager.clearTokens();
+                localStorage.removeItem('userData');
+                dispatch(logout());
+
+                // Mark as initialized so this doesn't run again during the session
+                sessionStorage.setItem('persistenceInitialized', 'true');
+            }
+
+            dispatch(setLoading(false));
+
+            // If you want to restore authentication, uncomment the code below:
+            /*
+            const token = TokenManager.getAccessToken();
+            const refreshToken = TokenManager.getRefreshToken();
+            const cachedUserStr = localStorage.getItem('userData');
+
+            if (token && cachedUserStr) {
+                try {
+                    const cachedUser = JSON.parse(cachedUserStr);
+
+                    // Restore auth state immediately for better UX
+                    dispatch(loginSuccess({
+                        user: cachedUser,
+                        token,
+                        refreshToken: refreshToken || undefined,
+                    }));
+    // Initialize auth state from storage on mount - only run once on app startup
+    useEffect(() => {
+        const initializeAuth = () => {
+            dispatch(setLoading(true));
+
+            // Only clear authentication data on first app load, not on subsequent renders
+            const hasBeenInitialized = sessionStorage.getItem('persistenceInitialized');
+            
+            if (!hasBeenInitialized) {
+                console.log("Clearing authentication data on startup from persistence hook (first time only)");
+                
+                TokenManager.clearTokens();
+                localStorage.removeItem('userData');
+                dispatch(logout());
+                
+                // Mark as initialized so this doesn't run again during the session
+                sessionStorage.setItem('persistenceInitialized', 'true');
+            }
+
             dispatch(setLoading(false));
 
             // If you want to restore authentication, uncomment the code below:

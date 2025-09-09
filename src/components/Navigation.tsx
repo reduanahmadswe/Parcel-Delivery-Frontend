@@ -57,28 +57,24 @@ export default function Navigation() {
           { href: "/admin/users", label: "Users", icon: Users },
           { href: "/admin/reports", label: "Reports", icon: FileText },
         ]
+      : user?.role === "sender"
+      ? [
+          { href: "/sender", label: "Dashboard", icon: BarChart3 },
+          { href: "/contact", label: "Contact", icon: User },
+          {
+            href: "/sender/create-parcel",
+            label: "Create Parcel",
+            icon: Package,
+          },
+        ]
       : [
           { href: "/", label: "Home", icon: Home },
           { href: "/track", label: "Track Parcel", icon: Search },
         ];
 
   const dashboardItems =
-    user && user.role !== "admin"
-      ? [
-          ...(user.role === "sender"
-            ? [
-                { href: "/sender", label: "Dashboard", icon: BarChart3 },
-                {
-                  href: "/sender/create-parcel",
-                  label: "Create Parcel",
-                  icon: Package,
-                },
-              ]
-            : []),
-          ...(user.role === "receiver"
-            ? [{ href: "/receiver", label: "Dashboard", icon: BarChart3 }]
-            : []),
-        ]
+    user && user.role === "receiver"
+      ? [{ href: "/receiver", label: "Dashboard", icon: BarChart3 }]
       : [];
 
   const userMenuItems =

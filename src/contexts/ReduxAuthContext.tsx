@@ -1,5 +1,6 @@
 "use client";
 
+import { AuthStateManager } from "@/lib/AuthStateManager";
 import { TokenManager } from "@/lib/TokenManager";
 import {
   useGetCurrentUserQuery,
@@ -73,16 +74,20 @@ export function ReduxAuthProvider({ children }: { children: ReactNode }) {
     skip: !isAuthenticated && !TokenManager.getAccessToken(),
   });
 
-  // Initialize auth state on mount
+  // Initialize auth state on mount - only run once on app startup
   useEffect(() => {
     const initializeAuth = () => {
-      // Clear any existing authentication data on app startup
-      // This ensures users start in a logged-out state
-      console.log("Clearing authentication data on startup");
+      // Only clear authentication data on first app load when no active session exists
+      if (AuthStateManager.shouldClearAuth()) {
+        console.log("Clearing authentication data on fresh app startup");
 
-      TokenManager.clearTokens();
-      localStorage.removeItem("userData");
-      dispatch(logoutAction());
+        TokenManager.clearTokens();
+        localStorage.removeItem("userData");
+        dispatch(logoutAction());
+      }
+
+      // Mark as initialized
+      AuthStateManager.markAsInitialized();
 
       // If you want to restore authentication, uncomment the code below:
       /*
@@ -113,7 +118,7 @@ export function ReduxAuthProvider({ children }: { children: ReactNode }) {
     };
 
     initializeAuth();
-  }, [dispatch, user]);
+  }, [dispatch]); // Remove 'user' from dependencies to prevent re-running on user changes
 
   // Handle user data from API
   useEffect(() => {
@@ -181,6 +186,9 @@ export function ReduxAuthProvider({ children }: { children: ReactNode }) {
 
         localStorage.setItem("userData", JSON.stringify(userData));
 
+        // Mark session as active to prevent auto-logout
+        AuthStateManager.markSessionActive();
+
         toast.success("Login successful");
         return { success: true, user: userData };
       }
@@ -231,6 +239,10 @@ export function ReduxAuthProvider({ children }: { children: ReactNode }) {
     } finally {
       dispatch(logoutAction());
       localStorage.removeItem("userData");
+
+      // Clear the active session
+      AuthStateManager.clearSession();
+
       toast.success("Logged out successfully");
     }
   };

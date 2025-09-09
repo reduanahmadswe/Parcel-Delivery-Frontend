@@ -67,6 +67,21 @@ export default function Navigation() {
           { href: "/admin/users", label: "Users", icon: Users },
           { href: "/admin/reports", label: "Reports", icon: FileText },
         ]
+      : user?.role === "sender"
+      ? [
+          { href: "/sender", label: "Dashboard", icon: BarChart3 },
+          { href: "/contact", label: "Contact", icon: MessageSquare },
+          {
+            href: "/sender/create-parcel",
+            label: "Create Parcel",
+            icon: Package,
+          },
+        ]
+      : user?.role === "receiver"
+      ? [
+          { href: "/receiver", label: "Dashboard", icon: BarChart3 },
+          { href: "/contact", label: "Contact", icon: MessageSquare },
+        ]
       : [
           { href: "/", label: "Home", icon: Home },
           { href: "/track", label: "Track Parcel", icon: Search },
@@ -74,24 +89,7 @@ export default function Navigation() {
           { href: "#contact", label: "Contact", icon: MessageSquare },
         ];
 
-  const dashboardItems =
-    user && user.role !== "admin"
-      ? [
-          ...(user.role === "sender"
-            ? [
-                { href: "/sender", label: "Dashboard", icon: BarChart3 },
-                {
-                  href: "/sender/create-parcel",
-                  label: "Create Parcel",
-                  icon: Package,
-                },
-              ]
-            : []),
-          ...(user.role === "receiver"
-            ? [{ href: "/receiver", label: "Dashboard", icon: BarChart3 }]
-            : []),
-        ]
-      : [];
+  // Removed dashboardItems as it's now handled in navigationItems
 
   const userMenuItems =
     user?.role === "admin"
@@ -149,21 +147,6 @@ export default function Navigation() {
                   <Icon className="h-4 w-4 group-hover:scale-110 transition-transform duration-300" />
                   <span>{item.label}</span>
                   <div className="absolute inset-0 bg-gradient-to-r from-red-500/10 to-red-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
-                </Link>
-              );
-            })}
-
-            {dashboardItems.map((item) => {
-              const Icon = item.icon;
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="flex items-center space-x-2 text-muted-foreground hover:text-foreground hover:bg-accent/50 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 group relative overflow-hidden"
-                >
-                  <Icon className="h-4 w-4 group-hover:scale-110 transition-transform duration-300" />
-                  <span>{item.label}</span>
-                  <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-blue-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
                 </Link>
               );
             })}
@@ -322,21 +305,6 @@ export default function Navigation() {
                     <span>{item.label}</span>
                   </button>
                 ) : (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className="flex items-center space-x-3 text-muted-foreground hover:text-foreground hover:bg-accent/50 px-3 py-3 rounded-xl text-sm font-medium transition-all duration-300 group"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    <Icon className="h-5 w-5 group-hover:scale-110 transition-transform duration-300" />
-                    <span>{item.label}</span>
-                  </Link>
-                );
-              })}
-
-              {dashboardItems.map((item) => {
-                const Icon = item.icon;
-                return (
                   <Link
                     key={item.href}
                     href={item.href}

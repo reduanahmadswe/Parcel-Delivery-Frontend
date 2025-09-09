@@ -4,10 +4,28 @@ import storage from 'redux-persist/lib/storage';
 import apiSlice from './api/apiSlice';
 import authSlice from './slices/authSlice';
 
+// Create a noop storage for SSR compatibility
+const createNoopStorage = () => {
+    return {
+        getItem() {
+            return Promise.resolve(null);
+        },
+        setItem(_key: string, value: unknown) {
+            return Promise.resolve(value);
+        },
+        removeItem() {
+            return Promise.resolve();
+        },
+    };
+};
+
+// Use proper storage for client-side, noop for server-side
+const storageToUse = typeof window !== 'undefined' ? storage : createNoopStorage();
+
 // Persist configuration for auth slice only
 const authPersistConfig = {
     key: 'auth',
-    storage,
+    storage: storageToUse,
     whitelist: ['user', 'token', 'refreshToken', 'isAuthenticated'],
 };
 const persistedAuthReducer = persistReducer(authPersistConfig, authSlice);

@@ -2,7 +2,7 @@ import { TokenManager } from '@/lib/TokenManager';
 import { User } from '@/types/GlobalTypeDefinitions';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-interface AuthState {
+export interface AuthState {
     user: User | null;
     token: string | null;
     refreshToken: string | null;
