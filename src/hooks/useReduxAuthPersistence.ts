@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { TokenManager } from '@/lib/TokenManager';
 import { useGetCurrentUserQuery } from '@/store/api/authApi';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
@@ -44,6 +45,17 @@ export function useReduxAuthPersistence() {
         const initializeAuth = () => {
             dispatch(setLoading(true));
 
+            // Clear any existing authentication data on app startup
+            // This ensures users start in a logged-out state
+            console.log("Clearing authentication data on startup from persistence hook");
+
+            TokenManager.clearTokens();
+            localStorage.removeItem('userData');
+            dispatch(logout());
+            dispatch(setLoading(false));
+
+            // If you want to restore authentication, uncomment the code below:
+            /*
             const token = TokenManager.getAccessToken();
             const refreshToken = TokenManager.getRefreshToken();
             const cachedUserStr = localStorage.getItem('userData');
@@ -70,6 +82,7 @@ export function useReduxAuthPersistence() {
             }
 
             dispatch(setLoading(false));
+            */
         };
 
         initializeAuth();

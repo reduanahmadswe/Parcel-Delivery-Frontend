@@ -76,6 +76,16 @@ export function ReduxAuthProvider({ children }: { children: ReactNode }) {
   // Initialize auth state on mount
   useEffect(() => {
     const initializeAuth = () => {
+      // Clear any existing authentication data on app startup
+      // This ensures users start in a logged-out state
+      console.log("Clearing authentication data on startup");
+
+      TokenManager.clearTokens();
+      localStorage.removeItem("userData");
+      dispatch(logoutAction());
+
+      // If you want to restore authentication, uncomment the code below:
+      /*
       const token = TokenManager.getAccessToken();
       const refreshToken = TokenManager.getRefreshToken();
       const cachedUserStr = localStorage.getItem("userData");
@@ -99,6 +109,7 @@ export function ReduxAuthProvider({ children }: { children: ReactNode }) {
         // No token but user exists in Redux, clear it
         dispatch(logoutAction());
       }
+      */
     };
 
     initializeAuth();
