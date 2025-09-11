@@ -213,69 +213,156 @@ export default function ParcelManagement() {
 
   return (
     <AdminLayout>
-      {/* Notification Component */}
+      {/* Modern Enhanced Notification System */}
       {notification && (
-        <div
-          className={`fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg max-w-sm w-full transition-all duration-300 ${
-            notification.type === "success"
-              ? "bg-green-100 border border-green-400 text-green-700 dark:bg-green-900 dark:border-green-600 dark:text-green-200"
-              : notification.type === "error"
-              ? "bg-red-100 border border-red-400 text-red-700 dark:bg-red-900 dark:border-red-600 dark:text-red-200"
-              : "bg-blue-100 border border-blue-400 text-blue-700 dark:bg-blue-900 dark:border-blue-600 dark:text-blue-200"
-          }`}
-        >
-          <div className="flex items-center justify-between">
-            <span className="font-medium">{notification.message}</span>
-            <button
-              onClick={hideNotification}
-              className="ml-2 text-current opacity-70 hover:opacity-100"
-            >
-              ×
-            </button>
+        <div className="fixed top-6 right-6 z-50 animate-fade-in">
+          <div
+            className={`max-w-md w-full p-6 rounded-2xl shadow-2xl backdrop-blur-sm border transition-all duration-500 transform hover:scale-105 ${
+              notification.type === "success"
+                ? "parcel-notification-success"
+                : notification.type === "error"
+                ? "parcel-notification-error"
+                : "parcel-notification-info"
+            }`}
+          >
+            <div className="flex items-start justify-between">
+              <div className="flex items-start space-x-4">
+                <div
+                  className={`w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg ${
+                    notification.type === "success"
+                      ? "bg-gradient-to-r from-green-500 to-green-600"
+                      : notification.type === "error"
+                      ? "bg-gradient-to-r from-red-500 to-red-600"
+                      : "bg-gradient-to-r from-blue-500 to-blue-600"
+                  }`}
+                >
+                  <span className="text-white font-bold text-xl">
+                    {notification.type === "success"
+                      ? "✓"
+                      : notification.type === "error"
+                      ? "✕"
+                      : "ⓘ"}
+                  </span>
+                </div>
+                <div className="flex-1">
+                  <h4 className="font-bold text-lg mb-1">
+                    {notification.type === "success"
+                      ? "Success"
+                      : notification.type === "error"
+                      ? "Error"
+                      : "Information"}
+                  </h4>
+                  <p className="font-medium leading-relaxed">
+                    {notification.message}
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={hideNotification}
+                className="ml-4 text-current opacity-70 hover:opacity-100 transition-opacity duration-200 text-2xl font-bold leading-none hover:scale-110 transform"
+              >
+                ×
+              </button>
+            </div>
           </div>
         </div>
       )}
 
-      <div className="space-y-6 bg-background">
-        <FilterPanel
-          filterParams={filterParams}
-          setFilterParams={setFilterParams}
-          onClearFilters={() =>
-            setFilterParams({
-              senderEmail: "",
-              receiverEmail: "",
-              status: "",
-            })
-          }
-          onRefresh={fetchParcels}
-        />
-
-        {/* Search Results Summary */}
-        {searchTerm && (
-          <div className="flex items-center gap-2 px-4 py-2 bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg">
-            <Search className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-            <span className="text-sm text-blue-800 dark:text-blue-200">
-              Found {filteredParcels.length} parcel
-              {filteredParcels.length !== 1 ? "s" : ""} matching &ldquo;
-              {searchTerm}&rdquo;
-            </span>
-            <button
-              onClick={() => setSearchTerm("")}
-              className="ml-auto text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-200 text-sm"
-            >
-              Clear search
-            </button>
-          </div>
-        )}
-
-        <div className="bg-background rounded-lg shadow border border-border hover:shadow-lg transition-all duration-300">
-          <DataTable<Parcel>
-            data={filteredParcels}
-            columns={columns}
-            loading={loading}
-            searchPlaceholder="Search by tracking number, sender, recipient, status..."
-            onSearch={setSearchTerm}
+      {/* Modern Main Container with Enhanced Parcel Tracking Theme */}
+      <div className="min-h-screen parcel-gradient-bg">
+        <div className="max-w-7xl mx-auto p-6 space-y-8">
+          {/* Enhanced Filter Panel */}
+          <FilterPanel
+            filterParams={filterParams}
+            setFilterParams={setFilterParams}
+            onClearFilters={() =>
+              setFilterParams({
+                senderEmail: "",
+                receiverEmail: "",
+                status: "",
+              })
+            }
+            onRefresh={fetchParcels}
           />
+
+          {/* Modern Search Results Summary */}
+          {searchTerm && (
+            <div className="relative overflow-hidden parcel-search-result p-6 shadow-lg hover:shadow-xl transition-all duration-300 group animate-fade-in">
+              <div className="absolute inset-0 bg-gradient-to-r from-red-500/5 to-orange-500/5"></div>
+              <div className="relative flex items-center gap-6">
+                <div className="w-16 h-16 bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 rounded-3xl flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform duration-300">
+                  <Search className="h-8 w-8 text-white" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-2xl font-bold text-red-800 dark:text-red-200 mb-2">
+                    🔍 Search Results
+                  </h3>
+                  <p className="text-red-700 dark:text-red-300 text-lg">
+                    Found{" "}
+                    <span className="font-bold text-xl">
+                      {filteredParcels.length}
+                    </span>{" "}
+                    parcel
+                    {filteredParcels.length !== 1 ? "s" : ""} matching &ldquo;
+                    <span className="font-bold bg-red-100 dark:bg-red-900/30 px-2 py-1 rounded-lg">
+                      {searchTerm}
+                    </span>
+                    &rdquo;
+                  </p>
+                </div>
+                <button
+                  onClick={() => setSearchTerm("")}
+                  className="parcel-btn-secondary shadow-md hover:shadow-lg"
+                >
+                  Clear Search
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Enhanced Data Table Container */}
+          <div className="relative overflow-hidden parcel-card group">
+            <div className="absolute inset-0 bg-gradient-to-br from-red-500/5 via-orange-500/5 to-purple-500/5 opacity-50"></div>
+            <div className="relative">
+              {/* Table Header Enhancement */}
+              <div className="bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-900/20 dark:to-orange-900/20 border-b border-border/50 p-6 rounded-t-3xl">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-4">
+                    <div className="w-12 h-12 bg-gradient-to-r from-red-500 to-orange-500 rounded-2xl flex items-center justify-center shadow-lg">
+                      <span className="text-white font-bold text-xl">📋</span>
+                    </div>
+                    <div>
+                      <h2 className="text-2xl font-bold text-foreground">
+                        Parcel Database
+                      </h2>
+                      <p className="text-muted-foreground">
+                        Real-time parcel tracking and management
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    {loading && (
+                      <div className="flex items-center space-x-2 bg-blue-100 dark:bg-blue-900/30 px-4 py-2 rounded-xl">
+                        <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                        <span className="text-blue-700 dark:text-blue-300 font-medium">
+                          Loading...
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Enhanced Data Table */}
+              <DataTable<Parcel>
+                data={filteredParcels}
+                columns={columns}
+                loading={loading}
+                searchPlaceholder="🔍 Search by tracking number, sender, recipient, status, or location..."
+                onSearch={setSearchTerm}
+              />
+            </div>
+          </div>
         </div>
       </div>
 

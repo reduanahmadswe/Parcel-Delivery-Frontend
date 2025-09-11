@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Parcel Management Theme Preview</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background: linear-gradient(
+          135deg,
+          rgba(254, 242, 242, 0.3) 0%,
+          rgba(255, 247, 237, 0.2) 50%,
+          rgba(250, 245, 255, 0.3) 100%
+        );
+        min-height: 100vh;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        padding: 2rem;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        space: 2rem;
+      }
+
+      .header {
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.9) 0%,
+          rgba(254, 242, 242, 0.5) 100%
+        );
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        border-radius: 2rem;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+      }
+
+      .title {
+        font-size: 2.5rem;
+        font-weight: bold;
+        background: linear-gradient(135deg, #dc2626 0%, #ea580c 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 0.5rem;
+      }
+
+      .subtitle {
+        color: #6b7280;
+        font-size: 1.125rem;
+      }
+
+      .card {
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.9) 0%,
+          rgba(254, 242, 242, 0.5) 100%
+        );
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(239, 68, 68, 0.2);
+        border-radius: 2rem;
+        padding: 2rem;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        transition: all 0.5s ease;
+      }
+
+      .card:hover {
+        box-shadow: 0 35px 60px -12px rgba(0, 0, 0, 0.35);
+        transform: translateY(-2px);
+      }
+
+      .status-badges {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-top: 1rem;
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.75rem 1.5rem;
+        border-radius: 1rem;
+        font-size: 0.875rem;
+        font-weight: bold;
+        border: 1px solid;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      }
+
+      .badge-delivered {
+        background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+        color: #065f46;
+        border-color: #6ee7b7;
+      }
+
+      .badge-transit {
+        background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+        color: #1e40af;
+        border-color: #93c5fd;
+      }
+
+      .badge-pending {
+        background: linear-gradient(135deg, #fed7aa 0%, #fdba74 100%);
+        color: #9a3412;
+        border-color: #fb923c;
+      }
+
+      .badge-urgent {
+        background: linear-gradient(135deg, #fecaca 0%, #fca5a5 100%);
+        color: #991b1b;
+        border-color: #f87171;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-top: 2rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1 class="title">📦 Modern Parcel Management</h1>
+        <p class="subtitle">Enhanced UI with Shadcn/UI Theme System</p>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <h3
+            style="
+              font-size: 1.5rem;
+              font-weight: bold;
+              margin-bottom: 1rem;
+              color: #374151;
+            "
+          >
+            🎨 Theme Features
+          </h3>
+          <ul style="space-y: 0.5rem; color: #6b7280">
+            <li>✅ CSS Variables with HSL color system</li>
+            <li>✅ Light/Dark mode support</li>
+            <li>✅ Gradient backgrounds and effects</li>
+            <li>✅ Modern glassmorphism design</li>
+            <li>✅ Enhanced animations and transitions</li>
+            <li>✅ Responsive typography</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3
+            style="
+              font-size: 1.5rem;
+              font-weight: bold;
+              margin-bottom: 1rem;
+              color: #374151;
+            "
+          >
+            📊 Status Indicators
+          </h3>
+          <div class="status-badges">
+            <span class="badge badge-delivered">✓ Delivered</span>
+            <span class="badge badge-transit">🚚 In Transit</span>
+            <span class="badge badge-pending">⏳ Pending</span>
+            <span class="badge badge-urgent">🔥 Urgent</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3
+            style="
+              font-size: 1.5rem;
+              font-weight: bold;
+              margin-bottom: 1rem;
+              color: #374151;
+            "
+          >
+            🚀 Enhanced Components
+          </h3>
+          <ul style="space-y: 0.5rem; color: #6b7280">
+            <li>• Modern notification system</li>
+            <li>• Enhanced modal dialogs</li>
+            <li>• Improved table design</li>
+            <li>• Interactive filter panels</li>
+            <li>• Responsive button styles</li>
+            <li>• Custom scrollbar styling</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
