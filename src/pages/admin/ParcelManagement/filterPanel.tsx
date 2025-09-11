@@ -18,7 +18,7 @@ export function FilterPanel({
   return (
     <div className="space-y-6">
       {/* Modern Header with project's red/orange gradient theme */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-red-500 via-red-500 to-red-600 dark:from-red-600 dark:via-orange-600 dark:to-red-700 rounded-2xl p-8 text-white">
+      <div className="relative overflow-hidden bg-gradient-to-br from-red-600 via-red-600 to-red-600 dark:from-red-600 dark:via-red-600 dark:to-red-700 rounded-2xl p-8 text-white">
         <div className="absolute inset-0 bg-black/10"></div>
         <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-white/5 -translate-y-32 translate-x-32"></div>
         <div className="absolute bottom-0 left-0 w-48 h-48 rounded-full bg-white/5 translate-y-24 -translate-x-24"></div>

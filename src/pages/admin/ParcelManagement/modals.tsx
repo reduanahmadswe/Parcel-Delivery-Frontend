@@ -411,7 +411,7 @@ export function StatusUpdateModal({
             <select
               value={newStatus}
               onChange={(e) => setNewStatus(e.target.value)}
-              className="w-full px-6 py-4 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/30 dark:to-purple-900/30 border border-blue-200 dark:border-blue-700 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 text-foreground transition-all duration-300 hover:shadow-lg cursor-pointer text-lg font-semibold"
+              className="w-full px-6 py-4 bg-[hsl(var(--card))] dark:bg-[hsl(var(--card))] border border-[hsl(var(--border))] dark:border-[hsl(var(--border))] rounded-2xl focus:outline-none focus:ring-2 focus:ring-[hsl(var(--primary))] focus:border-[hsl(var(--primary))] text-[hsl(var(--foreground))] dark:text-[hsl(var(--foreground))] transition-all duration-300 hover:shadow-lg cursor-pointer text-lg font-semibold"
             >
               {STATUS_OPTIONS.map((status) => (
                 <option key={status} value={status}>

@@ -269,8 +269,8 @@ export default function ParcelManagement() {
       )}
 
       {/* Modern Main Container with Enhanced Parcel Tracking Theme */}
-      <div className="min-h-screen parcel-gradient-bg">
-        <div className="max-w-7xl mx-auto p-6 space-y-8">
+      <div className="min-h-screen bg-[hsl(var(--background))]">
+        <div className="max-w-7xl mx-auto pt-2 px-6 space-y-8">
           {/* Enhanced Filter Panel */}
           <FilterPanel
             filterParams={filterParams}

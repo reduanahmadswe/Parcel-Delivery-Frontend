@@ -3,20 +3,18 @@ import { Column } from "@/pages/admin/ReusableDataTable";
 import StatusBadge from "@/pages/admin/StatusIndicatorBadge";
 import {
   Clock,
-  DollarSign,
   Edit,
   Eye,
   Flag,
   Lock,
-  MapPin,
   MoreVertical,
   Package,
   RefreshCw,
   Star,
   Trash2,
-  User,
   UserPlus,
 } from "lucide-react";
+import { useState } from "react";
 import { Parcel } from "./types";
 
 interface ParcelActionsProps {
@@ -44,6 +42,7 @@ function ParcelActionsColumn({
   onReturnClick,
   onDeleteClick,
 }: ParcelActionsProps) {
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   return (
     <div className="flex items-center space-x-1">
       <button
@@ -93,54 +92,69 @@ function ParcelActionsColumn({
       >
         <Lock className="h-4 w-4 group-hover:scale-110 transition-all duration-200" />
       </button>
-      <div className="relative group">
+      <div className="relative">
         <button
           className="p-2 rounded-lg text-gray-500 hover:text-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-200"
           title="More Actions"
+          onClick={() => setDropdownOpen((open) => !open)}
         >
           <MoreVertical className="h-4 w-4" />
         </button>
-        <div className="absolute right-0 z-10 mt-2 w-56 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl rounded-xl shadow-2xl border border-gray-200/50 dark:border-gray-700/50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform group-hover:translate-y-0 translate-y-2">
-          <div className="p-2">
-            <button
-              onClick={() => onAssignClick(parcel)}
-              className="flex items-center px-4 py-3 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-700 dark:hover:text-blue-300 w-full text-left rounded-lg transition-all duration-200"
-            >
-              <div className="p-1.5 bg-blue-100 dark:bg-blue-900/30 rounded-lg mr-3">
-                <UserPlus className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-              </div>
-              <span className="font-medium">Assign Personnel</span>
-            </button>
-            <button
-              onClick={() => onViewStatusLogClick(parcel)}
-              className="flex items-center px-4 py-3 text-sm text-gray-700 dark:text-gray-300 hover:bg-green-50 dark:hover:bg-green-900/20 hover:text-green-700 dark:hover:text-green-300 w-full text-left rounded-lg transition-all duration-200"
-            >
-              <div className="p-1.5 bg-green-100 dark:bg-green-900/30 rounded-lg mr-3">
-                <Eye className="h-4 w-4 text-green-600 dark:text-green-400" />
-              </div>
-              <span className="font-medium">View Status Log</span>
-            </button>
-            <button
-              onClick={() => onReturnClick(parcel)}
-              className="flex items-center px-4 py-3 text-sm text-gray-700 dark:text-gray-300 hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:text-orange-700 dark:hover:text-orange-300 w-full text-left rounded-lg transition-all duration-200"
-            >
-              <div className="p-1.5 bg-orange-100 dark:bg-orange-900/30 rounded-lg mr-3">
-                <RefreshCw className="h-4 w-4 text-orange-600 dark:text-orange-400" />
-              </div>
-              <span className="font-medium">Return Parcel</span>
-            </button>
-            <div className="border-t border-gray-200 dark:border-gray-700 my-2"></div>
-            <button
-              onClick={() => onDeleteClick(parcel)}
-              className="flex items-center px-4 py-3 text-sm text-red-700 dark:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-800 dark:hover:text-red-200 w-full text-left rounded-lg transition-all duration-200"
-            >
-              <div className="p-1.5 bg-red-100 dark:bg-red-900/30 rounded-lg mr-3">
-                <Trash2 className="h-4 w-4 text-red-600 dark:text-red-400" />
-              </div>
-              <span className="font-medium">Delete Parcel</span>
-            </button>
+        {dropdownOpen && (
+          <div className="absolute right-0 z-10 mt-2 w-56 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl rounded-xl shadow-2xl border border-gray-200/50 dark:border-gray-700/50 transition-all duration-300 transform">
+            <div className="p-2">
+              <button
+                onClick={() => {
+                  onAssignClick(parcel);
+                  setDropdownOpen(false);
+                }}
+                className="flex items-center px-4 py-3 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-700 dark:hover:text-blue-300 w-full text-left rounded-lg transition-all duration-200"
+              >
+                <div className="p-1.5 bg-blue-100 dark:bg-blue-900/30 rounded-lg mr-3">
+                  <UserPlus className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                </div>
+                <span className="font-medium">Assign Personnel</span>
+              </button>
+              <button
+                onClick={() => {
+                  onViewStatusLogClick(parcel);
+                  setDropdownOpen(false);
+                }}
+                className="flex items-center px-4 py-3 text-sm text-gray-700 dark:text-gray-300 hover:bg-green-50 dark:hover:bg-green-900/20 hover:text-green-700 dark:hover:text-green-300 w-full text-left rounded-lg transition-all duration-200"
+              >
+                <div className="p-1.5 bg-green-100 dark:bg-green-900/30 rounded-lg mr-3">
+                  <Eye className="h-4 w-4 text-green-600 dark:text-green-400" />
+                </div>
+                <span className="font-medium">View Status Log</span>
+              </button>
+              <button
+                onClick={() => {
+                  onReturnClick(parcel);
+                  setDropdownOpen(false);
+                }}
+                className="flex items-center px-4 py-3 text-sm text-gray-700 dark:text-gray-300 hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:text-orange-700 dark:hover:text-orange-300 w-full text-left rounded-lg transition-all duration-200"
+              >
+                <div className="p-1.5 bg-orange-100 dark:bg-orange-900/30 rounded-lg mr-3">
+                  <RefreshCw className="h-4 w-4 text-orange-600 dark:text-orange-400" />
+                </div>
+                <span className="font-medium">Return Parcel</span>
+              </button>
+              <div className="border-t border-gray-200 dark:border-gray-700 my-2"></div>
+              <button
+                onClick={() => {
+                  onDeleteClick(parcel);
+                  setDropdownOpen(false);
+                }}
+                className="flex items-center px-4 py-3 text-sm text-red-700 dark:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-800 dark:hover:text-red-200 w-full text-left rounded-lg transition-all duration-200"
+              >
+                <div className="p-1.5 bg-red-100 dark:bg-red-900/30 rounded-lg mr-3">
+                  <Trash2 className="h-4 w-4 text-red-600 dark:text-red-400" />
+                </div>
+                <span className="font-medium">Delete Parcel</span>
+              </button>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
@@ -170,46 +184,6 @@ export function createParcelColumns(actions: {
           <div>
             <div className="font-bold text-foreground font-mono text-sm">
               {parcel?.trackingNumber || "N/A"}
-            </div>
-          </div>
-        </div>
-      ),
-    },
-    {
-      key: "senderName",
-      header: "Sender",
-      sortable: true,
-      render: (_, parcel) => (
-        <div className="flex items-center space-x-2">
-          <div className="w-10 h-10 bg-gradient-to-r from-green-500 to-green-600 dark:from-green-600 dark:to-green-700 rounded-2xl flex items-center justify-center shadow-lg">
-            <User className="h-5 w-5 text-white" />
-          </div>
-          <div>
-            <div className="font-semibold text-foreground">
-              {parcel?.senderName || "N/A"}
-            </div>
-            <div className="text-sm text-muted-foreground">
-              {parcel?.senderEmail || ""}
-            </div>
-          </div>
-        </div>
-      ),
-    },
-    {
-      key: "recipientName",
-      header: "Recipient",
-      sortable: true,
-      render: (_, parcel) => (
-        <div className="flex items-center space-x-2">
-          <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700 rounded-2xl flex items-center justify-center shadow-lg">
-            <MapPin className="h-5 w-5 text-white" />
-          </div>
-          <div>
-            <div className="font-semibold text-foreground">
-              {parcel?.recipientName || "N/A"}
-            </div>
-            <div className="text-sm text-muted-foreground">
-              {parcel?.recipientEmail || ""}
             </div>
           </div>
         </div>
@@ -259,45 +233,7 @@ export function createParcelColumns(actions: {
         </div>
       ),
     },
-    {
-      key: "cost",
-      header: "Cost",
-      sortable: true,
-      render: (_, parcel) => (
-        <div className="flex items-center space-x-2">
-          <div className="w-10 h-10 bg-gradient-to-r from-orange-500 to-orange-600 dark:from-orange-600 dark:to-orange-700 rounded-2xl flex items-center justify-center shadow-lg">
-            <DollarSign className="h-5 w-5 text-white" />
-          </div>
-          <span className="font-bold text-foreground">
-            ${parcel?.cost ?? 0}
-          </span>
-        </div>
-      ),
-    },
-    {
-      key: "createdAt",
-      header: "Created",
-      sortable: true,
-      render: (_, parcel) => (
-        <div className="flex items-center space-x-2">
-          <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-purple-600 dark:from-purple-600 dark:to-purple-700 rounded-2xl flex items-center justify-center shadow-lg">
-            <Clock className="h-5 w-5 text-white" />
-          </div>
-          <div>
-            <div className="font-medium text-foreground">
-              {parcel?.createdAt
-                ? new Date(parcel?.createdAt).toLocaleDateString()
-                : "N/A"}
-            </div>
-            <div className="text-sm text-muted-foreground">
-              {parcel?.createdAt
-                ? new Date(parcel?.createdAt).toLocaleTimeString()
-                : ""}
-            </div>
-          </div>
-        </div>
-      ),
-    },
+    // Sender, Recipient, and Created columns removed from main table
     {
       key: "actions",
       header: "Actions",
