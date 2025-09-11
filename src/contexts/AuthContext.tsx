@@ -3,6 +3,7 @@
 import { useAuthPersistence } from "@/hooks/useAuthPersistence";
 import api from "@/lib/ApiConfiguration";
 import { TokenManager } from "@/lib/TokenManager";
+import { IS_DEV } from "@/lib/config";
 import { User } from "@/types/GlobalTypeDefinitions";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -317,10 +318,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // Add debug support in development
   useEffect(() => {
-    if (
-      process.env.NODE_ENV === "development" &&
-      typeof window !== "undefined"
-    ) {
+    // Use centralized IS_DEV flag for development checks
+    if (IS_DEV && typeof window !== "undefined") {
       const globalWindow = window as typeof window & {
         AuthDebug?: {
           getUser: () => User | null;

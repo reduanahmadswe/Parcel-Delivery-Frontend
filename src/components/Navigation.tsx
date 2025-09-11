@@ -17,8 +17,8 @@ import {
   Users,
   X,
 } from "lucide-react";
-import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 
 export default function Navigation() {
   const { user, logout } = useAuth();
@@ -92,7 +92,7 @@ export default function Navigation() {
         <div className="flex justify-between h-16">
           {/* Logo and Brand */}
           <div className="flex items-center">
-            <Link href="/" className="flex items-center space-x-3 group">
+            <Link to="/" className="flex items-center space-x-3 group">
               <div className="relative">
                 <Package
                   className="h-8 w-8 text-brand-light"
@@ -137,7 +137,7 @@ export default function Navigation() {
               return (
                 <Link
                   key={item.href}
-                  href={item.href}
+                  to={item.href}
                   className="flex items-center space-x-2 text-theme-secondary hover:text-white px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:shadow-brand-md"
                   onMouseEnter={(e) => {
                     e.currentTarget.style.background =
@@ -158,7 +158,7 @@ export default function Navigation() {
               return (
                 <Link
                   key={item.href}
-                  href={item.href}
+                  to={item.href}
                   className="flex items-center space-x-2 text-gray-700 hover:text-white px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:shadow-md"
                   onMouseEnter={(e) => {
                     e.currentTarget.style.background =
@@ -248,7 +248,7 @@ export default function Navigation() {
                         return (
                           <Link
                             key={item.href}
-                            href={item.href}
+                            to={item.href}
                             className="flex items-center space-x-3 px-4 py-2 text-sm text-theme-secondary hover:bg-brand-light/10 hover:text-brand-light transition-colors"
                             onClick={() => setIsUserMenuOpen(false)}
                           >
@@ -274,13 +274,13 @@ export default function Navigation() {
             ) : (
               <div className="flex items-center space-x-3">
                 <Link
-                  href="/login"
+                  to="/login"
                   className="text-theme-secondary hover:text-brand-light px-4 py-2 rounded-lg text-sm font-medium transition-colors"
                 >
                   Sign in
                 </Link>
                 <Link
-                  href="/register"
+                  to="/register"
                   className="text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 shadow-brand-md hover:shadow-brand-lg transform hover:scale-105 gradient-brand"
                 >
                   Get Started
@@ -313,7 +313,7 @@ export default function Navigation() {
                 return (
                   <Link
                     key={item.href}
-                    href={item.href}
+                    to={item.href}
                     className="flex items-center space-x-3 text-theme-secondary hover:text-brand-light hover:bg-brand-light/10 px-3 py-3 rounded-lg text-sm font-medium transition-colors"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
@@ -328,7 +328,7 @@ export default function Navigation() {
                 return (
                   <Link
                     key={item.href}
-                    href={item.href}
+                    to={item.href}
                     className="flex items-center space-x-3 text-theme-secondary hover:text-brand-light hover:bg-brand-light/10 px-3 py-3 rounded-lg text-sm font-medium transition-colors"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
@@ -364,7 +364,7 @@ export default function Navigation() {
                     return (
                       <Link
                         key={item.href}
-                        href={item.href}
+                        to={item.href}
                         className="flex items-center space-x-3 text-gray-700 hover:text-blue-600 hover:bg-blue-50 px-3 py-3 rounded-lg text-sm font-medium transition-colors"
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
@@ -390,14 +390,14 @@ export default function Navigation() {
               {!user && (
                 <div className="border-t border-theme pt-4 mt-4 space-y-2">
                   <Link
-                    href="/login"
+                    to="/login"
                     className="block text-theme-secondary hover:text-brand-light hover:bg-brand-light/10 px-3 py-3 rounded-lg text-sm font-medium transition-colors"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     Sign in
                   </Link>
                   <Link
-                    href="/register"
+                    to="/register"
                     className="block gradient-brand text-white hover:opacity-90 px-3 py-3 rounded-lg text-sm font-medium transition-all duration-200 text-center"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >

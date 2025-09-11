@@ -37,10 +37,9 @@ import {
   User,
   UserCheck,
 } from "lucide-react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { z } from "zod";
 
@@ -95,7 +94,7 @@ export function MultiStepRegisterForm({
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
   const { register } = useAuth();
-  const router = useRouter();
+  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
   const [step1Data, setStep1Data] = useState<Step1Data | null>(null);
 
@@ -201,7 +200,7 @@ export function MultiStepRegisterForm({
 
       if (success) {
         toast.success("Account created successfully! Welcome to ParcelTrack!");
-        router.push("/");
+        navigate("/", { replace: true });
       } else {
         toast.error("Registration failed. Please try again.");
       }
@@ -675,7 +674,7 @@ export function MultiStepRegisterForm({
         <p className="text-sm text-muted-foreground">
           Already have an account?{" "}
           <Link
-            href="/login"
+            to="/login"
             className="font-semibold text-blue-600 hover:text-blue-700 transition-colors duration-300 hover:underline"
           >
             Sign in here

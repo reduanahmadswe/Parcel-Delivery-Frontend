@@ -1,4 +1,5 @@
 import Cookies from 'js-cookie';
+import { IS_PROD } from './config';
 
 export class TokenManager {
     private static ACCESS_TOKEN_KEY = 'accessToken';
@@ -10,14 +11,14 @@ export class TokenManager {
             // Store in cookies (primary)
             Cookies.set(this.ACCESS_TOKEN_KEY, accessToken, {
                 expires: 7, // 7 days
-                secure: process.env.NODE_ENV === 'production',
+                secure: IS_PROD,
                 sameSite: 'strict'
             });
 
             if (refreshToken) {
                 Cookies.set(this.REFRESH_TOKEN_KEY, refreshToken, {
                     expires: 30, // 30 days
-                    secure: process.env.NODE_ENV === 'production',
+                    secure: IS_PROD,
                     sameSite: 'strict'
                 });
             }

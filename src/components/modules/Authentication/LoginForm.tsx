@@ -13,9 +13,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Lock, Mail, Package, Shield, User } from "lucide-react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { z } from "zod";
 
@@ -40,7 +39,7 @@ export function LoginForm({
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
   const { login } = useAuth();
-  const router = useRouter();
+  const navigate = useNavigate();
 
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
@@ -57,13 +56,13 @@ export function LoginForm({
         toast.success("Welcome back!");
         // Role-based redirect after login
         if (result.user.role === "admin") {
-          router.push("/admin");
+          navigate("/admin", { replace: true });
         } else if (result.user.role === "sender") {
-          router.push("/sender");
+          navigate("/sender", { replace: true });
         } else if (result.user.role === "receiver") {
-          router.push("/receiver");
+          navigate("/receiver", { replace: true });
         } else {
-          router.push("/");
+          navigate("/", { replace: true });
         }
       } else {
         toast.error("Invalid email or password");
@@ -216,7 +215,7 @@ export function LoginForm({
                 <span className="text-muted-foreground">Remember me</span>
               </label>
               <Link
-                href="/forgot-password"
+                to="/forgot-password"
                 className="text-red-500 hover:text-red-600 transition-colors duration-300 font-medium"
               >
                 Forgot password?
@@ -294,7 +293,7 @@ export function LoginForm({
         <p className="text-sm text-muted-foreground">
           Don&apos;t have an account?{" "}
           <Link
-            href="/register"
+            to="/register"
             className="text-red-500 hover:text-red-600 transition-colors duration-300 font-semibold hover:underline underline-offset-4"
           >
             Sign up for free

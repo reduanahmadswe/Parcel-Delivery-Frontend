@@ -10,10 +10,9 @@ import {
   Package,
   User,
 } from "lucide-react";
-import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
+import { Link, useLocation } from "react-router-dom";
 
 interface StatusHistoryItem {
   status: string;
@@ -33,7 +32,8 @@ interface ParcelDetails {
 }
 
 function ParcelStatusHistoryContent() {
-  const searchParams = useSearchParams();
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
   const parcelId = searchParams.get("id");
   const [parcel, setParcel] = useState<ParcelDetails | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -117,7 +117,7 @@ function ParcelStatusHistoryContent() {
             Unable to find the specified parcel or status history.
           </p>
           <Link
-            href="/track"
+            to="/track"
             className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
           >
             Back to Tracking
@@ -133,7 +133,7 @@ function ParcelStatusHistoryContent() {
         {/* Header */}
         <div className="mb-8">
           <Link
-            href="/track"
+            to="/track"
             className="inline-flex items-center text-blue-600 hover:text-blue-700 mb-4"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
@@ -277,7 +277,7 @@ function ParcelStatusHistoryContent() {
         {/* Actions */}
         <div className="mt-8 flex justify-center">
           <Link
-            href="/track"
+            to="/track"
             className="bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-gray-700 transition-colors"
           >
             Track Another Parcel

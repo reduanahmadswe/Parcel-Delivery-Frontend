@@ -3,13 +3,12 @@
 import ProtectedRoute from "@/components/ProtectedRoute";
 import api from "@/lib/ApiConfiguration";
 import { ArrowLeft, Calculator, Package } from "lucide-react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function CreateParcelPage() {
-  const router = useRouter();
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     receiverInfo: {
@@ -244,7 +243,7 @@ export default function CreateParcelPage() {
       const parcel = response.data.data;
 
       toast.success("Parcel created successfully!");
-      router.push(`/track?id=${parcel.trackingId}`);
+      navigate(`/track?id=${parcel.trackingId}`);
     } catch (error: unknown) {
       console.error("Full error object:", error);
 
@@ -313,7 +312,7 @@ export default function CreateParcelPage() {
           <div className="mb-8">
             <div className="flex items-center mb-4">
               <Link
-                href="/sender"
+                to="/sender"
                 className="flex items-center text-gray-600 hover:text-gray-900 mr-4"
               >
                 <ArrowLeft className="h-5 w-5 mr-1" />
@@ -727,15 +726,16 @@ export default function CreateParcelPage() {
             {/* Submit Button */}
             <div className="flex justify-end space-x-4">
               <Link
-                href="/sender"
+                to="/sender"
                 className="px-6 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 font-medium transition-colors"
               >
                 Cancel
               </Link>
+
               <button
                 type="submit"
-                disabled={loading}
                 className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+                disabled={loading}
               >
                 {loading ? (
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>

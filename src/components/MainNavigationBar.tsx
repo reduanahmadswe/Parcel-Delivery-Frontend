@@ -18,8 +18,8 @@ import {
   Users,
   X,
 } from "lucide-react";
-import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 
 export default function Navigation() {
   const { user, logout } = useAuth();
@@ -106,7 +106,7 @@ export default function Navigation() {
         <div className="flex justify-between h-16">
           {/* Logo and Brand */}
           <div className="flex items-center">
-            <Link href="/" className="flex items-center space-x-3 group">
+            <Link to="/" className="flex items-center space-x-3 group">
               <div className="relative">
                 <div className="w-10 h-10 bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
                   <Package className="h-6 w-6 text-white" />
@@ -141,7 +141,7 @@ export default function Navigation() {
               ) : (
                 <Link
                   key={item.href}
-                  href={item.href}
+                  to={item.href}
                   className="flex items-center space-x-2 text-muted-foreground hover:text-foreground hover:bg-accent/50 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 group relative overflow-hidden"
                 >
                   <Icon className="h-4 w-4 group-hover:scale-110 transition-transform duration-300" />
@@ -229,7 +229,7 @@ export default function Navigation() {
                           return (
                             <Link
                               key={item.href}
-                              href={item.href}
+                              to={item.href}
                               className="flex items-center space-x-3 px-4 py-3 text-sm text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-all duration-200 group"
                               onClick={() => setIsUserMenuOpen(false)}
                             >
@@ -256,13 +256,13 @@ export default function Navigation() {
             ) : (
               <div className="flex items-center space-x-3">
                 <Link
-                  href="/login"
+                  to="/login"
                   className="text-muted-foreground hover:text-foreground px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 hover:bg-accent/50"
                 >
                   Sign in
                 </Link>
                 <Link
-                  href="/register"
+                  to="/register"
                   className="bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 hover:from-red-600 hover:to-red-700 dark:hover:from-red-700 dark:hover:to-red-800 text-white px-6 py-2 rounded-xl text-sm font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 hover:-translate-y-0.5"
                 >
                   Get Started
@@ -307,7 +307,7 @@ export default function Navigation() {
                 ) : (
                   <Link
                     key={item.href}
-                    href={item.href}
+                    to={item.href}
                     className="flex items-center space-x-3 text-muted-foreground hover:text-foreground hover:bg-accent/50 px-3 py-3 rounded-xl text-sm font-medium transition-all duration-300 group"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
@@ -344,7 +344,7 @@ export default function Navigation() {
                       return (
                         <Link
                           key={item.href}
-                          href={item.href}
+                          to={item.href}
                           className="flex items-center space-x-3 text-muted-foreground hover:text-foreground hover:bg-accent/50 px-3 py-3 rounded-xl text-sm font-medium transition-all duration-300 group"
                           onClick={() => setIsMobileMenuOpen(false)}
                         >
@@ -371,14 +371,14 @@ export default function Navigation() {
               {!user && (
                 <div className="border-t border-border pt-4 mt-4 space-y-2">
                   <Link
-                    href="/login"
+                    to="/login"
                     className="block text-muted-foreground hover:text-foreground hover:bg-accent/50 px-3 py-3 rounded-xl text-sm font-medium transition-all duration-300"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     Sign in
                   </Link>
                   <Link
-                    href="/register"
+                    to="/register"
                     className="block bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 text-white hover:from-red-600 hover:to-red-700 dark:hover:from-red-700 dark:hover:to-red-800 px-3 py-3 rounded-xl text-sm font-semibold transition-all duration-300 text-center shadow-lg"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >

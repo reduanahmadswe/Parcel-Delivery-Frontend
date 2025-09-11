@@ -1,3 +1,4 @@
+import { IS_PROD } from '@/lib/config';
 import { configureStore } from '@reduxjs/toolkit';
 import { FLUSH, PAUSE, PERSIST, persistReducer, persistStore, PURGE, REGISTER, REHYDRATE } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
@@ -41,7 +42,8 @@ export const store = configureStore({
                 ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
             },
         }).concat(apiSlice.middleware),
-    devTools: process.env.NODE_ENV !== 'production',
+    // Use centralized config
+    devTools: !IS_PROD,
 });
 export const persistor = persistStore(store);
 

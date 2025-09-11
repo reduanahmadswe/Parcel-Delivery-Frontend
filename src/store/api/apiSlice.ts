@@ -2,7 +2,9 @@ import { TokenManager } from '@/lib/TokenManager';
 import { BaseQueryFn, createApi, FetchArgs, fetchBaseQuery, FetchBaseQueryError } from '@reduxjs/toolkit/query/react';
 import { logout, refreshTokenSuccess, setLoading } from '../slices/authSlice';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+import { API_BASE } from '@/lib/config';
+
+const API_BASE_URL = API_BASE;
 
 // Base query with authentication
 const baseQuery = fetchBaseQuery({
@@ -77,7 +79,7 @@ const baseQueryWithReauth: BaseQueryFn<
 export const apiSlice = createApi({
     reducerPath: 'api',
     baseQuery: baseQueryWithReauth,
-    tagTypes: ['User', 'Parcel', 'Admin'],
+    tagTypes: ['Auth', 'User', 'Parcel', 'Admin'],
     endpoints: () => ({}),
 });
 

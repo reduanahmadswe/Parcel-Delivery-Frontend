@@ -17,9 +17,8 @@ import {
 import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { z } from "zod";
 
@@ -76,7 +75,7 @@ export function RegisterForm({
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
   const { register } = useAuth();
-  const router = useRouter();
+  const navigate = useNavigate();
 
   const form = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
@@ -110,7 +109,7 @@ export function RegisterForm({
     try {
       await register(userInfo);
       toast.success("Account created successfully!");
-      router.push("/login");
+      navigate("/login", { replace: true });
     } catch (error) {
       console.error(error);
       toast.error("Failed to create account. Please try again.");
@@ -444,7 +443,7 @@ export function RegisterForm({
           <p className="text-xs text-muted-foreground">
             Already have an account?{" "}
             <Link
-              href="/login"
+              to="/login"
               className="underline underline-offset-4 hover:text-primary font-medium"
             >
               Sign in

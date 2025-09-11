@@ -172,8 +172,9 @@ export function ReduxAuthProvider({ children }: { children: ReactNode }) {
       dispatch(setLoading(true));
 
       const result = await loginMutation({ email, password }).unwrap();
+      console.debug("loginMutation result:", result);
 
-      if (result.success && result.data) {
+      if (result && (result as any).success && (result as any).data) {
         const { user: userData, accessToken, refreshToken } = result.data;
 
         dispatch(
@@ -196,6 +197,7 @@ export function ReduxAuthProvider({ children }: { children: ReactNode }) {
       throw new Error("Login failed");
     } catch (error: unknown) {
       dispatch(setLoading(false));
+      console.error("Login error:", error);
       const errorMessage =
         error && typeof error === "object" && "data" in error
           ? (error as { data?: { message?: string } }).data?.message ||

@@ -20,9 +20,9 @@ import {
   Truck,
   X,
 } from "lucide-react";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { Link } from "react-router-dom";
 
 interface ApiError {
   response?: {
@@ -215,7 +215,7 @@ export default function SenderDashboard() {
 
                 {/* Create Parcel Button */}
                 <Link
-                  href="/sender/create-parcel"
+                  to="/sender/create-parcel"
                   className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center justify-center"
                 >
                   <Plus className="mr-2 h-4 w-4" />
@@ -240,7 +240,7 @@ export default function SenderDashboard() {
                 </p>
                 {parcels.length === 0 && (
                   <Link
-                    href="/sender/create-parcel"
+                    to="/sender/create-parcel"
                     className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors inline-flex items-center"
                   >
                     <Plus className="mr-2 h-4 w-4" />
@@ -315,7 +315,7 @@ export default function SenderDashboard() {
                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                           <div className="flex items-center justify-end space-x-2">
                             <Link
-                              href={`/track?id=${parcel.trackingId}`}
+                              to={`/track?id=${parcel.trackingId}`}
                               className="text-blue-600 hover:text-blue-900 flex items-center"
                             >
                               <Eye className="h-4 w-4 mr-1" />

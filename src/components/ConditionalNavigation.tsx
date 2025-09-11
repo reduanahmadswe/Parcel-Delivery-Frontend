@@ -1,10 +1,11 @@
 "use client";
 
 import MainNavigationBar from "@/components/MainNavigationBar";
-import { usePathname } from "next/navigation";
+import { useLocation } from "react-router-dom";
 
 export default function ConditionalNavigation() {
-  const pathname = usePathname();
+  const location = useLocation();
+  const pathname = location.pathname;
 
   // Hide navigation on authentication pages
   const hideNavigation = pathname === "/login" || pathname === "/register";

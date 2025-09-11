@@ -1,0 +1,220 @@
+import React from "react";
+import { Toaster } from "react-hot-toast";
+import { Provider } from "react-redux";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import { PersistGate } from "redux-persist/integration/react";
+import { persistor, store } from "./store";
+
+// Pages
+import ContactPage from "./pages/ContactPage";
+import HomePage from "./pages/HomePage";
+import LoginPage from "./pages/LoginPage";
+import NotFoundPage from "./pages/NotFoundPage";
+import PartnersPage from "./pages/PartnersPage";
+import ProfilePage from "./pages/ProfilePage";
+import RegisterPage from "./pages/RegisterPage";
+import TrackPage from "./pages/TrackPage";
+import UnauthorizedPage from "./pages/UnauthorizedPage";
+
+// Dashboard Pages
+import CreateParcelPage from "./pages/dashboard/CreateParcelPage";
+import ReceiverDashboard from "./pages/dashboard/ReceiverDashboard";
+import SenderDashboard from "./pages/dashboard/SenderDashboard";
+
+// Admin Pages
+import AdminDashboardPage from "./pages/dashboard/AdminDashboard";
+import NotificationsPage from "./pages/admin/NotificationsPage";
+import ParcelManagementPage from "./pages/admin/ParcelManagement";
+import SystemSettingsPage from "./pages/admin/SystemSettings";
+import UserManagementPage from "./pages/admin/UserManagement";
+
+// Components
+import { ThemeProvider } from "@/components/theme-provider";
+import { ReduxAuthProvider } from "@/contexts/ReduxAuthContext";
+import { ProtectedRoute } from "./components/common/ProtectedRoute";
+import Layout from "./components/layout/Layout";
+
+const App: React.FC = () => {
+  return (
+    <ThemeProvider>
+      <Provider store={store}>
+        <PersistGate loading={<div>Loading...</div>} persistor={persistor}>
+          <ReduxAuthProvider>
+            <Router>
+              <div className="App">
+                <Routes>
+                  {/* Public Routes */}
+                  <Route
+                    path="/"
+                    element={
+                      <Layout>
+                        <HomePage />
+                      </Layout>
+                    }
+                  />
+                  <Route
+                    path="/login"
+                    element={
+                      <Layout>
+                        <LoginPage />
+                      </Layout>
+                    }
+                  />
+                  <Route
+                    path="/register"
+                    element={
+                      <Layout>
+                        <RegisterPage />
+                      </Layout>
+                    }
+                  />
+                  <Route
+                    path="/track"
+                    element={
+                      <Layout>
+                        <TrackPage />
+                      </Layout>
+                    }
+                  />
+                  <Route
+                    path="/contact"
+                    element={
+                      <Layout>
+                        <ContactPage />
+                      </Layout>
+                    }
+                  />
+                  <Route
+                    path="/partners"
+                    element={
+                      <Layout>
+                        <PartnersPage />
+                      </Layout>
+                    }
+                  />
+
+                  {/* Protected Routes */}
+                  <Route
+                    path="/profile"
+                    element={
+                      <ProtectedRoute>
+                        <Layout>
+                          <ProfilePage />
+                        </Layout>
+                      </ProtectedRoute>
+                    }
+                  />
+
+                  {/* Sender Routes */}
+                  <Route
+                    path="/sender"
+                    element={
+                      <ProtectedRoute allowedRoles={["sender"]}>
+                        <Layout>
+                          <SenderDashboard />
+                        </Layout>
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/sender/create-parcel"
+                    element={
+                      <ProtectedRoute allowedRoles={["sender"]}>
+                        <Layout>
+                          <CreateParcelPage />
+                        </Layout>
+                      </ProtectedRoute>
+                    }
+                  />
+
+                  {/* Receiver Routes */}
+                  <Route
+                    path="/receiver"
+                    element={
+                      <ProtectedRoute allowedRoles={["receiver"]}>
+                        <Layout>
+                          <ReceiverDashboard />
+                        </Layout>
+                      </ProtectedRoute>
+                    }
+                  />
+
+                  {/* Admin Routes */}
+                  <Route
+                    path="/admin"
+                    element={
+                      <ProtectedRoute allowedRoles={["admin"]}>
+                        <AdminDashboardPage />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/admin/users"
+                    element={
+                      <ProtectedRoute allowedRoles={["admin"]}>
+                        <UserManagementPage />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/admin/parcels"
+                    element={
+                      <ProtectedRoute allowedRoles={["admin"]}>
+                        <ParcelManagementPage />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/admin/settings"
+                    element={
+                      <ProtectedRoute allowedRoles={["admin"]}>
+                        <SystemSettingsPage />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/admin/notifications"
+                    element={
+                      <ProtectedRoute allowedRoles={["admin"]}>
+                        <NotificationsPage />
+                      </ProtectedRoute>
+                    }
+                  />
+
+                  {/* Error Routes */}
+                  <Route path="/unauthorized" element={<UnauthorizedPage />} />
+                  <Route path="*" element={<NotFoundPage />} />
+                </Routes>
+
+                <Toaster
+                  position="top-right"
+                  toastOptions={{
+                    duration: 4000,
+                    style: {
+                      background: "#363636",
+                      color: "#fff",
+                    },
+                    success: {
+                      duration: 3000,
+                      style: {
+                        background: "#10b981",
+                      },
+                    },
+                    error: {
+                      duration: 5000,
+                      style: {
+                        background: "#ef4444",
+                      },
+                    },
+                  }}
+                />
+              </div>
+            </Router>
+          </ReduxAuthProvider>
+        </PersistGate>
+      </Provider>
+    </ThemeProvider>
+  );
+};
+
+export default App;

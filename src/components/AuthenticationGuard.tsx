@@ -1,9 +1,9 @@
 "use client";
 
 import { useAuth } from "@/hooks/useAuth";
-import { User } from "@/types/GlobalTypeDefinitions";
-import { useRouter } from "next/navigation";
+import { User } from "@/types";
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -17,12 +17,12 @@ export default function ProtectedRoute({
   redirectTo = "/login",
 }: ProtectedRouteProps) {
   const { user, loading } = useAuth();
-  const router = useRouter();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!loading) {
       if (!user) {
-        router.push(redirectTo);
+        navigate(redirectTo, { replace: true });
         return;
       }
 
@@ -30,21 +30,21 @@ export default function ProtectedRoute({
         // Redirect based on user role
         switch (user.role) {
           case "admin":
-            router.push("/admin");
+            navigate("/admin", { replace: true });
             break;
           case "sender":
-            router.push("/sender");
+            navigate("/sender", { replace: true });
             break;
           case "receiver":
-            router.push("/receiver");
+            navigate("/receiver", { replace: true });
             break;
           default:
-            router.push("/");
+            navigate("/", { replace: true });
         }
         return;
       }
     }
-  }, [user, loading, allowedRoles, redirectTo, router]);
+  }, [user, loading, allowedRoles, redirectTo, navigate]);
 
   if (loading) {
     return (
