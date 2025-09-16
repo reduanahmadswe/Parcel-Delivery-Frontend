@@ -18,7 +18,7 @@ export function FilterPanel({
   return (
     <div className="space-y-6">
       {/* Modern Header with project's red/orange gradient theme */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-red-600 via-red-600 to-red-600 dark:from-red-600 dark:via-red-600 dark:to-red-700 rounded-2xl p-8 text-white">
+      {/* <div className="relative overflow-hidden bg-gradient-to-br from-red-600 via-red-600 to-red-600 dark:from-red-600 dark:via-red-600 dark:to-red-700 rounded-2xl p-8 text-white">
         <div className="absolute inset-0 bg-black/10"></div>
         <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-white/5 -translate-y-32 translate-x-32"></div>
         <div className="absolute bottom-0 left-0 w-48 h-48 rounded-full bg-white/5 translate-y-24 -translate-x-24"></div>
@@ -40,24 +40,9 @@ export function FilterPanel({
             </div>
           </div>
 
-          <div className="flex items-center space-x-3">
-            <button
-              onClick={onClearFilters}
-              className="group flex items-center space-x-2 px-6 py-3 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-xl transition-all duration-300 border border-white/20 hover:border-white/40"
-            >
-              <Filter className="h-5 w-5 text-white group-hover:rotate-12 transition-transform duration-300" />
-              <span className="text-white font-medium">Clear Filters</span>
-            </button>
-            <button
-              onClick={onRefresh}
-              className="group flex items-center space-x-2 px-6 py-3 bg-white hover:bg-gray-100 rounded-xl transition-all duration-300 text-gray-900 font-medium shadow-lg hover:shadow-xl"
-            >
-              <RefreshCw className="h-5 w-5 group-hover:rotate-180 transition-transform duration-500" />
-              <span>Refresh</span>
-            </button>
-          </div>
+         
         </div>
-      </div>
+      </div> */}
 
       {/* Modern Filter Panel with glassmorphism effect using project theme */}
       <div className="relative bg-background/70 backdrop-blur-xl border border-border/50 rounded-2xl p-6 shadow-2xl hover:shadow-3xl transition-all duration-500">
@@ -69,7 +54,24 @@ export function FilterPanel({
               <Search className="h-6 w-6 text-white" />
             </div>
             <h3 className="text-xl font-bold text-foreground">Smart Filters</h3>
-            <div className="flex-1"></div>
+            <div className="flex-1">
+              <div className="flex items-center space-x-3">
+                <button
+                  onClick={onClearFilters}
+                  className="group flex items-center space-x-2 px-6 py-3 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-xl transition-all duration-300 border border-white/20 hover:border-white/40"
+                >
+                  <Filter className="h-5 w-5 text-black group-hover:rotate-12 transition-transform duration-300" />
+                  <span className="text-black font-medium">Clear Filters</span>
+                </button>
+                <button
+                  onClick={onRefresh}
+                  className="group flex items-center space-x-2 px-6 py-3 bg-white hover:bg-gray-100 rounded-xl transition-all duration-300 text-gray-900 font-medium shadow-lg hover:shadow-xl"
+                >
+                  <RefreshCw className="h-5 w-5 group-hover:rotate-180 transition-transform duration-500" />
+                  <span>Refresh</span>
+                </button>
+              </div>
+            </div>
             <div className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-orange-100 to-red-100 dark:from-orange-900/30 dark:to-red-900/30 rounded-full border border-orange-200 dark:border-orange-700">
               <Sparkles className="h-4 w-4 text-orange-600 dark:text-orange-400" />
               <span className="text-sm font-semibold text-orange-700 dark:text-orange-300">
