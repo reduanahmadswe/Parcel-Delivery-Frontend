@@ -1,0 +1,232 @@
+"use client";
+
+// Main User Management Component - Modern and Clean
+// This file focuses on state orchestration and layout
+
+import AdminLayout from "@/pages/admin/AdminDashboardLayout";
+import { Edit, Power, PowerOff, Trash2 } from "lucide-react";
+import { useState } from "react";
+import {
+  BlockUserModal,
+  DataTable,
+  StatusBadge,
+  UserFormModal,
+  UserManagementHeader,
+} from "./components";
+import { useUserManagement } from "./hooks";
+import { User } from "./types";
+
+export default function AdminUsersPage() {
+  // State for modals and UI
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
+  const [showBlockModal, setShowBlockModal] = useState(false);
+  const [userToBlock, setUserToBlock] = useState<User | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  // Custom hook for user management logic
+  const {
+    users,
+    loading,
+    actionLoading,
+    createUser,
+    updateUser,
+    deleteUser,
+    toggleUserStatus,
+    refreshUsers,
+  } = useUserManagement();
+
+  // Filter users based on search term
+  const filteredUsers = users.filter(
+    (user) =>
+      user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.role.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  // Handlers for user actions
+  const handleCreateUser = () => {
+    setSelectedUser(null);
+    setIsCreating(true);
+    setIsEditing(false);
+  };
+
+  const handleEditUser = (user: User) => {
+    setSelectedUser(user);
+    setIsEditing(true);
+    setIsCreating(false);
+  };
+
+  const handleDeleteUser = async (user: User) => {
+    if (window.confirm(`Are you sure you want to delete ${user.name}?`)) {
+      await deleteUser(user.id);
+    }
+  };
+
+  const handleBlockUser = (user: User) => {
+    setUserToBlock(user);
+    setShowBlockModal(true);
+  };
+
+  const handleBlockConfirm = async (reason: string) => {
+    if (userToBlock) {
+      await toggleUserStatus(userToBlock.id, reason);
+      setShowBlockModal(false);
+      setUserToBlock(null);
+    }
+  };
+
+  const handleFormSubmit = async (userData: Partial<User>) => {
+    if (isEditing && selectedUser) {
+      await updateUser(selectedUser.id, userData);
+    } else {
+      await createUser(userData);
+    }
+    setIsCreating(false);
+    setIsEditing(false);
+    setSelectedUser(null);
+  };
+
+  // Table columns configuration
+  const columns = [
+    {
+      header: "Name",
+      accessorKey: "name",
+      cell: (user: User) => (
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 bg-gradient-to-br from-red-500 to-red-600 rounded-full flex items-center justify-center text-white font-medium text-sm">
+            {user.name.charAt(0).toUpperCase()}
+          </div>
+          <div>
+            <p className="font-medium text-foreground">{user.name}</p>
+            <p className="text-sm text-muted-foreground">{user.email}</p>
+          </div>
+        </div>
+      ),
+    },
+    {
+      header: "Role",
+      accessorKey: "role",
+      cell: (user: User) => (
+        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">
+          {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
+        </span>
+      ),
+    },
+    {
+      header: "Status",
+      accessorKey: "status",
+      cell: (user: User) => <StatusBadge status={user.status} />,
+    },
+    {
+      header: "Phone",
+      accessorKey: "phone",
+      cell: (user: User) => (
+        <span className="text-muted-foreground">
+          {user.phoneNumber || user.phone || "N/A"}
+        </span>
+      ),
+    },
+    {
+      header: "Created",
+      accessorKey: "createdAt",
+      cell: (user: User) => (
+        <span className="text-muted-foreground">
+          {new Date(user.createdAt).toLocaleDateString()}
+        </span>
+      ),
+    },
+    {
+      header: "Actions",
+      accessorKey: "actions",
+      cell: (user: User) => (
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => handleEditUser(user)}
+            className="p-2 text-blue-600 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-lg transition-colors"
+            title="Edit User"
+          >
+            <Edit className="h-4 w-4" />
+          </button>
+          <button
+            onClick={() => handleBlockUser(user)}
+            className={`p-2 rounded-lg transition-colors ${
+              user.status === "blocked"
+                ? "text-green-600 hover:bg-green-100 dark:hover:bg-green-900/30"
+                : "text-red-600 hover:bg-red-100 dark:hover:bg-red-900/30"
+            }`}
+            title={user.status === "blocked" ? "Unblock User" : "Block User"}
+          >
+            {user.status === "blocked" ? (
+              <Power className="h-4 w-4" />
+            ) : (
+              <PowerOff className="h-4 w-4" />
+            )}
+          </button>
+          <button
+            onClick={() => handleDeleteUser(user)}
+            className="p-2 text-red-600 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-lg transition-colors"
+            title="Delete User"
+          >
+            <Trash2 className="h-4 w-4" />
+          </button>
+        </div>
+      ),
+    },
+  ];
+
+  return (
+    <AdminLayout>
+      <div className="min-h-screen bg-background mt-8">
+        <div className="max-w-7xl mx-auto pt-2 px-6 space-y-6 pb-24">
+          {/* Header with stats */}
+          <UserManagementHeader
+            searchTerm={searchTerm}
+            filteredUsers={filteredUsers}
+            setSearchTerm={setSearchTerm}
+            loading={loading}
+            statsLoading={loading}
+            onRefresh={refreshUsers}
+            onCreateUser={handleCreateUser}
+          />
+
+          {/* Users Table */}
+          <div className="bg-background border border-border rounded-lg">
+            <DataTable
+              columns={columns}
+              data={filteredUsers}
+              searchTerm={searchTerm}
+              onSearchChange={setSearchTerm}
+            />
+          </div>
+
+          {/* User Form Modal */}
+          <UserFormModal
+            isOpen={isCreating || isEditing}
+            onClose={() => {
+              setIsCreating(false);
+              setIsEditing(false);
+              setSelectedUser(null);
+            }}
+            user={selectedUser}
+            onSubmit={handleFormSubmit}
+            actionLoading={actionLoading}
+          />
+
+          {/* Block User Modal */}
+          <BlockUserModal
+            isOpen={showBlockModal}
+            onClose={() => {
+              setShowBlockModal(false);
+              setUserToBlock(null);
+            }}
+            onConfirm={handleBlockConfirm}
+            userName={userToBlock?.name || ""}
+            isBlocked={userToBlock?.status === "blocked"}
+          />
+        </div>
+      </div>
+    </AdminLayout>
+  );
+}

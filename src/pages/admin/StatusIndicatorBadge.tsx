@@ -51,8 +51,18 @@ export default function StatusBadge({
       }
     }
 
-    // Custom variant - default styling with LiveTrackingSection theme
-    return "bg-gradient-to-r from-red-100 to-red-200 text-red-800 dark:from-red-900/50 dark:to-red-800/50 dark:text-red-200 border border-red-300 dark:border-red-600 shadow-sm";
+    // Custom variant - status-based styling
+    switch (safeStatus.toLowerCase()) {
+      case "active":
+        return "bg-gradient-to-r from-green-100 to-green-200 text-green-800 dark:from-green-900/50 dark:to-green-800/50 dark:text-green-200 border border-green-300 dark:border-green-600 shadow-sm";
+      case "blocked":
+      case "suspended":
+        return "bg-gradient-to-r from-red-100 to-red-200 text-red-800 dark:from-red-900/50 dark:to-red-800/50 dark:text-red-200 border border-red-300 dark:border-red-600 shadow-sm";
+      case "pending":
+        return "bg-gradient-to-r from-orange-100 to-orange-200 text-orange-800 dark:from-orange-900/50 dark:to-orange-800/50 dark:text-orange-200 border border-orange-300 dark:border-orange-600 shadow-sm";
+      default:
+        return "bg-gradient-to-r from-slate-100 to-slate-200 text-slate-800 dark:from-slate-700/50 dark:to-slate-600/50 dark:text-slate-200 border border-slate-300 dark:border-slate-600";
+    }
   };
 
   return (

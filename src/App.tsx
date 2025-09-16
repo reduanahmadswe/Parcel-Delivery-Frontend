@@ -25,7 +25,7 @@ import SenderDashboard from "./pages/dashboard/SenderDashboard";
 import NotificationsPage from "./pages/admin/NotificationsPage";
 import ParcelManagementPage from "./pages/admin/ParcelManagement";
 import SystemSettingsPage from "./pages/admin/SystemSettings";
-import UserManagementPage from "./pages/admin/UserManagement/UserManagement";
+import UserManagementPage from "./pages/admin/UserManagement";
 import AdminDashboardPage from "./pages/dashboard/AdminDashboard";
 
 // Components
