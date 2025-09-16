@@ -19,14 +19,23 @@ import {
   X,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 export default function Navigation() {
   const { user, logout } = useAuth();
+  const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [notifications] = useState(3); // Example notification count
   const userMenuRef = useRef<HTMLDivElement>(null);
+
+  // Helper function to check if navigation item is active
+  const isActive = (href: string) => {
+    if (href === "/admin" && location.pathname === "/admin") return true;
+    if (href !== "/admin" && location.pathname.startsWith(href)) return true;
+    if (href === "/" && location.pathname === "/") return true;
+    return false;
+  };
 
   const handleLogout = async () => {
     await logout();
@@ -62,10 +71,11 @@ export default function Navigation() {
   const navigationItems =
     user?.role === "admin"
       ? [
-          { href: "/track", label: "Track Parcel", icon: Search },
-          { href: "/admin", label: "Admin Dashboard", icon: BarChart3 },
+          { href: "/admin", label: "Dashboard", icon: BarChart3 },
           { href: "/admin/users", label: "Users", icon: Users },
-          { href: "/admin/reports", label: "Reports", icon: FileText },
+          { href: "/admin/parcels", label: "Parcels", icon: Package },
+          { href: "/admin/settings", label: "Settings", icon: Settings },
+          { href: "/admin/notifications", label: "Notifications", icon: Bell },
         ]
       : user?.role === "sender"
       ? [
@@ -128,25 +138,53 @@ export default function Navigation() {
           <div className="hidden lg:flex items-center space-x-1">
             {navigationItems.map((item) => {
               const Icon = item.icon;
+              const active = isActive(item.href);
+
               return item.href.startsWith("#") ? (
                 <button
                   key={item.href}
                   onClick={() => handleNavClick(item.href)}
-                  className="flex items-center space-x-2 text-muted-foreground hover:text-foreground hover:bg-accent/50 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 group relative overflow-hidden"
+                  className={`flex items-center space-x-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 group relative overflow-hidden ${
+                    active
+                      ? "text-white bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 shadow-lg shadow-red-500/25"
+                      : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
+                  }`}
                 >
-                  <Icon className="h-4 w-4 group-hover:scale-110 transition-transform duration-300" />
+                  <Icon
+                    className={`h-4 w-4 transition-transform duration-300 ${
+                      active ? "scale-110" : "group-hover:scale-110"
+                    }`}
+                  />
                   <span>{item.label}</span>
-                  <div className="absolute inset-0 bg-gradient-to-r from-red-500/10 to-red-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
+                  {!active && (
+                    <div className="absolute inset-0 bg-gradient-to-r from-red-500/10 to-red-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
+                  )}
+                  {active && (
+                    <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-white rounded-full"></div>
+                  )}
                 </button>
               ) : (
                 <Link
                   key={item.href}
                   to={item.href}
-                  className="flex items-center space-x-2 text-muted-foreground hover:text-foreground hover:bg-accent/50 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 group relative overflow-hidden"
+                  className={`flex items-center space-x-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 group relative overflow-hidden ${
+                    active
+                      ? "text-white bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 shadow-lg shadow-red-500/25"
+                      : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
+                  }`}
                 >
-                  <Icon className="h-4 w-4 group-hover:scale-110 transition-transform duration-300" />
+                  <Icon
+                    className={`h-4 w-4 transition-transform duration-300 ${
+                      active ? "scale-110" : "group-hover:scale-110"
+                    }`}
+                  />
                   <span>{item.label}</span>
-                  <div className="absolute inset-0 bg-gradient-to-r from-red-500/10 to-red-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
+                  {!active && (
+                    <div className="absolute inset-0 bg-gradient-to-r from-red-500/10 to-red-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
+                  )}
+                  {active && (
+                    <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-white rounded-full"></div>
+                  )}
                 </Link>
               );
             })}
@@ -292,6 +330,8 @@ export default function Navigation() {
             <div className="px-4 py-4 space-y-1">
               {navigationItems.map((item) => {
                 const Icon = item.icon;
+                const active = isActive(item.href);
+
                 return item.href.startsWith("#") ? (
                   <button
                     key={item.href}
@@ -299,20 +339,42 @@ export default function Navigation() {
                       handleNavClick(item.href);
                       setIsMobileMenuOpen(false);
                     }}
-                    className="flex items-center space-x-3 text-muted-foreground hover:text-foreground hover:bg-accent/50 px-3 py-3 rounded-xl text-sm font-medium transition-all duration-300 group w-full text-left"
+                    className={`flex items-center space-x-3 px-3 py-3 rounded-xl text-sm font-medium transition-all duration-300 group w-full text-left relative ${
+                      active
+                        ? "text-white bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 shadow-lg shadow-red-500/25"
+                        : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
+                    }`}
                   >
-                    <Icon className="h-5 w-5 group-hover:scale-110 transition-transform duration-300" />
+                    <Icon
+                      className={`h-5 w-5 transition-transform duration-300 ${
+                        active ? "scale-110" : "group-hover:scale-110"
+                      }`}
+                    />
                     <span>{item.label}</span>
+                    {active && (
+                      <div className="absolute right-3 top-1/2 transform -translate-y-1/2 w-2 h-2 bg-white rounded-full"></div>
+                    )}
                   </button>
                 ) : (
                   <Link
                     key={item.href}
                     to={item.href}
-                    className="flex items-center space-x-3 text-muted-foreground hover:text-foreground hover:bg-accent/50 px-3 py-3 rounded-xl text-sm font-medium transition-all duration-300 group"
+                    className={`flex items-center space-x-3 px-3 py-3 rounded-xl text-sm font-medium transition-all duration-300 group relative ${
+                      active
+                        ? "text-white bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 shadow-lg shadow-red-500/25"
+                        : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
+                    }`}
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
-                    <Icon className="h-5 w-5 group-hover:scale-110 transition-transform duration-300" />
+                    <Icon
+                      className={`h-5 w-5 transition-transform duration-300 ${
+                        active ? "scale-110" : "group-hover:scale-110"
+                      }`}
+                    />
                     <span>{item.label}</span>
+                    {active && (
+                      <div className="absolute right-3 top-1/2 transform -translate-y-1/2 w-2 h-2 bg-white rounded-full"></div>
+                    )}
                   </Link>
                 );
               })}

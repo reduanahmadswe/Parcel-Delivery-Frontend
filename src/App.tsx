@@ -7,12 +7,12 @@ import { persistor, store } from "./store";
 
 // Pages
 import ContactPage from "./pages/ContactPage";
+import LoginPage from "./pages/form/LoginPage";
 import HomePage from "./pages/HomePage";
-import LoginPage from "./pages/LoginPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import PartnersPage from "./pages/PartnersPage";
 import ProfilePage from "./pages/ProfilePage";
-import RegisterPage from "./pages/RegisterPage";
+
 import TrackPage from "./pages/TrackPage";
 import UnauthorizedPage from "./pages/UnauthorizedPage";
 
@@ -22,17 +22,18 @@ import ReceiverDashboard from "./pages/dashboard/ReceiverDashboard";
 import SenderDashboard from "./pages/dashboard/SenderDashboard";
 
 // Admin Pages
-import AdminDashboardPage from "./pages/dashboard/AdminDashboard";
 import NotificationsPage from "./pages/admin/NotificationsPage";
 import ParcelManagementPage from "./pages/admin/ParcelManagement";
 import SystemSettingsPage from "./pages/admin/SystemSettings";
 import UserManagementPage from "./pages/admin/UserManagement/UserManagement";
+import AdminDashboardPage from "./pages/dashboard/AdminDashboard";
 
 // Components
 import { ThemeProvider } from "@/components/theme-provider";
 import { ReduxAuthProvider } from "@/contexts/ReduxAuthContext";
 import { ProtectedRoute } from "./components/common/ProtectedRoute";
 import Layout from "./components/layout/Layout";
+import RegisterPage from "./pages/form/RegisterPage";
 
 const App: React.FC = () => {
   return (

@@ -1,6 +1,6 @@
 "use client";
 
-import MainNavigationBar from "@/components/MainNavigationBar";
+import MainNavigationBar from "@/pages/MainNavigationBar";
 import { useLocation } from "react-router-dom";
 
 export default function ConditionalNavigation() {

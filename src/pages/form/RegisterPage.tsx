@@ -3,7 +3,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 const MultiStepRegisterForm = React.lazy(() =>
-  import("../components/modules/Authentication/MultiStepRegisterForm").then(
+  import("./Authentication/MultiStepRegisterForm").then(
     (module) => ({
       default: module.MultiStepRegisterForm,
     })
