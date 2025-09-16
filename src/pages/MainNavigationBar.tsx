@@ -3,8 +3,10 @@
 import ThemeToggle from "@/components/DarkLightThemeSwitcher";
 import { useAuth } from "@/hooks/useAuth";
 import {
+  AlertTriangle,
   BarChart3,
   Bell,
+  CheckCircle,
   ChevronDown,
   FileText,
   Home,
@@ -26,8 +28,66 @@ export default function Navigation() {
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [notifications] = useState(3); // Example notification count
   const userMenuRef = useRef<HTMLDivElement>(null);
+  const notificationsRef = useRef<HTMLDivElement>(null);
+
+  // Sample notifications data
+  const notificationsList = [
+    {
+      id: 1,
+      title: "New parcel registered",
+      description: "TRK001234 has been added to the system by Ahmed Hassan",
+      time: "2 minutes ago",
+      type: "info",
+      unread: true,
+    },
+    {
+      id: 2,
+      title: "User registration",
+      description: "New user Ahmed Hassan registered as sender",
+      time: "15 minutes ago",
+      type: "success",
+      unread: true,
+    },
+    {
+      id: 3,
+      title: "Parcel delivered",
+      description: "TRK005678 successfully delivered to Rashida Begum",
+      time: "1 hour ago",
+      type: "success",
+      unread: false,
+    },
+    {
+      id: 4,
+      title: "Flagged parcel requires attention",
+      description: "TRK009876 has been flagged for review",
+      time: "2 hours ago",
+      type: "warning",
+      unread: false,
+    },
+    {
+      id: 5,
+      title: "System maintenance completed",
+      description: "Database backup and optimization completed successfully",
+      time: "3 hours ago",
+      type: "info",
+      unread: false,
+    },
+  ];
+
+  const getIconForType = (type: string) => {
+    switch (type) {
+      case "success":
+        return <CheckCircle className="w-5 h-5 text-green-500" />;
+      case "warning":
+        return <AlertTriangle className="w-5 h-5 text-yellow-500" />;
+      case "info":
+      default:
+        return <Bell className="w-5 h-5 text-blue-500" />;
+    }
+  };
 
   // Helper function to check if navigation item is active
   const isActive = (href: string) => {
@@ -42,7 +102,7 @@ export default function Navigation() {
     setIsUserMenuOpen(false);
   };
 
-  // Close user menu when clicking outside
+  // Close user menu and notifications when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
@@ -50,6 +110,12 @@ export default function Navigation() {
         !userMenuRef.current.contains(event.target as Node)
       ) {
         setIsUserMenuOpen(false);
+      }
+      if (
+        notificationsRef.current &&
+        !notificationsRef.current.contains(event.target as Node)
+      ) {
+        setIsNotificationsOpen(false);
       }
     }
 
@@ -75,7 +141,6 @@ export default function Navigation() {
           { href: "/admin/users", label: "Users", icon: Users },
           { href: "/admin/parcels", label: "Parcels", icon: Package },
           { href: "/admin/settings", label: "Settings", icon: Settings },
-          { href: "/admin/notifications", label: "Notifications", icon: Bell },
         ]
       : user?.role === "sender"
       ? [
@@ -199,8 +264,13 @@ export default function Navigation() {
               <>
                 {/* Notifications - Only for admin */}
                 {user.role === "admin" && (
-                  <div className="relative">
-                    <button className="relative p-2 text-muted-foreground hover:text-foreground hover:bg-accent/50 rounded-xl transition-all duration-300 group">
+                  <div className="relative" ref={notificationsRef}>
+                    <button
+                      onClick={() =>
+                        setIsNotificationsOpen(!isNotificationsOpen)
+                      }
+                      className="relative p-2 text-muted-foreground hover:text-foreground hover:bg-accent/50 rounded-xl transition-all duration-300 group"
+                    >
                       <Bell className="h-5 w-5 group-hover:scale-110 transition-transform duration-300" />
                       {notifications > 0 && (
                         <span className="absolute -top-1 -right-1 h-5 w-5 bg-gradient-to-r from-red-500 to-red-600 text-white text-xs rounded-full flex items-center justify-center animate-pulse font-semibold shadow-lg">
@@ -208,6 +278,69 @@ export default function Navigation() {
                         </span>
                       )}
                     </button>
+
+                    {/* Notifications Dropdown */}
+                    {isNotificationsOpen && (
+                      <div className="absolute right-0 mt-2 w-80 bg-background rounded-lg shadow-xl border border-border z-50 max-h-96 overflow-y-auto">
+                        {/* Header */}
+                        <div className="bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 p-4 rounded-t-lg">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <Bell className="w-5 h-5 text-white" />
+                              <h3 className="text-white font-semibold">
+                                Notifications
+                              </h3>
+                            </div>
+                            <button className="text-xs text-white/80 hover:text-white bg-white/20 hover:bg-white/30 px-2 py-1 rounded transition-colors">
+                              Mark All Read
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Notifications List */}
+                        <div className="max-h-80 overflow-y-auto">
+                          {notificationsList.map((notification) => (
+                            <div
+                              key={notification.id}
+                              className={`p-3 border-b border-border hover:bg-muted/50 transition-colors cursor-pointer ${
+                                notification.unread
+                                  ? "bg-blue-50/50 dark:bg-blue-900/20"
+                                  : ""
+                              }`}
+                            >
+                              <div className="flex items-start gap-3">
+                                <div className="mt-1">
+                                  {getIconForType(notification.type)}
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <div className="flex items-start justify-between">
+                                    <h4 className="font-medium text-foreground text-sm">
+                                      {notification.title}
+                                    </h4>
+                                    {notification.unread && (
+                                      <div className="w-2 h-2 bg-blue-500 rounded-full ml-2 mt-1"></div>
+                                    )}
+                                  </div>
+                                  <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
+                                    {notification.description}
+                                  </p>
+                                  <span className="text-xs text-muted-foreground mt-1">
+                                    {notification.time}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* Footer */}
+                        <div className="p-3 border-t border-border bg-muted/30">
+                          <button className="w-full text-center text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-200 font-medium">
+                            View All Notifications
+                          </button>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
 
