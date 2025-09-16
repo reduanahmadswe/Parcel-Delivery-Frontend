@@ -32,6 +32,13 @@ export const parcelsApi = baseApi.injectEndpoints({
             }),
             providesTags: ['Parcel'],
         }),
+        getUserParcels: builder.query<PaginatedResponse<Parcel>, { userId: string; page?: number; limit?: number }>({
+            query: ({ userId, ...params }) => ({
+                url: `/parcels/user/${userId}`,
+                params,
+            }),
+            providesTags: (result, error, { userId }) => [{ type: 'Parcel', id: `user-${userId}` }],
+        }),
         createParcel: builder.mutation<ApiResponse<Parcel>, CreateParcelData>({
             query: (parcelData) => ({
                 url: '/parcels',
@@ -75,6 +82,7 @@ export const {
     useGetParcelByIdQuery,
     useGetParcelByTrackingIdQuery,
     useGetMyParcelsQuery,
+    useGetUserParcelsQuery,
     useCreateParcelMutation,
     useUpdateParcelMutation,
     useUpdateParcelStatusMutation,

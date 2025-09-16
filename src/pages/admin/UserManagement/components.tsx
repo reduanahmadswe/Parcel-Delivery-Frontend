@@ -1,15 +1,24 @@
 import {
+  AlertTriangle,
+  Calendar,
   Edit,
+  Eye,
+  Mail,
+  MapIcon,
   MapPin,
+  Package,
+  Phone,
   Plus,
   Power,
   PowerOff,
   RefreshCw,
   Search,
   Shield,
+  Trash2,
   Users,
 } from "lucide-react";
 import React, { useEffect, useState } from "react";
+import { useGetUserParcelsQuery } from "../../../features/parcels/parcelsApi";
 import { BlockUserReason, User } from "./types";
 
 // Modal Component
@@ -33,10 +42,21 @@ export function Modal({
     xl: "max-w-4xl",
   };
 
+  // Handle outside click
+  const handleBackdropClick = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
+
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+      onClick={handleBackdropClick}
+    >
       <div
         className={`bg-background rounded-lg shadow-xl ${sizeClasses[size]} w-full mx-4 max-h-[90vh] overflow-y-auto`}
+        onClick={(e) => e.stopPropagation()}
       >
         {children}
       </div>
@@ -249,6 +269,284 @@ export function BlockUserModal({
               }`}
             >
               {isBlocked ? "Unblock User" : "Block User"}
+            </button>
+          </div>
+        </div>
+      </div>
+    </Modal>
+  );
+}
+
+// Delete User Modal Component
+export function DeleteUserModal({
+  isOpen,
+  onClose,
+  onConfirm,
+  userName,
+  userEmail,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+  userName: string;
+  userEmail: string;
+}) {
+  return (
+    <Modal isOpen={isOpen} onClose={onClose} size="md">
+      <div className="bg-gradient-to-br from-background via-background to-muted/20">
+        {/* Header */}
+        <div className="bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 p-6 rounded-t-lg">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-white/20 rounded-lg">
+              <Trash2 className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h2 className="text-xl font-bold text-white">Delete User</h2>
+              <p className="text-white/80 text-sm">
+                This action cannot be undone
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="p-6 space-y-6">
+          {/* Warning Message */}
+          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
+            <div className="flex items-start gap-3">
+              <AlertTriangle className="w-5 h-5 text-red-600 dark:text-red-400 mt-0.5" />
+              <div>
+                <h3 className="font-medium text-red-800 dark:text-red-300">
+                  Permanent Deletion Warning
+                </h3>
+                <p className="text-sm text-red-700 dark:text-red-400 mt-1">
+                  You are about to permanently delete{" "}
+                  <strong>{userName}</strong>'s account. This will remove all
+                  associated data and cannot be recovered.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* User Info */}
+          <div className="bg-muted/50 rounded-lg p-4 border border-border">
+            <h4 className="font-medium text-foreground mb-2">User Details:</h4>
+            <div className="space-y-1 text-sm">
+              <p className="text-muted-foreground">
+                <span className="font-medium">Name:</span> {userName}
+              </p>
+              <p className="text-muted-foreground">
+                <span className="font-medium">Email:</span> {userEmail}
+              </p>
+            </div>
+          </div>
+
+          {/* Consequences */}
+          <div className="space-y-3">
+            <h4 className="font-medium text-foreground">
+              This will permanently:
+            </h4>
+            <ul className="space-y-2 text-sm text-muted-foreground">
+              <li className="flex items-center gap-2">
+                <div className="w-1.5 h-1.5 bg-red-500 rounded-full"></div>
+                Delete all user account information
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="w-1.5 h-1.5 bg-red-500 rounded-full"></div>
+                Remove user access to the platform
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="w-1.5 h-1.5 bg-red-500 rounded-full"></div>
+                Delete associated user data and history
+              </li>
+            </ul>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex justify-end space-x-3 pt-4 border-t border-border">
+            <button
+              onClick={onClose}
+              className="px-6 py-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-all duration-200"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={() => {
+                onConfirm();
+                onClose();
+              }}
+              className="px-6 py-2 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-lg hover:shadow-lg transition-all duration-300 flex items-center gap-2"
+            >
+              <Trash2 className="w-4 h-4" />
+              Delete Permanently
+            </button>
+          </div>
+        </div>
+      </div>
+    </Modal>
+  );
+}
+
+// User Details Modal Component
+export function UserDetailsModal({
+  isOpen,
+  onClose,
+  user,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  user: User | null;
+}) {
+  // Use RTK Query to fetch user parcels
+  const {
+    data: parcelsResponse,
+    isLoading: loading,
+    error,
+  } = useGetUserParcelsQuery(
+    { userId: user?.id?.toString() || user?._id?.toString() || "" },
+    { skip: !isOpen || !user }
+  );
+
+  const userParcels = parcelsResponse?.data || [];
+
+  if (!user) return null;
+
+  return (
+    <Modal isOpen={isOpen} onClose={onClose} size="xl">
+      <div className="bg-gradient-to-br from-background via-background to-muted/20">
+        {/* Header */}
+        <div className="bg-gradient-to-r from-red-600 to-red-600 dark:from-red-600 dark:to-red-700 p-6 rounded-t-lg">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-white/20 rounded-lg">
+              <Eye className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h2 className="text-xl font-bold text-white">User Details</h2>
+              <p className="text-white/80 text-sm">
+                Complete information for {user.name}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="p-6 space-y-6 max-h-[75vh] overflow-y-auto">
+          {/* User Information Section */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Personal Information */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 mb-4">
+                <div className="p-1 bg-blue-100 dark:bg-blue-900/30 rounded">
+                  <Users className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                </div>
+                <h3 className="text-lg font-semibold text-foreground">
+                  Personal Information
+                </h3>
+              </div>
+
+              <div className="space-y-3">
+                <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
+                  <Users className="w-5 h-5 text-muted-foreground" />
+                  <div>
+                    <p className="text-sm text-muted-foreground">Full Name</p>
+                    <p className="font-medium text-foreground">{user.name}</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
+                  <Mail className="w-5 h-5 text-muted-foreground" />
+                  <div>
+                    <p className="text-sm text-muted-foreground">
+                      Email Address
+                    </p>
+                    <p className="font-medium text-foreground">{user.email}</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
+                  <Phone className="w-5 h-5 text-muted-foreground" />
+                  <div>
+                    <p className="text-sm text-muted-foreground">
+                      Phone Number
+                    </p>
+                    <p className="font-medium text-foreground">
+                      {user.phoneNumber || "N/A"}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
+                  <Shield className="w-5 h-5 text-muted-foreground" />
+                  <div>
+                    <p className="text-sm text-muted-foreground">Role</p>
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">
+                      {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
+                  <Calendar className="w-5 h-5 text-muted-foreground" />
+                  <div>
+                    <p className="text-sm text-muted-foreground">Status</p>
+                    <StatusBadge status={user.status} />
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
+                  <Calendar className="w-5 h-5 text-muted-foreground" />
+                  <div>
+                    <p className="text-sm text-muted-foreground">Joined Date</p>
+                    <p className="font-medium text-foreground">
+                      {new Date(user.createdAt).toLocaleDateString()}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Address Information */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 mb-4">
+                <div className="p-1 bg-green-100 dark:bg-green-900/30 rounded">
+                  <MapIcon className="w-4 h-4 text-green-600 dark:text-green-400" />
+                </div>
+                <h3 className="text-lg font-semibold text-foreground">
+                  Address Information
+                </h3>
+              </div>
+
+              <div className="p-4 bg-muted/50 rounded-lg space-y-2">
+                <div className="flex items-start gap-3">
+                  <MapPin className="w-5 h-5 text-muted-foreground mt-0.5" />
+                  <div className="space-y-1">
+                    <p className="text-sm text-muted-foreground">Address</p>
+                    <div className="space-y-1">
+                      <p className="font-medium text-foreground">
+                        {user.address?.street || "N/A"}
+                      </p>
+                      <p className="text-foreground">
+                        {user.address?.city || "N/A"},{" "}
+                        {user.address?.state || "N/A"}
+                      </p>
+                      <p className="text-foreground">
+                        {user.address?.zipCode || "N/A"}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        
+          {/* Action Buttons */}
+          <div className="flex justify-end pt-4 border-t border-border">
+            <button
+              onClick={onClose}
+              className="px-6 py-2 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-lg hover:shadow-lg transition-all duration-300"
+            >
+              Close
             </button>
           </div>
         </div>

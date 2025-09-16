@@ -6,6 +6,30 @@ export interface BlockUserReason {
     label: string;
 }
 
+export interface UserParcel {
+    _id: string;
+    trackingId: string;
+    senderId: string;
+    senderInfo: {
+        name: string;
+        email: string;
+        phone: string;
+    };
+    receiverInfo: {
+        name: string;
+        email: string;
+        phone: string;
+    };
+    parcelDetails: {
+        type: string;
+        weight: number;
+        description: string;
+    };
+    status: 'pending' | 'picked-up' | 'in-transit' | 'out-for-delivery' | 'delivered' | 'cancelled';
+    createdAt: string;
+    updatedAt: string;
+}
+
 export interface ApiUser {
     id?: number;
     _id?: string | number; // MongoDB ObjectId

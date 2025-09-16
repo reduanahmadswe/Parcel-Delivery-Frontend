@@ -4,12 +4,14 @@
 // This file focuses on state orchestration and layout
 
 import AdminLayout from "@/pages/admin/AdminDashboardLayout";
-import { Edit, Power, PowerOff, Trash2 } from "lucide-react";
+import { Edit, Eye, Power, PowerOff, Trash2 } from "lucide-react";
 import { useState } from "react";
 import {
   BlockUserModal,
   DataTable,
+  DeleteUserModal,
   StatusBadge,
+  UserDetailsModal,
   UserFormModal,
   UserManagementHeader,
 } from "./components";
@@ -23,6 +25,10 @@ export default function AdminUsersPage() {
   const [isCreating, setIsCreating] = useState(false);
   const [showBlockModal, setShowBlockModal] = useState(false);
   const [userToBlock, setUserToBlock] = useState<User | null>(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [userToDelete, setUserToDelete] = useState<User | null>(null);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [userToView, setUserToView] = useState<User | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
 
   // Custom hook for user management logic
@@ -58,10 +64,22 @@ export default function AdminUsersPage() {
     setIsCreating(false);
   };
 
-  const handleDeleteUser = async (user: User) => {
-    if (window.confirm(`Are you sure you want to delete ${user.name}?`)) {
-      await deleteUser(user.id);
+  const handleDeleteUser = (user: User) => {
+    setUserToDelete(user);
+    setShowDeleteModal(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (userToDelete) {
+      await deleteUser(userToDelete.id);
+      setShowDeleteModal(false);
+      setUserToDelete(null);
     }
+  };
+
+  const handleViewUser = (user: User) => {
+    setUserToView(user);
+    setShowDetailsModal(true);
   };
 
   const handleBlockUser = (user: User) => {
@@ -142,6 +160,13 @@ export default function AdminUsersPage() {
       accessorKey: "actions",
       cell: (user: User) => (
         <div className="flex items-center gap-2">
+          <button
+            onClick={() => handleViewUser(user)}
+            className="p-2 text-purple-600 hover:bg-purple-100 dark:hover:bg-purple-900/30 rounded-lg transition-colors"
+            title="View User Details"
+          >
+            <Eye className="h-4 w-4" />
+          </button>
           <button
             onClick={() => handleEditUser(user)}
             className="p-2 text-blue-600 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-lg transition-colors"
@@ -225,6 +250,30 @@ export default function AdminUsersPage() {
             userName={userToBlock?.name || ""}
             isBlocked={userToBlock?.status === "blocked"}
           />
+
+          {/* Delete User Modal */}
+          <DeleteUserModal
+            isOpen={showDeleteModal}
+            onClose={() => {
+              setShowDeleteModal(false);
+              setUserToDelete(null);
+            }}
+            onConfirm={handleDeleteConfirm}
+            userName={userToDelete?.name || ""}
+            userEmail={userToDelete?.email || ""}
+          />
+
+          {/* User Details Modal */}
+          {showDetailsModal && userToView && (
+            <UserDetailsModal
+              isOpen={showDetailsModal}
+              onClose={() => {
+                setShowDetailsModal(false);
+                setUserToView(null);
+              }}
+              user={userToView}
+            />
+          )}
         </div>
       </div>
     </AdminLayout>
