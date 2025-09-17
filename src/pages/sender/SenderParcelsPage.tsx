@@ -1,6 +1,16 @@
 "use client";
 
-import { Calendar, Eye, Filter, Package, Plus, Search } from "lucide-react";
+import {
+  Calendar,
+  ChevronLeft,
+  ChevronRight,
+  Eye,
+  Filter,
+  Package,
+  Plus,
+  Search,
+  X,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
@@ -10,6 +20,7 @@ import api from "../../lib/ApiConfiguration";
 import { formatDate, getStatusColor } from "../../lib/HelperUtilities";
 import { Parcel } from "../../types/GlobalTypeDefinitions";
 import FooterSection from "../sections/FooterSection";
+import ParcelDetailsModal from "./ParcelDetailsModal";
 
 interface ApiError {
   response?: {
@@ -19,21 +30,121 @@ interface ApiError {
   };
 }
 
+interface PaginationInfo {
+  currentPage: number;
+  totalPages: number;
+  totalItems: number;
+  itemsPerPage: number;
+  hasNextPage: boolean;
+  hasPrevPage: boolean;
+}
+
 export default function SenderParcelsPage() {
   const { user } = useAuth();
   const [parcels, setParcels] = useState<Parcel[]>([]);
   const [loading, setLoading] = useState(true);
   const [filterStatus, setFilterStatus] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
+
+  // Modal states
+  const [selectedParcel, setSelectedParcel] = useState<Parcel | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // Search enhancement states
+  const [showSearchSuggestions, setShowSearchSuggestions] = useState(false);
+  const [recentSearches, setRecentSearches] = useState<string[]>([]);
+
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pagination, setPagination] = useState<PaginationInfo>({
+    currentPage: 1,
+    totalPages: 1,
+    totalItems: 0,
+    itemsPerPage: 5,
+    hasNextPage: false,
+    hasPrevPage: false,
+  });
+  const [itemsPerPage] = useState(5); // You can make this configurable
 
   useEffect(() => {
-    fetchParcels();
+    fetchParcels(currentPage);
+  }, [currentPage]);
+
+  // Load recent searches from localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem("recentParcelSearches");
+    if (saved) {
+      try {
+        setRecentSearches(JSON.parse(saved));
+      } catch (error) {
+        console.error("Error loading recent searches:", error);
+      }
+    }
   }, []);
 
-  const fetchParcels = async () => {
+  // Debounce search term
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 300); // 300ms delay
+
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
+
+  // Refetch when filters change
+  useEffect(() => {
+    if (currentPage === 1) {
+      fetchParcels(1);
+    } else {
+      setCurrentPage(1); // This will trigger the above useEffect
+    }
+  }, [filterStatus, debouncedSearchTerm]);
+
+  const fetchParcels = async (page: number = 1) => {
     try {
-      const response = await api.get("/parcels/me");
-      setParcels(response.data.data);
+      setLoading(true);
+
+      // Build query parameters
+      const params = new URLSearchParams({
+        page: page.toString(),
+        limit: itemsPerPage.toString(),
+      });
+
+      // Add filters if they exist
+      if (filterStatus) {
+        params.append("status", filterStatus);
+      }
+      if (debouncedSearchTerm) {
+        params.append("search", debouncedSearchTerm);
+      }
+
+      const response = await api.get(`/parcels/me?${params.toString()}`);
+
+      console.log("API Response:", response.data);
+
+      // Handle different response structures
+      const data = response.data.data || response.data.parcels || response.data;
+      const paginationData =
+        response.data.pagination || response.data.meta || {};
+
+      setParcels(Array.isArray(data) ? data : []);
+
+      // Update pagination info
+      setPagination({
+        currentPage: paginationData.currentPage || paginationData.page || page,
+        totalPages:
+          paginationData.totalPages ||
+          paginationData.pages ||
+          Math.ceil((paginationData.total || data.length) / itemsPerPage),
+        totalItems:
+          paginationData.total || paginationData.totalItems || data.length,
+        itemsPerPage:
+          paginationData.limit || paginationData.perPage || itemsPerPage,
+        hasNextPage:
+          paginationData.hasNextPage || page < (paginationData.totalPages || 1),
+        hasPrevPage: paginationData.hasPrevPage || page > 1,
+      });
     } catch (error) {
       console.error("Error fetching parcels:", error);
       toast.error("Failed to fetch parcels");
@@ -42,14 +153,151 @@ export default function SenderParcelsPage() {
     }
   };
 
-  const filteredParcels = parcels.filter((parcel) => {
-    const matchesFilter =
-      filterStatus === "" || parcel.currentStatus === filterStatus;
-    const matchesSearch =
-      searchTerm === "" ||
-      parcel.trackingId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      parcel.receiverInfo.name.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchesFilter && matchesSearch;
+  const handlePageChange = (newPage: number) => {
+    if (newPage >= 1 && newPage <= pagination.totalPages) {
+      setCurrentPage(newPage);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (pagination.hasPrevPage) {
+      handlePageChange(currentPage - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (pagination.hasNextPage) {
+      handlePageChange(currentPage + 1);
+    }
+  };
+
+  // Modal handlers
+  const handleViewParcel = (parcel: Parcel) => {
+    setSelectedParcel(parcel);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedParcel(null);
+  };
+
+  // Save search term to recent searches
+  const addToRecentSearches = (term: string) => {
+    if (!term.trim()) return;
+
+    const newRecentSearches = [
+      term,
+      ...recentSearches.filter((search) => search !== term),
+    ].slice(0, 5); // Keep only 5 recent searches
+
+    setRecentSearches(newRecentSearches);
+    localStorage.setItem(
+      "recentParcelSearches",
+      JSON.stringify(newRecentSearches)
+    );
+  };
+
+  // Handle search input change
+  const handleSearchChange = (value: string) => {
+    setSearchTerm(value);
+
+    // Show suggestions when typing or when there are recent searches
+    if (value.length > 0 || recentSearches.length > 0) {
+      setShowSearchSuggestions(true);
+    } else {
+      setShowSearchSuggestions(false);
+    }
+  };
+
+  // Handle search suggestion click
+  const handleSuggestionClick = (suggestion: string) => {
+    setSearchTerm(suggestion);
+    setShowSearchSuggestions(false);
+    addToRecentSearches(suggestion);
+  };
+
+  // Handle search input blur with delay to allow suggestion clicks
+  const handleSearchBlur = () => {
+    setTimeout(() => {
+      setShowSearchSuggestions(false);
+    }, 200);
+  };
+
+  // Handle search submit (Enter key)
+  const handleSearchSubmit = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && searchTerm.trim()) {
+      addToRecentSearches(searchTerm.trim());
+      setShowSearchSuggestions(false);
+    }
+  };
+
+  // Get search suggestions
+  const getSearchSuggestions = () => {
+    if (!searchTerm) return recentSearches;
+
+    // Filter recent searches that match current input
+    const filteredRecent = recentSearches.filter((search) =>
+      search.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    // Generate suggestions from current parcels data
+    const parcelSuggestions = parcels.reduce((acc: string[], parcel) => {
+      const suggestions = [
+        parcel.trackingId,
+        parcel.receiverInfo?.name,
+        parcel.receiverInfo?.address?.city,
+        parcel.currentStatus,
+        parcel.parcelDetails?.type,
+      ].filter(Boolean); // Remove null/undefined values
+
+      suggestions.forEach((suggestion) => {
+        if (
+          suggestion?.toLowerCase().includes(searchTerm.toLowerCase()) &&
+          !acc.includes(suggestion) &&
+          !filteredRecent.includes(suggestion)
+        ) {
+          acc.push(suggestion);
+        }
+      });
+
+      return acc;
+    }, []);
+
+    return [...filteredRecent, ...parcelSuggestions].slice(0, 5);
+  };
+
+  // Use parcels directly since filtering is now server-side, but add client-side enhancement
+  const displayParcels = parcels.filter((parcel) => {
+    // If no search term, show all parcels (server-side filtering already applied)
+    if (!searchTerm) return true;
+
+    // Enhanced client-side search for comprehensive filtering
+    const searchLower = searchTerm.toLowerCase();
+
+    // Search in multiple fields
+    const searchFields = [
+      parcel.trackingId,
+      parcel.receiverInfo.name,
+      parcel.receiverInfo.phone,
+      parcel.receiverInfo.email,
+      parcel.receiverInfo.address.city,
+      parcel.receiverInfo.address.state,
+      parcel.receiverInfo.address.street,
+      parcel.receiverInfo.address.zipCode,
+      parcel.senderInfo.name,
+      parcel.senderInfo.phone,
+      parcel.senderInfo.email,
+      parcel.currentStatus,
+      parcel.parcelDetails.type,
+      parcel.parcelDetails.description,
+      parcel.fee?.totalFee?.toString(),
+    ].filter(Boolean); // Remove null/undefined values
+
+    // Check if search term matches any field
+    return searchFields.some((field) =>
+      field?.toLowerCase().includes(searchLower)
+    );
   });
 
   if (loading) {
@@ -64,7 +312,7 @@ export default function SenderParcelsPage() {
 
   return (
     <ProtectedRoute allowedRoles={["sender"]}>
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-background mt-10">
         <div className="max-w-7xl mx-auto pt-2 px-6 space-y-6 pb-24">
           {/* Header */}
           <div className="bg-gradient-to-r from-blue-50/50 via-transparent to-green-50/50 dark:from-blue-950/20 dark:to-green-950/20 border border-border rounded-xl p-6">
@@ -88,11 +336,73 @@ export default function SenderParcelsPage() {
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                   <input
                     type="text"
-                    placeholder="Search by tracking ID or receiver name..."
+                    placeholder="Search by tracking ID, receiver name, phone, email, city, status..."
                     value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-background text-foreground placeholder:text-muted-foreground"
+                    onChange={(e) => handleSearchChange(e.target.value)}
+                    onFocus={() =>
+                      setShowSearchSuggestions(
+                        searchTerm.length > 0 || recentSearches.length > 0
+                      )
+                    }
+                    onBlur={handleSearchBlur}
+                    onKeyDown={handleSearchSubmit}
+                    className="w-full pl-10 pr-10 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-background text-foreground placeholder:text-muted-foreground"
                   />
+                  {/* Loading indicator */}
+                  {searchTerm !== debouncedSearchTerm && (
+                    <div className="absolute right-8 top-1/2 transform -translate-y-1/2">
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+                    </div>
+                  )}
+                  {/* Clear button */}
+                  {searchTerm && (
+                    <button
+                      onClick={() => {
+                        setSearchTerm("");
+                        setShowSearchSuggestions(false);
+                      }}
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors duration-200"
+                      title="Clear search"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  )}
+
+                  {/* Search Suggestions Dropdown */}
+                  {showSearchSuggestions && (
+                    <div className="absolute top-full left-0 right-0 mt-1 bg-background border border-border rounded-lg shadow-lg z-50 max-h-60 overflow-y-auto">
+                      {getSearchSuggestions().length > 0 ? (
+                        <>
+                          {!searchTerm && recentSearches.length > 0 && (
+                            <div className="px-3 py-2 text-xs font-medium text-muted-foreground border-b border-border">
+                              Recent Searches
+                            </div>
+                          )}
+                          {getSearchSuggestions().map((suggestion, index) => (
+                            <button
+                              key={index}
+                              onClick={() => handleSuggestionClick(suggestion)}
+                              className="w-full px-3 py-2 text-left hover:bg-muted/50 transition-colors duration-200 flex items-center space-x-2"
+                            >
+                              <Search className="h-3 w-3 text-muted-foreground flex-shrink-0" />
+                              <span className="text-sm text-foreground truncate">
+                                {suggestion}
+                              </span>
+                              {recentSearches.includes(suggestion) && (
+                                <span className="text-xs text-muted-foreground ml-auto">
+                                  recent
+                                </span>
+                              )}
+                            </button>
+                          ))}
+                        </>
+                      ) : (
+                        <div className="px-3 py-4 text-sm text-muted-foreground text-center">
+                          No suggestions found
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="flex gap-2">
@@ -113,6 +423,7 @@ export default function SenderParcelsPage() {
                   onClick={() => {
                     setSearchTerm("");
                     setFilterStatus("");
+                    setCurrentPage(1);
                   }}
                   className="px-4 py-2 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700 hover:shadow-lg text-gray-700 dark:text-gray-300 rounded-lg transition-all duration-300 flex items-center"
                 >
@@ -128,11 +439,20 @@ export default function SenderParcelsPage() {
             <div className="p-6 border-b border-border">
               <div className="flex items-center justify-between">
                 <h2 className="text-xl font-semibold text-foreground">
-                  Parcels ({filteredParcels.length})
+                  Parcels ({displayParcels.length}
+                  {searchTerm &&
+                    displayParcels.length !== pagination.totalItems &&
+                    ` of ${pagination.totalItems}`}
+                  )
+                  {searchTerm && (
+                    <span className="text-sm font-normal text-muted-foreground ml-2">
+                      - filtered by "{searchTerm}"
+                    </span>
+                  )}
                 </h2>
                 <Link
                   to="/sender/create-parcel"
-                  className="bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700 hover:shadow-lg text-white px-4 py-2 rounded-lg font-medium transition-all duration-300 inline-flex items-center"
+                  className="bg-gradient-to-br from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 hover:shadow-lg text-white px-4 py-2 rounded-lg font-medium transition-all duration-300 inline-flex items-center"
                 >
                   <Plus className="mr-2 h-4 w-4" />
                   Create Parcel
@@ -141,7 +461,7 @@ export default function SenderParcelsPage() {
             </div>
 
             <div className="overflow-x-auto">
-              {filteredParcels.length === 0 ? (
+              {displayParcels.length === 0 ? (
                 <div className="text-center py-12">
                   <Package className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
                   <h3 className="text-lg font-medium text-foreground mb-2">
@@ -157,7 +477,7 @@ export default function SenderParcelsPage() {
                   {!searchTerm && !filterStatus && (
                     <Link
                       to="/sender/create-parcel"
-                      className="bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700 hover:shadow-lg text-white px-6 py-3 rounded-lg font-medium transition-all duration-300 inline-flex items-center"
+                      className="bg-gradient-to-br from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 hover:shadow-lg text-white px-6 py-3 rounded-lg font-medium transition-all duration-300 inline-flex items-center"
                     >
                       <Plus className="mr-2 h-4 w-4" />
                       Create Your First Parcel
@@ -165,110 +485,251 @@ export default function SenderParcelsPage() {
                   )}
                 </div>
               ) : (
-                <table className="w-full">
-                  <thead className="bg-muted/30">
-                    <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                        Tracking ID
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                        Receiver
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                        Destination
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                        Status
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                        Fee
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                        Created
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                        Actions
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-border">
-                    {filteredParcels.map((parcel) => (
-                      <tr
-                        key={parcel._id}
-                        className="hover:bg-muted/30 transition-colors duration-200"
-                      >
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center">
-                            <div className="flex-shrink-0 h-10 w-10">
-                              <div className="h-10 w-10 rounded-full bg-blue-50 dark:bg-blue-950/20 flex items-center justify-center">
-                                <Package className="h-5 w-5 text-blue-600" />
-                              </div>
-                            </div>
-                            <div className="ml-4">
-                              <div className="text-sm font-medium text-foreground">
-                                {parcel.trackingId}
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-foreground">
-                            {parcel.receiverInfo.name}
-                          </div>
-                          <div className="text-sm text-muted-foreground">
-                            {parcel.receiverInfo.phone}
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-foreground">
-                            {parcel.receiverInfo.address.city}
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span
-                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(
-                              parcel.currentStatus
-                            )}`}
-                          >
-                            {parcel.currentStatus
-                              .replace("-", " ")
-                              .toUpperCase()}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground">
-                          ৳{parcel.fee?.totalFee || 0}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
-                          {formatDate(parcel.createdAt)}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                          <div className="flex items-center space-x-3">
-                            <Link
-                              to={`/track?id=${parcel.trackingId}`}
-                              className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors duration-200"
-                              title="Track parcel"
-                            >
-                              <Eye className="h-4 w-4" />
-                            </Link>
-                            <Link
-                              to={`/status-history?id=${parcel.trackingId}`}
-                              className="text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300 transition-colors duration-200"
-                              title="View status history"
-                            >
-                              <Calendar className="h-4 w-4" />
-                            </Link>
-                          </div>
-                        </td>
+                <>
+                  {/* Loading indicator */}
+                  {loading && (
+                    <div className="px-6 py-2 border-b border-border">
+                      <div className="flex items-center space-x-2 text-sm text-muted-foreground">
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-red-600"></div>
+                        <span>Loading parcels...</span>
+                      </div>
+                    </div>
+                  )}
+
+                  <table
+                    className="w-full"
+                    style={{
+                      opacity: loading ? 0.6 : 1,
+                      transition: "opacity 0.2s ease-in-out",
+                    }}
+                  >
+                    <thead className="bg-muted/30">
+                      <tr>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                          Tracking ID
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                          Receiver
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                          Destination
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                          Status
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                          Fee
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                          Created
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                          Actions
+                        </th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody className="divide-y divide-border">
+                      {displayParcels.map((parcel) => (
+                        <tr
+                          key={parcel._id}
+                          className="hover:bg-muted/30 transition-colors duration-200"
+                        >
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="flex items-center">
+                              <div className="flex-shrink-0 h-10 w-10">
+                                <div className="h-10 w-10 rounded-full bg-blue-50 dark:bg-blue-950/20 flex items-center justify-center">
+                                  <Package className="h-5 w-5 text-red-600" />
+                                </div>
+                              </div>
+                              <div className="ml-4">
+                                <div className="text-sm font-medium text-foreground">
+                                  {parcel.trackingId}
+                                </div>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="text-sm text-foreground">
+                              {parcel.receiverInfo.name}
+                            </div>
+                            <div className="text-sm text-muted-foreground">
+                              {parcel.receiverInfo.phone}
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="text-sm text-foreground">
+                              {parcel.receiverInfo.address.city}
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span
+                              className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(
+                                parcel.currentStatus
+                              )}`}
+                            >
+                              {parcel.currentStatus
+                                .replace("-", " ")
+                                .toUpperCase()}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground">
+                            ৳{parcel.fee?.totalFee || 0}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
+                            {formatDate(parcel.createdAt)}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <div className="flex items-center space-x-3">
+                              <button
+                                onClick={() => handleViewParcel(parcel)}
+                                className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors duration-200 p-1 rounded hover:bg-blue-50 dark:hover:bg-blue-900/20"
+                                title="View parcel details"
+                              >
+                                <Eye className="h-4 w-4" />
+                              </button>
+                              <Link
+                                to={`/status-history?id=${parcel.trackingId}`}
+                                className="text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300 transition-colors duration-200"
+                                title="View status history"
+                              >
+                                <Calendar className="h-4 w-4" />
+                              </Link>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </>
               )}
             </div>
+
+            {/* Pagination */}
+            {displayParcels.length > 0 && pagination.totalPages > 1 && (
+              <div className="px-6 py-4 border-t border-border">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2 text-sm text-muted-foreground">
+                    <span>
+                      Showing {(currentPage - 1) * pagination.itemsPerPage + 1}{" "}
+                      to{" "}
+                      {Math.min(
+                        currentPage * pagination.itemsPerPage,
+                        pagination.totalItems
+                      )}{" "}
+                      of {pagination.totalItems} results
+                    </span>
+                  </div>
+
+                  <div className="flex items-center space-x-2">
+                    {/* Previous Button */}
+                    <button
+                      onClick={handlePrevPage}
+                      disabled={!pagination.hasPrevPage || loading}
+                      className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center space-x-1 ${
+                        pagination.hasPrevPage && !loading
+                          ? "bg-muted hover:bg-muted/80 text-foreground"
+                          : "bg-muted/50 text-muted-foreground cursor-not-allowed"
+                      }`}
+                    >
+                      <ChevronLeft className="h-4 w-4" />
+                      <span>Previous</span>
+                    </button>
+
+                    {/* Page Numbers */}
+                    <div className="flex items-center space-x-1">
+                      {/* First page */}
+                      {currentPage > 3 && (
+                        <>
+                          <button
+                            onClick={() => handlePageChange(1)}
+                            className="px-3 py-2 rounded-lg text-sm font-medium bg-muted hover:bg-muted/80 text-foreground transition-colors duration-200"
+                          >
+                            1
+                          </button>
+                          {currentPage > 4 && (
+                            <span className="px-2 py-2 text-muted-foreground">
+                              ...
+                            </span>
+                          )}
+                        </>
+                      )}
+
+                      {/* Current page and surrounding pages */}
+                      {Array.from(
+                        { length: pagination.totalPages },
+                        (_, i) => i + 1
+                      )
+                        .filter(
+                          (page) =>
+                            page >= Math.max(1, currentPage - 2) &&
+                            page <=
+                              Math.min(pagination.totalPages, currentPage + 2)
+                        )
+                        .map((page) => (
+                          <button
+                            key={page}
+                            onClick={() => handlePageChange(page)}
+                            disabled={loading}
+                            className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200 ${
+                              page === currentPage
+                                ? "bg-red-600 text-white"
+                                : "bg-muted hover:bg-muted/80 text-foreground"
+                            } ${
+                              loading ? "cursor-not-allowed opacity-50" : ""
+                            }`}
+                          >
+                            {page}
+                          </button>
+                        ))}
+
+                      {/* Last page */}
+                      {currentPage < pagination.totalPages - 2 && (
+                        <>
+                          {currentPage < pagination.totalPages - 3 && (
+                            <span className="px-2 py-2 text-muted-foreground">
+                              ...
+                            </span>
+                          )}
+                          <button
+                            onClick={() =>
+                              handlePageChange(pagination.totalPages)
+                            }
+                            className="px-3 py-2 rounded-lg text-sm font-medium bg-muted hover:bg-muted/80 text-foreground transition-colors duration-200"
+                          >
+                            {pagination.totalPages}
+                          </button>
+                        </>
+                      )}
+                    </div>
+
+                    {/* Next Button */}
+                    <button
+                      onClick={handleNextPage}
+                      disabled={!pagination.hasNextPage || loading}
+                      className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center space-x-1 ${
+                        pagination.hasNextPage && !loading
+                          ? "bg-muted hover:bg-muted/80 text-foreground"
+                          : "bg-muted/50 text-muted-foreground cursor-not-allowed"
+                      }`}
+                    >
+                      <span>Next</span>
+                      <ChevronRight className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
       <FooterSection />
+
+      {/* Parcel Details Modal */}
+      <ParcelDetailsModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        parcel={selectedParcel}
+      />
     </ProtectedRoute>
   );
 }

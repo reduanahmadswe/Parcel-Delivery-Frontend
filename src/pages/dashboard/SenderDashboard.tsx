@@ -10,6 +10,7 @@ import api from "../../lib/ApiConfiguration";
 import { getStatusColor } from "../../lib/HelperUtilities";
 import { Parcel } from "../../types/GlobalTypeDefinitions";
 import FooterSection from "../sections/FooterSection";
+import ParcelDetailsModal from "../sender/ParcelDetailsModal";
 
 interface ApiError {
   response?: {
@@ -23,17 +24,108 @@ export default function SenderDashboard() {
   const { user } = useAuth();
   const [parcels, setParcels] = useState<Parcel[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedParcel, setSelectedParcel] = useState<Parcel | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     fetchParcels();
   }, []);
 
+  const handleViewParcel = (parcel: Parcel) => {
+    setSelectedParcel(parcel);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedParcel(null);
+  };
+
   const fetchParcels = async () => {
     try {
-      const response = await api.get("/parcels/me");
-      setParcels(response.data.data);
+      console.log("🔍 Debugging parcel fetch...");
+
+      // Try multiple endpoints to see which one gives all data
+      let response;
+      let allParcels = [];
+
+      // Method 1: Try with high limit parameter
+      try {
+        response = await api.get("/parcels/me?limit=10000");
+        console.log("✅ Method 1 (/parcels/me?limit=10000):", {
+          count: response.data.data?.length,
+          total: response.data.total,
+          pagination: response.data.pagination,
+        });
+        if (response.data.data?.length > 10) {
+          allParcels = response.data.data;
+          console.log("🎉 Found more than 10 parcels with limit=10000!");
+        }
+      } catch (err) {
+        console.log("❌ Method 1 failed:", err);
+      }
+
+      // Method 2: Try no-pagination with limit
+      if (allParcels.length <= 10) {
+        try {
+          response = await api.get("/parcels/me/no-pagination?limit=10000");
+          console.log("✅ Method 2 (/parcels/me/no-pagination?limit=10000):", {
+            count: response.data.data?.length,
+            total: response.data.total,
+          });
+          if (response.data.data?.length > allParcels.length) {
+            allParcels = response.data.data;
+          }
+        } catch (err) {
+          console.log("❌ Method 2 failed:", err);
+        }
+      }
+
+      // Method 3: Try pagination with multiple pages
+      if (allParcels.length <= 10) {
+        try {
+          const page1 = await api.get("/parcels/me?page=1&limit=10000");
+          const page2 = await api.get("/parcels/me?page=2&limit=10000");
+          const combinedData = [
+            ...(page1.data.data || []),
+            ...(page2.data.data || []),
+          ];
+          console.log("✅ Method 3 (pagination):", {
+            page1Count: page1.data.data?.length || 0,
+            page2Count: page2.data.data?.length || 0,
+            totalCombined: combinedData.length,
+            page1Total: page1.data.total,
+            page2Total: page2.data.total,
+          });
+          if (combinedData.length > allParcels.length) {
+            allParcels = combinedData;
+          }
+        } catch (err) {
+          console.log("❌ Method 3 failed:", err);
+        }
+      }
+
+      // Method 4: Fallback to original endpoint
+      if (allParcels.length === 0) {
+        try {
+          response = await api.get("/parcels/me/no-pagination");
+          allParcels = response.data.data || [];
+          console.log("⚠️ Fallback to original endpoint:", allParcels.length);
+        } catch (err) {
+          console.log("❌ Fallback failed:", err);
+        }
+      }
+
+      console.log("📊 Final result:", {
+        parcelsCount: allParcels.length,
+        expectedCount: 23,
+        isComplete: allParcels.length >= 23,
+      });
+
+      console.log("📦 All parcels:", allParcels);
+      setParcels(allParcels);
     } catch (error) {
-      console.error("Error fetching parcels:", error);
+      console.error("❌ Error fetching parcels:", error);
       toast.error("Failed to fetch parcels");
     } finally {
       setLoading(false);
@@ -272,12 +364,13 @@ export default function SenderDashboard() {
                         >
                           {parcel.currentStatus.replace("-", " ").toUpperCase()}
                         </span>
-                        <Link
-                          to={`/track?id=${parcel.trackingId}`}
-                          className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors duration-200"
+                        <button
+                          onClick={() => handleViewParcel(parcel)}
+                          className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors duration-200 p-1 rounded hover:bg-blue-50 dark:hover:bg-blue-900/20"
+                          title="View Parcel Details"
                         >
                           <Eye className="h-4 w-4" />
-                        </Link>
+                        </button>
                       </div>
                     </div>
                   ))}
@@ -288,6 +381,13 @@ export default function SenderDashboard() {
         </div>
       </div>
       <FooterSection />
+
+      {/* Parcel Details Modal */}
+      <ParcelDetailsModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        parcel={selectedParcel}
+      />
     </ProtectedRoute>
   );
 }
