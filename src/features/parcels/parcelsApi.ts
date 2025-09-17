@@ -4,7 +4,7 @@ import {
     DashboardStats,
     PaginatedResponse,
     Parcel,
-    ParcelFilters
+    ParcelFilters,
 } from '../../types';
 import { baseApi } from '../api';
 

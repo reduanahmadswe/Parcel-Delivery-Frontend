@@ -122,5 +122,49 @@ export interface ParcelStats {
   returned: number;
   urgentParcels: number;
   blockedParcels: number;
+  flaggedParcels: number;
+  heldParcels: number;
   totalRevenue: number;
+  paidParcels: number;
+  unpaidParcels: number;
+}
+
+// Admin Dashboard Real-time Stats
+export interface AdminDashboardStats {
+  totalUsers: number;
+  totalParcels: number;
+  activeParcels: number;
+  issuesAndAlerts: {
+    blockedParcels: number;
+    heldParcels: number;
+    flaggedParcels: number;
+    blockedUsers: number;
+    total: number;
+  };
+  parcelStatusCounts: {
+    pending: number;      // requested + approved
+    inTransit: number;    // dispatched + in-transit
+    delivered: number;
+    cancelled: number;
+    returned: number;
+  };
+  recentActivity: {
+    newParcels: number;
+    completedToday: number;
+    urgentParcels: number;
+  };
+  revenue: {
+    total: number;
+    today: number;
+    thisMonth: number;
+    paid: number;
+    unpaid: number;
+  };
+  userBreakdown: {
+    admins: number;
+    senders: number;
+    receivers: number;
+    blockedUsers: number;
+    verifiedUsers: number;
+  };
 }

@@ -1,3 +1,6 @@
+// Import from GlobalTypeDefinitions for extended types
+export * from './GlobalTypeDefinitions'
+
 // User types
 export interface User {
     _id: string
@@ -152,6 +155,16 @@ export interface DashboardStats {
     deliveredParcels: number
     totalRevenue: number
     recentParcels: Parcel[]
+}
+
+export interface SystemAlert {
+    id: string
+    type: 'warning' | 'error' | 'info' | 'success'
+    title: string
+    message: string
+    timestamp: string
+    isRead: boolean
+    priority: 'low' | 'medium' | 'high' | 'critical'
 }
 
 // Chart data
