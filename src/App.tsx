@@ -26,7 +26,7 @@ import NotificationsPage from "./pages/admin/NotificationsPage";
 import ParcelManagementPage from "./pages/admin/ParcelManagement";
 import SystemSettingsPage from "./pages/admin/SystemSettings";
 import UserManagementPage from "./pages/admin/UserManagement";
-import AdminDashboardPage from "./pages/dashboard/AdminDashboard";
+import AdminDashboardPage from "./pages/dashboard/admin/AdminDashboard";
 
 // Components
 import { ThemeProvider } from "@/components/theme-provider";
