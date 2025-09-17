@@ -12,6 +12,7 @@ import HomePage from "./pages/HomePage";
 import NotFoundPage from "./pages/NotFoundPage";
 import PartnersPage from "./pages/PartnersPage";
 import ProfilePage from "./pages/ProfilePage";
+import StatusHistoryPage from "./pages/StatusHistoryPage";
 
 import TrackPage from "./pages/TrackPage";
 import UnauthorizedPage from "./pages/UnauthorizedPage";
@@ -76,6 +77,14 @@ const App: React.FC = () => {
                     element={
                       <Layout>
                         <TrackPage />
+                      </Layout>
+                    }
+                  />
+                  <Route
+                    path="/status-history"
+                    element={
+                      <Layout>
+                        <StatusHistoryPage />
                       </Layout>
                     }
                   />

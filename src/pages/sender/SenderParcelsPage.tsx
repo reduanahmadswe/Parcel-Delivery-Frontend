@@ -425,7 +425,7 @@ export default function SenderParcelsPage() {
                     setFilterStatus("");
                     setCurrentPage(1);
                   }}
-                  className="px-4 py-2 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700 hover:shadow-lg text-gray-700 dark:text-gray-300 rounded-lg transition-all duration-300 flex items-center"
+                  className="px-4 py-2 bg-red-600 to-br from-red-600 to-red-600 dark:from-red-800 dark:to-red-700 hover:shadow-lg text-white dark:text-white rounded-lg transition-all duration-300 flex items-center"
                 >
                   <Filter className="mr-2 h-4 w-4" />
                   Clear
@@ -591,6 +591,15 @@ export default function SenderParcelsPage() {
                                 to={`/status-history?id=${parcel.trackingId}`}
                                 className="text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300 transition-colors duration-200"
                                 title="View status history"
+                                onClick={() => {
+                                  console.log(
+                                    "🔗 Navigating to status history for:",
+                                    {
+                                      trackingId: parcel.trackingId,
+                                      url: `/status-history?id=${parcel.trackingId}`,
+                                    }
+                                  );
+                                }}
                               >
                                 <Calendar className="h-4 w-4" />
                               </Link>

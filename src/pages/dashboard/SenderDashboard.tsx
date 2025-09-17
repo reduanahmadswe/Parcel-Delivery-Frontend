@@ -330,7 +330,7 @@ export default function SenderDashboard() {
                   </p>
                   <Link
                     to="/sender/create-parcel"
-                    className="bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700 hover:shadow-lg text-white px-6 py-3 rounded-lg font-medium transition-all duration-300 inline-flex items-center"
+                    className="bg-gradient-to-br from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 hover:shadow-lg text-white px-6 py-3 rounded-lg font-medium transition-all duration-300 inline-flex items-center"
                   >
                     <Plus className="mr-2 h-4 w-4" />
                     Create Parcel
