@@ -181,6 +181,7 @@ export default function Navigation() {
             label: "Create Parcel",
             icon: Package,
           },
+          { href: "/track", label: "Track Parcel", icon: Search },
           { href: "/sender/statistics", label: "Statistics", icon: BarChart3 },
           { href: "/contact", label: "Contact", icon: MessageSquare },
         ]
