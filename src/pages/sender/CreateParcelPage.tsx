@@ -6,6 +6,12 @@ import { ArrowLeft, Calculator, Package } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
+import {
+  getCitiesList,
+  getDivisionsByCity,
+  getPostalCodesByDivision,
+} from "../../data/bangladeshData";
+import FooterSection from "../sections/FooterSection";
 
 export default function CreateParcelPage() {
   const navigate = useNavigate();
@@ -49,6 +55,15 @@ export default function CreateParcelPage() {
 
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  // Bangladesh data states for cascading dropdowns
+  const [availableCities] = useState(getCitiesList());
+  const [availableDivisions, setAvailableDivisions] = useState<string[]>([]);
+  const [availablePostalCodes, setAvailablePostalCodes] = useState<
+    Array<{ code: string; area: string }>
+  >([]);
+  const [selectedCity, setSelectedCity] = useState("");
+  const [selectedDivision, setSelectedDivision] = useState("");
 
   const handleInputChange = (
     e: React.ChangeEvent<
@@ -126,6 +141,63 @@ export default function CreateParcelPage() {
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
     }
+  };
+
+  // Handle city selection - update divisions and reset dependent fields
+  const handleCityChange = (cityName: string) => {
+    setSelectedCity(cityName);
+    setSelectedDivision("");
+    const divisions = getDivisionsByCity(cityName);
+    setAvailableDivisions(divisions);
+    setAvailablePostalCodes([]);
+
+    // Update form data
+    setFormData((prev) => ({
+      ...prev,
+      receiverInfo: {
+        ...prev.receiverInfo,
+        address: {
+          ...prev.receiverInfo.address,
+          city: cityName,
+          state: "",
+          zipCode: "",
+        },
+      },
+    }));
+  };
+
+  // Handle division selection - update postal codes
+  const handleDivisionChange = (divisionName: string) => {
+    setSelectedDivision(divisionName);
+    const postalCodes = getPostalCodesByDivision(selectedCity, divisionName);
+    setAvailablePostalCodes(postalCodes);
+
+    // Update form data
+    setFormData((prev) => ({
+      ...prev,
+      receiverInfo: {
+        ...prev.receiverInfo,
+        address: {
+          ...prev.receiverInfo.address,
+          state: divisionName,
+          zipCode: "",
+        },
+      },
+    }));
+  };
+
+  // Handle postal code selection
+  const handlePostalCodeChange = (postalCode: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      receiverInfo: {
+        ...prev.receiverInfo,
+        address: {
+          ...prev.receiverInfo.address,
+          zipCode: postalCode,
+        },
+      },
+    }));
   };
 
   const calculateEstimatedFee = () => {
@@ -419,19 +491,32 @@ export default function CreateParcelPage() {
                     )}
                   </div>
 
+                  {/* Location Selection Note */}
+                  <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3 mb-4">
+                    <p className="text-sm text-blue-700 dark:text-blue-300">
+                      💡 <strong>Select location step by step:</strong> First
+                      choose your city, then select the division, and finally
+                      pick the postal code area.
+                    </p>
+                  </div>
+
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-muted-foreground mb-2">
                         City *
                       </label>
-                      <input
-                        type="text"
-                        name="receiverInfo.address.city"
-                        value={formData.receiverInfo.address.city}
-                        onChange={handleInputChange}
-                        className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
-                        placeholder="Dhaka"
-                      />
+                      <select
+                        value={selectedCity}
+                        onChange={(e) => handleCityChange(e.target.value)}
+                        className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                      >
+                        <option value="">Select a city</option>
+                        {availableCities.map((city) => (
+                          <option key={city} value={city}>
+                            {city}
+                          </option>
+                        ))}
+                      </select>
                       {errors["receiverInfo.address.city"] && (
                         <p className="mt-1 text-sm text-red-600">
                           {errors["receiverInfo.address.city"]}
@@ -443,14 +528,23 @@ export default function CreateParcelPage() {
                       <label className="block text-sm font-medium text-muted-foreground mb-2">
                         State/Division *
                       </label>
-                      <input
-                        type="text"
-                        name="receiverInfo.address.state"
-                        value={formData.receiverInfo.address.state}
-                        onChange={handleInputChange}
-                        className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
-                        placeholder="Dhaka Division"
-                      />
+                      <select
+                        value={selectedDivision}
+                        onChange={(e) => handleDivisionChange(e.target.value)}
+                        disabled={!selectedCity}
+                        className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        <option value="">
+                          {!selectedCity
+                            ? "Select a city first"
+                            : `Select a division (${availableDivisions.length} available)`}
+                        </option>
+                        {availableDivisions.map((division) => (
+                          <option key={division} value={division}>
+                            {division}
+                          </option>
+                        ))}
+                      </select>
                       {errors["receiverInfo.address.state"] && (
                         <p className="mt-1 text-sm text-red-600">
                           {errors["receiverInfo.address.state"]}
@@ -462,14 +556,23 @@ export default function CreateParcelPage() {
                       <label className="block text-sm font-medium text-muted-foreground mb-2">
                         ZIP Code *
                       </label>
-                      <input
-                        type="text"
-                        name="receiverInfo.address.zipCode"
+                      <select
                         value={formData.receiverInfo.address.zipCode}
-                        onChange={handleInputChange}
-                        className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
-                        placeholder="1000"
-                      />
+                        onChange={(e) => handlePostalCodeChange(e.target.value)}
+                        disabled={!selectedDivision}
+                        className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        <option value="">
+                          {!selectedDivision
+                            ? "Select a division first"
+                            : `Select a postal code (${availablePostalCodes.length} available)`}
+                        </option>
+                        {availablePostalCodes.map((postal) => (
+                          <option key={postal.code} value={postal.code}>
+                            {postal.code} - {postal.area}
+                          </option>
+                        ))}
+                      </select>
                       {errors["receiverInfo.address.zipCode"] && (
                         <p className="mt-1 text-sm text-red-600">
                           {errors["receiverInfo.address.zipCode"]}
@@ -748,6 +851,7 @@ export default function CreateParcelPage() {
           </form>
         </div>
       </div>
+      <FooterSection />
     </ProtectedRoute>
   );
 }

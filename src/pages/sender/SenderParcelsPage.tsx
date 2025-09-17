@@ -9,6 +9,7 @@ import { useAuth } from "../../hooks/useAuth";
 import api from "../../lib/ApiConfiguration";
 import { formatDate, getStatusColor } from "../../lib/HelperUtilities";
 import { Parcel } from "../../types/GlobalTypeDefinitions";
+import FooterSection from "../sections/FooterSection";
 
 interface ApiError {
   response?: {
@@ -267,6 +268,7 @@ export default function SenderParcelsPage() {
           </div>
         </div>
       </div>
+      <FooterSection />
     </ProtectedRoute>
   );
 }

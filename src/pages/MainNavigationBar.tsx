@@ -112,6 +112,9 @@ export default function Navigation() {
     )
       return true;
 
+    // Exact match for contact page
+    if (href === "/contact" && location.pathname === "/contact") return true;
+
     // For other routes, use startsWith but exclude sender routes to prevent conflicts
     if (
       href !== "/" &&

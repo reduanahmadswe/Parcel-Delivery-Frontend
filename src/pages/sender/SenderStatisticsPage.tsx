@@ -7,6 +7,7 @@ import ProtectedRoute from "../../components/ProtectedRoute";
 import { useAuth } from "../../hooks/useAuth";
 import api from "../../lib/ApiConfiguration";
 import { Parcel } from "../../types/GlobalTypeDefinitions";
+import FooterSection from "../sections/FooterSection";
 
 interface ApiError {
   response?: {
@@ -56,7 +57,7 @@ export default function SenderStatisticsPage() {
 
   return (
     <ProtectedRoute allowedRoles={["sender"]}>
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-background mt-11">
         <div className="max-w-7xl mx-auto pt-2 px-6 space-y-6 pb-24">
           {/* Header */}
           <div className="bg-gradient-to-r from-purple-50/50 via-transparent to-blue-50/50 dark:from-purple-950/20 dark:to-blue-950/20 border border-border rounded-xl p-6">
@@ -305,6 +306,7 @@ export default function SenderStatisticsPage() {
           )}
         </div>
       </div>
+      <FooterSection />
     </ProtectedRoute>
   );
 }

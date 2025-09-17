@@ -9,6 +9,7 @@ import { useAuth } from "../../hooks/useAuth";
 import api from "../../lib/ApiConfiguration";
 import { getStatusColor } from "../../lib/HelperUtilities";
 import { Parcel } from "../../types/GlobalTypeDefinitions";
+import FooterSection from "../sections/FooterSection";
 
 interface ApiError {
   response?: {
@@ -286,6 +287,7 @@ export default function SenderDashboard() {
           </div>
         </div>
       </div>
+      <FooterSection />
     </ProtectedRoute>
   );
 }
