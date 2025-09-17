@@ -1,27 +1,13 @@
 "use client";
 
-import {
-  Calendar,
-  Eye,
-  Filter,
-  Package,
-  Plus,
-  Search,
-  Truck,
-  X,
-} from "lucide-react";
+import { BarChart3, Calendar, Eye, Package, Plus, Truck } from "lucide-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import ProtectedRoute from "../../components/ProtectedRoute";
 import { useAuth } from "../../hooks/useAuth";
 import api from "../../lib/ApiConfiguration";
-import {
-  formatCurrency,
-  formatDate,
-  getStatusColor,
-  getStatusIcon,
-} from "../../lib/HelperUtilities";
+import { getStatusColor } from "../../lib/HelperUtilities";
 import { Parcel } from "../../types/GlobalTypeDefinitions";
 
 interface ApiError {
@@ -36,8 +22,6 @@ export default function SenderDashboard() {
   const { user } = useAuth();
   const [parcels, setParcels] = useState<Parcel[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState("all");
-  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     fetchParcels();
@@ -55,30 +39,6 @@ export default function SenderDashboard() {
     }
   };
 
-  const handleCancelParcel = async (parcelId: string) => {
-    if (!confirm("Are you sure you want to cancel this parcel?")) return;
-
-    try {
-      await api.patch(`/parcels/cancel/${parcelId}`, {
-        note: "Cancelled by sender",
-      });
-      toast.success("Parcel cancelled successfully");
-      fetchParcels();
-    } catch (error) {
-      toast.error(
-        (error as ApiError).response?.data?.message || "Failed to cancel parcel"
-      );
-    }
-  };
-
-  const filteredParcels = parcels.filter((parcel) => {
-    const matchesFilter = filter === "all" || parcel.currentStatus === filter;
-    const matchesSearch =
-      parcel.trackingId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      parcel.receiverInfo.name.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchesFilter && matchesSearch;
-  });
-
   const stats = {
     total: parcels.length,
     pending: parcels.filter((p) =>
@@ -92,82 +52,92 @@ export default function SenderDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
-      </div>
+      <ProtectedRoute allowedRoles={["sender"]}>
+        <div className="min-h-screen bg-background flex items-center justify-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
+        </div>
+      </ProtectedRoute>
     );
   }
 
   return (
     <ProtectedRoute allowedRoles={["sender"]}>
-      <div className="min-h-screen bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="min-h-screen bg-background mt-10">
+        <div className="max-w-7xl mx-auto pt-2 px-6 space-y-6 pb-24">
           {/* Header */}
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900">
-              Sender Dashboard
-            </h1>
-            <p className="mt-2 text-gray-600">
-              Welcome back, {user?.name}! Manage your parcel deliveries.
-            </p>
+          <div className="bg-gradient-to-r from-blue-50/50 via-transparent to-green-50/50 dark:from-blue-950/20 dark:to-green-950/20 border border-border rounded-xl p-6">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+              <div>
+                <h1 className="text-3xl font-bold text-foreground mb-2">
+                  Dashboard Overview
+                </h1>
+                <p className="text-muted-foreground">
+                  Welcome back, {user?.name}! Here's your delivery overview.
+                </p>
+              </div>
+            </div>
           </div>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <div className="bg-white rounded-lg shadow-sm p-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="bg-background rounded-lg shadow-sm border border-border p-6 hover:shadow-lg transition-all duration-300">
               <div className="flex items-center">
-                <div className="p-2 bg-blue-100 rounded-lg">
+                <div className="p-2 bg-blue-50 dark:bg-blue-950/20 rounded-lg">
                   <Package className="h-6 w-6 text-blue-600" />
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">
+                  <p className="text-sm font-medium text-muted-foreground">
                     Total Parcels
                   </p>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="text-2xl font-bold text-foreground">
                     {stats.total}
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-lg shadow-sm p-6">
+            <div className="bg-background rounded-lg shadow-sm border border-border p-6 hover:shadow-lg transition-all duration-300">
               <div className="flex items-center">
-                <div className="p-2 bg-yellow-100 rounded-lg">
+                <div className="p-2 bg-yellow-50 dark:bg-yellow-950/20 rounded-lg">
                   <Calendar className="h-6 w-6 text-yellow-600" />
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Pending</p>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="text-sm font-medium text-muted-foreground">
+                    Pending
+                  </p>
+                  <p className="text-2xl font-bold text-foreground">
                     {stats.pending}
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-lg shadow-sm p-6">
+            <div className="bg-background rounded-lg shadow-sm border border-border p-6 hover:shadow-lg transition-all duration-300">
               <div className="flex items-center">
-                <div className="p-2 bg-purple-100 rounded-lg">
+                <div className="p-2 bg-purple-50 dark:bg-purple-950/20 rounded-lg">
                   <Truck className="h-6 w-6 text-purple-600" />
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">
+                  <p className="text-sm font-medium text-muted-foreground">
                     In Transit
                   </p>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="text-2xl font-bold text-foreground">
                     {stats.inTransit}
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-lg shadow-sm p-6">
+            <div className="bg-background rounded-lg shadow-sm border border-border p-6 hover:shadow-lg transition-all duration-300">
               <div className="flex items-center">
-                <div className="p-2 bg-green-100 rounded-lg">
+                <div className="p-2 bg-green-50 dark:bg-green-950/20 rounded-lg">
                   <Package className="h-6 w-6 text-green-600" />
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Delivered</p>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="text-sm font-medium text-muted-foreground">
+                    Delivered
+                  </p>
+                  <p className="text-2xl font-bold text-foreground">
                     {stats.delivered}
                   </p>
                 </div>
@@ -175,171 +145,144 @@ export default function SenderDashboard() {
             </div>
           </div>
 
-          {/* Actions */}
-          <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-              <h2 className="text-xl font-semibold text-gray-900">
-                My Parcels
-              </h2>
-
-              <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-                {/* Search */}
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                  <input
-                    type="text"
-                    placeholder="Search parcels..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
+          {/* Quick Actions */}
+          <div className="bg-background rounded-lg shadow-sm border border-border p-6">
+            <h2 className="text-xl font-semibold text-foreground mb-4">
+              Quick Actions
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <Link
+                to="/sender/create-parcel"
+                className="p-4 bg-gradient-to-r from-blue-50/50 via-transparent to-blue-50/50 dark:from-blue-950/20 dark:to-blue-950/20 border border-border rounded-lg hover:shadow-lg transition-all duration-300 group"
+              >
+                <div className="flex items-center space-x-3">
+                  <div className="p-2 bg-blue-50 dark:bg-blue-950/20 rounded-lg group-hover:scale-110 transition-transform duration-300">
+                    <Plus className="h-5 w-5 text-blue-600" />
+                  </div>
+                  <div>
+                    <h3 className="font-medium text-foreground">
+                      Create New Parcel
+                    </h3>
+                    <p className="text-sm text-muted-foreground">
+                      Start a new delivery request
+                    </p>
+                  </div>
                 </div>
+              </Link>
 
-                {/* Filter */}
-                <div className="relative">
-                  <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                  <select
-                    value={filter}
-                    onChange={(e) => setFilter(e.target.value)}
-                    className="pl-10 pr-8 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none bg-white"
-                  >
-                    <option value="all">All Status</option>
-                    <option value="requested">Requested</option>
-                    <option value="approved">Approved</option>
-                    <option value="dispatched">Dispatched</option>
-                    <option value="in-transit">In Transit</option>
-                    <option value="delivered">Delivered</option>
-                    <option value="cancelled">Cancelled</option>
-                  </select>
+              <Link
+                to="/sender/parcels"
+                className="p-4 bg-gradient-to-r from-green-50/50 via-transparent to-green-50/50 dark:from-green-950/20 dark:to-green-950/20 border border-border rounded-lg hover:shadow-lg transition-all duration-300 group"
+              >
+                <div className="flex items-center space-x-3">
+                  <div className="p-2 bg-green-50 dark:bg-green-950/20 rounded-lg group-hover:scale-110 transition-transform duration-300">
+                    <Package className="h-5 w-5 text-green-600" />
+                  </div>
+                  <div>
+                    <h3 className="font-medium text-foreground">
+                      View My Parcels
+                    </h3>
+                    <p className="text-sm text-muted-foreground">
+                      Manage your deliveries
+                    </p>
+                  </div>
                 </div>
+              </Link>
 
-                {/* Create Parcel Button */}
-                <Link
-                  to="/sender/create-parcel"
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center justify-center"
-                >
-                  <Plus className="mr-2 h-4 w-4" />
-                  Create Parcel
-                </Link>
-              </div>
+              <Link
+                to="/sender/statistics"
+                className="p-4 bg-gradient-to-r from-purple-50/50 via-transparent to-purple-50/50 dark:from-purple-950/20 dark:to-purple-950/20 border border-border rounded-lg hover:shadow-lg transition-all duration-300 group"
+              >
+                <div className="flex items-center space-x-3">
+                  <div className="p-2 bg-purple-50 dark:bg-purple-950/20 rounded-lg group-hover:scale-110 transition-transform duration-300">
+                    <BarChart3 className="h-5 w-5 text-purple-600" />
+                  </div>
+                  <div>
+                    <h3 className="font-medium text-foreground">
+                      View Statistics
+                    </h3>
+                    <p className="text-sm text-muted-foreground">
+                      Delivery analytics
+                    </p>
+                  </div>
+                </div>
+              </Link>
             </div>
           </div>
 
-          {/* Parcels List */}
-          <div className="bg-white rounded-lg shadow-sm">
-            {filteredParcels.length === 0 ? (
-              <div className="text-center py-12">
-                <Package className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">
-                  No parcels found
-                </h3>
-                <p className="text-gray-600 mb-4">
-                  {parcels.length === 0
-                    ? "You haven't created any parcels yet."
-                    : "No parcels match your current filter."}
-                </p>
-                {parcels.length === 0 && (
+          {/* Recent Parcels Preview */}
+          <div className="bg-background rounded-lg shadow-sm border border-border">
+            <div className="p-6 border-b border-border">
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-semibold text-foreground">
+                  Recent Parcels
+                </h2>
+                <Link
+                  to="/sender/parcels"
+                  className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium transition-colors duration-200"
+                >
+                  View All
+                </Link>
+              </div>
+            </div>
+            <div className="p-6">
+              {parcels.slice(0, 3).length === 0 ? (
+                <div className="text-center py-8">
+                  <Package className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+                  <h3 className="text-lg font-medium text-foreground mb-2">
+                    No parcels yet
+                  </h3>
+                  <p className="text-muted-foreground mb-4">
+                    Start by creating your first parcel delivery request.
+                  </p>
                   <Link
                     to="/sender/create-parcel"
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors inline-flex items-center"
+                    className="bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700 hover:shadow-lg text-white px-6 py-3 rounded-lg font-medium transition-all duration-300 inline-flex items-center"
                   >
                     <Plus className="mr-2 h-4 w-4" />
-                    Create Your First Parcel
+                    Create Parcel
                   </Link>
-                )}
-              </div>
-            ) : (
-              <div className="overflow-hidden">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Tracking ID
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Recipient
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Status
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Fee
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Created
-                      </th>
-                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Actions
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {filteredParcels.map((parcel) => (
-                      <tr key={parcel._id} className="hover:bg-gray-50">
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center">
-                            <div className="text-sm font-medium text-gray-900 font-mono">
-                              {parcel.trackingId}
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div>
-                            <div className="text-sm font-medium text-gray-900">
-                              {parcel.receiverInfo.name}
-                            </div>
-                            <div className="text-sm text-gray-500">
-                              {parcel.receiverInfo.address.city},{" "}
-                              {parcel.receiverInfo.address.state}
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span
-                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(
-                              parcel.currentStatus
-                            )}`}
-                          >
-                            {getStatusIcon(parcel.currentStatus)}{" "}
-                            {parcel.currentStatus
-                              .replace("-", " ")
-                              .toUpperCase()}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          {formatCurrency(parcel.fee.totalFee)}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {formatDate(parcel.createdAt)}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                          <div className="flex items-center justify-end space-x-2">
-                            <Link
-                              to={`/track?id=${parcel.trackingId}`}
-                              className="text-blue-600 hover:text-blue-900 flex items-center"
-                            >
-                              <Eye className="h-4 w-4 mr-1" />
-                              View
-                            </Link>
-                            {["requested", "approved"].includes(
-                              parcel.currentStatus
-                            ) && (
-                              <button
-                                onClick={() => handleCancelParcel(parcel._id)}
-                                className="text-red-600 hover:text-red-900 flex items-center"
-                              >
-                                <X className="h-4 w-4 mr-1" />
-                                Cancel
-                              </button>
-                            )}
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {parcels.slice(0, 3).map((parcel) => (
+                    <div
+                      key={parcel._id}
+                      className="flex items-center justify-between p-4 bg-muted/30 rounded-lg hover:bg-muted/50 transition-colors duration-200"
+                    >
+                      <div className="flex items-center space-x-4">
+                        <div className="p-2 bg-blue-50 dark:bg-blue-950/20 rounded-lg">
+                          <Package className="h-5 w-5 text-blue-600" />
+                        </div>
+                        <div>
+                          <h4 className="font-medium text-foreground">
+                            {parcel.trackingId}
+                          </h4>
+                          <p className="text-sm text-muted-foreground">
+                            To: {parcel.receiverInfo.name}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center space-x-3">
+                        <span
+                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(
+                            parcel.currentStatus
+                          )}`}
+                        >
+                          {parcel.currentStatus.replace("-", " ").toUpperCase()}
+                        </span>
+                        <Link
+                          to={`/track?id=${parcel.trackingId}`}
+                          className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors duration-200"
+                        >
+                          <Eye className="h-4 w-4" />
+                        </Link>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>

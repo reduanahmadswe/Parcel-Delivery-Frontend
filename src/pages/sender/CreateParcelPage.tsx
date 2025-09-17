@@ -306,37 +306,37 @@ export default function CreateParcelPage() {
 
   return (
     <ProtectedRoute allowedRoles={["sender"]}>
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-background">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Header */}
           <div className="mb-8">
             <div className="flex items-center mb-4">
               <Link
                 to="/sender"
-                className="flex items-center text-gray-600 hover:text-gray-900 mr-4"
+                className="flex items-center text-muted-foreground hover:text-foreground mr-4 transition-colors duration-200"
               >
                 <ArrowLeft className="h-5 w-5 mr-1" />
                 Back to Dashboard
               </Link>
             </div>
-            <h1 className="text-3xl font-bold text-gray-900">
+            <h1 className="text-3xl font-bold text-foreground">
               Create New Parcel
             </h1>
-            <p className="mt-2 text-gray-600">
+            <p className="mt-2 text-muted-foreground">
               Fill in the details to create a new parcel delivery request.
             </p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-8">
             {/* Receiver Information */}
-            <div className="bg-white rounded-lg shadow-sm p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-6">
+            <div className="bg-background rounded-lg shadow-sm border border-border p-6">
+              <h2 className="text-xl font-semibold text-foreground mb-6">
                 Receiver Information
               </h2>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-muted-foreground mb-2">
                     Full Name *
                   </label>
                   <input
@@ -344,7 +344,7 @@ export default function CreateParcelPage() {
                     name="receiverInfo.name"
                     value={formData.receiverInfo.name}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
                     placeholder="Enter receiver's full name"
                   />
                   {errors["receiverInfo.name"] && (
@@ -355,7 +355,7 @@ export default function CreateParcelPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-muted-foreground mb-2">
                     Email Address *
                   </label>
                   <input
@@ -363,7 +363,7 @@ export default function CreateParcelPage() {
                     name="receiverInfo.email"
                     value={formData.receiverInfo.email}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
                     placeholder="receiver@example.com"
                   />
                   {errors["receiverInfo.email"] && (
@@ -374,7 +374,7 @@ export default function CreateParcelPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-muted-foreground mb-2">
                     Phone Number *
                   </label>
                   <input
@@ -382,7 +382,7 @@ export default function CreateParcelPage() {
                     name="receiverInfo.phone"
                     value={formData.receiverInfo.phone}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
                     placeholder="+880123456789"
                   />
                   {errors["receiverInfo.phone"] && (
@@ -395,13 +395,13 @@ export default function CreateParcelPage() {
 
               {/* Address */}
               <div className="mt-6">
-                <h3 className="text-lg font-medium text-gray-900 mb-4">
+                <h3 className="text-lg font-medium text-foreground mb-4">
                   Delivery Address
                 </h3>
 
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-muted-foreground mb-2">
                       Street Address *
                     </label>
                     <input
@@ -409,7 +409,7 @@ export default function CreateParcelPage() {
                       name="receiverInfo.address.street"
                       value={formData.receiverInfo.address.street}
                       onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
                       placeholder="123 Main Street"
                     />
                     {errors["receiverInfo.address.street"] && (
@@ -421,7 +421,7 @@ export default function CreateParcelPage() {
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-muted-foreground mb-2">
                         City *
                       </label>
                       <input
@@ -429,7 +429,7 @@ export default function CreateParcelPage() {
                         name="receiverInfo.address.city"
                         value={formData.receiverInfo.address.city}
                         onChange={handleInputChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
                         placeholder="Dhaka"
                       />
                       {errors["receiverInfo.address.city"] && (
@@ -440,7 +440,7 @@ export default function CreateParcelPage() {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-muted-foreground mb-2">
                         State/Division *
                       </label>
                       <input
@@ -448,7 +448,7 @@ export default function CreateParcelPage() {
                         name="receiverInfo.address.state"
                         value={formData.receiverInfo.address.state}
                         onChange={handleInputChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
                         placeholder="Dhaka Division"
                       />
                       {errors["receiverInfo.address.state"] && (
@@ -459,7 +459,7 @@ export default function CreateParcelPage() {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-muted-foreground mb-2">
                         ZIP Code *
                       </label>
                       <input
@@ -467,7 +467,7 @@ export default function CreateParcelPage() {
                         name="receiverInfo.address.zipCode"
                         value={formData.receiverInfo.address.zipCode}
                         onChange={handleInputChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
                         placeholder="1000"
                       />
                       {errors["receiverInfo.address.zipCode"] && (
@@ -482,21 +482,21 @@ export default function CreateParcelPage() {
             </div>
 
             {/* Parcel Details */}
-            <div className="bg-white rounded-lg shadow-sm p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-6">
+            <div className="bg-background rounded-lg shadow-sm border border-border p-6">
+              <h2 className="text-xl font-semibold text-foreground mb-6">
                 Parcel Details
               </h2>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-muted-foreground mb-2">
                     Parcel Type *
                   </label>
                   <select
                     name="parcelDetails.type"
                     value={formData.parcelDetails.type}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
                   >
                     <option value="document">Document</option>
                     <option value="package">Package</option>
@@ -508,7 +508,7 @@ export default function CreateParcelPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-muted-foreground mb-2">
                     Weight (kg) *
                   </label>
                   <input
@@ -519,7 +519,7 @@ export default function CreateParcelPage() {
                     name="parcelDetails.weight"
                     value={formData.parcelDetails.weight}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
                     placeholder="Enter weight (max 50kg)"
                   />
                   {errors["parcelDetails.weight"] && (
@@ -532,7 +532,7 @@ export default function CreateParcelPage() {
 
               {/* Dimensions */}
               <div className="mt-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-muted-foreground mb-2">
                   Dimensions (cm) *
                 </label>
                 <div className="grid grid-cols-3 gap-4">
@@ -544,7 +544,7 @@ export default function CreateParcelPage() {
                       name="parcelDetails.dimensions.length"
                       value={formData.parcelDetails.dimensions.length}
                       onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
                       placeholder="Length"
                     />
                     {errors["parcelDetails.dimensions.length"] && (
@@ -561,7 +561,7 @@ export default function CreateParcelPage() {
                       name="parcelDetails.dimensions.width"
                       value={formData.parcelDetails.dimensions.width}
                       onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
                       placeholder="Width"
                     />
                     {errors["parcelDetails.dimensions.width"] && (
@@ -578,7 +578,7 @@ export default function CreateParcelPage() {
                       name="parcelDetails.dimensions.height"
                       value={formData.parcelDetails.dimensions.height}
                       onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
                       placeholder="Height"
                     />
                     {errors["parcelDetails.dimensions.height"] && (
@@ -592,7 +592,7 @@ export default function CreateParcelPage() {
 
               <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-muted-foreground mb-2">
                     Estimated Value (BDT)
                   </label>
                   <input
@@ -602,14 +602,14 @@ export default function CreateParcelPage() {
                     name="parcelDetails.value"
                     value={formData.parcelDetails.value}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
                     placeholder="0.00"
                   />
                 </div>
               </div>
 
               <div className="mt-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-muted-foreground mb-2">
                   Description *
                 </label>
                 <textarea
@@ -617,7 +617,7 @@ export default function CreateParcelPage() {
                   value={formData.parcelDetails.description}
                   onChange={handleInputChange}
                   rows={3}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
                   placeholder="Describe the contents of your parcel..."
                 />
                 {errors["parcelDetails.description"] && (
@@ -629,14 +629,14 @@ export default function CreateParcelPage() {
             </div>
 
             {/* Delivery Options */}
-            <div className="bg-white rounded-lg shadow-sm p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-6">
+            <div className="bg-background rounded-lg shadow-sm border border-border p-6">
+              <h2 className="text-xl font-semibold text-foreground mb-6">
                 Delivery Options
               </h2>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-muted-foreground mb-2">
                     Preferred Delivery Date
                   </label>
                   <input
@@ -649,7 +649,7 @@ export default function CreateParcelPage() {
                         .toISOString()
                         .split("T")[0]
                     }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
                   />
                 </div>
 
@@ -660,11 +660,11 @@ export default function CreateParcelPage() {
                     name="deliveryInfo.isUrgent"
                     checked={formData.deliveryInfo.isUrgent}
                     onChange={handleInputChange}
-                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-border rounded"
                   />
                   <label
                     htmlFor="isUrgent"
-                    className="ml-2 block text-sm text-gray-900"
+                    className="ml-2 block text-sm text-foreground"
                   >
                     Urgent Delivery (+100 BDT)
                   </label>
@@ -672,7 +672,7 @@ export default function CreateParcelPage() {
               </div>
 
               <div className="mt-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-muted-foreground mb-2">
                   Delivery Instructions
                 </label>
                 <textarea
@@ -680,42 +680,42 @@ export default function CreateParcelPage() {
                   value={formData.deliveryInfo.deliveryInstructions}
                   onChange={handleInputChange}
                   rows={3}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
                   placeholder="Any special instructions for delivery..."
                 />
               </div>
             </div>
 
             {/* Fee Estimation */}
-            <div className="bg-blue-50 rounded-lg p-6">
+            <div className="bg-gradient-to-r from-blue-50/50 via-transparent to-blue-50/50 dark:from-blue-950/20 dark:to-blue-950/20 border border-border rounded-lg p-6">
               <div className="flex items-center">
-                <Calculator className="h-6 w-6 text-blue-600 mr-3" />
-                <h3 className="text-lg font-semibold text-blue-900">
+                <Calculator className="h-6 w-6 text-red-600 mr-3" />
+                <h3 className="text-lg font-semibold text-foreground">
                   Estimated Delivery Fee
                 </h3>
               </div>
               <div className="mt-4 space-y-2">
                 <div className="flex justify-between text-sm">
-                  <span>Base Fee:</span>
-                  <span>50 BDT</span>
+                  <span className="text-muted-foreground">Base Fee:</span>
+                  <span className="text-foreground">50 BDT</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span>
+                  <span className="text-muted-foreground">
                     Weight Fee ({formData.parcelDetails.weight || 0} kg × 20
                     BDT):
                   </span>
-                  <span>
+                  <span className="text-foreground">
                     {(parseFloat(formData.parcelDetails.weight) || 0) * 20} BDT
                   </span>
                 </div>
                 {formData.deliveryInfo.isUrgent && (
                   <div className="flex justify-between text-sm">
-                    <span>Urgent Fee:</span>
-                    <span>100 BDT</span>
+                    <span className="text-muted-foreground">Urgent Fee:</span>
+                    <span className="text-foreground">100 BDT</span>
                   </div>
                 )}
-                <div className="border-t border-blue-200 pt-2">
-                  <div className="flex justify-between font-semibold text-blue-900">
+                <div className="border-t border-border pt-2">
+                  <div className="flex justify-between font-semibold text-foreground">
                     <span>Total:</span>
                     <span>{estimatedFee} BDT</span>
                   </div>
@@ -727,14 +727,14 @@ export default function CreateParcelPage() {
             <div className="flex justify-end space-x-4">
               <Link
                 to="/sender"
-                className="px-6 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 font-medium transition-colors"
+                className="px-6 py-3 border border-border rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground font-medium transition-all duration-300"
               >
                 Cancel
               </Link>
 
               <button
                 type="submit"
-                className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+                className="px-6 py-3 bg-gradient-to-br from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 hover:shadow-lg text-white rounded-lg font-medium transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
                 disabled={loading}
               >
                 {loading ? (

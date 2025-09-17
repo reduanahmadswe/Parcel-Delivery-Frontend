@@ -17,9 +17,11 @@ import TrackPage from "./pages/TrackPage";
 import UnauthorizedPage from "./pages/UnauthorizedPage";
 
 // Dashboard Pages
-import CreateParcelPage from "./pages/dashboard/CreateParcelPage";
 import ReceiverDashboard from "./pages/dashboard/ReceiverDashboard";
 import SenderDashboard from "./pages/dashboard/SenderDashboard";
+import CreateParcelPage from "./pages/sender/CreateParcelPage";
+import SenderParcelsPage from "./pages/sender/SenderParcelsPage";
+import SenderStatisticsPage from "./pages/sender/SenderStatisticsPage";
 
 // Admin Pages
 import NotificationsPage from "./pages/admin/NotificationsPage";
@@ -118,11 +120,31 @@ const App: React.FC = () => {
                     }
                   />
                   <Route
+                    path="/sender/parcels"
+                    element={
+                      <ProtectedRoute allowedRoles={["sender"]}>
+                        <Layout>
+                          <SenderParcelsPage />
+                        </Layout>
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
                     path="/sender/create-parcel"
                     element={
                       <ProtectedRoute allowedRoles={["sender"]}>
                         <Layout>
                           <CreateParcelPage />
+                        </Layout>
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/sender/statistics"
+                    element={
+                      <ProtectedRoute allowedRoles={["sender"]}>
+                        <Layout>
+                          <SenderStatisticsPage />
                         </Layout>
                       </ProtectedRoute>
                     }

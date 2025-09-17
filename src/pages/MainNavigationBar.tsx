@@ -91,9 +91,36 @@ export default function Navigation() {
 
   // Helper function to check if navigation item is active
   const isActive = (href: string) => {
-    if (href === "/admin" && location.pathname === "/admin") return true;
-    if (href !== "/admin" && location.pathname.startsWith(href)) return true;
+    // Exact match for home page
     if (href === "/" && location.pathname === "/") return true;
+
+    // Exact match for admin page
+    if (href === "/admin" && location.pathname === "/admin") return true;
+
+    // For sender routes, use exact matching to prevent overlap
+    if (href === "/sender" && location.pathname === "/sender") return true;
+    if (href === "/sender/parcels" && location.pathname === "/sender/parcels")
+      return true;
+    if (
+      href === "/sender/create-parcel" &&
+      location.pathname === "/sender/create-parcel"
+    )
+      return true;
+    if (
+      href === "/sender/statistics" &&
+      location.pathname === "/sender/statistics"
+    )
+      return true;
+
+    // For other routes, use startsWith but exclude sender routes to prevent conflicts
+    if (
+      href !== "/" &&
+      href !== "/admin" &&
+      !href.startsWith("/sender") &&
+      location.pathname.startsWith(href)
+    )
+      return true;
+
     return false;
   };
 
@@ -144,13 +171,15 @@ export default function Navigation() {
         ]
       : user?.role === "sender"
       ? [
-          { href: "/sender", label: "Dashboard", icon: BarChart3 },
-          { href: "/contact", label: "Contact", icon: MessageSquare },
+          { href: "/sender", label: "Overview", icon: BarChart3 },
+          { href: "/sender/parcels", label: "My Parcels", icon: Package },
           {
             href: "/sender/create-parcel",
             label: "Create Parcel",
             icon: Package,
           },
+          { href: "/sender/statistics", label: "Statistics", icon: BarChart3 },
+          { href: "/contact", label: "Contact", icon: MessageSquare },
         ]
       : user?.role === "receiver"
       ? [
