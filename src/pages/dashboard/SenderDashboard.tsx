@@ -158,7 +158,7 @@ export default function SenderDashboard() {
       <div className="min-h-screen bg-background mt-10">
         <div className="max-w-7xl mx-auto pt-2 px-6 space-y-6 pb-24">
           {/* Header */}
-          <div className="bg-gradient-to-r from-blue-50/50 via-transparent to-green-50/50 dark:from-blue-950/20 dark:to-green-950/20 border border-border rounded-xl p-6">
+          <div className="bg-gradient-to-r from-blue-50/50 via-transparent to-green-50/50 dark:from-blue-950/20 dark:to-green-950/20 border border-border rounded-xl p-6 hover:shadow-lg hover:border-blue-200 dark:hover:border-blue-800 transition-all duration-300 hover:bg-gradient-to-r hover:from-blue-50/70 hover:to-green-50/70 dark:hover:from-blue-950/30 dark:hover:to-green-950/30">
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
               <div>
                 <h1 className="text-3xl font-bold text-foreground mb-2">
@@ -173,64 +173,64 @@ export default function SenderDashboard() {
 
           {/* Stats Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="bg-background rounded-lg shadow-sm border border-border p-6 hover:shadow-lg transition-all duration-300">
+            <div className="bg-background rounded-lg shadow-sm border border-border p-6 hover:shadow-xl hover:border-blue-300 dark:hover:border-blue-700 hover:scale-105 transition-all duration-300 cursor-pointer group">
               <div className="flex items-center">
-                <div className="p-2 bg-blue-50 dark:bg-blue-950/20 rounded-lg">
-                  <Package className="h-6 w-6 text-blue-600" />
+                <div className="p-2 bg-blue-50 dark:bg-blue-950/20 rounded-lg group-hover:bg-blue-100 dark:group-hover:bg-blue-900/30 transition-colors duration-300">
+                  <Package className="h-6 w-6 text-blue-600 group-hover:scale-110 transition-transform duration-300" />
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-muted-foreground">
+                  <p className="text-sm font-medium text-muted-foreground group-hover:text-blue-600 transition-colors duration-300">
                     Total Parcels
                   </p>
-                  <p className="text-2xl font-bold text-foreground">
+                  <p className="text-2xl font-bold text-foreground group-hover:text-blue-600 transition-colors duration-300">
                     {stats.total}
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-background rounded-lg shadow-sm border border-border p-6 hover:shadow-lg transition-all duration-300">
+            <div className="bg-background rounded-lg shadow-sm border border-border p-6 hover:shadow-xl hover:border-yellow-300 dark:hover:border-yellow-700 hover:scale-105 transition-all duration-300 cursor-pointer group">
               <div className="flex items-center">
-                <div className="p-2 bg-yellow-50 dark:bg-yellow-950/20 rounded-lg">
-                  <Calendar className="h-6 w-6 text-yellow-600" />
+                <div className="p-2 bg-yellow-50 dark:bg-yellow-950/20 rounded-lg group-hover:bg-yellow-100 dark:group-hover:bg-yellow-900/30 transition-colors duration-300">
+                  <Calendar className="h-6 w-6 text-yellow-600 group-hover:scale-110 transition-transform duration-300" />
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-muted-foreground">
+                  <p className="text-sm font-medium text-muted-foreground group-hover:text-yellow-600 transition-colors duration-300">
                     Pending
                   </p>
-                  <p className="text-2xl font-bold text-foreground">
+                  <p className="text-2xl font-bold text-foreground group-hover:text-yellow-600 transition-colors duration-300">
                     {stats.pending}
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-background rounded-lg shadow-sm border border-border p-6 hover:shadow-lg transition-all duration-300">
+            <div className="bg-background rounded-lg shadow-sm border border-border p-6 hover:shadow-xl hover:border-purple-300 dark:hover:border-purple-700 hover:scale-105 transition-all duration-300 cursor-pointer group">
               <div className="flex items-center">
-                <div className="p-2 bg-purple-50 dark:bg-purple-950/20 rounded-lg">
-                  <Truck className="h-6 w-6 text-purple-600" />
+                <div className="p-2 bg-purple-50 dark:bg-purple-950/20 rounded-lg group-hover:bg-purple-100 dark:group-hover:bg-purple-900/30 transition-colors duration-300">
+                  <Truck className="h-6 w-6 text-purple-600 group-hover:scale-110 transition-transform duration-300" />
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-muted-foreground">
+                  <p className="text-sm font-medium text-muted-foreground group-hover:text-purple-600 transition-colors duration-300">
                     In Transit
                   </p>
-                  <p className="text-2xl font-bold text-foreground">
+                  <p className="text-2xl font-bold text-foreground group-hover:text-purple-600 transition-colors duration-300">
                     {stats.inTransit}
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-background rounded-lg shadow-sm border border-border p-6 hover:shadow-lg transition-all duration-300">
+            <div className="bg-background rounded-lg shadow-sm border border-border p-6 hover:shadow-xl hover:border-green-300 dark:hover:border-green-700 hover:scale-105 transition-all duration-300 cursor-pointer group">
               <div className="flex items-center">
-                <div className="p-2 bg-green-50 dark:bg-green-950/20 rounded-lg">
-                  <Package className="h-6 w-6 text-green-600" />
+                <div className="p-2 bg-green-50 dark:bg-green-950/20 rounded-lg group-hover:bg-green-100 dark:group-hover:bg-green-900/30 transition-colors duration-300">
+                  <Package className="h-6 w-6 text-green-600 group-hover:scale-110 transition-transform duration-300" />
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-muted-foreground">
+                  <p className="text-sm font-medium text-muted-foreground group-hover:text-green-600 transition-colors duration-300">
                     Delivered
                   </p>
-                  <p className="text-2xl font-bold text-foreground">
+                  <p className="text-2xl font-bold text-foreground group-hover:text-green-600 transition-colors duration-300">
                     {stats.delivered}
                   </p>
                 </div>
@@ -239,24 +239,24 @@ export default function SenderDashboard() {
           </div>
 
           {/* Quick Actions */}
-          <div className="bg-background rounded-lg shadow-sm border border-border p-6">
+          <div className="bg-background rounded-lg shadow-sm border border-border p-6 hover:shadow-lg hover:border-gray-300 dark:hover:border-gray-600 transition-all duration-300">
             <h2 className="text-xl font-semibold text-foreground mb-4">
               Quick Actions
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <Link
                 to="/sender/create-parcel"
-                className="p-4 bg-gradient-to-r from-blue-50/50 via-transparent to-blue-50/50 dark:from-blue-950/20 dark:to-blue-950/20 border border-border rounded-lg hover:shadow-lg transition-all duration-300 group"
+                className="p-4 bg-gradient-to-r from-blue-50/50 via-transparent to-blue-50/50 dark:from-blue-950/20 dark:to-blue-950/20 border border-border rounded-lg hover:shadow-xl hover:border-blue-300 dark:hover:border-blue-700 hover:scale-105 transition-all duration-300 group"
               >
                 <div className="flex items-center space-x-3">
-                  <div className="p-2 bg-blue-50 dark:bg-blue-950/20 rounded-lg group-hover:scale-110 transition-transform duration-300">
+                  <div className="p-2 bg-blue-50 dark:bg-blue-950/20 rounded-lg group-hover:scale-110 group-hover:bg-blue-100 dark:group-hover:bg-blue-900/30 transition-all duration-300">
                     <Plus className="h-5 w-5 text-blue-600" />
                   </div>
                   <div>
-                    <h3 className="font-medium text-foreground">
+                    <h3 className="font-medium text-foreground group-hover:text-blue-600 transition-colors duration-300">
                       Create New Parcel
                     </h3>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-muted-foreground group-hover:text-blue-500 transition-colors duration-300">
                       Start a new delivery request
                     </p>
                   </div>
@@ -265,17 +265,17 @@ export default function SenderDashboard() {
 
               <Link
                 to="/sender/parcels"
-                className="p-4 bg-gradient-to-r from-green-50/50 via-transparent to-green-50/50 dark:from-green-950/20 dark:to-green-950/20 border border-border rounded-lg hover:shadow-lg transition-all duration-300 group"
+                className="p-4 bg-gradient-to-r from-green-50/50 via-transparent to-green-50/50 dark:from-green-950/20 dark:to-green-950/20 border border-border rounded-lg hover:shadow-xl hover:border-green-300 dark:hover:border-green-700 hover:scale-105 transition-all duration-300 group"
               >
                 <div className="flex items-center space-x-3">
-                  <div className="p-2 bg-green-50 dark:bg-green-950/20 rounded-lg group-hover:scale-110 transition-transform duration-300">
+                  <div className="p-2 bg-green-50 dark:bg-green-950/20 rounded-lg group-hover:scale-110 group-hover:bg-green-100 dark:group-hover:bg-green-900/30 transition-all duration-300">
                     <Package className="h-5 w-5 text-green-600" />
                   </div>
                   <div>
-                    <h3 className="font-medium text-foreground">
+                    <h3 className="font-medium text-foreground group-hover:text-green-600 transition-colors duration-300">
                       View My Parcels
                     </h3>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-muted-foreground group-hover:text-green-500 transition-colors duration-300">
                       Manage your deliveries
                     </p>
                   </div>
@@ -284,17 +284,17 @@ export default function SenderDashboard() {
 
               <Link
                 to="/sender/statistics"
-                className="p-4 bg-gradient-to-r from-purple-50/50 via-transparent to-purple-50/50 dark:from-purple-950/20 dark:to-purple-950/20 border border-border rounded-lg hover:shadow-lg transition-all duration-300 group"
+                className="p-4 bg-gradient-to-r from-purple-50/50 via-transparent to-purple-50/50 dark:from-purple-950/20 dark:to-purple-950/20 border border-border rounded-lg hover:shadow-xl hover:border-purple-300 dark:hover:border-purple-700 hover:scale-105 transition-all duration-300 group"
               >
                 <div className="flex items-center space-x-3">
-                  <div className="p-2 bg-purple-50 dark:bg-purple-950/20 rounded-lg group-hover:scale-110 transition-transform duration-300">
+                  <div className="p-2 bg-purple-50 dark:bg-purple-950/20 rounded-lg group-hover:scale-110 group-hover:bg-purple-100 dark:group-hover:bg-purple-900/30 transition-all duration-300">
                     <BarChart3 className="h-5 w-5 text-purple-600" />
                   </div>
                   <div>
-                    <h3 className="font-medium text-foreground">
+                    <h3 className="font-medium text-foreground group-hover:text-purple-600 transition-colors duration-300">
                       View Statistics
                     </h3>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-muted-foreground group-hover:text-purple-500 transition-colors duration-300">
                       Delivery analytics
                     </p>
                   </div>
@@ -304,7 +304,7 @@ export default function SenderDashboard() {
           </div>
 
           {/* Recent Parcels Preview */}
-          <div className="bg-background rounded-lg shadow-sm border border-border">
+          <div className="bg-background rounded-lg shadow-sm border border-border hover:shadow-lg hover:border-gray-300 dark:hover:border-gray-600 transition-all duration-300">
             <div className="p-6 border-b border-border">
               <div className="flex items-center justify-between">
                 <h2 className="text-xl font-semibold text-foreground">
@@ -312,7 +312,7 @@ export default function SenderDashboard() {
                 </h2>
                 <Link
                   to="/sender/parcels"
-                  className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium transition-colors duration-200"
+                  className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium transition-all duration-200 hover:scale-105 px-3 py-1 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20"
                 >
                   View All
                 </Link>
@@ -320,8 +320,8 @@ export default function SenderDashboard() {
             </div>
             <div className="p-6">
               {parcels.slice(0, 3).length === 0 ? (
-                <div className="text-center py-8">
-                  <Package className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+                <div className="text-center py-8 hover:bg-muted/20 rounded-lg transition-colors duration-300">
+                  <Package className="mx-auto h-12 w-12 text-muted-foreground mb-4 hover:scale-110 hover:text-blue-600 transition-all duration-300" />
                   <h3 className="text-lg font-medium text-foreground mb-2">
                     No parcels yet
                   </h3>
@@ -330,9 +330,9 @@ export default function SenderDashboard() {
                   </p>
                   <Link
                     to="/sender/create-parcel"
-                    className="bg-gradient-to-br from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 hover:shadow-lg text-white px-6 py-3 rounded-lg font-medium transition-all duration-300 inline-flex items-center"
+                    className="bg-gradient-to-br from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 hover:shadow-xl hover:scale-105 text-white px-6 py-3 rounded-lg font-medium transition-all duration-300 inline-flex items-center group"
                   >
-                    <Plus className="mr-2 h-4 w-4" />
+                    <Plus className="mr-2 h-4 w-4 group-hover:scale-110 transition-transform duration-300" />
                     Create Parcel
                   </Link>
                 </div>
@@ -341,17 +341,17 @@ export default function SenderDashboard() {
                   {parcels.slice(0, 3).map((parcel) => (
                     <div
                       key={parcel._id}
-                      className="flex items-center justify-between p-4 bg-muted/30 rounded-lg hover:bg-muted/50 transition-colors duration-200"
+                      className="flex items-center justify-between p-4 bg-muted/30 rounded-lg hover:bg-muted/50 hover:shadow-md hover:scale-[1.02] transition-all duration-300 cursor-pointer group"
                     >
                       <div className="flex items-center space-x-4">
-                        <div className="p-2 bg-blue-50 dark:bg-blue-950/20 rounded-lg">
-                          <Package className="h-5 w-5 text-blue-600" />
+                        <div className="p-2 bg-blue-50 dark:bg-blue-950/20 rounded-lg group-hover:bg-blue-100 dark:group-hover:bg-blue-900/30 transition-colors duration-300">
+                          <Package className="h-5 w-5 text-blue-600 group-hover:scale-110 transition-transform duration-300" />
                         </div>
                         <div>
-                          <h4 className="font-medium text-foreground">
+                          <h4 className="font-medium text-foreground group-hover:text-blue-600 transition-colors duration-300">
                             {parcel.trackingId}
                           </h4>
-                          <p className="text-sm text-muted-foreground">
+                          <p className="text-sm text-muted-foreground group-hover:text-blue-500 transition-colors duration-300">
                             To: {parcel.receiverInfo.name}
                           </p>
                         </div>
@@ -360,16 +360,16 @@ export default function SenderDashboard() {
                         <span
                           className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(
                             parcel.currentStatus
-                          )}`}
+                          )} group-hover:scale-105 transition-transform duration-300`}
                         >
                           {parcel.currentStatus.replace("-", " ").toUpperCase()}
                         </span>
                         <button
                           onClick={() => handleViewParcel(parcel)}
-                          className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors duration-200 p-1 rounded hover:bg-blue-50 dark:hover:bg-blue-900/20"
+                          className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-all duration-200 p-2 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:scale-110 group/btn"
                           title="View Parcel Details"
                         >
-                          <Eye className="h-4 w-4" />
+                          <Eye className="h-4 w-4 group-hover/btn:scale-110 transition-transform duration-300" />
                         </button>
                       </div>
                     </div>

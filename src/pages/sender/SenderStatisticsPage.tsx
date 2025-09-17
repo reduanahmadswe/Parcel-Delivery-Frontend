@@ -179,7 +179,7 @@ export default function SenderStatisticsPage() {
           </div>
 
           {/* Current Overview - Live Data */}
-          <div className="bg-background rounded-lg shadow-sm border border-border p-6">
+          <div className="bg-background rounded-lg shadow-sm border border-border p-6 hover:shadow-lg hover:border-blue-200 dark:hover:border-blue-800 transition-all duration-300 hover:bg-gradient-to-br hover:from-blue-50/20 hover:to-purple-50/20 dark:hover:from-blue-950/10 dark:hover:to-purple-950/10">
             <h2 className="text-xl font-semibold text-foreground mb-6 flex items-center">
               <BarChart3 className="h-5 w-5 mr-2 text-blue-600" />
               Current Overview
@@ -188,9 +188,9 @@ export default function SenderStatisticsPage() {
               </span>
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div className="bg-gradient-to-br from-blue-50/50 to-blue-100/50 dark:from-blue-950/20 dark:to-blue-900/20 border border-blue-200 dark:border-blue-800/50 rounded-lg p-4">
+              <div className="bg-gradient-to-br from-blue-50/50 to-blue-100/50 dark:from-blue-950/20 dark:to-blue-900/20 border border-blue-200 dark:border-blue-800/50 rounded-lg p-4 hover:shadow-lg hover:scale-105 hover:border-blue-300 dark:hover:border-blue-700 transition-all duration-300 cursor-pointer">
                 <div className="flex items-center">
-                  <div className="p-2 bg-blue-50 dark:bg-blue-950/20 rounded-lg">
+                  <div className="p-2 bg-blue-50 dark:bg-blue-950/20 rounded-lg transition-colors duration-300 hover:bg-blue-100 dark:hover:bg-blue-900/30">
                     <Package className="h-6 w-6 text-blue-600" />
                   </div>
                   <div className="ml-4">
@@ -209,9 +209,9 @@ export default function SenderStatisticsPage() {
                 </div>
               </div>
 
-              <div className="bg-gradient-to-br from-yellow-50/50 to-yellow-100/50 dark:from-yellow-950/20 dark:to-yellow-900/20 border border-yellow-200 dark:border-yellow-800/50 rounded-lg p-4">
+              <div className="bg-gradient-to-br from-yellow-50/50 to-yellow-100/50 dark:from-yellow-950/20 dark:to-yellow-900/20 border border-yellow-200 dark:border-yellow-800/50 rounded-lg p-4 hover:shadow-lg hover:scale-105 hover:border-yellow-300 dark:hover:border-yellow-700 transition-all duration-300 cursor-pointer">
                 <div className="flex items-center">
-                  <div className="p-2 bg-yellow-50 dark:bg-yellow-950/20 rounded-lg">
+                  <div className="p-2 bg-yellow-50 dark:bg-yellow-950/20 rounded-lg transition-colors duration-300 hover:bg-yellow-100 dark:hover:bg-yellow-900/30">
                     <Calendar className="h-6 w-6 text-yellow-600" />
                   </div>
                   <div className="ml-4">
@@ -230,9 +230,9 @@ export default function SenderStatisticsPage() {
                 </div>
               </div>
 
-              <div className="bg-gradient-to-br from-purple-50/50 to-purple-100/50 dark:from-purple-950/20 dark:to-purple-900/20 border border-purple-200 dark:border-purple-800/50 rounded-lg p-4">
+              <div className="bg-gradient-to-br from-purple-50/50 to-purple-100/50 dark:from-purple-950/20 dark:to-purple-900/20 border border-purple-200 dark:border-purple-800/50 rounded-lg p-4 hover:shadow-lg hover:scale-105 hover:border-purple-300 dark:hover:border-purple-700 transition-all duration-300 cursor-pointer">
                 <div className="flex items-center">
-                  <div className="p-2 bg-purple-50 dark:bg-purple-950/20 rounded-lg">
+                  <div className="p-2 bg-purple-50 dark:bg-purple-950/20 rounded-lg transition-colors duration-300 hover:bg-purple-100 dark:hover:bg-purple-900/30">
                     <Truck className="h-6 w-6 text-purple-600" />
                   </div>
                   <div className="ml-4">
@@ -251,9 +251,9 @@ export default function SenderStatisticsPage() {
                 </div>
               </div>
 
-              <div className="bg-gradient-to-br from-green-50/50 to-green-100/50 dark:from-green-950/20 dark:to-green-900/20 border border-green-200 dark:border-green-800/50 rounded-lg p-4">
+              <div className="bg-gradient-to-br from-green-50/50 to-green-100/50 dark:from-green-950/20 dark:to-green-900/20 border border-green-200 dark:border-green-800/50 rounded-lg p-4 hover:shadow-lg hover:scale-105 hover:border-green-300 dark:hover:border-green-700 transition-all duration-300 cursor-pointer">
                 <div className="flex items-center">
-                  <div className="p-2 bg-green-50 dark:bg-green-950/20 rounded-lg">
+                  <div className="p-2 bg-green-50 dark:bg-green-950/20 rounded-lg transition-colors duration-300 hover:bg-green-100 dark:hover:bg-green-900/30">
                     <Package className="h-6 w-6 text-green-600" />
                   </div>
                   <div className="ml-4">
@@ -278,48 +278,48 @@ export default function SenderStatisticsPage() {
 
           {/* Statistics Overview */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="bg-background rounded-lg shadow-sm border border-border p-6">
+            <div className="bg-background rounded-lg shadow-sm border border-border p-6 hover:shadow-xl hover:border-green-200 dark:hover:border-green-800 transition-all duration-300 hover:scale-105 cursor-pointer group">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">
+                  <p className="text-sm font-medium text-muted-foreground group-hover:text-green-600 transition-colors duration-300">
                     Success Rate
                   </p>
-                  <p className="text-2xl font-bold text-foreground">
+                  <p className="text-2xl font-bold text-foreground group-hover:text-green-600 transition-colors duration-300">
                     {stats.total > 0
                       ? Math.round((stats.delivered / stats.total) * 100)
                       : 0}
                     %
                   </p>
                 </div>
-                <div className="p-2 bg-green-50 dark:bg-green-950/20 rounded-lg">
-                  <BarChart3 className="h-6 w-6 text-green-600" />
+                <div className="p-2 bg-green-50 dark:bg-green-950/20 rounded-lg group-hover:bg-green-100 dark:group-hover:bg-green-900/30 transition-all duration-300">
+                  <BarChart3 className="h-6 w-6 text-green-600 group-hover:scale-110 transition-transform duration-300" />
                 </div>
               </div>
             </div>
 
-            <div className="bg-background rounded-lg shadow-sm border border-border p-6">
+            <div className="bg-background rounded-lg shadow-sm border border-border p-6 hover:shadow-xl hover:border-orange-200 dark:hover:border-orange-800 transition-all duration-300 hover:scale-105 cursor-pointer group">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">
+                  <p className="text-sm font-medium text-muted-foreground group-hover:text-orange-600 transition-colors duration-300">
                     Active Parcels
                   </p>
-                  <p className="text-2xl font-bold text-foreground">
+                  <p className="text-2xl font-bold text-foreground group-hover:text-orange-600 transition-colors duration-300">
                     {stats.pending + stats.inTransit}
                   </p>
                 </div>
-                <div className="p-2 bg-orange-50 dark:bg-orange-950/20 rounded-lg">
-                  <Truck className="h-6 w-6 text-orange-600" />
+                <div className="p-2 bg-orange-50 dark:bg-orange-950/20 rounded-lg group-hover:bg-orange-100 dark:group-hover:bg-orange-900/30 transition-all duration-300">
+                  <Truck className="h-6 w-6 text-orange-600 group-hover:scale-110 transition-transform duration-300" />
                 </div>
               </div>
             </div>
 
-            <div className="bg-background rounded-lg shadow-sm border border-border p-6">
+            <div className="bg-background rounded-lg shadow-sm border border-border p-6 hover:shadow-xl hover:border-blue-200 dark:hover:border-blue-800 transition-all duration-300 hover:scale-105 cursor-pointer group">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">
+                  <p className="text-sm font-medium text-muted-foreground group-hover:text-blue-600 transition-colors duration-300">
                     This Month
                   </p>
-                  <p className="text-2xl font-bold text-foreground">
+                  <p className="text-2xl font-bold text-foreground group-hover:text-blue-600 transition-colors duration-300">
                     {
                       parcels.filter(
                         (p) =>
@@ -329,19 +329,19 @@ export default function SenderStatisticsPage() {
                     }
                   </p>
                 </div>
-                <div className="p-2 bg-blue-50 dark:bg-blue-950/20 rounded-lg">
-                  <Calendar className="h-6 w-6 text-blue-600" />
+                <div className="p-2 bg-blue-50 dark:bg-blue-950/20 rounded-lg group-hover:bg-blue-100 dark:group-hover:bg-blue-900/30 transition-all duration-300">
+                  <Calendar className="h-6 w-6 text-blue-600 group-hover:scale-110 transition-transform duration-300" />
                 </div>
               </div>
             </div>
 
-            <div className="bg-background rounded-lg shadow-sm border border-border p-6">
+            <div className="bg-background rounded-lg shadow-sm border border-border p-6 hover:shadow-xl hover:border-purple-200 dark:hover:border-purple-800 transition-all duration-300 hover:scale-105 cursor-pointer group">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">
+                  <p className="text-sm font-medium text-muted-foreground group-hover:text-purple-600 transition-colors duration-300">
                     Total Spent
                   </p>
-                  <p className="text-2xl font-bold text-foreground">
+                  <p className="text-2xl font-bold text-foreground group-hover:text-purple-600 transition-colors duration-300">
                     ৳
                     {parcels
                       .reduce(
@@ -351,8 +351,8 @@ export default function SenderStatisticsPage() {
                       .toLocaleString()}
                   </p>
                 </div>
-                <div className="p-2 bg-purple-50 dark:bg-purple-950/20 rounded-lg">
-                  <Package className="h-6 w-6 text-purple-600" />
+                <div className="p-2 bg-purple-50 dark:bg-purple-950/20 rounded-lg group-hover:bg-purple-100 dark:group-hover:bg-purple-900/30 transition-all duration-300">
+                  <Package className="h-6 w-6 text-purple-600 group-hover:scale-110 transition-transform duration-300" />
                 </div>
               </div>
             </div>
@@ -361,23 +361,23 @@ export default function SenderStatisticsPage() {
           {/* Detailed Statistics */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Status Distribution */}
-            <div className="bg-background rounded-lg shadow-sm border border-border p-6">
-              <h3 className="text-lg font-semibold text-foreground mb-4">
+            <div className="bg-background rounded-lg shadow-sm border border-border p-6 hover:shadow-xl hover:border-blue-200 dark:hover:border-blue-800 transition-all duration-300 hover:scale-[1.02] cursor-pointer group">
+              <h3 className="text-lg font-semibold text-foreground mb-4 group-hover:text-blue-600 transition-colors duration-300">
                 Status Distribution
               </h3>
               <div className="space-y-4">
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between hover:bg-blue-50/50 dark:hover:bg-blue-950/20 p-2 rounded-lg transition-all duration-300">
                   <div className="flex items-center space-x-2">
-                    <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                    <div className="w-3 h-3 bg-blue-500 rounded-full group-hover:scale-125 transition-transform duration-300"></div>
                     <span className="text-sm text-foreground">Requested</span>
                   </div>
                   <div className="flex items-center space-x-2">
                     <span className="text-sm text-muted-foreground">
                       {stats.requested}
                     </span>
-                    <div className="w-20 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                    <div className="w-20 bg-gray-200 dark:bg-gray-700 rounded-full h-2 overflow-hidden">
                       <div
-                        className="bg-blue-500 h-2 rounded-full"
+                        className="bg-blue-500 h-2 rounded-full transition-all duration-500 hover:bg-blue-600"
                         style={{
                           width:
                             stats.total > 0
@@ -389,18 +389,18 @@ export default function SenderStatisticsPage() {
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between hover:bg-yellow-50/50 dark:hover:bg-yellow-950/20 p-2 rounded-lg transition-all duration-300">
                   <div className="flex items-center space-x-2">
-                    <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                    <div className="w-3 h-3 bg-yellow-500 rounded-full group-hover:scale-125 transition-transform duration-300"></div>
                     <span className="text-sm text-foreground">In Transit</span>
                   </div>
                   <div className="flex items-center space-x-2">
                     <span className="text-sm text-muted-foreground">
                       {stats.inTransit}
                     </span>
-                    <div className="w-20 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                    <div className="w-20 bg-gray-200 dark:bg-gray-700 rounded-full h-2 overflow-hidden">
                       <div
-                        className="bg-yellow-500 h-2 rounded-full"
+                        className="bg-yellow-500 h-2 rounded-full transition-all duration-500 hover:bg-yellow-600"
                         style={{
                           width:
                             stats.total > 0
@@ -412,18 +412,18 @@ export default function SenderStatisticsPage() {
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between hover:bg-green-50/50 dark:hover:bg-green-950/20 p-2 rounded-lg transition-all duration-300">
                   <div className="flex items-center space-x-2">
-                    <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                    <div className="w-3 h-3 bg-green-500 rounded-full group-hover:scale-125 transition-transform duration-300"></div>
                     <span className="text-sm text-foreground">Delivered</span>
                   </div>
                   <div className="flex items-center space-x-2">
                     <span className="text-sm text-muted-foreground">
                       {stats.delivered}
                     </span>
-                    <div className="w-20 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                    <div className="w-20 bg-gray-200 dark:bg-gray-700 rounded-full h-2 overflow-hidden">
                       <div
-                        className="bg-green-500 h-2 rounded-full"
+                        className="bg-green-500 h-2 rounded-full transition-all duration-500 hover:bg-green-600"
                         style={{
                           width:
                             stats.total > 0
@@ -438,16 +438,16 @@ export default function SenderStatisticsPage() {
             </div>
 
             {/* Monthly Breakdown */}
-            <div className="bg-background rounded-lg shadow-sm border border-border p-6">
-              <h3 className="text-lg font-semibold text-foreground mb-4">
+            <div className="bg-background rounded-lg shadow-sm border border-border p-6 hover:shadow-xl hover:border-purple-200 dark:hover:border-purple-800 transition-all duration-300 hover:scale-[1.02] cursor-pointer group">
+              <h3 className="text-lg font-semibold text-foreground mb-4 group-hover:text-purple-600 transition-colors duration-300">
                 Monthly Overview
               </h3>
               <div className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-muted-foreground">
+                <div className="flex justify-between items-center hover:bg-purple-50/50 dark:hover:bg-purple-950/20 p-3 rounded-lg transition-all duration-300 group/item">
+                  <span className="text-sm text-muted-foreground group-hover/item:text-purple-600 transition-colors duration-300">
                     Parcels this month
                   </span>
-                  <span className="text-lg font-semibold text-foreground">
+                  <span className="text-lg font-semibold text-foreground group-hover/item:text-purple-600 transition-colors duration-300">
                     {
                       parcels.filter(
                         (p) =>
@@ -457,11 +457,11 @@ export default function SenderStatisticsPage() {
                     }
                   </span>
                 </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-muted-foreground">
+                <div className="flex justify-between items-center hover:bg-purple-50/50 dark:hover:bg-purple-950/20 p-3 rounded-lg transition-all duration-300 group/item">
+                  <span className="text-sm text-muted-foreground group-hover/item:text-purple-600 transition-colors duration-300">
                     Average per week
                   </span>
-                  <span className="text-lg font-semibold text-foreground">
+                  <span className="text-lg font-semibold text-foreground group-hover/item:text-purple-600 transition-colors duration-300">
                     {Math.round(
                       parcels.filter(
                         (p) =>
@@ -471,11 +471,11 @@ export default function SenderStatisticsPage() {
                     )}
                   </span>
                 </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-muted-foreground">
+                <div className="flex justify-between items-center hover:bg-purple-50/50 dark:hover:bg-purple-950/20 p-3 rounded-lg transition-all duration-300 group/item">
+                  <span className="text-sm text-muted-foreground group-hover/item:text-purple-600 transition-colors duration-300">
                     Total revenue this month
                   </span>
-                  <span className="text-lg font-semibold text-foreground">
+                  <span className="text-lg font-semibold text-foreground group-hover/item:text-purple-600 transition-colors duration-300">
                     ৳
                     {parcels
                       .filter(
@@ -496,12 +496,12 @@ export default function SenderStatisticsPage() {
 
           {/* Empty State */}
           {stats.total === 0 && (
-            <div className="bg-background rounded-lg shadow-sm border border-border p-8 text-center">
-              <BarChart3 className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-              <h3 className="text-lg font-medium text-foreground mb-2">
+            <div className="bg-background rounded-lg shadow-sm border border-border p-8 text-center hover:shadow-xl hover:border-blue-200 dark:hover:border-blue-800 transition-all duration-300 hover:scale-[1.02] cursor-pointer group">
+              <BarChart3 className="mx-auto h-12 w-12 text-muted-foreground mb-4 group-hover:text-blue-600 group-hover:scale-110 transition-all duration-300" />
+              <h3 className="text-lg font-medium text-foreground mb-2 group-hover:text-blue-600 transition-colors duration-300">
                 No statistics available
               </h3>
-              <p className="text-muted-foreground mb-4">
+              <p className="text-muted-foreground mb-4 group-hover:text-blue-500 transition-colors duration-300">
                 Start creating parcels to see your delivery statistics and
                 analytics.
               </p>
