@@ -1,5 +1,3 @@
-"use client";
-
 import ThemeToggle from "@/components/DarkLightThemeSwitcher";
 import { useAuth } from "@/hooks/useAuth";
 import {
@@ -21,11 +19,19 @@ import {
   X,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+
+interface NavigationItem {
+  href: string;
+  label: string;
+  icon: any;
+  onClick?: () => void;
+}
 
 export default function Navigation() {
   const { user, logout } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
@@ -128,8 +134,17 @@ export default function Navigation() {
   };
 
   const handleLogout = async () => {
-    await logout();
-    setIsUserMenuOpen(false);
+    try {
+      await logout();
+      setIsUserMenuOpen(false);
+      setIsMobileMenuOpen(false);
+      // Navigate to home page after logout
+      navigate("/");
+    } catch (error) {
+      console.error("Logout error:", error);
+      // Navigate to home even if logout fails
+      navigate("/");
+    }
   };
 
   // Close user menu and notifications when clicking outside
@@ -162,9 +177,18 @@ export default function Navigation() {
         element.scrollIntoView({ behavior: "smooth" });
       }
     }
+    // Close all menus after navigation
+    setIsMobileMenuOpen(false);
+    setIsUserMenuOpen(false);
   };
 
-  const navigationItems =
+  const handleLinkClick = () => {
+    // Close all menus when navigating via Link
+    setIsMobileMenuOpen(false);
+    setIsUserMenuOpen(false);
+  };
+
+  const navigationItems: NavigationItem[] =
     user?.role === "admin"
       ? [
           { href: "/admin", label: "Dashboard", icon: BarChart3 },
@@ -183,7 +207,6 @@ export default function Navigation() {
           },
           { href: "/track", label: "Track Parcel", icon: Search },
           { href: "/sender/statistics", label: "Statistics", icon: BarChart3 },
-          { href: "/contact", label: "Contact", icon: MessageSquare },
         ]
       : user?.role === "receiver"
       ? [
@@ -199,9 +222,14 @@ export default function Navigation() {
 
   // Removed dashboardItems as it's now handled in navigationItems
 
-  const userMenuItems =
+  const userMenuItems: NavigationItem[] =
     user?.role === "admin"
       ? [{ href: "/profile", label: "Profile", icon: User }]
+      : user?.role === "sender"
+      ? [
+          { href: "/profile", label: "Profile", icon: User },
+          { href: "/status-history", label: "Status History", icon: FileText },
+        ]
       : [
           { href: "/profile", label: "Profile", icon: User },
           { href: "/status-history", label: "Status History", icon: FileText },
@@ -214,7 +242,11 @@ export default function Navigation() {
         <div className="flex justify-between h-16">
           {/* Logo and Brand */}
           <div className="flex items-center">
-            <Link to="/" className="flex items-center space-x-3 group">
+            <Link
+              to="/"
+              className="flex items-center space-x-3 group"
+              onClick={handleLinkClick}
+            >
               <div className="relative">
                 <div className="w-10 h-10 bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
                   <Package className="h-6 w-6 text-white" />
@@ -391,9 +423,6 @@ export default function Navigation() {
                         <div className="text-sm font-semibold text-foreground">
                           {user?.name}
                         </div>
-                        <div className="text-xs text-muted-foreground capitalize">
-                          {user?.role}
-                        </div>
                       </div>
                     </div>
                     <ChevronDown
@@ -418,11 +447,6 @@ export default function Navigation() {
                             <div className="text-sm text-muted-foreground truncate">
                               {user?.email}
                             </div>
-                            <div className="mt-1">
-                              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium text-white bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 shadow-sm">
-                                {user?.role}
-                              </span>
-                            </div>
                           </div>
                         </div>
                       </div>
@@ -430,6 +454,7 @@ export default function Navigation() {
                       <div className="py-2">
                         {userMenuItems.map((item) => {
                           const Icon = item.icon;
+
                           return (
                             <Link
                               key={item.href}
@@ -559,9 +584,6 @@ export default function Navigation() {
                         <div className="text-xs text-muted-foreground truncate">
                           {user?.email}
                         </div>
-                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium text-white bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 capitalize mt-1 shadow-sm">
-                          {user?.role}
-                        </span>
                       </div>
                     </div>
                   </div>
@@ -569,6 +591,7 @@ export default function Navigation() {
                   <div className="space-y-1 mt-4">
                     {userMenuItems.map((item) => {
                       const Icon = item.icon;
+
                       return (
                         <Link
                           key={item.href}

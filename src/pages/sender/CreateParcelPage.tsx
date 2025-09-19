@@ -555,11 +555,7 @@ export default function CreateParcelPage() {
                         code area for accurate delivery.
                       </p>
                     </div>
-                    <p className="text-sm text-blue-700 dark:text-blue-300">
-                      💡 <strong>Select location step by step:</strong> First
-                      choose your city, then select the division, and finally
-                      pick the postal code area.
-                    </p>
+                    {/* Cascading Dropdowns for City, Division, Postal Code */}
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
