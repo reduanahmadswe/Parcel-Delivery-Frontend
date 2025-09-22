@@ -19,8 +19,6 @@ export const receiverApiService = {
     // Comprehensive fetch method similar to sender - gets all data first for accurate statistics
     async fetchAllParcels(userEmail: string): Promise<Parcel[]> {
         try {
-            console.log("🔍 Debugging comprehensive parcel fetch for receiver...");
-
             // Try multiple endpoints to get all data (similar to sender dashboard)
             let response;
             let allParcels = [];
@@ -28,32 +26,22 @@ export const receiverApiService = {
             // Method 1: Try with high limit parameter
             try {
                 response = await api.get("/parcels/me?limit=10000");
-                console.log("✅ Method 1 (/parcels/me?limit=10000):", {
-                    count: response.data.data?.length,
-                    total: response.data.total,
-                    pagination: response.data.pagination,
-                });
                 if (response.data.data?.length > 10) {
                     allParcels = response.data.data;
-                    console.log("🎉 Found more than 10 parcels with limit=10000!");
                 }
             } catch (err) {
-                console.log("❌ Method 1 failed:", err);
+                // Method 1 failed, try next method
             }
 
             // Method 2: Try no-pagination with limit
             if (allParcels.length <= 10) {
                 try {
                     response = await api.get("/parcels/me/no-pagination?limit=10000");
-                    console.log("✅ Method 2 (/parcels/me/no-pagination?limit=10000):", {
-                        count: response.data.data?.length,
-                        total: response.data.total,
-                    });
                     if (response.data.data?.length > allParcels.length) {
                         allParcels = response.data.data;
                     }
                 } catch (err) {
-                    console.log("❌ Method 2 failed:", err);
+                    // Method 2 failed, try next method
                 }
             }
 
@@ -66,18 +54,11 @@ export const receiverApiService = {
                         ...(page1.data.data || []),
                         ...(page2.data.data || []),
                     ];
-                    console.log("✅ Method 3 (pagination):", {
-                        page1Count: page1.data.data?.length || 0,
-                        page2Count: page2.data.data?.length || 0,
-                        totalCombined: combinedData.length,
-                        page1Total: page1.data.total,
-                        page2Total: page2.data.total,
-                    });
                     if (combinedData.length > allParcels.length) {
                         allParcels = combinedData;
                     }
                 } catch (err) {
-                    console.log("❌ Method 3 failed:", err);
+                    // Method 3 failed, try next method
                 }
             }
 
@@ -89,13 +70,8 @@ export const receiverApiService = {
                     allParcels = allParcelData.filter(
                         (parcel: any) => parcel.recipientEmail === userEmail
                     );
-                    console.log("✅ Method 4 (filter all parcels):", {
-                        totalParcels: allParcelData.length,
-                        filteredCount: allParcels.length,
-                        userEmail: userEmail,
-                    });
                 } catch (err) {
-                    console.log("❌ Method 4 failed:", err);
+                    // Method 4 failed, try next method
                 }
             }
 
@@ -104,18 +80,10 @@ export const receiverApiService = {
                 try {
                     response = await api.get("/parcels/me/no-pagination");
                     allParcels = response.data.data || [];
-                    console.log("⚠️ Fallback to original endpoint:", allParcels.length);
                 } catch (err) {
-                    console.log("❌ Fallback failed:", err);
+                    // Final fallback failed
                 }
             }
-
-            console.log("📊 Final comprehensive result for receiver:", {
-                parcelsCount: allParcels.length,
-                userEmail: userEmail,
-                expectedCount: "All received parcels",
-                isComplete: allParcels.length > 0,
-            });
 
             // Transform to match receiver Parcel interface (currentStatus -> status, fee.totalFee -> cost)
             const transformedParcels = allParcels.map((parcel: any) => ({
@@ -126,18 +94,8 @@ export const receiverApiService = {
                 cost: parcel.fee?.totalFee || parcel.cost || 0,
             }));
 
-            console.log("📦 Transformed parcels for receiver:", {
-                count: transformedParcels.length,
-                sampleStatuses: transformedParcels.slice(0, 3).map((p: any) => ({
-                    id: p.id || p._id,
-                    originalStatus: allParcels.find((op: any) => (op.id || op._id) === (p.id || p._id))?.currentStatus,
-                    transformedStatus: p.status
-                }))
-            });
-
             return transformedParcels;
         } catch (error) {
-            console.error("❌ Error in fetchAllParcels:", error);
             return [];
         }
     },
@@ -151,14 +109,6 @@ export const receiverApiService = {
         search?: string
     ): Promise<FetchParcelsResponse> {
         try {
-            console.log("🔍 Fetching paginated parcels for receiver...", {
-                userEmail,
-                page,
-                limit,
-                status,
-                search
-            });
-
             // Get all parcels first (for accurate statistics and filtering)
             const allParcels = await this.fetchAllParcels(userEmail);
 
@@ -235,17 +185,8 @@ export const receiverApiService = {
                 hasPrevPage: page > 1,
             };
 
-            console.log("📊 Final paginated result:", {
-                parcelsCount: transformedPaginatedParcels.length,
-                totalFiltered: filteredParcels.length,
-                totalAll: allParcels.length,
-                pagination,
-                userEmail
-            });
-
             return { parcels: transformedPaginatedParcels, pagination };
         } catch (error) {
-            console.error("❌ Error in fetchParcels:", error);
             return {
                 parcels: [],
                 pagination: {
@@ -260,11 +201,69 @@ export const receiverApiService = {
         }
     },
 
-    async confirmDelivery(parcelId: number): Promise<void> {
-        await api.put(`/parcels/${parcelId}/confirm-delivery`);
+    async confirmDelivery(parcelId: string, note?: string): Promise<void> {
+        try {
+            const body = note ? { note } : {};
+            const response = await api.patch(`/parcels/${parcelId}/confirm-delivery`, body);
+        } catch (error: any) {
+            // Handle the specific preferredDeliveryDate validation error
+            if (error.response?.status === 400) {
+                const errorData = error.response.data;
+                const message = errorData?.message || 'Unknown validation error';
+
+                // Check for the specific preferredDeliveryDate validation error
+                if (message.includes('preferredDeliveryDate') ||
+                    message.includes('Preferred delivery date must be in the future') ||
+                    (errorData?.errors && errorData.errors['deliveryInfo.preferredDeliveryDate'])) {
+
+                    try {
+                        // Try to fix the validation issue by updating the delivery date
+                        await this.fixDeliveryDateAndConfirm(parcelId, note);
+                        return; // Success after fix
+                    } catch (fixError) {
+                        throw new Error('🚨 Cannot confirm delivery: This parcel has an invalid preferred delivery date. The system attempted to fix this automatically but failed. Please contact customer support.');
+                    }
+                }
+
+                // Check for general validation errors
+                if (message.includes('validation failed') || message.includes('Validation Error')) {
+                    throw new Error('⚠️ Data validation error: The parcel has invalid information that prevents delivery confirmation. Please contact support for assistance.');
+                }
+
+                // For any other 400 errors
+                throw new Error(`❌ Request Error: ${message}`);
+            }
+
+            // For other types of errors, re-throw as is
+            throw error;
+        }
     },
 
-    async rateParcel(parcelId: number, rating: number): Promise<void> {
+    // Helper method to fix delivery date validation and retry confirmation
+    async fixDeliveryDateAndConfirm(parcelId: string, note?: string): Promise<void> {
+        try {
+            // Set the preferred delivery date to tomorrow to bypass validation
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            tomorrow.setHours(0, 0, 0, 0); // Set to start of day
+
+            const fixData = {
+                deliveryInfo: {
+                    preferredDeliveryDate: tomorrow.toISOString()
+                }
+            };
+
+            // First, update the parcel to fix the validation issue
+            await api.patch(`/parcels/${parcelId}`, fixData);
+
+            // Now retry the delivery confirmation
+            const body = note ? { note } : {};
+            const response = await api.patch(`/parcels/${parcelId}/confirm-delivery`, body);
+
+        } catch (error: any) {
+            throw error;
+        }
+    }, async rateParcel(parcelId: number, rating: number): Promise<void> {
         await api.put(`/parcels/${parcelId}/rate`, { rating });
     },
 

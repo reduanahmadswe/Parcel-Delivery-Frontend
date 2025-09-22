@@ -79,11 +79,9 @@ export default function ReceiverDashboard() {
 
       try {
         setIsLoading(true);
-        console.log("Fetching parcels for user:", user.email);
 
         // First, get ALL parcels for accurate statistics (like sender does)
         const allParcels = await receiverApiService.fetchAllParcels(user.email);
-        console.log("All parcels for statistics:", allParcels);
 
         // Calculate statistics from ALL parcels
         const enhancedAllParcels =
@@ -103,18 +101,14 @@ export default function ReceiverDashboard() {
           searchTerm
         );
 
-        console.log("Paginated parcel data received:", result);
-
         // Enhance with mock data for demo
         const enhancedParcels = receiverUtils.enhanceParcelsWithMockData(
           result.parcels
         );
-        console.log("Enhanced parcel data:", enhancedParcels);
 
         setParcels(enhancedParcels);
         setPagination(result.pagination);
       } catch (error) {
-        console.error("Error fetching parcels:", error);
         const errorMsg =
           error instanceof Error ? error.message : "Failed to fetch parcels";
         const statusCode = (error as { response?: { status?: number } })
@@ -143,16 +137,21 @@ export default function ReceiverDashboard() {
     toast.success("Data refreshed successfully");
   };
 
-  const handleConfirmDelivery = async (parcelId: number) => {
+  const handleConfirmDelivery = async (parcelId: string, note?: string) => {
     try {
       setIsConfirming(true);
-      await receiverApiService.confirmDelivery(parcelId);
+      await receiverApiService.confirmDelivery(parcelId, note);
       toast.success("Delivery confirmed successfully! 🎉");
-      fetchParcels(currentPage);
+
+      // Only refresh data and close modal on success
+      await fetchParcels(currentPage);
       setSelectedParcel(null);
-    } catch (error) {
-      console.error("Error confirming delivery:", error);
-      toast.error("Failed to confirm delivery");
+    } catch (error: any) {
+      // Show specific error message if available
+      const errorMessage = error.message || "Failed to confirm delivery";
+      toast.error(errorMessage);
+
+      // Keep the modal open and don't refresh data on error so user can retry
     } finally {
       setIsConfirming(false);
     }
@@ -172,11 +171,6 @@ export default function ReceiverDashboard() {
       fetchParcels(1);
     }
   }, [user, loading, fetchParcels]);
-
-  // Debug selectedParcel state changes
-  useEffect(() => {
-    console.log("selectedParcel state changed to:", selectedParcel);
-  }, [selectedParcel]);
 
   // Since we're using server-side pagination, we don't need client-side filtering
   const displayParcels = parcels;
@@ -276,7 +270,6 @@ export default function ReceiverDashboard() {
         <ParcelList
           parcels={displayParcels}
           onViewDetails={(parcel) => {
-            console.log("Setting selected parcel:", parcel);
             setSelectedParcel(parcel);
           }}
           onConfirmDelivery={handleConfirmDelivery}
@@ -305,7 +298,6 @@ export default function ReceiverDashboard() {
         <ParcelDetailsModal
           parcel={selectedParcel}
           onClose={() => {
-            console.log("Closing modal");
             setSelectedParcel(null);
           }}
           onConfirmDelivery={handleConfirmDelivery}

@@ -26,7 +26,7 @@ import StatusHistoryView from "./StatusHistoryView";
 interface ParcelDetailsModalProps {
   parcel: Parcel | null;
   onClose: () => void;
-  onConfirmDelivery: (parcelId: number) => void;
+  onConfirmDelivery: (parcelId: string, note?: string) => void;
   isConfirming: boolean;
 }
 
@@ -37,20 +37,57 @@ const ParcelDetailsModal: React.FC<ParcelDetailsModalProps> = ({
   isConfirming,
 }) => {
   const [showStatusHistory, setShowStatusHistory] = useState(false);
-
-  // Debug logging
-  console.log("ParcelDetailsModal rendered with parcel:", parcel);
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [deliveryNote, setDeliveryNote] = useState("");
 
   if (!parcel) {
-    console.log("No parcel provided, modal not showing");
     return null;
   }
-
-  console.log("Rendering modal for parcel:", parcel.trackingId);
 
   const handleRateParcel = (rating: number) => {
     toast.success(`Thank you for rating ${rating} stars!`);
     // Here you would typically update the parcel rating via API
+  };
+
+  const isPreferredDateInPast = () => {
+    if (!parcel.deliveryInfo?.preferredDeliveryDate) return false;
+    const preferredDate = new Date(parcel.deliveryInfo.preferredDeliveryDate);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return preferredDate < today;
+  };
+
+  const handleConfirmDeliveryClick = () => {
+    setShowConfirmDialog(true);
+  };
+
+  const handleConfirmDeliverySubmit = () => {
+    // Check if there might be validation issues
+    if (parcel.deliveryInfo?.preferredDeliveryDate) {
+      const preferredDate = new Date(parcel.deliveryInfo.preferredDeliveryDate);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0); // Set to start of day for comparison
+
+      if (preferredDate < today) {
+        // Show warning but still allow confirmation
+        toast(
+          "⚠️ Note: This parcel has a past preferred delivery date. Proceeding with confirmation...",
+          {
+            icon: "⚠️",
+            duration: 4000,
+          }
+        );
+      }
+    }
+
+    onConfirmDelivery(parcel._id, deliveryNote.trim() || undefined);
+    setShowConfirmDialog(false);
+    setDeliveryNote("");
+  };
+
+  const handleCancelConfirm = () => {
+    setShowConfirmDialog(false);
+    setDeliveryNote("");
   };
 
   return (
@@ -59,7 +96,6 @@ const ParcelDetailsModal: React.FC<ParcelDetailsModalProps> = ({
       onClick={(e) => {
         // Close modal when clicking backdrop
         if (e.target === e.currentTarget) {
-          console.log("Closing modal via backdrop click");
           onClose();
         }
       }}
@@ -79,7 +115,6 @@ const ParcelDetailsModal: React.FC<ParcelDetailsModalProps> = ({
           </div>
           <button
             onClick={() => {
-              console.log("X button clicked, closing modal");
               onClose();
             }}
             className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
@@ -108,12 +143,34 @@ const ParcelDetailsModal: React.FC<ParcelDetailsModalProps> = ({
                 </div>
                 {parcel.deliveryInfo?.preferredDeliveryDate &&
                   parcel.currentStatus !== "delivered" && (
-                    <div className="flex items-center gap-2 text-sm text-orange-600 dark:text-orange-400">
-                      <Truck className="h-4 w-4" />
-                      <span>
-                        Expected:{" "}
-                        {formatDate(parcel.deliveryInfo.preferredDeliveryDate)}
-                      </span>
+                    <div
+                      className={`flex items-center gap-2 text-sm ${
+                        isPreferredDateInPast()
+                          ? "text-red-600 dark:text-red-400"
+                          : "text-orange-600 dark:text-orange-400"
+                      }`}
+                    >
+                      {isPreferredDateInPast() ? (
+                        <div className="flex items-center gap-2">
+                          <span className="text-red-500">⚠️</span>
+                          <span>
+                            Past delivery date:{" "}
+                            {formatDate(
+                              parcel.deliveryInfo.preferredDeliveryDate
+                            )}
+                          </span>
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-2">
+                          <Truck className="h-4 w-4" />
+                          <span>
+                            Expected:{" "}
+                            {formatDate(
+                              parcel.deliveryInfo.preferredDeliveryDate
+                            )}
+                          </span>
+                        </div>
+                      )}
                     </div>
                   )}
               </div>
@@ -490,7 +547,7 @@ const ParcelDetailsModal: React.FC<ParcelDetailsModalProps> = ({
             </button>
             {parcel.currentStatus === "in-transit" && (
               <button
-                onClick={() => onConfirmDelivery(parseInt(parcel._id))}
+                onClick={handleConfirmDeliveryClick}
                 disabled={isConfirming}
                 className="px-6 py-3 text-sm font-medium bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg hover:from-green-700 hover:to-green-800 disabled:opacity-50 transition-all shadow-lg hover:shadow-xl"
               >
@@ -500,6 +557,70 @@ const ParcelDetailsModal: React.FC<ParcelDetailsModalProps> = ({
           </div>
         </div>
       </div>
+
+      {/* Confirmation Dialog */}
+      {showConfirmDialog && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-[60]">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl max-w-md w-full shadow-2xl border border-gray-200 dark:border-gray-700">
+            <div className="p-6">
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                <Package className="h-6 w-6 text-green-600" />
+                Confirm Delivery Receipt
+              </h3>
+
+              <p className="text-gray-600 dark:text-gray-400 mb-4">
+                Are you sure you want to confirm receipt of parcel{" "}
+                <strong>#{parcel.trackingId}</strong>?
+              </p>
+
+              {isPreferredDateInPast() && (
+                <div className="mb-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
+                  <div className="flex items-center gap-2 text-yellow-800 dark:text-yellow-200">
+                    <span>⚠️</span>
+                    <span className="text-sm font-medium">
+                      Note: This parcel has a past preferred delivery date. You
+                      may still confirm delivery.
+                    </span>
+                  </div>
+                </div>
+              )}
+
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Add a note (optional):
+                </label>
+                <textarea
+                  value={deliveryNote}
+                  onChange={(e) => setDeliveryNote(e.target.value)}
+                  placeholder="e.g., Package received in excellent condition"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent dark:bg-gray-700 dark:text-white resize-none"
+                  rows={3}
+                  maxLength={200}
+                />
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  {deliveryNote.length}/200 characters
+                </p>
+              </div>
+
+              <div className="flex gap-3">
+                <button
+                  onClick={handleCancelConfirm}
+                  className="flex-1 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleConfirmDeliverySubmit}
+                  disabled={isConfirming}
+                  className="flex-1 px-4 py-2 text-sm font-medium bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg hover:from-green-700 hover:to-green-800 disabled:opacity-50 transition-all shadow-lg hover:shadow-xl"
+                >
+                  {isConfirming ? "Confirming..." : "✅ Confirm Receipt"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

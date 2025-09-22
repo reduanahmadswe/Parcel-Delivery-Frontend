@@ -26,7 +26,7 @@ interface PaginationInfo {
 interface ParcelListProps {
   parcels: Parcel[];
   onViewDetails: (parcel: Parcel) => void;
-  onConfirmDelivery: (parcelId: number) => void;
+  onConfirmDelivery: (parcelId: string, note?: string) => void;
   isConfirming: boolean;
   // Pagination props
   pagination?: PaginationInfo;
@@ -209,10 +209,6 @@ const ParcelList: React.FC<ParcelListProps> = ({
                   <div className="flex flex-col gap-2 ml-4">
                     <button
                       onClick={() => {
-                        console.log(
-                          "Details button clicked for parcel:",
-                          parcel
-                        );
                         onViewDetails(parcel);
                       }}
                       className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/40 rounded-lg transition-colors"
@@ -222,7 +218,9 @@ const ParcelList: React.FC<ParcelListProps> = ({
                     </button>
                     {parcel.currentStatus === "in-transit" && (
                       <button
-                        onClick={() => onConfirmDelivery(parseInt(parcel._id))}
+                        onClick={() => {
+                          onConfirmDelivery(parcel._id);
+                        }}
                         disabled={isConfirming}
                         className={`inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-all shadow-md hover:shadow-lg disabled:opacity-50 ${
                           parcel.currentStatus === "in-transit"

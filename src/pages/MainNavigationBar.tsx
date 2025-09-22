@@ -118,14 +118,33 @@ export default function Navigation() {
     )
       return true;
 
+    // For receiver routes, use exact matching to prevent overlap
+    if (href === "/receiver" && location.pathname === "/receiver") return true;
+    if (href === "/receiver/track" && location.pathname === "/receiver/track")
+      return true;
+    if (
+      href === "/receiver/history" &&
+      location.pathname === "/receiver/history"
+    )
+      return true;
+    if (
+      href === "/receiver/profile" &&
+      location.pathname === "/receiver/profile"
+    )
+      return true;
+
     // Exact match for contact page
     if (href === "/contact" && location.pathname === "/contact") return true;
 
-    // For other routes, use startsWith but exclude sender routes to prevent conflicts
+    // Exact match for track page
+    if (href === "/track" && location.pathname === "/track") return true;
+
+    // For other routes, use startsWith but exclude sender and receiver routes to prevent conflicts
     if (
       href !== "/" &&
       href !== "/admin" &&
       !href.startsWith("/sender") &&
+      !href.startsWith("/receiver") &&
       location.pathname.startsWith(href)
     )
       return true;

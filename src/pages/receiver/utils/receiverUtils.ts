@@ -7,15 +7,6 @@ export const receiverUtils = {
         const now = new Date();
         const thisMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
 
-        // Debug logging to verify data structure
-        console.log("📊 Calculating receiver stats:", {
-            totalParcels: parcels.length,
-            sampleStatuses: parcels.slice(0, 5).map(p => ({
-                id: p._id || 'no-id',
-                status: p.currentStatus || 'no-status'
-            }))
-        });
-
         // Use sender's exact status mapping approach
         // Note: Receiver Parcel interface uses 'status' field instead of 'currentStatus'
         const getStatusCount = (statusValues: string[]) => {
@@ -23,7 +14,6 @@ export const receiverUtils = {
                 const status = parcel.currentStatus || '';
                 return statusValues.includes(status);
             });
-            console.log(`📈 Status count for [${statusValues.join(', ')}]:`, matches.length);
             return matches.length;
         };
 
@@ -45,22 +35,6 @@ export const receiverUtils = {
         const successRate = nonCancelled > 0 ? Math.round((delivered / nonCancelled) * 100) : 0;
 
         const total = parcels.length;
-
-        console.log("📊 Receiver Stats Calculation (Sender-style):", {
-            total,
-            pending,
-            inTransit,
-            delivered,
-            cancelled,
-            thisMonth: thisMonthDelivered,
-            successRate,
-            statusBreakdown: parcels.map(p => ({
-                id: p._id,
-                status: p.currentStatus,
-                trackingNumber: p.trackingId,
-                createdAt: p.createdAt
-            }))
-        });
 
         return {
             total: total,
