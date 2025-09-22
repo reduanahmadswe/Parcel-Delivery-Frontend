@@ -1,12 +1,13 @@
 "use client";
 
 import { useAuth } from "@/hooks/useAuth";
-import { Download, RefreshCw } from "lucide-react";
+import { BarChart3, Download, Package, RefreshCw, Truck } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 
+import { Parcel } from "@/types/GlobalTypeDefinitions";
 import { receiverApiService } from "./services/receiverApi";
-import { Parcel, SearchFilters } from "./types";
+import { SearchFilters } from "./types";
 import { receiverUtils } from "./utils/receiverUtils";
 
 import ParcelDetailsModal from "./components/ParcelDetailsModal";
@@ -23,6 +24,10 @@ export default function ReceiverDashboard() {
     inTransit: 0,
     delivered: 0,
     cancelled: 0,
+    thisMonth: 0,
+    averagePerWeek: 0,
+    successRate: 0,
+    totalValue: 0,
   });
   const [filters, setFilters] = useState<SearchFilters>({
     filter: "all",
@@ -35,33 +40,105 @@ export default function ReceiverDashboard() {
   const [isConfirming, setIsConfirming] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
-  const fetchParcels = useCallback(async () => {
-    if (!user?.email) return;
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    totalPages: 1,
+    totalItems: 0,
+    itemsPerPage: 5,
+    hasNextPage: false,
+    hasPrevPage: false,
+  });
+  const [itemsPerPage] = useState(5);
 
-    try {
-      setIsLoading(true);
-      let parcelData = await receiverApiService.fetchParcels(user.email);
+  // Debounced search term
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
 
-      // Enhance with mock data for demo
-      parcelData = receiverUtils.enhanceParcelsWithMockData(parcelData);
+  // Debounce search term
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchTerm(filters.searchTerm);
+    }, 300);
 
-      setParcels(parcelData);
-      setStats(receiverUtils.calculateStats(parcelData));
-    } catch (error) {
-      console.error("Error fetching parcels:", error);
-      const errorMsg =
-        error instanceof Error ? error.message : "Failed to fetch parcels";
-      const statusCode = (error as { response?: { status?: number } })?.response
-        ?.status;
-      toast.error(`Error ${statusCode ? `(${statusCode})` : ""}: ${errorMsg}`);
-    } finally {
-      setIsLoading(false);
+    return () => clearTimeout(timer);
+  }, [filters.searchTerm]);
+
+  // Refetch when filters change
+  useEffect(() => {
+    if (currentPage === 1) {
+      fetchParcels(1);
+    } else {
+      setCurrentPage(1);
     }
-  }, [user?.email]);
+  }, [filters.filter, debouncedSearchTerm]);
+
+  const fetchParcels = useCallback(
+    async (page: number = 1) => {
+      if (!user?.email) return;
+
+      try {
+        setIsLoading(true);
+        console.log("Fetching parcels for user:", user.email);
+
+        // First, get ALL parcels for accurate statistics (like sender does)
+        const allParcels = await receiverApiService.fetchAllParcels(user.email);
+        console.log("All parcels for statistics:", allParcels);
+
+        // Calculate statistics from ALL parcels
+        const enhancedAllParcels =
+          receiverUtils.enhanceParcelsWithMockData(allParcels);
+        setStats(receiverUtils.calculateStats(enhancedAllParcels));
+
+        // Then get paginated data for display
+        const filterStatus =
+          filters.filter === "all" ? undefined : filters.filter;
+        const searchTerm = debouncedSearchTerm || undefined;
+
+        const result = await receiverApiService.fetchParcels(
+          user.email,
+          page,
+          itemsPerPage,
+          filterStatus,
+          searchTerm
+        );
+
+        console.log("Paginated parcel data received:", result);
+
+        // Enhance with mock data for demo
+        const enhancedParcels = receiverUtils.enhanceParcelsWithMockData(
+          result.parcels
+        );
+        console.log("Enhanced parcel data:", enhancedParcels);
+
+        setParcels(enhancedParcels);
+        setPagination(result.pagination);
+      } catch (error) {
+        console.error("Error fetching parcels:", error);
+        const errorMsg =
+          error instanceof Error ? error.message : "Failed to fetch parcels";
+        const statusCode = (error as { response?: { status?: number } })
+          ?.response?.status;
+        toast.error(
+          `Error ${statusCode ? `(${statusCode})` : ""}: ${errorMsg}`
+        );
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [user?.email, filters.filter, debouncedSearchTerm, itemsPerPage]
+  );
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage >= 1 && newPage <= pagination.totalPages) {
+      setCurrentPage(newPage);
+      fetchParcels(newPage);
+    }
+  };
 
   const refreshData = async () => {
     setIsRefreshing(true);
-    await fetchParcels();
+    await fetchParcels(currentPage);
     setIsRefreshing(false);
     toast.success("Data refreshed successfully");
   };
@@ -71,7 +148,7 @@ export default function ReceiverDashboard() {
       setIsConfirming(true);
       await receiverApiService.confirmDelivery(parcelId);
       toast.success("Delivery confirmed successfully! 🎉");
-      fetchParcels();
+      fetchParcels(currentPage);
       setSelectedParcel(null);
     } catch (error) {
       console.error("Error confirming delivery:", error);
@@ -82,11 +159,7 @@ export default function ReceiverDashboard() {
   };
 
   const handleExportParcels = () => {
-    const filteredParcels = receiverUtils.filterAndSortParcels(
-      parcels,
-      filters
-    );
-    const csvData = receiverUtils.generateExportData(filteredParcels);
+    const csvData = receiverUtils.generateExportData(parcels);
     receiverUtils.downloadCSV(
       csvData,
       `parcels_${new Date().toISOString().split("T")[0]}.csv`
@@ -96,12 +169,17 @@ export default function ReceiverDashboard() {
 
   useEffect(() => {
     if (!loading && user) {
-      fetchParcels();
+      fetchParcels(1);
     }
   }, [user, loading, fetchParcels]);
 
-  // Get filtered and sorted parcels
-  const filteredParcels = receiverUtils.filterAndSortParcels(parcels, filters);
+  // Debug selectedParcel state changes
+  useEffect(() => {
+    console.log("selectedParcel state changed to:", selectedParcel);
+  }, [selectedParcel]);
+
+  // Since we're using server-side pagination, we don't need client-side filtering
+  const displayParcels = parcels;
 
   if (loading || isLoading) {
     return (
@@ -121,42 +199,62 @@ export default function ReceiverDashboard() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-red-600 to-red-700 dark:from-red-400 dark:to-red-500 bg-clip-text text-transparent">
-                Receiver Dashboard
-              </h1>
-              <p className="mt-2 text-gray-600 dark:text-gray-400 text-lg">
-                Welcome back,{" "}
-                <span className="font-semibold text-gray-900 dark:text-white">
-                  {user?.name}
-                </span>
-              </p>
-            </div>
-            <div className="flex items-center space-x-3">
-              <button
-                onClick={refreshData}
-                disabled={isRefreshing}
-                className="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white disabled:opacity-50"
-              >
-                <RefreshCw
-                  className={`w-4 h-4 ${isRefreshing ? "animate-spin" : ""}`}
-                />
-                Refresh
-              </button>
-              <button
-                onClick={handleExportParcels}
-                className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white rounded-lg shadow-lg hover:shadow-xl transition-all duration-200"
-              >
-                <Download className="w-4 h-4" />
-                Export
-              </button>
+          <div className="bg-gradient-to-r from-red-50/50 via-transparent to-pink-50/50 dark:from-red-950/20 dark:to-pink-950/20 border border-gray-200 dark:border-gray-700 rounded-xl p-6">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+              <div>
+                <h1 className="text-4xl font-bold bg-gradient-to-r from-red-600 to-red-700 dark:from-red-400 dark:to-red-500 bg-clip-text text-transparent">
+                  Receiver Dashboard
+                </h1>
+                <p className="mt-2 text-gray-600 dark:text-gray-400 text-lg">
+                  Welcome back,{" "}
+                  <span className="font-semibold text-gray-900 dark:text-white">
+                    {user?.name}
+                  </span>
+                  ! Here are your received parcels and delivery tracking
+                  information.
+                </p>
+                <div className="mt-3 flex items-center space-x-4 text-sm">
+                  <span className="inline-flex items-center text-blue-600 dark:text-blue-400">
+                    <Package className="h-4 w-4 mr-1" />
+                    {stats.total} Total Received
+                  </span>
+                  <span className="inline-flex items-center text-green-600 dark:text-green-400">
+                    <BarChart3 className="h-4 w-4 mr-1" />
+                    {stats.successRate}% Delivery Rate
+                  </span>
+                  {stats.pending + stats.inTransit > 0 && (
+                    <span className="inline-flex items-center text-orange-600 dark:text-orange-400">
+                      <Truck className="h-4 w-4 mr-1" />
+                      {stats.pending + stats.inTransit} Incoming
+                    </span>
+                  )}
+                </div>
+              </div>
+              <div className="flex items-center space-x-3">
+                <button
+                  onClick={refreshData}
+                  disabled={isRefreshing}
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white disabled:opacity-50"
+                >
+                  <RefreshCw
+                    className={`w-4 h-4 ${isRefreshing ? "animate-spin" : ""}`}
+                  />
+                  Refresh
+                </button>
+                <button
+                  onClick={handleExportParcels}
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white rounded-lg shadow-lg hover:shadow-xl transition-all duration-200"
+                >
+                  <Download className="w-4 h-4" />
+                  Export
+                </button>
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Statistics */}
-        <StatsCards stats={stats} />
+          {/* Statistics */}
+          <StatsCards stats={stats} />
+        </div>
 
         {/* Search and Filters */}
         <SearchAndFilters
@@ -176,16 +274,40 @@ export default function ReceiverDashboard() {
 
         {/* Parcels List */}
         <ParcelList
-          parcels={filteredParcels}
-          onViewDetails={setSelectedParcel}
+          parcels={displayParcels}
+          onViewDetails={(parcel) => {
+            console.log("Setting selected parcel:", parcel);
+            setSelectedParcel(parcel);
+          }}
           onConfirmDelivery={handleConfirmDelivery}
           isConfirming={isConfirming}
+          pagination={pagination}
+          onPageChange={handlePageChange}
+          loading={isLoading}
+          searchTerm={filters.searchTerm}
         />
+
+        {/* Empty State */}
+        {stats.total === 0 && (
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-8 text-center hover:shadow-xl hover:border-blue-200 dark:hover:border-blue-800 transition-all duration-300 hover:scale-[1.02] cursor-pointer group mb-6">
+            <BarChart3 className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500 mb-4 group-hover:text-blue-600 group-hover:scale-110 transition-all duration-300" />
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2 group-hover:text-blue-600 transition-colors duration-300">
+              No parcels received yet
+            </h3>
+            <p className="text-gray-600 dark:text-gray-400 mb-4 group-hover:text-blue-500 transition-colors duration-300">
+              When someone sends you a parcel, it will appear here with all the
+              tracking details and delivery information.
+            </p>
+          </div>
+        )}
 
         {/* Parcel Details Modal */}
         <ParcelDetailsModal
           parcel={selectedParcel}
-          onClose={() => setSelectedParcel(null)}
+          onClose={() => {
+            console.log("Closing modal");
+            setSelectedParcel(null);
+          }}
           onConfirmDelivery={handleConfirmDelivery}
           isConfirming={isConfirming}
         />

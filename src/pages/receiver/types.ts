@@ -37,6 +37,10 @@ export interface ParcelStats {
     inTransit: number;
     delivered: number;
     cancelled: number;
+    thisMonth: number;
+    averagePerWeek: number;
+    successRate: number;
+    totalValue: number;
 }
 
 export interface SearchFilters {

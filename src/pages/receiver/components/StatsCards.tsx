@@ -21,7 +21,7 @@ const StatsCards: React.FC<StatsCardsProps> = ({ stats }) => {
       icon: Package,
       color: "from-blue-500 to-blue-600",
       textColor: "text-blue-600 dark:text-blue-400",
-      subtitle: "All time",
+      subtitle: `${stats.total > 0 ? "Updated" : "No parcels yet"}`,
     },
     {
       label: "Pending",
@@ -29,7 +29,8 @@ const StatsCards: React.FC<StatsCardsProps> = ({ stats }) => {
       icon: Clock,
       color: "from-yellow-500 to-yellow-600",
       textColor: "text-yellow-600 dark:text-yellow-400",
-      subtitle: "Awaiting",
+      subtitle:
+        stats.pending > 0 ? `${stats.pending} awaiting` : "All processed",
     },
     {
       label: "In Transit",
@@ -37,7 +38,10 @@ const StatsCards: React.FC<StatsCardsProps> = ({ stats }) => {
       icon: Truck,
       color: "from-orange-500 to-orange-600",
       textColor: "text-orange-600 dark:text-orange-400",
-      subtitle: "Moving",
+      subtitle:
+        stats.inTransit > 0
+          ? `${stats.inTransit} on the way`
+          : "None in transit",
     },
     {
       label: "Delivered",
@@ -45,7 +49,10 @@ const StatsCards: React.FC<StatsCardsProps> = ({ stats }) => {
       icon: CheckCircle2,
       color: "from-green-500 to-green-600",
       textColor: "text-green-600 dark:text-green-400",
-      subtitle: "Success",
+      subtitle:
+        stats.delivered > 0
+          ? `${stats.successRate}% success rate`
+          : "No deliveries yet",
     },
     {
       label: "Cancelled",
@@ -58,7 +65,7 @@ const StatsCards: React.FC<StatsCardsProps> = ({ stats }) => {
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
+    <div className="grid grid-cols-1 mt-10 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 mb-8">
       {statsConfig.map((stat, index) => {
         const IconComponent = stat.icon;
         return (

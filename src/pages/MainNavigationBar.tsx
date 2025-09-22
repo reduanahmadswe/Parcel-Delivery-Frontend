@@ -211,6 +211,13 @@ export default function Navigation() {
       : user?.role === "receiver"
       ? [
           { href: "/receiver", label: "Dashboard", icon: BarChart3 },
+          { href: "/receiver/track", label: "Track Parcel", icon: Search },
+          {
+            href: "/receiver/history",
+            label: "Status History",
+            icon: FileText,
+          },
+          { href: "/receiver/profile", label: "Profile", icon: User },
           { href: "/contact", label: "Contact", icon: MessageSquare },
         ]
       : [
@@ -229,6 +236,16 @@ export default function Navigation() {
       ? [
           { href: "/profile", label: "Profile", icon: User },
           { href: "/status-history", label: "Status History", icon: FileText },
+        ]
+      : user?.role === "receiver"
+      ? [
+          { href: "/receiver/profile", label: "Profile", icon: User },
+          { href: "/receiver/track", label: "Track Parcel", icon: Search },
+          {
+            href: "/receiver/history",
+            label: "Status History",
+            icon: FileText,
+          },
         ]
       : [
           { href: "/profile", label: "Profile", icon: User },

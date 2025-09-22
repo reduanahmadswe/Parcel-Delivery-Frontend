@@ -1,14 +1,77 @@
-import { Parcel, ParcelStats, SearchFilters } from "../types";
+import { Parcel } from "@/types/GlobalTypeDefinitions";
+import { ParcelStats, SearchFilters } from "../types";
 
 export const receiverUtils = {
-    // Calculate statistics from parcels array
+    // Calculate statistics from parcels array (using sender's exact approach but for receiver data)
     calculateStats(parcels: Parcel[]): ParcelStats {
+        const now = new Date();
+        const thisMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+
+        // Debug logging to verify data structure
+        console.log("📊 Calculating receiver stats:", {
+            totalParcels: parcels.length,
+            sampleStatuses: parcels.slice(0, 5).map(p => ({
+                id: p._id || 'no-id',
+                status: p.currentStatus || 'no-status'
+            }))
+        });
+
+        // Use sender's exact status mapping approach
+        // Note: Receiver Parcel interface uses 'status' field instead of 'currentStatus'
+        const getStatusCount = (statusValues: string[]) => {
+            const matches = parcels.filter(parcel => {
+                const status = parcel.currentStatus || '';
+                return statusValues.includes(status);
+            });
+            console.log(`📈 Status count for [${statusValues.join(', ')}]:`, matches.length);
+            return matches.length;
+        };
+
+        // Match sender's exact status categories
+        const pending = getStatusCount(['requested', 'approved']);
+        const inTransit = getStatusCount(['dispatched', 'in-transit']);
+        const delivered = getStatusCount(['delivered']);
+        const cancelled = getStatusCount(['cancelled', 'rejected']);
+
+        // Calculate this month's deliveries (same logic as sender)
+        const thisMonthDelivered = parcels.filter(parcel => {
+            const isDelivered = parcel.currentStatus === 'delivered';
+            const parcelDate = new Date(parcel.createdAt || parcel.updatedAt);
+            return isDelivered && parcelDate >= thisMonthStart;
+        }).length;
+
+        // Calculate success rate (delivered / total non-cancelled)
+        const nonCancelled = parcels.length - cancelled;
+        const successRate = nonCancelled > 0 ? Math.round((delivered / nonCancelled) * 100) : 0;
+
+        const total = parcels.length;
+
+        console.log("📊 Receiver Stats Calculation (Sender-style):", {
+            total,
+            pending,
+            inTransit,
+            delivered,
+            cancelled,
+            thisMonth: thisMonthDelivered,
+            successRate,
+            statusBreakdown: parcels.map(p => ({
+                id: p._id,
+                status: p.currentStatus,
+                trackingNumber: p.trackingId,
+                createdAt: p.createdAt
+            }))
+        });
+
         return {
-            total: parcels.length,
-            pending: parcels.filter((p) => p.status === "pending").length,
-            inTransit: parcels.filter((p) => p.status === "in_transit").length,
-            delivered: parcels.filter((p) => p.status === "delivered").length,
-            cancelled: parcels.filter((p) => p.status === "cancelled").length,
+            total: total,
+            pending: pending,
+            inTransit: inTransit,
+            delivered: delivered,
+            cancelled: cancelled,
+            thisMonth: thisMonthDelivered,
+            averagePerWeek: Math.round(thisMonthDelivered / 4),
+            successRate: successRate,
+            totalValue: parcels.reduce((total, parcel) => total + (parcel.fee.totalFee || 0), 0),
         };
     },
 
@@ -18,11 +81,11 @@ export const receiverUtils = {
         filters: SearchFilters
     ): Parcel[] {
         let filtered = parcels.filter((parcel) => {
-            const matchesFilter = filters.filter === "all" || parcel.status === filters.filter;
+            const matchesFilter = filters.filter === "all" || parcel.currentStatus === filters.filter;
             const matchesSearch = filters.searchTerm === "" ||
-                parcel.trackingNumber.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
-                parcel.description.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
-                parcel.senderName.toLowerCase().includes(filters.searchTerm.toLowerCase());
+                parcel.trackingId.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
+                parcel.parcelDetails.description.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
+                parcel.senderInfo.name.toLowerCase().includes(filters.searchTerm.toLowerCase());
             return matchesFilter && matchesSearch;
         });
 
@@ -46,7 +109,7 @@ export const receiverUtils = {
         return parcels.map((parcel) => ({
             ...parcel,
             estimatedDelivery: new Date(Date.now() + Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString(),
-            rating: parcel.status === "delivered" ? Math.floor(Math.random() * 2) + 4 : undefined
+            rating: parcel.currentStatus === "delivered" ? Math.floor(Math.random() * 2) + 4 : undefined
         }));
     },
 
@@ -62,8 +125,8 @@ export const receiverUtils = {
 
     // Get priority level based on parcel attributes
     getParcelPriority(parcel: Parcel): "high" | "medium" | "low" {
-        if (parcel.isInsured && parcel.cost > 100) return "high";
-        if (parcel.deliveryType === "express" || parcel.cost > 50) return "medium";
+        if ((parcel as any).isInsured && parcel.fee.totalFee > 100) return "high";
+        if ((parcel as any).deliveryType === "express" || parcel.fee.totalFee > 50) return "medium";
         return "low";
     },
 
@@ -83,14 +146,14 @@ export const receiverUtils = {
         const csvData = [
             headers.join(","),
             ...parcels.map(parcel => [
-                parcel.trackingNumber,
-                parcel.status,
-                parcel.senderName,
-                `"${parcel.description}"`,
-                parcel.weight,
-                parcel.cost,
+                parcel.trackingId,
+                parcel.currentStatus,
+                parcel.senderInfo.name,
+                `"${parcel.parcelDetails.description}"`,
+                parcel.parcelDetails.weight,
+                parcel.fee.totalFee,
                 new Date(parcel.createdAt).toLocaleDateString(),
-                parcel.estimatedDelivery ? new Date(parcel.estimatedDelivery).toLocaleDateString() : "N/A"
+                (parcel as any).estimatedDelivery ? new Date((parcel as any).estimatedDelivery).toLocaleDateString() : "N/A"
             ].join(","))
         ].join("\n");
 

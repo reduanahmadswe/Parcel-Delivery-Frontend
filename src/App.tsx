@@ -170,6 +170,36 @@ const App: React.FC = () => {
                       </ProtectedRoute>
                     }
                   />
+                  <Route
+                    path="/receiver/track"
+                    element={
+                      <ProtectedRoute allowedRoles={["receiver"]}>
+                        <Layout>
+                          <TrackPage />
+                        </Layout>
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/receiver/history"
+                    element={
+                      <ProtectedRoute allowedRoles={["receiver"]}>
+                        <Layout>
+                          <StatusHistoryPage />
+                        </Layout>
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/receiver/profile"
+                    element={
+                      <ProtectedRoute allowedRoles={["receiver"]}>
+                        <Layout>
+                          <ProfilePage />
+                        </Layout>
+                      </ProtectedRoute>
+                    }
+                  />
 
                   {/* Admin Routes */}
                   <Route
