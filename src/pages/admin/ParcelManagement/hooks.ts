@@ -36,39 +36,23 @@ export function useParcels(filterParams: FilterParams) {
             console.log("Fetching parcels from API...");
 
             const apiParcels = await ParcelApiService.fetchParcels(filterParams);
-            console.log("Extracted parcels data:", apiParcels);
-            console.log("Parcels data type:", typeof apiParcels);
-            console.log("Is array:", Array.isArray(apiParcels));
-            console.log("Length:", apiParcels?.length);
-
+           
             // Debug: Show first parcel raw structure
             if (apiParcels && apiParcels.length > 0) {
                 console.log(
                     "🔍 First raw parcel from API:",
                     JSON.stringify(apiParcels[0], null, 2)
                 );
-                console.log("🔍 Key fields check:", {
-                    hasTrackingId: "trackingId" in apiParcels[0],
-                    hasSenderInfo: "senderInfo" in apiParcels[0],
-                    hasReceiverInfo: "receiverInfo" in apiParcels[0],
-                    trackingValue: apiParcels[0]?.trackingId,
-                    senderName: apiParcels[0]?.senderInfo?.name,
-                    receiverName: apiParcels[0]?.receiverInfo?.name,
-                });
+                
             }
 
             // Transform API data to frontend format
             const validParcels = ParcelDataTransformer.transformApiParcelsToFrontend(apiParcels);
 
-            console.log("Final processed parcels:", validParcels.length);
-            console.log(
-                "Sample processed parcel:",
-                JSON.stringify(validParcels[0], null, 2)
-            );
-
+        
             setParcels(validParcels);
         } catch (error) {
-            console.error("Error fetching parcels:", error);
+          
             if (error instanceof Error) {
                 console.error("Error message:", error.message);
             }
