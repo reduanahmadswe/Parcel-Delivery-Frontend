@@ -121,7 +121,7 @@ export default function SenderParcelsPage() {
 
       const response = await api.get(`/parcels/me?${params.toString()}`);
 
-      console.log("API Response:", response.data);
+  if ((import.meta as any).env?.DEV) console.debug("API Response:", response.data);
 
       // Handle different response structures
       const data = response.data.data || response.data.parcels || response.data;
@@ -592,13 +592,12 @@ export default function SenderParcelsPage() {
                                 className="text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300 transition-colors duration-200"
                                 title="View status history"
                                 onClick={() => {
-                                  console.log(
-                                    "🔗 Navigating to status history for:",
-                                    {
+                                  if ((import.meta as any).env?.DEV) {
+                                    console.debug("🔗 Navigating to status history for:", {
                                       trackingId: parcel.trackingId,
                                       url: `/status-history?id=${parcel.trackingId}`,
-                                    }
-                                  );
+                                    });
+                                  }
                                 }}
                               >
                                 <Calendar className="h-4 w-4" />

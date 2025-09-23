@@ -28,7 +28,7 @@ export default function SenderStatisticsPage() {
 
   const fetchParcels = async () => {
     try {
-      console.log("🔍 Debugging parcel fetch for statistics...");
+  if ((import.meta as any).env?.DEV) console.debug("🔍 Debugging parcel fetch for statistics...");
 
       // Try multiple endpoints to get all data (similar to dashboard)
       let response;
@@ -37,24 +37,24 @@ export default function SenderStatisticsPage() {
       // Method 1: Try with high limit parameter
       try {
         response = await api.get("/parcels/me?limit=10000");
-        console.log("✅ Method 1 (/parcels/me?limit=10000):", {
+  if ((import.meta as any).env?.DEV) console.debug("✅ Method 1 (/parcels/me?limit=10000):", {
           count: response.data.data?.length,
           total: response.data.total,
           pagination: response.data.pagination,
         });
         if (response.data.data?.length > 10) {
           allParcels = response.data.data;
-          console.log("🎉 Found more than 10 parcels with limit=10000!");
+          if ((import.meta as any).env?.DEV) console.debug("🎉 Found more than 10 parcels with limit=10000!");
         }
       } catch (err) {
-        console.log("❌ Method 1 failed:", err);
+  if ((import.meta as any).env?.DEV) console.debug("❌ Method 1 failed:", err);
       }
 
       // Method 2: Try no-pagination with limit
       if (allParcels.length <= 10) {
         try {
           response = await api.get("/parcels/me/no-pagination?limit=10000");
-          console.log("✅ Method 2 (/parcels/me/no-pagination?limit=10000):", {
+          if ((import.meta as any).env?.DEV) console.debug("✅ Method 2 (/parcels/me/no-pagination?limit=10000):", {
             count: response.data.data?.length,
             total: response.data.total,
           });
@@ -62,7 +62,7 @@ export default function SenderStatisticsPage() {
             allParcels = response.data.data;
           }
         } catch (err) {
-          console.log("❌ Method 2 failed:", err);
+          if ((import.meta as any).env?.DEV) console.debug("❌ Method 2 failed:", err);
         }
       }
 
@@ -75,7 +75,7 @@ export default function SenderStatisticsPage() {
             ...(page1.data.data || []),
             ...(page2.data.data || []),
           ];
-          console.log("✅ Method 3 (pagination):", {
+          if ((import.meta as any).env?.DEV) console.debug("✅ Method 3 (pagination):", {
             page1Count: page1.data.data?.length || 0,
             page2Count: page2.data.data?.length || 0,
             totalCombined: combinedData.length,
@@ -86,7 +86,7 @@ export default function SenderStatisticsPage() {
             allParcels = combinedData;
           }
         } catch (err) {
-          console.log("❌ Method 3 failed:", err);
+          if ((import.meta as any).env?.DEV) console.debug("❌ Method 3 failed:", err);
         }
       }
 
@@ -95,19 +95,19 @@ export default function SenderStatisticsPage() {
         try {
           response = await api.get("/parcels/me/no-pagination");
           allParcels = response.data.data || [];
-          console.log("⚠️ Fallback to original endpoint:", allParcels.length);
+          if ((import.meta as any).env?.DEV) console.debug("⚠️ Fallback to original endpoint:", allParcels.length);
         } catch (err) {
-          console.log("❌ Fallback failed:", err);
+          if ((import.meta as any).env?.DEV) console.debug("❌ Fallback failed:", err);
         }
       }
 
-      console.log("📊 Final result for statistics:", {
+  if ((import.meta as any).env?.DEV) console.debug("📊 Final result for statistics:", {
         parcelsCount: allParcels.length,
         expectedCount: 23,
         isComplete: allParcels.length >= 23,
       });
 
-      console.log("📦 All parcels for statistics:", allParcels);
+  if ((import.meta as any).env?.DEV) console.debug("📦 All parcels for statistics:", allParcels);
       setParcels(allParcels);
     } catch (error) {
       console.error("❌ Error fetching parcels:", error);

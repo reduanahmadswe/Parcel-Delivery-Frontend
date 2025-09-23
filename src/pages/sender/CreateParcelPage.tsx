@@ -309,7 +309,7 @@ export default function CreateParcelPage() {
         },
       };
 
-      console.log("Sending payload to backend:", payload);
+  if ((import.meta as any).env?.DEV) console.debug("Sending payload to backend:", payload);
 
       const response = await api.post("/parcels", payload);
       const parcel = response.data.data;
@@ -339,11 +339,11 @@ export default function CreateParcelPage() {
       let errorMessage = "Failed to create parcel";
 
       if (apiError.response?.data) {
-        console.log("Backend error response:", apiError.response.data);
-        console.log(
-          "Backend error data details:",
-          JSON.stringify(apiError.response.data, null, 2)
-        );
+          if ((import.meta as any).env?.DEV) console.debug("Backend error response:", apiError.response.data);
+          if ((import.meta as any).env?.DEV) console.debug(
+            "Backend error data details:",
+            JSON.stringify(apiError.response.data, null, 2)
+          );
 
         if (apiError.response.data.message) {
           errorMessage = apiError.response.data.message;
@@ -363,7 +363,7 @@ export default function CreateParcelPage() {
             )
             .join(", ");
         } else if (apiError.response.data.data) {
-          console.log("Validation errors:", apiError.response.data.data);
+          if ((import.meta as any).env?.DEV) console.debug("Validation errors:", apiError.response.data.data);
           errorMessage = "Validation failed. Check console for details.";
         }
       }
