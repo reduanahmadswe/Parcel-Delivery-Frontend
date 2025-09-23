@@ -31,6 +31,10 @@ export default function AdminUsersPage() {
   const [userToView, setUserToView] = useState<User | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
 
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
   // Custom hook for user management logic
   const {
     users,
@@ -50,6 +54,19 @@ export default function AdminUsersPage() {
       user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.role.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  // Pagination logic
+  const totalPages = Math.max(1, Math.ceil(filteredUsers.length / itemsPerPage));
+  const paginatedUsers = filteredUsers.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  // Reset to first page when search term changes
+  const handleSearchChange = (term: string) => {
+    setSearchTerm(term);
+    setCurrentPage(1);
+  };
 
   // Handlers for user actions
   const handleCreateUser = () => {
@@ -209,7 +226,7 @@ export default function AdminUsersPage() {
           <UserManagementHeader
             searchTerm={searchTerm}
             filteredUsers={filteredUsers}
-            setSearchTerm={setSearchTerm}
+            setSearchTerm={handleSearchChange}
             loading={loading}
             statsLoading={loading}
             onRefresh={refreshUsers}
@@ -220,11 +237,57 @@ export default function AdminUsersPage() {
           <div className="bg-background border border-border rounded-lg">
             <DataTable
               columns={columns}
-              data={filteredUsers}
+              data={paginatedUsers}
               searchTerm={searchTerm}
-              onSearchChange={setSearchTerm}
+              onSearchChange={handleSearchChange}
             />
           </div>
+
+          {/* Pagination */}
+          {filteredUsers.length > 0 && (
+            <div className="px-6 py-4 border-t border-border bg-gradient-to-r from-red-50/10 via-transparent to-green-50/10 dark:from-red-950/5 dark:to-green-950/5 rounded-b-xl">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <p className="text-sm text-muted-foreground">
+                    Showing {(currentPage - 1) * itemsPerPage + 1} to {Math.min(currentPage * itemsPerPage, filteredUsers.length)} of {filteredUsers.length} users
+                  </p>
+                </div>
+
+                <div className="flex items-center space-x-2">
+                  <button 
+                    onClick={() => setCurrentPage((p) => Math.max(1, p - 1))} 
+                    disabled={currentPage === 1} 
+                    className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200 ${currentPage > 1 ? 'bg-muted hover:bg-muted/80 text-foreground' : 'bg-muted/50 text-muted-foreground cursor-not-allowed'}`}
+                  >
+                    Previous
+                  </button>
+
+                  <div className="flex items-center space-x-1">
+                    {Array.from({ length: totalPages }, (_, i) => i + 1)
+                      .filter((page) => page >= Math.max(1, currentPage - 2) && page <= Math.min(totalPages, currentPage + 2))
+                      .map((page) => (
+                        <button 
+                          key={page} 
+                          onClick={() => setCurrentPage(page)} 
+                          className={`px-3 py-2 rounded-lg text-sm font-medium ${page === currentPage ? 'bg-red-600 text-white' : 'bg-muted hover:bg-muted/80 text-foreground'}`}
+                        >
+                          {page}
+                        </button>
+                      ))
+                    }
+                  </div>
+
+                  <button 
+                    onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))} 
+                    disabled={currentPage === totalPages} 
+                    className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200 ${currentPage < totalPages ? 'bg-muted hover:bg-muted/80 text-foreground' : 'bg-muted/50 text-muted-foreground cursor-not-allowed'}`}
+                  >
+                    Next
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* User Form Modal */}
           <UserFormModal

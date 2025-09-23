@@ -33,6 +33,10 @@ export default function ParcelManagement() {
     status: "",
   });
 
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
   // Custom hooks
   const { notification, showNotification, hideNotification } =
     useNotification();
@@ -52,7 +56,22 @@ export default function ParcelManagement() {
   useEffect(() => {
     const filtered = ParcelDataTransformer.filterParcels(parcels, searchTerm);
     setFilteredParcels(filtered);
+    // Reset to first page when filtering changes
+    setCurrentPage(1);
   }, [parcels, searchTerm]);
+
+  // Pagination logic
+  const totalPages = Math.max(1, Math.ceil(filteredParcels.length / itemsPerPage));
+  const paginatedParcels = filteredParcels.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  // Handle search term change with pagination reset
+  const handleSearchChange = (term: string) => {
+    setSearchTerm(term);
+    setCurrentPage(1);
+  };
 
   // Event handlers
   const handleUpdateStatus = async () => {
@@ -355,11 +374,18 @@ export default function ParcelManagement() {
 
               {/* Enhanced Data Table */}
               <DataTable<Parcel>
-                data={filteredParcels}
+                data={paginatedParcels}
                 columns={columns}
                 loading={loading}
                 searchPlaceholder="🔍 Search by tracking number, sender, recipient, status, or location..."
-                onSearch={setSearchTerm}
+                onSearch={handleSearchChange}
+                pagination={{
+                  page: currentPage,
+                  totalPages: totalPages,
+                  totalItems: filteredParcels.length,
+                  itemsPerPage: itemsPerPage,
+                  onPageChange: setCurrentPage,
+                }}
               />
             </div>
           </div>

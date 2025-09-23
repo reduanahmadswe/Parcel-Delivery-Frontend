@@ -21,6 +21,8 @@ interface DataTableProps<T> {
   pagination?: {
     page: number;
     totalPages: number;
+    totalItems?: number;
+    itemsPerPage?: number;
     onPageChange: (page: number) => void;
   };
   className?: string;
@@ -174,27 +176,47 @@ export default function DataTable<T extends Record<string, unknown>>({
         </table>
       </div>
 
-      {/* Pagination */}
-      {pagination && (
-        <div className="px-6 py-3 border-t border-slate-200 dark:border-slate-700 flex items-center justify-between">
-          <div className="text-sm text-slate-700 dark:text-slate-300">
-            Page {pagination.page} of {pagination.totalPages}
-          </div>
-          <div className="flex items-center space-x-2">
-            <button
-              onClick={() => pagination.onPageChange(pagination.page - 1)}
-              disabled={pagination.page <= 1}
-              className="p-2 rounded-md border border-slate-300 dark:border-slate-600 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </button>
-            <button
-              onClick={() => pagination.onPageChange(pagination.page + 1)}
-              disabled={pagination.page >= pagination.totalPages}
-              className="p-2 rounded-md border border-slate-300 dark:border-slate-600 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
-            >
-              <ChevronRight className="h-4 w-4" />
-            </button>
+      {/* Enhanced Pagination - Same as Recent Parcels */}
+      {pagination && data.length > 0 && (
+        <div className="px-6 py-4 border-t border-border bg-gradient-to-r from-red-50/10 via-transparent to-green-50/10 dark:from-red-950/5 dark:to-green-950/5">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <p className="text-sm text-muted-foreground">
+                Showing {(pagination.page - 1) * (pagination.itemsPerPage || 10) + 1} to {Math.min(pagination.page * (pagination.itemsPerPage || 10), pagination.totalItems || (pagination.totalPages * (pagination.itemsPerPage || 10)))} of {pagination.totalItems || (pagination.totalPages * (pagination.itemsPerPage || 10))} parcels
+              </p>
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <button 
+                onClick={() => pagination.onPageChange(pagination.page - 1)} 
+                disabled={pagination.page <= 1} 
+                className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200 ${pagination.page > 1 ? 'bg-muted hover:bg-muted/80 text-foreground' : 'bg-muted/50 text-muted-foreground cursor-not-allowed'}`}
+              >
+                Previous
+              </button>
+
+              <div className="flex items-center space-x-1">
+                {Array.from({ length: pagination.totalPages }, (_, i) => i + 1)
+                  .filter((page) => page >= Math.max(1, pagination.page - 2) && page <= Math.min(pagination.totalPages, pagination.page + 2))
+                  .map((page) => (
+                    <button 
+                      key={page} 
+                      onClick={() => pagination.onPageChange(page)} 
+                      className={`px-3 py-2 rounded-lg text-sm font-medium ${page === pagination.page ? 'bg-red-600 text-white' : 'bg-muted hover:bg-muted/80 text-foreground'}`}
+                    >
+                      {page}
+                    </button>
+                  ))
+                }
+              </div>
+
+              <button 
+                onClick={() => pagination.onPageChange(pagination.page + 1)} 
+                disabled={pagination.page >= pagination.totalPages} 
+                className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200 ${pagination.page < pagination.totalPages ? 'bg-muted hover:bg-muted/80 text-foreground' : 'bg-muted/50 text-muted-foreground cursor-not-allowed'}`}                                                                                                                                                        >
+                Next
+              </button>
+            </div>
           </div>
         </div>
       )}

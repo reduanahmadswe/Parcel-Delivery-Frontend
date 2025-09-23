@@ -6,9 +6,9 @@ import { CheckCircle, Package, Users } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useGetAllUsersQuery, useGetAllParcelsQuery } from "@/store/api/adminApi";
 
-import AdminHeader from "./components/AdminHeader";
-import StatCards from "./components/StatCards";
-import RecentParcelsTable from "./components/RecentParcelsTable";
+import AdminHeader from "../admin/components/AdminHeader";
+import StatCards from "../admin/components/StatCards";
+import RecentParcelsTable from "../admin/components/RecentParcelsTable";
 
 interface DashboardStats {
   users: { total: number; active: number; blocked: number; newThisMonth: number };
@@ -61,9 +61,18 @@ export default function AdminDashboard() {
 
       const processedParcelStats = {
         total: parcels.length,
-        pending: parcels.filter((p: any) => (p.currentStatus || p.status) === "pending").length,
-        inTransit: parcels.filter((p: any) => { const s = (p.currentStatus || p.status) as string; return s === "in_transit" || s === "inTransit" || s === "transit"; }).length,
-        delivered: parcels.filter((p: any) => (p.currentStatus || p.status) === "delivered").length,
+        pending: parcels.filter((p: any) => {
+          const s = (p.currentStatus || p.status)?.toString()?.toLowerCase();
+          return s === "pending" || s === "requested";
+        }).length,
+        inTransit: parcels.filter((p: any) => { 
+          const s = (p.currentStatus || p.status)?.toString()?.toLowerCase(); 
+          return s === "in_transit" || s === "intransit" || s === "in-transit" || s === "transit" || s === "dispatched"; 
+        }).length,
+        delivered: parcels.filter((p: any) => {
+          const s = (p.currentStatus || p.status)?.toString()?.toLowerCase();
+          return s === "delivered";
+        }).length,
         flagged: parcels.filter((p: any) => p.isFlagged || p.isHeld || p.isBlocked).length,
         urgent: parcels.filter((p: any) => !!(p.deliveryInfo?.isUrgent || p.isFlagged)).length,
       };
@@ -71,7 +80,7 @@ export default function AdminDashboard() {
       const processedRecentParcels: RecentParcel[] = parcels.map((p: any) => ({ id: p._id ?? Math.random(), trackingNumber: p.trackingNumber || p.tracking_number || p.trackingId || p._id || "N/A", senderName: p.senderInfo?.name || "-", recipientName: p.receiverInfo?.name || "-", status: p.currentStatus || p.status || "unknown", isUrgent: !!(p.deliveryInfo?.isUrgent || p.isFlagged), createdAt: typeof p.createdAt === "string" ? p.createdAt : p.createdAt?.$date || new Date().toISOString() }));
 
       setStats((prev) => ({ ...prev, users: processedUserStats, parcels: processedParcelStats }));
-      setRecentParcels(processedRecentParcels.slice(0, Math.max(5, processedRecentParcels.length)));
+      setRecentParcels(processedRecentParcels);
     } finally {
       setLoading(false);
     }
@@ -115,7 +124,6 @@ export default function AdminDashboard() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                   <p className="text-sm text-muted-foreground">Showing {(currentPage - 1) * itemsPerPage + 1} to {Math.min(currentPage * itemsPerPage, recentParcels.length)} of {recentParcels.length} parcels</p>
-                  <button className="px-4 py-2 text-sm text-foreground hover:text-green-600 border border-border rounded-lg hover:bg-muted hover:border-green-200 transition-all duration-200">View All Parcels</button>
                 </div>
 
                 <div className="flex items-center space-x-2">

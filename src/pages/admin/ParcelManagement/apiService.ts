@@ -19,9 +19,12 @@ export class ParcelApiService {
             queryParams.append("receiverEmail", filterParams.receiverEmail);
         if (filterParams.status)
             queryParams.append("status", filterParams.status);
+        
+        // Add limit parameter to fetch more data
+        queryParams.append("limit", "1000");
 
         const query = queryParams.toString();
-        const endpoint = query ? `/parcels?${query}` : "/parcels";
+        const endpoint = `/parcels?${query}`;
 
         // Try admin-specific endpoint first, fallback to general parcels endpoint
         let response;

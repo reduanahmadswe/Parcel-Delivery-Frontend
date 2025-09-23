@@ -31,26 +31,7 @@ export default function AdminHeader({ onRefresh }: Props) {
           </button>
         </div>
       </div>
-
-      {/* Quick Stats Bar (kept minimal; the stat cards are in a separate component) */}
-      <div className="mt-6 grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="text-center">
-          <div className="text-2xl font-bold text-green-600 dark:text-green-400">%</div>
-          <div className="text-xs text-muted-foreground">Delivery Rate</div>
-        </div>
-        <div className="text-center">
-          <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">0</div>
-          <div className="text-xs text-muted-foreground">Active Users</div>
-        </div>
-        <div className="text-center">
-          <div className="text-2xl font-bold text-yellow-600 dark:text-yellow-400">0</div>
-          <div className="text-xs text-muted-foreground">In Transit</div>
-        </div>
-        <div className="text-center">
-          <div className="text-2xl font-bold text-red-600 dark:text-red-400">0</div>
-          <div className="text-xs text-muted-foreground">Issues</div>
-        </div>
-      </div>
+      
     </div>
   );
 }
