@@ -185,3 +185,4 @@ export interface RouteConfig {
     allowedRoles?: User['role'][]
     exact?: boolean
 }
+

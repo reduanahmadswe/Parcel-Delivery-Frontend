@@ -1,4 +1,4 @@
-import { TokenManager } from '@/lib/TokenManager';
+import { TokenManager } from '@/services/TokenManager';
 import { useEffect } from 'react';
 
 /**
@@ -38,3 +38,4 @@ export function useAuthCleanup() {
 
     return { cleanupAuth };
 }
+

@@ -1,6 +1,6 @@
-﻿"use client";
+"use client";
 
-import api from "@/lib/ApiConfiguration";
+import api from "@/services/ApiConfiguration";
 import AdminLayout from "@/pages/admin/AdminDashboardLayout";
 import { CheckCircle, Package, Users } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -141,3 +141,4 @@ export default function AdminDashboard() {
     </AdminLayout>
   );
 }
+

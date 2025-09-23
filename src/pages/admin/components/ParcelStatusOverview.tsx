@@ -31,3 +31,4 @@ export default function ParcelStatusOverview({ parcels }: Props) {
     </div>
   );
 }
+

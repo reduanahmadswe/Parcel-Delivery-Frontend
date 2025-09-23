@@ -1,6 +1,6 @@
 // Filter Panel Component for Parcel Management
 import { Filter, RefreshCw, Search, Sparkles, TrendingUp } from "lucide-react";
-import { FilterParams, STATUS_OPTIONS } from "./types";
+import { FilterParams, STATUS_OPTIONS } from "../../../services/parcelTypes";
 
 interface FilterPanelProps {
   filterParams: FilterParams;
@@ -174,3 +174,4 @@ export function FilterPanel({
     </div>
   );
 }
+

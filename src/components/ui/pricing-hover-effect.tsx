@@ -1,5 +1,5 @@
 /* eslint-disable prefer-const */
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/utils";
 import { CheckCircle } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
@@ -157,3 +157,4 @@ export const PricingHoverEffect = ({
     </div>
   );
 };
+

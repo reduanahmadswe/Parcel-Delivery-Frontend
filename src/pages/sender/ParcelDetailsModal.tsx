@@ -14,7 +14,7 @@ import {
   Weight,
   X,
 } from "lucide-react";
-import { formatDate, getStatusColor } from "../../lib/HelperUtilities";
+import { formatDate, getStatusColor } from "../../utils/HelperUtilities";
 import { Parcel } from "../../types/GlobalTypeDefinitions";
 
 interface ParcelDetailsModalProps {
@@ -306,3 +306,4 @@ export default function ParcelDetailsModal({
     </div>
   );
 }
+

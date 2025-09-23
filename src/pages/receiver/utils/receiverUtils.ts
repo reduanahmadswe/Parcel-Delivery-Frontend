@@ -147,3 +147,4 @@ export const receiverUtils = {
         document.body.removeChild(link);
     }
 };
+

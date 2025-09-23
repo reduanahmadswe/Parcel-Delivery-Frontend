@@ -1,7 +1,7 @@
 // User Management Hooks
 // This file contains custom hooks for user management operations
 
-import api from "@/lib/ApiConfiguration";
+import api from "@/services/ApiConfiguration";
 import { AxiosError } from "axios";
 import { useCallback, useEffect, useState } from "react";
 import { ApiUser, User, UserForm, UserStats, UserUpdateForm } from "./types";
@@ -209,3 +209,4 @@ export function useUserManagement() {
         refreshUsers,
     };
 }
+

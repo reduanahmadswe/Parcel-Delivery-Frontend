@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { TokenManager } from '@/lib/TokenManager';
+import { TokenManager } from '@/services/TokenManager';
 import { useGetCurrentUserQuery } from '@/store/api/authApi';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import {
@@ -231,3 +231,4 @@ export function useReduxAuthPersistence() {
         hasToken: !!hasToken,
     };
 }
+

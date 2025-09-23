@@ -1,2 +1,3 @@
-﻿// Import the organized ReceiverDashboard from the receiver folder
+// Import the organized ReceiverDashboard from the receiver folder
 export { ReceiverDashboard as default } from "../receiver";
+

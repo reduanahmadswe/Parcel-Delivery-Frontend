@@ -1,4 +1,4 @@
-import api from "@/lib/api";
+import api from "@/services/api";
 import { Parcel } from "@/types/GlobalTypeDefinitions";
 
 interface PaginationInfo {
@@ -283,3 +283,4 @@ export const receiverApiService = {
         });
     }
 };
+

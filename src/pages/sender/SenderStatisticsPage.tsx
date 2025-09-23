@@ -3,11 +3,11 @@
 import { BarChart3, Calendar, Package, Truck } from "lucide-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import ProtectedRoute from "../../components/ProtectedRoute";
+import ProtectedRoute from "../../components/common/ProtectedRoute";
 import { useAuth } from "../../hooks/useAuth";
-import api from "../../lib/ApiConfiguration";
+import api from "../../services/ApiConfiguration";
 import { Parcel } from "../../types/GlobalTypeDefinitions";
-import FooterSection from "../sections/FooterSection";
+import FooterSection from "../public/sections/FooterSection";
 
 interface ApiError {
   response?: {
@@ -513,3 +513,5 @@ export default function SenderStatisticsPage() {
     </ProtectedRoute>
   );
 }
+
+

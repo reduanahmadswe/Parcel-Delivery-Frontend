@@ -6,16 +6,16 @@ import { PersistGate } from "redux-persist/integration/react";
 import { persistor, store } from "./store";
 
 // Pages
-import ContactPage from "./pages/ContactPage";
-import LoginPage from "./pages/form/LoginPage";
-import HomePage from "./pages/HomePage";
-import NotFoundPage from "./pages/NotFoundPage";
-import PartnersPage from "./pages/PartnersPage";
+import ContactPage from "./pages/public/ContactPage";
+import LoginPage from "./pages/auth/LoginPage";
+import HomePage from "./pages/public/HomePage";
+import NotFoundPage from "./pages/error/NotFoundPage";
+import PartnersPage from "./pages/public/PartnersPage";
 import ProfilePage from "./pages/ProfilePage";
 import StatusHistoryPage from "./pages/StatusHistoryPage";
 
-import TrackPage from "./pages/TrackPage";
-import UnauthorizedPage from "./pages/UnauthorizedPage";
+import TrackPage from "./pages/public/TrackPage";
+import UnauthorizedPage from "./pages/error/UnauthorizedPage";
 
 // Dashboard Pages
 import ReceiverDashboard from "./pages/dashboard/ReceiverDashboard";
@@ -32,11 +32,11 @@ import UserManagementPage from "./pages/admin/UserManagement";
 import AdminDashboardPage from "./pages/dashboard/AdminDashboard";
 
 // Components
-import { ThemeProvider } from "@/components/theme-provider";
+import { ThemeProvider } from "@/components/ui/theme-provider";
 import { ReduxAuthProvider } from "@/contexts/ReduxAuthContext";
-import { ProtectedRoute } from "./components/common/ProtectedRoute";
+import ProtectedRoute from "./components/common/ProtectedRoute";
 import Layout from "./components/layout/Layout";
-import RegisterPage from "./pages/form/RegisterPage";
+import RegisterPage from "./pages/auth/RegisterPage";
 
 const App: React.FC = () => {
   return (

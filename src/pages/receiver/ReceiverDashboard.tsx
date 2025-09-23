@@ -14,7 +14,7 @@ import ParcelDetailsModal from "./components/ParcelDetailsModal";
 import ParcelList from "./components/ParcelList";
 import SearchAndFilters from "./components/SearchAndFilters";
 import StatsCards from "./components/StatsCards";
-import FooterSection from "../sections/FooterSection";
+import FooterSection from "../public/sections/FooterSection";
 
 export default function ReceiverDashboard() {
   const { user, loading } = useAuth();
@@ -310,3 +310,4 @@ export default function ReceiverDashboard() {
     </div>
   );
 }
+

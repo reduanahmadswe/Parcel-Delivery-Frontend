@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/utils";
 import { Slot } from "@radix-ui/react-slot";
 import * as React from "react";
 import {
@@ -176,3 +176,4 @@ export {
   FormMessage,
   useFormField,
 };
+

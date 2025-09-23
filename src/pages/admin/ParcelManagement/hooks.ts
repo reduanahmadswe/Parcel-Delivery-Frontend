@@ -1,8 +1,8 @@
 // Custom hooks for Parcel Management
 import { useCallback, useEffect, useState } from "react";
-import { ParcelApiService } from "./apiService";
+import { ParcelApiService } from "../../../services/parcelApiService";
 import { ParcelDataTransformer } from "./dataTransformer";
-import { FilterParams, NotificationState, Parcel, StatusLogEntry } from "./types";
+import { FilterParams, NotificationState, Parcel, StatusLogEntry } from "../../../services/parcelTypes";
 
 export function useNotification() {
     const [notification, setNotification] = useState<NotificationState | null>(null);
@@ -174,3 +174,4 @@ export function useStatusLog() {
         fetchStatusLog,
     };
 }
+

@@ -1,6 +1,6 @@
 // Modal components for Parcel Management
-import Modal from "@/pages/admin/ModalDialogComponent";
-import StatusBadge from "@/pages/admin/StatusIndicatorBadge";
+import Modal from "@/components/modals/ModalDialogComponent";
+import StatusBadge from "@/components/common/StatusIndicatorBadge";
 import {
   Clock,
   MapPin,
@@ -10,7 +10,7 @@ import {
   Truck,
   User,
 } from "lucide-react";
-import { Parcel, STATUS_OPTIONS } from "./types";
+import { Parcel, STATUS_OPTIONS } from "../../../services/parcelTypes";
 
 interface ParcelDetailsModalProps {
   isOpen: boolean;
@@ -455,3 +455,4 @@ export function StatusUpdateModal({
     </Modal>
   );
 }
+

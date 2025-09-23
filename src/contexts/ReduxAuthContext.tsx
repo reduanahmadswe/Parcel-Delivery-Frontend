@@ -1,7 +1,7 @@
 "use client";
 
-import { AuthStateManager } from "@/lib/AuthStateManager";
-import { TokenManager } from "@/lib/TokenManager";
+import { AuthStateManager } from "@/services/AuthStateManager";
+import { TokenManager } from "@/services/TokenManager";
 import {
   useGetCurrentUserQuery,
   useLoginMutation,
@@ -287,3 +287,4 @@ export function useReduxAuth() {
   }
   return context;
 }
+

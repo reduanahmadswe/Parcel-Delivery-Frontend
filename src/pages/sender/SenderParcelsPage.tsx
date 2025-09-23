@@ -14,12 +14,12 @@ import {
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
-import ProtectedRoute from "../../components/ProtectedRoute";
+import ProtectedRoute from "../../components/common/ProtectedRoute";
 import { useAuth } from "../../hooks/useAuth";
-import api from "../../lib/ApiConfiguration";
-import { formatDate, getStatusColor } from "../../lib/HelperUtilities";
+import api from "../../services/ApiConfiguration";
+import { formatDate, getStatusColor } from "../../utils/HelperUtilities";
 import { Parcel } from "../../types/GlobalTypeDefinitions";
-import FooterSection from "../sections/FooterSection";
+import FooterSection from "../public/sections/FooterSection";
 import ParcelDetailsModal from "./ParcelDetailsModal";
 
 interface ApiError {
@@ -741,3 +741,5 @@ export default function SenderParcelsPage() {
     </ProtectedRoute>
   );
 }
+
+

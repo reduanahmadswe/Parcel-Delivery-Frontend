@@ -25,3 +25,4 @@ export function ReduxProvider({ children }: ReduxProviderProps) {
     </Provider>
   );
 }
+

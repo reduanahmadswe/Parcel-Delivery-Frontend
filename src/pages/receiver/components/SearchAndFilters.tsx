@@ -99,3 +99,4 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
 };
 
 export default SearchAndFilters;
+

@@ -49,3 +49,4 @@ export interface SearchFilters {
     sortBy: string;
     sortOrder: "asc" | "desc";
 }
+

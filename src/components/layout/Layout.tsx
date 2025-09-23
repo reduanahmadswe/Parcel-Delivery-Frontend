@@ -1,4 +1,4 @@
-import ConditionalNavigation from "@/components/ConditionalNavigation";
+import ConditionalNavigation from "./ConditionalNavigation";
 import React from "react";
 
 interface LayoutProps {
@@ -13,3 +13,4 @@ export default function Layout({ children }: LayoutProps) {
     </div>
   );
 }
+

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-empty-object-type */
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/utils";
 import { Eye, EyeOff } from "lucide-react";
 import * as React from "react";
 
@@ -36,3 +36,4 @@ const Password = React.forwardRef<HTMLInputElement, PasswordProps>(
 Password.displayName = "Password";
 
 export default Password;
+

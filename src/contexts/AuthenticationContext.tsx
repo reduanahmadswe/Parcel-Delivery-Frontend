@@ -1,6 +1,6 @@
 "use client";
 
-import api from "@/lib/ApiConfiguration";
+import api from "@/services/ApiConfiguration";
 import { User } from "@/types/GlobalTypeDefinitions";
 import Cookies from "js-cookie";
 import React, { createContext, useContext, useEffect, useState } from "react";
@@ -143,3 +143,4 @@ export function useAuth() {
   }
   return context;
 }
+

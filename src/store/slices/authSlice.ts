@@ -1,4 +1,4 @@
-import { TokenManager } from '@/lib/TokenManager';
+import { TokenManager } from '@/services/TokenManager';
 import { User } from '@/types/GlobalTypeDefinitions';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
@@ -162,3 +162,4 @@ export const selectTokenSafe = (state: unknown) => {
     }
     return null;
 };
+

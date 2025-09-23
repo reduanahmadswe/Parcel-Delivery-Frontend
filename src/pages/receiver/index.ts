@@ -17,3 +17,4 @@ export { receiverUtils } from "./utils/receiverUtils";
 
 // Types
 export type { Parcel, ParcelStats, SearchFilters } from "./types";
+

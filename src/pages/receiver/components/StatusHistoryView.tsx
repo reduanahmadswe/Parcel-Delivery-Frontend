@@ -1,6 +1,6 @@
 "use client";
 
-import { formatDate, getStatusColor } from "@/lib/HelperUtilities";
+import { formatDate, getStatusColor } from "@/utils/HelperUtilities";
 import {
   Calendar,
   CheckCircle,
@@ -265,3 +265,4 @@ const StatusHistoryView: React.FC<StatusHistoryViewProps> = ({
 };
 
 export default StatusHistoryView;
+

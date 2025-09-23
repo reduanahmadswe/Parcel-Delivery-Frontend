@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import StatusBadge from "@/pages/admin/StatusIndicatorBadge";
+import StatusBadge from "@/components/common/StatusIndicatorBadge";
 import { Package, Clock, User, MapPin, AlertCircle, TrendingUp } from "lucide-react";
 
 interface RecentParcel {
@@ -204,3 +204,4 @@ export default function RecentParcelsTable({ parcels }: Props) {
         </div>
     );
 }
+

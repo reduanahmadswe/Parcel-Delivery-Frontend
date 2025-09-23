@@ -2,8 +2,8 @@
 
 // Main Parcel Management Component
 import AdminLayout from "@/pages/admin/AdminDashboardLayout";
-import ConfirmDialog from "@/pages/admin/ConfirmationDialog";
-import DataTable from "@/pages/admin/ReusableDataTable";
+import ConfirmDialog from "@/components/modals/ConfirmationDialog";
+import DataTable from "@/components/common/ReusableDataTable";
 import { Search } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { ParcelDataTransformer } from "./dataTransformer";
@@ -16,7 +16,7 @@ import {
 } from "./hooks";
 import { ParcelDetailsModal, StatusUpdateModal } from "./modals";
 import { createParcelColumns } from "./tableColumns";
-import { FilterParams, Parcel } from "./types";
+import { FilterParams, Parcel } from "../../../services/parcelTypes";
 
 export default function ParcelManagement() {
   // State management
@@ -431,3 +431,4 @@ export default function ParcelManagement() {
     </AdminLayout>
   );
 }
+

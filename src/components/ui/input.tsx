@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-empty-object-type */
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/utils";
 import * as React from "react";
 
 export interface InputProps
@@ -23,3 +23,4 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 Input.displayName = "Input";
 
 export { Input };
+

@@ -1,5 +1,5 @@
 /* eslint-disable prefer-const */
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/utils";
 import { AnimatePresence, motion } from "motion/react";
 
 import { useState } from "react";
@@ -116,3 +116,4 @@ export const CardDescription = ({
     </p>
   );
 };
+

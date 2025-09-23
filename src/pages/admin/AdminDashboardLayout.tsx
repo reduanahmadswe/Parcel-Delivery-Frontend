@@ -1,7 +1,7 @@
 import { useAuth } from "@/hooks/useAuth";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Navigation from "../MainNavigationBar";
+import Navigation from "../../components/layout/MainNavigationBar";
 
 interface AdminLayoutProps {
   children: React.ReactNode;

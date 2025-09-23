@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import React, { useState } from "react";
 import { toast } from "react-hot-toast";
-import { formatDate } from "../../../lib/HelperUtilities";
+import { formatDate } from "../../../utils/HelperUtilities";
 import { Parcel } from "../../../types/GlobalTypeDefinitions";
 import RatingStars from "./RatingStars";
 import StatusBadge from "./StatusBadge";
@@ -626,3 +626,4 @@ const ParcelDetailsModal: React.FC<ParcelDetailsModalProps> = ({
 };
 
 export default ParcelDetailsModal;
+

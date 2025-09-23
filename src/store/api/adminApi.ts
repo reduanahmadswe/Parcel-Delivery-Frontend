@@ -32,3 +32,4 @@ const injectedApi = apiSlice.injectEndpoints({
 export const { useGetAllUsersQuery, useGetAllParcelsQuery } = injectedApi;
 
 export default injectedApi;
+

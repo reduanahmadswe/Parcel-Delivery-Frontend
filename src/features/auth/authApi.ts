@@ -1,5 +1,5 @@
 import { AuthResponse, LoginCredentials, RegisterData, User } from '../../types';
-import { baseApi } from '../api';
+import { baseApi } from '../../services/featuresApi';
 
 export const authApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
@@ -56,3 +56,4 @@ export const {
     useGetProfileQuery,
     useUpdateProfileMutation,
 } = authApi
+

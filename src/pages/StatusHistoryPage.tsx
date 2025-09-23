@@ -21,7 +21,7 @@ import {
 import { Suspense, useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { Link, useLocation } from "react-router-dom";
-import api from "../lib/ApiConfiguration";
+import api from "../services/ApiConfiguration";
 
 interface StatusHistoryItem {
   status: string;
@@ -888,3 +888,4 @@ export default function StatusHistoryPage() {
     </Suspense>
   );
 }
+

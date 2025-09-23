@@ -6,7 +6,7 @@ import {
     Parcel,
     ParcelFilters,
 } from '../../types';
-import { baseApi } from '../api';
+import { baseApi } from '../../services/featuresApi';
 
 export const parcelsApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
@@ -89,3 +89,4 @@ export const {
     useDeleteParcelMutation,
     useGetDashboardStatsQuery,
 } = parcelsApi
+

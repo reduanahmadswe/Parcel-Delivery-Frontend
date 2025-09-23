@@ -1,10 +1,10 @@
 import { Eye, EyeOff, Mail, MapPin, Phone, Save, User } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
-import ProtectedRoute from "../components/ProtectedRoute";
+import ProtectedRoute from "../components/common/ProtectedRoute";
 import { useAuth } from "../hooks/useAuth";
-import api from "../lib/ApiConfiguration";
-import FooterSection from "./sections/FooterSection";
+import api from "../services/ApiConfiguration";
+import FooterSection from "./public/sections/FooterSection";
 
 interface UserProfile {
   name: string;
@@ -734,3 +734,4 @@ const ProfilePage: React.FC = () => {
 };
 
 export default ProfilePage;
+
