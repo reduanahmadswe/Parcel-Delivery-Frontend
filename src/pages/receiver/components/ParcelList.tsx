@@ -5,12 +5,14 @@ import {
   ChevronLeft,
   ChevronRight,
   Eye,
+  FileText,
   Package,
   Shield,
   Truck,
   User,
 } from "lucide-react";
 import React from "react";
+import { Link } from "react-router-dom";
 import RatingStars from "./RatingStars";
 import StatusBadge from "./StatusBadge";
 
@@ -207,6 +209,13 @@ const ParcelList: React.FC<ParcelListProps> = ({
                   </div>
 
                   <div className="flex flex-col gap-2 ml-4">
+                    <Link
+                      to={`/receiver/history?id=${parcel.trackingId}`}
+                      className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/40 rounded-lg transition-colors"
+                    >
+                      <FileText className="w-4 h-4" />
+                      Status History
+                    </Link>
                     <button
                       onClick={() => {
                         onViewDetails(parcel);

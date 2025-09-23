@@ -37,18 +37,24 @@ api.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        const refreshResponse = await api.post('/auth/refresh-token');
+          if ((import.meta as any).env?.DEV) console.debug('api: 401 received, attempting refresh-token');
+          const refreshResponse = await api.post('/auth/refresh-token');
 
-        // Update the access token if provided
-        if (refreshResponse.data?.accessToken) {
-          TokenManager.setTokens(
-            refreshResponse.data.accessToken,
-            TokenManager.getRefreshToken() || undefined
-          );
-        }
+          if ((import.meta as any).env?.DEV) console.debug('api: refresh-token response status', refreshResponse.status);
+          // Update the access token if provided
+          if (refreshResponse.data?.accessToken) {
+            if ((import.meta as any).env?.DEV) console.debug('api: refresh-token returned new access token');
+            TokenManager.setTokens(
+              refreshResponse.data.accessToken,
+              TokenManager.getRefreshToken() || undefined
+            );
+          }
 
-        return api(originalRequest);
-      } catch (refreshError) {
+          if ((import.meta as any).env?.DEV) console.debug('api: retrying original request after refresh');
+          return api(originalRequest);
+      } catch (refreshError: any) {
+          const status = refreshError && refreshError.response ? refreshError.response.status : null;
+          if ((import.meta as any).env?.DEV) console.debug('api: refresh-token failed', status ?? refreshError);
         // Refresh failed, redirect to login
         TokenManager.clearTokens();
         if (typeof window !== 'undefined') {

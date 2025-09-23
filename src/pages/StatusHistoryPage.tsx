@@ -78,13 +78,7 @@ function ParcelStatusHistoryContent() {
   const parcelId = searchParams.get("id");
   const [parcel, setParcel] = useState<ParcelDetails | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-
-  // Debug log for URL parameter
-  console.log("🔍 StatusHistoryPage loaded with:", {
-    url: location.pathname + location.search,
-    parcelId: parcelId,
-    searchParams: Object.fromEntries(searchParams.entries()),
-  });
+  const [missingId, setMissingId] = useState(false);
 
   // Helper function to extract date from MongoDB date format or regular string
   const extractDate = (dateInput: string | { $date: string }): Date => {
@@ -138,67 +132,73 @@ function ParcelStatusHistoryContent() {
   useEffect(() => {
     const fetchParcelStatusHistory = async () => {
       if (!parcelId) {
-        console.log("❌ No parcel ID provided");
-        toast.error("No parcel ID provided");
+          if ((import.meta as any).env?.DEV) console.debug("No parcel ID provided");
+        // show friendly UI instead of silently returning
+        setMissingId(true);
+        setIsLoading(false);
+        toast.error("No parcel ID provided. Please provide a tracking id in the URL (e.g. ?id=TRACKING_ID)");
         return;
       }
 
       try {
         setIsLoading(true);
-        console.log("🔍 Fetching status history for parcel ID:", parcelId);
+          if ((import.meta as any).env?.DEV) console.debug("Fetching status history for parcel ID:", parcelId);
 
         // Try multiple API endpoints to get parcel data
         let response;
         let parcelData = null;
 
-        // Method 1: Try original status-log endpoint
+        // 1) Common: try getting parcel by trackingId directly
         try {
-          console.log("📡 Trying endpoint: /parcels/${parcelId}/status-log");
-          response = await api.get(`/parcels/${parcelId}/status-log`);
-          console.log("✅ Status-log response:", response.data);
-          parcelData = response.data.data;
+          if ((import.meta as any).env?.DEV) console.debug(`Trying endpoint: /parcels/track/${parcelId}`);
+          response = await api.get(`/parcels/track/${parcelId}`);
+          if ((import.meta as any).env?.DEV) console.debug("Track response:", response.data);
+          parcelData = response.data.data || response.data;
         } catch (err) {
-          console.log("❌ Status-log endpoint failed:", err);
+          if ((import.meta as any).env?.DEV) console.debug("Track endpoint failed:", err);
         }
 
-        // Method 2: Try getting parcel by trackingId directly
+        // 2) Only try internal status-log endpoint when parcelId looks like an internal DB id (e.g., Mongo ObjectId)
         if (!parcelData) {
-          try {
-            console.log("📡 Trying endpoint: /parcels/track/${parcelId}");
-            response = await api.get(`/parcels/track/${parcelId}`);
-            console.log("✅ Track response:", response.data);
-            parcelData = response.data.data || response.data;
-          } catch (err) {
-            console.log("❌ Track endpoint failed:", err);
+          const looksLikeObjectId = typeof parcelId === 'string' && /^[0-9a-fA-F]{24}$/.test(parcelId);
+          if (looksLikeObjectId) {
+            try {
+              if ((import.meta as any).env?.DEV) console.debug(`Trying endpoint: /parcels/${parcelId}/status-log`);
+              response = await api.get(`/parcels/${parcelId}/status-log`);
+              if ((import.meta as any).env?.DEV) console.debug("Status-log response:", response.data);
+              parcelData = response.data.data;
+            } catch (err) {
+              if ((import.meta as any).env?.DEV) console.debug("Status-log endpoint failed:", err);
+            }
           }
         }
 
         // Method 3: Try getting from sender's parcels list
         if (!parcelData) {
           try {
-            console.log("📡 Trying to find parcel in sender list");
+              if ((import.meta as any).env?.DEV) console.debug("Trying to find parcel in sender list");
             response = await api.get("/parcels/me?limit=1000");
-            console.log("✅ Sender parcels response:", response.data);
+              if ((import.meta as any).env?.DEV) console.debug("Sender parcels response:", response.data);
             const allParcels = response.data.data || [];
             parcelData = allParcels.find(
               (p: any) =>
                 p.trackingId === parcelId || p.trackingNumber === parcelId
             );
-            console.log("🔍 Found parcel in list:", parcelData);
+              if ((import.meta as any).env?.DEV) console.debug("Found parcel in list:", parcelData);
           } catch (err) {
-            console.log("❌ Sender parcels endpoint failed:", err);
+              if ((import.meta as any).env?.DEV) console.debug("Sender parcels endpoint failed:", err);
           }
         }
 
         if (parcelData) {
-          console.log("🎉 Successfully found parcel data:", parcelData);
+            if ((import.meta as any).env?.DEV) console.debug("Successfully found parcel data:", parcelData);
 
           // Ensure statusHistory exists and is an array
           if (
             !parcelData.statusHistory ||
             !Array.isArray(parcelData.statusHistory)
           ) {
-            console.log("⚠️ No status history found, creating default entry");
+              if ((import.meta as any).env?.DEV) console.debug("No status history found, creating default entry");
             parcelData.statusHistory = [
               {
                 status: parcelData.currentStatus || "unknown",
@@ -211,11 +211,11 @@ function ParcelStatusHistoryContent() {
 
           setParcel(parcelData);
         } else {
-          console.log("❌ No parcel data found");
+            if ((import.meta as any).env?.DEV) console.debug("No parcel data found");
           toast.error("Parcel not found or access denied");
         }
       } catch (error) {
-        console.error("❌ Error fetching parcel status history:", error);
+          if ((import.meta as any).env?.DEV) console.debug("Error fetching parcel status history:", error);
         toast.error("Failed to load parcel status history");
       } finally {
         setIsLoading(false);
@@ -279,6 +279,25 @@ function ParcelStatusHistoryContent() {
           <p className="text-muted-foreground">
             Please wait while we fetch your parcel details...
           </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (missingId) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center max-w-lg">
+          <div className="bg-background rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-6 shadow-lg border border-border">
+            <Package className="h-12 w-12 text-muted-foreground" />
+          </div>
+          <h2 className="text-2xl font-bold text-foreground mb-3">No Tracking ID</h2>
+          <p className="text-muted-foreground mb-4">
+            This page expects a tracking id query parameter (eg. <code>?id=TRACKING_ID</code>). You can track a parcel from the <strong>Track</strong> page.
+          </p>
+          <Link to="/track" className="inline-flex items-center bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-3 rounded-lg">
+            Back to Track
+          </Link>
         </div>
       </div>
     );
