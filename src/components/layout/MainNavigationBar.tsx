@@ -1,5 +1,5 @@
 import ThemeToggle from "../ui/DarkLightThemeSwitcher";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "../../shared/hooks/useAuth";
 import {
   AlertTriangle,
   BarChart3,

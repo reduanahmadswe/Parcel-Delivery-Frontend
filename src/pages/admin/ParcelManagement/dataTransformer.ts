@@ -1,5 +1,5 @@
 // Data transformation utilities for Parcel Management
-import { ApiParcel, Parcel } from "../../../services/parcelTypes";
+import { ApiParcel, Parcel } from "../../../shared/services/parcelTypes";
 
 export class ParcelDataTransformer {
   /**

@@ -9,13 +9,13 @@ import {
   XCircle,
 } from "lucide-react";
 import { useState } from "react";
-import api from "../../services/ApiConfiguration";
+import api from "../../shared/services/ApiConfiguration";
 import {
   formatDate,
   getStatusColor,
   getStatusIcon,
-} from "../../utils/HelperUtilities";
-import { Parcel } from "../../types/GlobalTypeDefinitions";
+} from "../../shared/utils/HelperUtilities";
+import { Parcel } from "../../shared/types/GlobalTypeDefinitions";
 import FooterSection from "./sections/FooterSection";
 
 interface ApiError {

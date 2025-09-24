@@ -76,7 +76,7 @@ export default function DataTable<T extends Record<string, unknown>>({
 
   if (loading) {
     return (
-      <div className="bg-white dark:bg-slate-800 rounded-lg shadow">
+      <div className="bg-white dark:bg-black rounded-lg shadow">
         <div className="p-6">
           <div className="animate-pulse space-y-4">
             <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-1/4"></div>
@@ -96,19 +96,19 @@ export default function DataTable<T extends Record<string, unknown>>({
 
   return (
     <div
-      className={`bg-white dark:bg-slate-800 rounded-lg shadow ${className}`}
+      className={`bg-white dark:bg-black rounded-lg shadow ${className}`}
     >
       {/* Search Bar */}
       {searchable && (
-        <div className="p-4 border-b border-slate-200 dark:border-slate-700">
+        <div className="p-4 border-b border-slate-200 dark:border-slate-600">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 h-4 w-4" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 dark:text-slate-300 h-4 w-4" />
             <input
               type="text"
               placeholder={searchPlaceholder}
               value={searchQuery}
               onChange={(e) => handleSearch(e.target.value)}
-              className="pl-10 pr-4 py-2 w-full border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="pl-10 pr-4 py-2 w-full border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 placeholder-slate-500 dark:placeholder-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
         </div>
@@ -117,14 +117,14 @@ export default function DataTable<T extends Record<string, unknown>>({
       {/* Table */}
       <div className="overflow-x-auto">
         <table className="w-full">
-          <thead className="bg-slate-50 dark:bg-slate-700">
+          <thead className="bg-slate-50 dark:bg-slate-900">
             <tr>
               {columns.map((column) => (
                 <th
                   key={column.key}
-                  className={`px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider ${
+                  className={`px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-100 uppercase tracking-wider ${
                     column.sortable
-                      ? "cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-600"
+                      ? "cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800"
                       : ""
                   } ${column.className || ""}`}
                   onClick={() => column.sortable && handleSort(column.key)}
@@ -141,12 +141,12 @@ export default function DataTable<T extends Record<string, unknown>>({
               ))}
             </tr>
           </thead>
-          <tbody className="bg-white dark:bg-slate-800 divide-y divide-slate-200 dark:divide-slate-700">
+          <tbody className="bg-white dark:bg-black divide-y divide-slate-200 dark:divide-slate-600">
             {sortedData.length === 0 ? (
               <tr>
                 <td
                   colSpan={columns.length}
-                  className="px-6 py-12 text-center text-slate-500 dark:text-slate-400"
+                  className="px-6 py-12 text-center text-slate-500 dark:text-slate-200"
                 >
                   No data available
                 </td>
@@ -155,7 +155,7 @@ export default function DataTable<T extends Record<string, unknown>>({
               sortedData.map((row, index) => (
                 <tr
                   key={('id' in row && row.id) ? String(row.id) : `row-${index}`}
-                  className="hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+                  className="hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
                 >
                   {columns.map((column) => (
                     <td

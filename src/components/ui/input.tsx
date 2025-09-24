@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-empty-object-type */
-import { cn } from "@/utils/utils";
+import { cn } from "../../shared/utils/utils";
 import * as React from "react";
 
 export interface InputProps

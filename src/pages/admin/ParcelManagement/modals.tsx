@@ -1,6 +1,6 @@
 // Modal components for Parcel Management
-import Modal from "@/components/modals/ModalDialogComponent";
-import StatusBadge from "@/components/common/StatusIndicatorBadge";
+import Modal from "../../../components/modals/ModalDialogComponent";
+import StatusBadge from "../../../components/common/StatusIndicatorBadge";
 import {
   Clock,
   MapPin,
@@ -10,7 +10,7 @@ import {
   Truck,
   User,
 } from "lucide-react";
-import { Parcel, STATUS_OPTIONS } from "../../../services/parcelTypes";
+import { Parcel, STATUS_OPTIONS } from "../../../shared/services/parcelTypes";
 
 interface ParcelDetailsModalProps {
   isOpen: boolean;
@@ -36,7 +36,7 @@ export function ParcelDetailsModal({
     >
       <div className="space-y-8">
         {/* Enhanced Header Section */}
-        <div className="relative overflow-hidden bg-gradient-to-br from-red-50 via-orange-50 to-purple-50 dark:from-red-900/20 dark:via-orange-900/20 dark:to-purple-900/20 rounded-3xl p-8 border border-red-200/30 dark:border-red-700/20">
+        <div className="relative overflow-hidden bg-gradient-to-br from-red-50 via-orange-50 to-purple-50 dark:from-black dark:via-slate-900 dark:to-slate-800 rounded-3xl p-8 border border-red-200/30 dark:border-slate-600/20">
           <div className="absolute inset-0 bg-gradient-to-r from-red-500/5 to-orange-500/5"></div>
           <div className="relative">
             <div className="flex items-center justify-between mb-6">

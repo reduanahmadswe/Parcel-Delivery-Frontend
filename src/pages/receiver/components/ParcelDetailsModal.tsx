@@ -17,8 +17,8 @@ import {
 } from "lucide-react";
 import React, { useState } from "react";
 import { toast } from "react-hot-toast";
-import { formatDate } from "../../../utils/HelperUtilities";
-import { Parcel } from "../../../types/GlobalTypeDefinitions";
+import { formatDate } from "../../../shared/utils/HelperUtilities";
+import { Parcel } from "../../../shared/types/GlobalTypeDefinitions";
 import RatingStars from "./RatingStars";
 import StatusBadge from "./StatusBadge";
 import StatusHistoryView from "./StatusHistoryView";

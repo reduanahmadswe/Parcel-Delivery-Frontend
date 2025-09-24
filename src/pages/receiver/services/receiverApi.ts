@@ -1,4 +1,4 @@
-import api from "@/services/api";
+import api from "../../../shared/services/api";
 import { Parcel } from "@/types/GlobalTypeDefinitions";
 
 interface PaginationInfo {

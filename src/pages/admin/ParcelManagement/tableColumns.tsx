@@ -1,6 +1,6 @@
 // Table columns configuration for Parcel Management
-import { Column } from "@/components/common/ReusableDataTable";
-import StatusBadge from "@/components/common/StatusIndicatorBadge";
+import { Column } from "../../../components/common/ReusableDataTable";
+import StatusBadge from "../../../components/common/StatusIndicatorBadge";
 import {
   Clock,
   Edit,
@@ -15,7 +15,7 @@ import {
   UserPlus,
 } from "lucide-react";
 import { useState } from "react";
-import { Parcel } from "../../../services/parcelTypes";
+import { Parcel } from "../../../shared/services/parcelTypes";
 
 interface ParcelActionsProps {
   parcel: Parcel;

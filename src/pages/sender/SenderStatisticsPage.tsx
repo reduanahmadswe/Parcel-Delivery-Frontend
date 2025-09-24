@@ -4,9 +4,9 @@ import { BarChart3, Calendar, Package, Truck } from "lucide-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import ProtectedRoute from "../../components/common/ProtectedRoute";
-import { useAuth } from "../../hooks/useAuth";
-import api from "../../services/ApiConfiguration";
-import { Parcel } from "../../types/GlobalTypeDefinitions";
+import { useAuth } from "../../shared/hooks/useAuth";
+import api from "../../shared/services/ApiConfiguration";
+import { Parcel } from "../../shared/types/GlobalTypeDefinitions";
 import FooterSection from "../public/sections/FooterSection";
 
 interface ApiError {

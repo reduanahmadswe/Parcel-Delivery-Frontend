@@ -1,5 +1,5 @@
 /* eslint-disable prefer-const */
-import { cn } from "@/utils/utils";
+import { cn } from "../../shared/utils/utils";
 import { AnimatePresence, motion } from "motion/react";
 
 import { useState } from "react";

@@ -1,9 +1,9 @@
 "use client";
 
 // Main Parcel Management Component
-import AdminLayout from "@/pages/admin/AdminDashboardLayout";
-import ConfirmDialog from "@/components/modals/ConfirmationDialog";
-import DataTable from "@/components/common/ReusableDataTable";
+import AdminLayout from "../AdminDashboardLayout";
+import ConfirmDialog from "../../../components/modals/ConfirmationDialog";
+import DataTable from "../../../components/common/ReusableDataTable";
 import { Search } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { ParcelDataTransformer } from "./dataTransformer";
@@ -16,7 +16,7 @@ import {
 } from "./hooks";
 import { ParcelDetailsModal, StatusUpdateModal } from "./modals";
 import { createParcelColumns } from "./tableColumns";
-import { FilterParams, Parcel } from "../../../services/parcelTypes";
+import { FilterParams, Parcel } from "../../../shared/services/parcelTypes";
 
 export default function ParcelManagement() {
   // State management
@@ -344,7 +344,7 @@ export default function ParcelManagement() {
             <div className="absolute inset-0 bg-gradient-to-br from-red-500/5 via-orange-500/5 to-purple-500/5 opacity-50"></div>
             <div className="relative">
               {/* Table Header Enhancement */}
-              <div className="bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-900/20 dark:to-orange-900/20 border-b border-border/50 p-6 rounded-t-3xl">
+              <div className="bg-gradient-to-r from-red-50 to-orange-50 dark:from-black dark:to-slate-900 border-b border-border/50 p-6 rounded-t-3xl">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-4">
                     <div className="w-12 h-12 bg-gradient-to-r from-red-500 to-orange-500 rounded-2xl flex items-center justify-center shadow-lg">

@@ -1,7 +1,7 @@
 "use client";
 
 import ProtectedRoute from "@/components/common/ProtectedRoute";
-import api from "@/services/ApiConfiguration";
+import api from "../../shared/services/ApiConfiguration";
 import { ArrowLeft, Calculator, Package } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
@@ -10,7 +10,7 @@ import {
   getCitiesList,
   getDivisionsByCity,
   getPostalCodesByDivision,
-} from "../../constants/bangladeshData";
+} from "../../shared/constants/bangladeshData";
 import FooterSection from "../public/sections/FooterSection";
 
 export default function CreateParcelPage() {
