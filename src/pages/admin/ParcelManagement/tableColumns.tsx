@@ -14,7 +14,7 @@ import {
   Trash2,
   UserPlus,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Parcel } from "../../../shared/services/parcelTypes";
 
 interface ParcelActionsProps {
@@ -43,66 +43,115 @@ function ParcelActionsColumn({
   onDeleteClick,
 }: ParcelActionsProps) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setDropdownOpen(false);
+      }
+    };
+
+    if (dropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [dropdownOpen]);
   return (
-    <div className="flex items-center space-x-1">
+    <div className="flex items-center space-x-2 opacity-100">
       <button
-        onClick={() => onDetailsClick(parcel)}
-        className="group p-2 rounded-lg text-gray-500 hover:text-red-600 hover:bg-gradient-to-br hover:from-red-50 hover:to-red-100 dark:hover:bg-red-900/20 transition-all duration-200"
+        onClick={(e) => {
+          e.stopPropagation();
+          onDetailsClick(parcel);
+        }}
+        className="group relative p-3 text-purple-600 hover:text-white rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/25 hover:-translate-y-0.5 overflow-hidden z-10"
         title="View Details"
       >
-        <Eye className="h-4 w-4 group-hover:scale-110 transition-transform duration-200" />
+        <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
+        <Eye className="h-4 w-4 relative z-10 group-hover:scale-110 transition-transform duration-300" />
       </button>
       <button
-        onClick={() => onEditClick(parcel)}
-        className="group p-2 rounded-lg text-gray-500 hover:text-green-600 hover:bg-gradient-to-br hover:from-green-50 hover:to-green-100 dark:hover:bg-green-900/20 transition-all duration-200"
+        onClick={(e) => {
+          e.stopPropagation();
+          onEditClick(parcel);
+        }}
+        className="group relative p-3 text-green-600 hover:text-white rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-green-500/25 hover:-translate-y-0.5 overflow-hidden z-10"
         title="Edit Parcel"
       >
-        <Edit className="h-4 w-4 group-hover:scale-110 transition-transform duration-200" />
+        <div className="absolute inset-0 bg-gradient-to-r from-green-500 to-green-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
+        <Edit className="h-4 w-4 relative z-10 group-hover:scale-110 transition-transform duration-300" />
       </button>
       <button
-        onClick={() => onStatusClick(parcel)}
-        className="group p-2 rounded-lg text-gray-500 hover:text-orange-600 hover:bg-gradient-to-br hover:from-orange-50 hover:to-orange-100 dark:hover:bg-orange-900/20 transition-all duration-200"
+        onClick={(e) => {
+          e.stopPropagation();
+          onStatusClick(parcel);
+        }}
+        className="group relative p-3 text-orange-600 hover:text-white rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-orange-500/25 hover:-translate-y-0.5 overflow-hidden z-10"
         title="Update Status"
       >
-        <RefreshCw className="h-4 w-4 group-hover:rotate-180 transition-all duration-300" />
+        <div className="absolute inset-0 bg-gradient-to-r from-orange-500 to-orange-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
+        <RefreshCw className="h-4 w-4 relative z-10 group-hover:rotate-180 transition-all duration-500" />
       </button>
       <button
-        onClick={() => onFlagClick(parcel)}
-        className={`group p-2 rounded-lg transition-all duration-200 ${
+        onClick={(e) => {
+          e.stopPropagation();
+          onFlagClick(parcel);
+        }}
+        className={`group relative p-3 rounded-xl transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 overflow-hidden z-10 ${
           parcel?.isFlagged
-            ? "text-red-600 bg-red-50 dark:bg-red-900/20 hover:text-red-700 hover:bg-red-100 dark:hover:bg-red-900/30"
-            : "text-gray-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
+            ? "text-white bg-gradient-to-r from-red-500 to-red-600 shadow-md shadow-red-500/25"
+            : "text-red-600 hover:text-white hover:shadow-red-500/25"
         }`}
         title={parcel?.isFlagged ? "Unflag Parcel" : "Flag Parcel"}
       >
+        {!parcel?.isFlagged && (
+          <div className="absolute inset-0 bg-gradient-to-r from-red-500 to-red-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
+        )}
         <Flag
-          className={`h-4 w-4 group-hover:scale-110 transition-all duration-200 ${
-            parcel?.isFlagged ? "fill-current" : ""
+          className={`h-4 w-4 relative z-10 group-hover:scale-110 transition-all duration-300 ${
+            parcel?.isFlagged ? "fill-current animate-pulse" : ""
           }`}
         />
       </button>
       <button
-        onClick={() => onHoldClick(parcel)}
-        className={`group p-2 rounded-lg transition-all duration-200 ${
+        onClick={(e) => {
+          e.stopPropagation();
+          onHoldClick(parcel);
+        }}
+        className={`group relative p-3 rounded-xl transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 overflow-hidden z-10 ${
           parcel?.isOnHold
-            ? "text-orange-600 bg-orange-50 dark:bg-orange-900/20 hover:text-orange-700 hover:bg-orange-100 dark:hover:bg-orange-900/30"
-            : "text-gray-500 hover:text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-900/20"
+            ? "text-white bg-gradient-to-r from-amber-500 to-amber-600 shadow-md shadow-amber-500/25"
+            : "text-amber-600 hover:text-white hover:shadow-amber-500/25"
         }`}
         title={parcel?.isOnHold ? "Release Hold" : "Put on Hold"}
       >
-        <Lock className="h-4 w-4 group-hover:scale-110 transition-all duration-200" />
+        {!parcel?.isOnHold && (
+          <div className="absolute inset-0 bg-gradient-to-r from-amber-500 to-amber-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
+        )}
+        <Lock className={`h-4 w-4 relative z-10 group-hover:scale-110 transition-all duration-300 ${parcel?.isOnHold ? 'animate-pulse' : ''}`} />
       </button>
-      <div className="relative">
+      <div className="relative inline-block" ref={dropdownRef}>
         <button
-          className="p-2 rounded-lg text-gray-500 hover:text-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-200"
+          className="p-2 rounded-lg text-gray-500 hover:text-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-200 relative z-20"
           title="More Actions"
-          onClick={() => setDropdownOpen((open) => !open)}
+          onClick={(e) => {
+            e.stopPropagation();
+            setDropdownOpen((open) => !open);
+          }}
         >
           <MoreVertical className="h-4 w-4" />
         </button>
         {dropdownOpen && (
-          <div className="absolute right-0 z-10 mt-2 w-56 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl rounded-xl shadow-2xl border border-gray-200/50 dark:border-gray-700/50 transition-all duration-300 transform">
-            <div className="p-2">
+          <>
+            <div 
+              className="fixed inset-0 z-40" 
+              onClick={() => setDropdownOpen(false)}
+            />
+            <div className="absolute right-0 top-full z-50 mt-1 w-56 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl rounded-xl shadow-2xl border border-gray-200/50 dark:border-gray-700/50 transition-all duration-300 transform origin-top-right">
+              <div className="p-2">
               <button
                 onClick={() => {
                   onAssignClick(parcel);
@@ -154,6 +203,7 @@ function ParcelActionsColumn({
               </button>
             </div>
           </div>
+          </>
         )}
       </div>
     </div>

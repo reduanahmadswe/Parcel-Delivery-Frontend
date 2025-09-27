@@ -127,11 +127,98 @@ export default function AdminDashboard() {
                 </div>
 
                 <div className="flex items-center space-x-2">
-                  <button onClick={() => setCurrentPage((p) => Math.max(1, p - 1))} disabled={currentPage === 1} className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200 ${currentPage > 1 ? 'bg-muted hover:bg-muted/80 text-foreground' : 'bg-muted/50 text-muted-foreground cursor-not-allowed'}`}>Previous</button>
+                  <button 
+                    onClick={() => setCurrentPage((p) => Math.max(1, p - 1))} 
+                    disabled={currentPage === 1} 
+                    className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200 ${currentPage > 1 ? 'bg-muted hover:bg-muted/80 text-foreground' : 'bg-muted/50 text-muted-foreground cursor-not-allowed'}`}
+                  >
+                    Previous
+                  </button>
 
-                  <div className="flex items-center space-x-1">{Array.from({ length: totalPages }, (_, i) => i + 1).filter((page) => page >= Math.max(1, currentPage - 2) && page <= Math.min(totalPages, currentPage + 2)).map((page) => (<button key={page} onClick={() => setCurrentPage(page)} className={`px-3 py-2 rounded-lg text-sm font-medium ${page === currentPage ? 'bg-red-600 text-white' : 'bg-muted hover:bg-muted/80 text-foreground'}`}>{page}</button>))}</div>
+                  {/* Smart Pagination - Show only 4 pages at a time */}
+                  <div className="flex items-center space-x-1">
+                    {(() => {
+                      const maxVisiblePages = 4;
+                      let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+                      let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+                      
+                      // Adjust start page if we're near the end
+                      if (endPage - startPage + 1 < maxVisiblePages) {
+                        startPage = Math.max(1, endPage - maxVisiblePages + 1);
+                      }
 
-                  <button onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages} className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200 ${currentPage < totalPages ? 'bg-muted hover:bg-muted/80 text-foreground' : 'bg-muted/50 text-muted-foreground cursor-not-allowed'}`}>Next</button>
+                      const pages = [];
+                      
+                      // Show first page if not in range
+                      if (startPage > 1) {
+                        pages.push(
+                          <button
+                            key={1}
+                            onClick={() => setCurrentPage(1)}
+                            className="px-3 py-2 rounded-lg text-sm font-medium bg-muted hover:bg-muted/80 text-foreground transition-colors duration-200"
+                          >
+                            1
+                          </button>
+                        );
+                        
+                        if (startPage > 2) {
+                          pages.push(
+                            <span key="dots-start" className="px-2 text-muted-foreground text-sm">
+                              ...
+                            </span>
+                          );
+                        }
+                      }
+
+                      // Show visible page range
+                      for (let page = startPage; page <= endPage; page++) {
+                        pages.push(
+                          <button
+                            key={page}
+                            onClick={() => setCurrentPage(page)}
+                            className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200 ${
+                              page === currentPage 
+                                ? 'bg-red-600 text-white shadow-lg' 
+                                : 'bg-muted hover:bg-muted/80 text-foreground'
+                            }`}
+                          >
+                            {page}
+                          </button>
+                        );
+                      }
+
+                      // Show last page if not in range
+                      if (endPage < totalPages) {
+                        if (endPage < totalPages - 1) {
+                          pages.push(
+                            <span key="dots-end" className="px-2 text-muted-foreground text-sm">
+                              ...
+                            </span>
+                          );
+                        }
+                        
+                        pages.push(
+                          <button
+                            key={totalPages}
+                            onClick={() => setCurrentPage(totalPages)}
+                            className="px-3 py-2 rounded-lg text-sm font-medium bg-muted hover:bg-muted/80 text-foreground transition-colors duration-200"
+                          >
+                            {totalPages}
+                          </button>
+                        );
+                      }
+
+                      return pages;
+                    })()}
+                  </div>
+
+                  <button 
+                    onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))} 
+                    disabled={currentPage === totalPages} 
+                    className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200 ${currentPage < totalPages ? 'bg-muted hover:bg-muted/80 text-foreground' : 'bg-muted/50 text-muted-foreground cursor-not-allowed'}`}
+                  >
+                    Next
+                  </button>
                 </div>
               </div>
             </div>

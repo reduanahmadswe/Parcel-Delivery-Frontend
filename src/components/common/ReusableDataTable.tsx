@@ -155,7 +155,7 @@ export default function DataTable<T extends Record<string, unknown>>({
               sortedData.map((row, index) => (
                 <tr
                   key={('id' in row && row.id) ? String(row.id) : `row-${index}`}
-                  className="hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                  className="group/row hover:bg-gradient-to-r hover:from-red-50/30 hover:to-orange-50/30 dark:hover:from-red-950/20 dark:hover:to-orange-950/20 transition-all duration-300 hover:shadow-lg hover:shadow-red-500/5 border border-transparent hover:border-red-100/50 dark:hover:border-red-900/30 isolate"
                 >
                   {columns.map((column) => (
                     <td

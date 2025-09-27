@@ -218,5 +218,45 @@ export class ParcelDataTransformer {
       );
     });
   }
+
+  /**
+   * Filter parcels based on advanced filter parameters
+   */
+  static filterParcelsByParams(parcels: Parcel[], filterParams: import("../../../shared/services/parcelTypes").FilterParams): Parcel[] {
+    return parcels.filter((parcel) => {
+      // Filter by tracking number (exact or partial match)
+      if (filterParams.trackingNumber && filterParams.trackingNumber.trim()) {
+        const trackingLower = filterParams.trackingNumber.toLowerCase().trim();
+        if (!parcel.trackingNumber?.toLowerCase().includes(trackingLower)) {
+          return false;
+        }
+      }
+
+      // Filter by sender email
+      if (filterParams.senderEmail && filterParams.senderEmail.trim()) {
+        const senderEmailLower = filterParams.senderEmail.toLowerCase().trim();
+        if (!parcel.senderEmail?.toLowerCase().includes(senderEmailLower)) {
+          return false;
+        }
+      }
+
+      // Filter by receiver email
+      if (filterParams.receiverEmail && filterParams.receiverEmail.trim()) {
+        const receiverEmailLower = filterParams.receiverEmail.toLowerCase().trim();
+        if (!parcel.recipientEmail?.toLowerCase().includes(receiverEmailLower)) {
+          return false;
+        }
+      }
+
+      // Filter by status
+      if (filterParams.status && filterParams.status.trim()) {
+        if (parcel.status !== filterParams.status) {
+          return false;
+        }
+      }
+
+      return true;
+    });
+  }
 }
 

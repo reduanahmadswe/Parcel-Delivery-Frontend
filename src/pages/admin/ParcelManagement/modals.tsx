@@ -35,29 +35,31 @@ export function ParcelDetailsModal({
       size="xl"
     >
       <div className="space-y-8">
-        {/* Enhanced Header Section */}
-        <div className="relative overflow-hidden bg-gradient-to-br from-red-50 via-orange-50 to-purple-50 dark:from-black dark:via-slate-900 dark:to-slate-800 rounded-3xl p-8 border border-red-200/30 dark:border-slate-600/20">
-          <div className="absolute inset-0 bg-gradient-to-r from-red-500/5 to-orange-500/5"></div>
+        {/* Modern Enhanced Header Section */}
+        <div className="group relative overflow-hidden bg-gradient-to-br from-red-50/80 via-orange-50/80 to-purple-50/80 dark:from-black/80 dark:via-slate-900/80 dark:to-slate-800/80 backdrop-blur-sm rounded-3xl p-8 border border-red-200/30 dark:border-slate-600/20 hover:shadow-2xl hover:shadow-red-500/10 transition-all duration-500">
+          <div className="absolute inset-0 bg-gradient-to-r from-red-500/5 to-orange-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
           <div className="relative">
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center space-x-4">
-                <div className="w-16 h-16 bg-gradient-to-r from-red-500 to-orange-500 rounded-3xl flex items-center justify-center shadow-xl">
-                  <Package className="h-8 w-8 text-white" />
+                <div className="w-20 h-20 bg-gradient-to-r from-red-500 to-orange-500 rounded-3xl flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform duration-300">
+                  <Package className="h-10 w-10 text-white" />
                 </div>
                 <div>
-                  <h2 className="text-3xl font-bold bg-gradient-to-r from-red-600 to-orange-600 dark:from-red-400 dark:to-orange-400 bg-clip-text text-transparent">
+                  <h2 className="text-4xl font-bold bg-gradient-to-r from-red-600 to-orange-600 dark:from-red-400 dark:to-orange-400 bg-clip-text text-transparent">
                     Parcel #{parcel.trackingNumber}
                   </h2>
-                  <p className="text-muted-foreground text-lg">
-                    Complete parcel information and status
+                  <p className="text-muted-foreground text-lg mt-2">
+                    Complete parcel information and real-time status
                   </p>
                 </div>
               </div>
-              <div className="flex items-center space-x-3">
-                <StatusBadge status={parcel?.status} variant="parcel" />
+              <div className="flex items-center space-x-4">
+                <div className="group relative">
+                  <StatusBadge status={parcel?.status} variant="parcel" />
+                </div>
                 {parcel.isUrgent && (
-                  <span className="inline-flex items-center px-4 py-2 rounded-2xl text-sm font-bold bg-gradient-to-r from-red-100 to-red-200 text-red-800 dark:from-red-900/50 dark:to-red-800/50 dark:text-red-200 border border-red-300 dark:border-red-600 shadow-lg">
-                    <Star className="w-4 h-4 mr-2 fill-current animate-pulse" />
+                  <span className="group inline-flex items-center px-6 py-3 rounded-2xl text-sm font-bold bg-gradient-to-r from-red-100 to-red-200 text-red-800 dark:from-red-900/50 dark:to-red-800/50 dark:text-red-200 border border-red-300 dark:border-red-600 shadow-lg hover:shadow-xl hover:shadow-red-500/20 transition-all duration-300 hover:-translate-y-0.5">
+                    <Star className="w-5 h-5 mr-2 fill-current animate-pulse" />
                     Urgent Priority
                   </span>
                 )}
@@ -66,19 +68,19 @@ export function ParcelDetailsModal({
           </div>
         </div>
 
-        {/* Modern Basic Information Card */}
-        <div className="relative overflow-hidden bg-card/80 backdrop-blur-xl border border-border/50 rounded-3xl p-8 shadow-xl">
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-indigo-500/5"></div>
+        {/* Modern Enhanced Basic Information Card */}
+        <div className="group relative overflow-hidden bg-card/80 backdrop-blur-xl border border-border/50 rounded-3xl p-8 shadow-xl hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-500 hover:-translate-y-1">
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-indigo-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
           <div className="relative">
             <div className="flex items-center space-x-4 mb-8">
-              <div className="w-14 h-14 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-2xl flex items-center justify-center shadow-lg">
-                <Shield className="h-7 w-7 text-white" />
+              <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-3xl flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform duration-300">
+                <Shield className="h-8 w-8 text-white" />
               </div>
               <div>
-                <h3 className="text-2xl font-bold text-foreground">
+                <h3 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
                   📋 Basic Information
                 </h3>
-                <p className="text-muted-foreground">
+                <p className="text-muted-foreground text-lg">
                   Core parcel details and specifications
                 </p>
               </div>

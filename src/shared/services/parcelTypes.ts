@@ -212,6 +212,7 @@ export interface FilterParams {
     senderEmail: string;
     receiverEmail: string;
     status: string;
+    trackingNumber: string;
 }
 
 export const STATUS_OPTIONS = [

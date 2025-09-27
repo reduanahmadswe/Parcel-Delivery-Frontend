@@ -179,39 +179,47 @@ export default function AdminUsersPage() {
         <div className="flex items-center gap-2">
           <button
             onClick={() => handleViewUser(user)}
-            className="p-2 text-purple-600 hover:bg-purple-100 dark:hover:bg-purple-900/30 rounded-lg transition-colors"
+            className="group relative p-3 text-purple-600 hover:text-white rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/25 hover:-translate-y-0.5 overflow-hidden"
             title="View User Details"
           >
-            <Eye className="h-4 w-4" />
+            <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
+            <Eye className="h-4 w-4 relative z-10 group-hover:scale-110 transition-transform duration-300" />
           </button>
           <button
             onClick={() => handleEditUser(user)}
-            className="p-2 text-blue-600 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-lg transition-colors"
+            className="group relative p-3 text-blue-600 hover:text-white rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/25 hover:-translate-y-0.5 overflow-hidden"
             title="Edit User"
           >
-            <Edit className="h-4 w-4" />
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
+            <Edit className="h-4 w-4 relative z-10 group-hover:scale-110 transition-transform duration-300" />
           </button>
           <button
             onClick={() => handleBlockUser(user)}
-            className={`p-2 rounded-lg transition-colors ${
+            className={`group relative p-3 rounded-xl transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 overflow-hidden ${
               user.status === "blocked"
-                ? "text-green-600 hover:bg-green-100 dark:hover:bg-green-900/30"
-                : "text-red-600 hover:bg-red-100 dark:hover:bg-red-900/30"
+                ? "text-green-600 hover:text-white hover:shadow-green-500/25"
+                : "text-red-600 hover:text-white hover:shadow-red-500/25"
             }`}
             title={user.status === "blocked" ? "Unblock User" : "Block User"}
           >
+            <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl ${
+              user.status === "blocked"
+                ? "bg-gradient-to-r from-green-500 to-green-600"
+                : "bg-gradient-to-r from-red-500 to-red-600"
+            }`}></div>
             {user.status === "blocked" ? (
-              <Power className="h-4 w-4" />
+              <Power className="h-4 w-4 relative z-10 group-hover:scale-110 transition-transform duration-300" />
             ) : (
-              <PowerOff className="h-4 w-4" />
+              <PowerOff className="h-4 w-4 relative z-10 group-hover:scale-110 transition-transform duration-300" />
             )}
           </button>
           <button
             onClick={() => handleDeleteUser(user)}
-            className="p-2 text-red-600 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-lg transition-colors"
+            className="group relative p-3 text-red-600 hover:text-white rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-red-500/25 hover:-translate-y-0.5 overflow-hidden"
             title="Delete User"
           >
-            <Trash2 className="h-4 w-4" />
+            <div className="absolute inset-0 bg-gradient-to-r from-red-500 to-red-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
+            <Trash2 className="h-4 w-4 relative z-10 group-hover:scale-110 transition-transform duration-300" />
           </button>
         </div>
       ),
@@ -220,8 +228,8 @@ export default function AdminUsersPage() {
 
   return (
     <AdminLayout>
-      <div className="min-h-screen bg-background mt-8">
-        <div className="max-w-7xl mx-auto pt-2 px-6 space-y-6 pb-24">
+      <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 mt-8">
+        <div className="max-w-7xl mx-auto pt-2 px-6 space-y-8 pb-24">
           {/* Header with stats */}
           <UserManagementHeader
             searchTerm={searchTerm}
@@ -233,57 +241,141 @@ export default function AdminUsersPage() {
             onCreateUser={handleCreateUser}
           />
 
-          {/* Users Table */}
-          <div className="bg-background border border-border rounded-lg">
-            <DataTable
-              columns={columns}
-              data={paginatedUsers}
-              searchTerm={searchTerm}
-              onSearchChange={handleSearchChange}
-            />
-          </div>
+          {/* Modern Users Grid */}
+          <DataTable
+            columns={columns}
+            data={paginatedUsers}
+            searchTerm={searchTerm}
+            onSearchChange={handleSearchChange}
+          />
 
-          {/* Pagination */}
+          {/* Modern Pagination */}
           {filteredUsers.length > 0 && (
-            <div className="px-6 py-4 border-t border-border bg-gradient-to-r from-red-50/10 via-transparent to-green-50/10 dark:from-red-950/5 dark:to-green-950/5 rounded-b-xl">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <p className="text-sm text-muted-foreground">
-                    Showing {(currentPage - 1) * itemsPerPage + 1} to {Math.min(currentPage * itemsPerPage, filteredUsers.length)} of {filteredUsers.length} users
-                  </p>
-                </div>
-
-                <div className="flex items-center space-x-2">
-                  <button 
-                    onClick={() => setCurrentPage((p) => Math.max(1, p - 1))} 
-                    disabled={currentPage === 1} 
-                    className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200 ${currentPage > 1 ? 'bg-muted hover:bg-muted/80 text-foreground' : 'bg-muted/50 text-muted-foreground cursor-not-allowed'}`}
-                  >
-                    Previous
-                  </button>
-
-                  <div className="flex items-center space-x-1">
-                    {Array.from({ length: totalPages }, (_, i) => i + 1)
-                      .filter((page) => page >= Math.max(1, currentPage - 2) && page <= Math.min(totalPages, currentPage + 2))
-                      .map((page) => (
-                        <button 
-                          key={page} 
-                          onClick={() => setCurrentPage(page)} 
-                          className={`px-3 py-2 rounded-lg text-sm font-medium ${page === currentPage ? 'bg-red-600 text-white' : 'bg-muted hover:bg-muted/80 text-foreground'}`}
-                        >
-                          {page}
-                        </button>
-                      ))
-                    }
+            <div className="relative overflow-hidden rounded-2xl bg-background/80 backdrop-blur-sm border border-border/50 shadow-lg">
+              <div className="absolute inset-0 bg-gradient-to-r from-red-500/5 via-transparent to-blue-500/5"></div>
+              <div className="relative px-8 py-6">
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                  <div className="flex items-center gap-4">
+                    <p className="text-sm text-muted-foreground font-medium">
+                      Showing <span className="text-foreground font-bold">{(currentPage - 1) * itemsPerPage + 1}</span> to{" "}
+                      <span className="text-foreground font-bold">{Math.min(currentPage * itemsPerPage, filteredUsers.length)}</span> of{" "}
+                      <span className="text-foreground font-bold">{filteredUsers.length}</span> users
+                    </p>
                   </div>
 
-                  <button 
-                    onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))} 
-                    disabled={currentPage === totalPages} 
-                    className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200 ${currentPage < totalPages ? 'bg-muted hover:bg-muted/80 text-foreground' : 'bg-muted/50 text-muted-foreground cursor-not-allowed'}`}
-                  >
-                    Next
-                  </button>
+                  <div className="flex items-center space-x-2">
+                    <button 
+                      onClick={() => setCurrentPage((p) => Math.max(1, p - 1))} 
+                      disabled={currentPage === 1} 
+                      className={`group relative px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 overflow-hidden ${
+                        currentPage > 1 
+                          ? 'bg-background/80 backdrop-blur-sm hover:bg-background border border-border/50 hover:border-red-500/30 text-foreground hover:shadow-lg hover:shadow-red-500/10 hover:-translate-y-0.5' 
+                          : 'bg-muted/50 text-muted-foreground cursor-not-allowed'
+                      }`}
+                    >
+                      {currentPage > 1 && (
+                        <div className="absolute inset-0 bg-gradient-to-r from-red-500/0 to-red-600/0 group-hover:from-red-500/10 group-hover:to-red-600/10 transition-all duration-300"></div>
+                      )}
+                      <span className="relative z-10">Previous</span>
+                    </button>
+
+                    <div className="flex items-center space-x-1">
+                      {/* Smart Pagination - Show only 4 pages at a time */}
+                      {(() => {
+                        const maxVisiblePages = 4;
+                        let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+                        let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+                        
+                        // Adjust start page if we're near the end
+                        if (endPage - startPage + 1 < maxVisiblePages) {
+                          startPage = Math.max(1, endPage - maxVisiblePages + 1);
+                        }
+
+                        const pages = [];
+                        
+                        // Show first page if not in range
+                        if (startPage > 1) {
+                          pages.push(
+                            <button
+                              key={1}
+                              onClick={() => setCurrentPage(1)}
+                              className="group relative px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 overflow-hidden bg-background/80 backdrop-blur-sm hover:bg-background border border-border/50 hover:border-red-500/30 text-foreground hover:shadow-lg hover:shadow-red-500/10 hover:-translate-y-0.5"
+                            >
+                              <div className="absolute inset-0 bg-gradient-to-r from-red-500/0 to-red-600/0 group-hover:from-red-500/10 group-hover:to-red-600/10 transition-all duration-300"></div>
+                              <span className="relative z-10">1</span>
+                            </button>
+                          );
+                          
+                          if (startPage > 2) {
+                            pages.push(
+                              <span key="dots-start" className="px-2 text-muted-foreground font-medium">
+                                ...
+                              </span>
+                            );
+                          }
+                        }
+
+                        // Show visible page range
+                        for (let page = startPage; page <= endPage; page++) {
+                          pages.push(
+                            <button
+                              key={page}
+                              onClick={() => setCurrentPage(page)}
+                              className={`group relative px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 overflow-hidden ${
+                                page === currentPage 
+                                  ? 'bg-gradient-to-r from-red-500 to-red-600 text-white shadow-lg shadow-red-500/25' 
+                                  : 'bg-background/80 backdrop-blur-sm hover:bg-background border border-border/50 hover:border-red-500/30 text-foreground hover:shadow-lg hover:shadow-red-500/10 hover:-translate-y-0.5'
+                              }`}
+                            >
+                              {page !== currentPage && (
+                                <div className="absolute inset-0 bg-gradient-to-r from-red-500/0 to-red-600/0 group-hover:from-red-500/10 group-hover:to-red-600/10 transition-all duration-300"></div>
+                              )}
+                              <span className="relative z-10">{page}</span>
+                            </button>
+                          );
+                        }
+
+                        // Show last page if not in range
+                        if (endPage < totalPages) {
+                          if (endPage < totalPages - 1) {
+                            pages.push(
+                              <span key="dots-end" className="px-2 text-muted-foreground font-medium">
+                                ...
+                              </span>
+                            );
+                          }
+                          
+                          pages.push(
+                            <button
+                              key={totalPages}
+                              onClick={() => setCurrentPage(totalPages)}
+                              className="group relative px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 overflow-hidden bg-background/80 backdrop-blur-sm hover:bg-background border border-border/50 hover:border-red-500/30 text-foreground hover:shadow-lg hover:shadow-red-500/10 hover:-translate-y-0.5"
+                            >
+                              <div className="absolute inset-0 bg-gradient-to-r from-red-500/0 to-red-600/0 group-hover:from-red-500/10 group-hover:to-red-600/10 transition-all duration-300"></div>
+                              <span className="relative z-10">{totalPages}</span>
+                            </button>
+                          );
+                        }
+
+                        return pages;
+                      })()}
+                    </div>
+
+                    <button 
+                      onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))} 
+                      disabled={currentPage === totalPages} 
+                      className={`group relative px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 overflow-hidden ${
+                        currentPage < totalPages 
+                          ? 'bg-background/80 backdrop-blur-sm hover:bg-background border border-border/50 hover:border-red-500/30 text-foreground hover:shadow-lg hover:shadow-red-500/10 hover:-translate-y-0.5' 
+                          : 'bg-muted/50 text-muted-foreground cursor-not-allowed'
+                      }`}
+                    >
+                      {currentPage < totalPages && (
+                        <div className="absolute inset-0 bg-gradient-to-r from-red-500/0 to-red-600/0 group-hover:from-red-500/10 group-hover:to-red-600/10 transition-all duration-300"></div>
+                      )}
+                      <span className="relative z-10">Next</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
