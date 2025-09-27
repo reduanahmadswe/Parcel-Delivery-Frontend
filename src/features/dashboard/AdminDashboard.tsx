@@ -96,12 +96,16 @@ export default function AdminDashboard() {
   if (loading) {
     return (
       <AdminLayout>
-        <div className="min-h-screen bg-background">
-          <div className="max-w-7xl mx-auto pt-2 px-6 space-y-6">
+        <div className="min-h-screen bg-background p-4 sm:p-6 lg:p-8">
+          <div className="max-w-7xl mx-auto space-y-6">
             <div className="animate-pulse">
-              <div className="h-8 bg-muted rounded w-1/4 mb-6"></div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">{[...Array(4)].map((_, i) => (<div key={`loading-card-${i}`} className="h-32 bg-gradient-to-br from-red-50/20 via-transparent to-green-50/20 dark:from-red-950/10 dark:to-green-950/10 border border-border rounded-lg"></div>))}</div>
-              <div className="h-64 bg-gradient-to-br from-red-50/20 via-transparent to-green-50/20 dark:from-red-950/10 dark:to-green-950/10 border border-border rounded-lg"></div>
+              <div className="h-8 bg-muted rounded w-1/3 mb-6"></div>
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                {[...Array(4)].map((_, i) => (
+                  <div key={`loading-card-${i}`} className="h-32 bg-gradient-to-br from-red-50/20 via-transparent to-green-50/20 dark:from-red-950/10 dark:to-green-950/10 border border-border rounded-xl"></div>
+                ))}
+              </div>
+              <div className="h-96 bg-gradient-to-br from-red-50/20 via-transparent to-green-50/20 dark:from-red-950/10 dark:to-green-950/10 border border-border rounded-xl"></div>
             </div>
           </div>
         </div>
@@ -111,8 +115,8 @@ export default function AdminDashboard() {
 
   return (
     <AdminLayout>
-      <div className="min-h-screen bg-background mt-8">
-        <div className="max-w-7xl mx-auto pt-2 px-6 space-y-6 pb-24">
+      <div className="min-h-screen bg-background p-4 sm:p-6 lg:p-8">
+        <div className="max-w-7xl mx-auto space-y-6">
           <AdminHeader onRefresh={() => { refetchUsers(); refetchParcels(); }} />
 
           <StatCards statCards={statCards} />
@@ -121,9 +125,11 @@ export default function AdminDashboard() {
 
           {recentParcels.length > 0 && (
             <div className="px-6 py-4 border-t border-border bg-gradient-to-r from-red-50/10 via-transparent to-green-50/10 dark:from-red-950/5 dark:to-green-950/5 rounded-b-xl">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <p className="text-sm text-muted-foreground">Showing {(currentPage - 1) * itemsPerPage + 1} to {Math.min(currentPage * itemsPerPage, recentParcels.length)} of {recentParcels.length} parcels</p>
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div className="flex items-center">
+                  <p className="text-sm text-muted-foreground">
+                    Showing {(currentPage - 1) * itemsPerPage + 1} to {Math.min(currentPage * itemsPerPage, recentParcels.length)} of {recentParcels.length} parcels
+                  </p>
                 </div>
 
                 <div className="flex items-center space-x-2">

@@ -9,6 +9,18 @@ const config: Config = {
     darkMode: "class",
     theme: {
         extend: {
+            screens: {
+                'xs': '475px',      // Large phones (iPhone XR, Galaxy S20)
+                'sm': '640px',      // Small tablets (iPad Mini)
+                'md': '768px',      // Standard tablets (iPad Air)
+                'lg': '1024px',     // Laptops (Surface Pro)
+                'xl': '1280px',     // Desktops
+                '2xl': '1536px',    // Ultra-wide monitors
+                // Custom device-specific breakpoints
+                'fold': '653px',    // Galaxy Z Fold unfolded
+                'surface': '912px', // Surface Duo unfolded
+                'nest': '1024px',   // Nest Hub Max
+            },
             colors: {
                 // Shadcn/UI CSS variables
                 background: "hsl(var(--background))",
