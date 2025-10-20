@@ -45,53 +45,58 @@ export function FilterPanel({
       </div> */}
 
       {/* Modern Filter Panel with enhanced glassmorphism and hover effects */}
-      <div className="group relative bg-background/80 backdrop-blur-xl border border-border/50 rounded-3xl p-8 shadow-2xl hover:shadow-3xl hover:shadow-red-500/10 transition-all duration-500 hover:-translate-y-1">
-        <div className="absolute inset-0 bg-gradient-to-r from-red-500/5 to-orange-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl"></div>
+      <div className="group relative bg-background/80 backdrop-blur-xl border border-border/50 rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 shadow-2xl hover:shadow-3xl hover:shadow-red-500/10 transition-all duration-500 hover:-translate-y-1">
+        <div className="absolute inset-0 bg-gradient-to-r from-red-500/5 to-orange-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl sm:rounded-3xl"></div>
 
         <div className="relative z-10">
-          <div className="flex items-center space-x-4 mb-8">
-            <div className="w-16 h-16 bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 rounded-3xl flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform duration-300">
-              <Search className="h-8 w-8 text-white" />
+          <div className="flex flex-col gap-3 sm:gap-4 mb-4 sm:mb-6 lg:mb-8">
+            {/* Header Row */}
+            <div className="flex items-center gap-2.5 sm:gap-3 lg:gap-4">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 rounded-2xl sm:rounded-3xl flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform duration-300 flex-shrink-0">
+                <Search className="h-6 w-6 sm:h-7 sm:w-7 lg:h-8 lg:w-8 text-white" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <h3 className="text-lg sm:text-xl lg:text-2xl font-bold bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">Smart Filters</h3>
+                <p className="text-muted-foreground text-xs sm:text-sm mt-0.5 sm:mt-1">Advanced search and filtering system</p>
+              </div>
             </div>
-            <div className="flex-1">
-              <h3 className="text-2xl font-bold bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">Smart Filters</h3>
-              <p className="text-muted-foreground text-sm mt-1">Advanced search and filtering system</p>
-            </div>
-            <div className="flex items-center space-x-3">
+            
+            {/* Buttons Row */}
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
               <button
                 onClick={onClearFilters}
-                className="group relative flex items-center space-x-2 px-6 py-3 bg-background/80 backdrop-blur-sm hover:bg-background border border-border/50 hover:border-red-500/30 rounded-2xl transition-all duration-300 font-medium shadow-lg hover:shadow-xl hover:shadow-red-500/10 hover:-translate-y-0.5 overflow-hidden"
+                className="group relative flex items-center space-x-1.5 sm:space-x-2 px-3 sm:px-4 lg:px-6 py-2 sm:py-2.5 lg:py-3 bg-background/80 backdrop-blur-sm hover:bg-background border border-border/50 hover:border-red-500/30 rounded-xl sm:rounded-2xl transition-all duration-300 font-medium text-xs sm:text-sm shadow-lg hover:shadow-xl hover:shadow-red-500/10 hover:-translate-y-0.5 overflow-hidden"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-red-500/0 to-red-600/0 group-hover:from-red-500/10 group-hover:to-red-600/10 transition-all duration-300"></div>
-                <Filter className="h-5 w-5 text-foreground group-hover:rotate-12 transition-transform duration-300 relative z-10" />
+                <Filter className="h-4 w-4 sm:h-5 sm:w-5 text-foreground group-hover:rotate-12 transition-transform duration-300 relative z-10" />
                 <span className="text-foreground relative z-10">Clear Filters</span>
               </button>
               <button
                 onClick={onRefresh}
-                className="group relative flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-2xl transition-all duration-300 font-medium shadow-lg hover:shadow-xl hover:shadow-red-500/25 hover:-translate-y-0.5 overflow-hidden"
+                className="group relative flex items-center space-x-1.5 sm:space-x-2 px-3 sm:px-4 lg:px-6 py-2 sm:py-2.5 lg:py-3 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-xl sm:rounded-2xl transition-all duration-300 font-medium text-xs sm:text-sm shadow-lg hover:shadow-xl hover:shadow-red-500/25 hover:-translate-y-0.5 overflow-hidden"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-white/0 to-white/0 group-hover:from-white/10 group-hover:to-white/5 transition-all duration-300"></div>
-                <RefreshCw className="h-5 w-5 group-hover:rotate-180 transition-transform duration-500 relative z-10" />
+                <RefreshCw className="h-4 w-4 sm:h-5 sm:w-5 group-hover:rotate-180 transition-transform duration-500 relative z-10" />
                 <span className="relative z-10">Refresh</span>
               </button>
-            </div>
-            <div className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-orange-100 to-red-100 dark:from-orange-900/30 dark:to-red-900/30 rounded-full border border-orange-200 dark:border-orange-700">
-              <Sparkles className="h-4 w-4 text-orange-600 dark:text-orange-400" />
-              <span className="text-sm font-semibold text-orange-700 dark:text-orange-300">
-                Advanced Search
-              </span>
-              {/* Active Filter Badge */}
-              {(filterParams.trackingNumber || filterParams.senderEmail || filterParams.receiverEmail || filterParams.status) && (
-                <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse shadow-lg border-2 border-white dark:border-gray-800"></div>
-              )}
+              <div className="flex items-center space-x-1.5 sm:space-x-2 px-2.5 sm:px-3 lg:px-4 py-1.5 sm:py-2 bg-gradient-to-r from-orange-100 to-red-100 dark:from-orange-900/30 dark:to-red-900/30 rounded-full border border-orange-200 dark:border-orange-700">
+                <Sparkles className="h-3 w-3 sm:h-4 sm:w-4 text-orange-600 dark:text-orange-400" />
+                <span className="text-[10px] sm:text-xs lg:text-sm font-semibold text-orange-700 dark:text-orange-300 whitespace-nowrap">
+                  Advanced Search
+                </span>
+                {/* Active Filter Badge */}
+                {(filterParams.trackingNumber || filterParams.senderEmail || filterParams.receiverEmail || filterParams.status) && (
+                  <div className="w-2 h-2 sm:w-3 sm:h-3 bg-green-500 rounded-full animate-pulse shadow-lg border-2 border-white dark:border-gray-800"></div>
+                )}
+              </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
             {/* Tracking Number Search - Primary Filter */}
-            <div className="space-y-2">
-              <label className="flex items-center space-x-2 text-sm font-semibold text-foreground">
-                <div className="w-3 h-3 bg-gradient-to-r from-purple-500 to-purple-600 rounded-full shadow-sm"></div>
+            <div className="space-y-1.5 sm:space-y-2">
+              <label className="flex items-center space-x-1.5 sm:space-x-2 text-xs sm:text-sm font-semibold text-foreground">
+                <div className="w-2 h-2 sm:w-3 sm:h-3 bg-gradient-to-r from-purple-500 to-purple-600 rounded-full shadow-sm"></div>
                 <span>Tracking Number</span>
               </label>
               <div className="relative group">
@@ -114,16 +119,16 @@ export function FilterPanel({
                       window.dispatchEvent(event);
                     }
                   }}
-                  className="w-full px-6 py-4 bg-gradient-to-r from-purple-50/50 to-purple-100/50 dark:from-purple-950/20 dark:to-purple-900/20 backdrop-blur-sm border border-purple-200/50 dark:border-purple-600/50 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500/50 text-foreground placeholder-muted-foreground transition-all duration-300 hover:border-purple-500/30 hover:shadow-lg hover:shadow-purple-500/10 group-hover:-translate-y-0.5"
+                  className="w-full px-3 sm:px-4 lg:px-6 py-2.5 sm:py-3 lg:py-4 bg-gradient-to-r from-purple-50/50 to-purple-100/50 dark:from-purple-950/20 dark:to-purple-900/20 backdrop-blur-sm border border-purple-200/50 dark:border-purple-600/50 rounded-xl sm:rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500/50 text-foreground text-xs sm:text-sm placeholder-muted-foreground transition-all duration-300 hover:border-purple-500/30 hover:shadow-lg hover:shadow-purple-500/10 group-hover:-translate-y-0.5"
                 />
-                <div className="absolute inset-y-0 right-0 flex items-center pr-3">
-                  <Search className="h-4 w-4 text-purple-500" />
+                <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:pr-3">
+                  <Search className="h-3 w-3 sm:h-4 sm:w-4 text-purple-500" />
                 </div>
               </div>
               
               {/* Quick Find Button */}
               {filterParams.trackingNumber && filterParams.trackingNumber.trim() && (
-                <div className="mt-2">
+                <div className="mt-1.5 sm:mt-2">
                   <button
                     onClick={() => {
                       const event = new CustomEvent('quickFindParcel', { 
@@ -131,19 +136,19 @@ export function FilterPanel({
                       });
                       window.dispatchEvent(event);
                     }}
-                    className="group relative w-full flex items-center justify-center space-x-2 px-4 py-2 bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white rounded-xl transition-all duration-300 font-medium shadow-lg hover:shadow-xl hover:shadow-purple-500/25 hover:-translate-y-0.5 overflow-hidden"
+                    className="group relative w-full flex items-center justify-center space-x-1.5 sm:space-x-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white rounded-lg sm:rounded-xl transition-all duration-300 font-medium text-xs sm:text-sm shadow-lg hover:shadow-xl hover:shadow-purple-500/25 hover:-translate-y-0.5 overflow-hidden"
                   >
                     <div className="absolute inset-0 bg-gradient-to-r from-white/0 to-white/0 group-hover:from-white/10 group-hover:to-white/5 transition-all duration-300"></div>
-                    <Search className="h-4 w-4 group-hover:scale-110 transition-transform duration-300 relative z-10" />
+                    <Search className="h-3 w-3 sm:h-4 sm:w-4 group-hover:scale-110 transition-transform duration-300 relative z-10" />
                     <span className="relative z-10">Quick Find & View</span>
                   </button>
                 </div>
               )}
             </div>
 
-            <div className="space-y-2">
-              <label className="flex items-center space-x-2 text-sm font-semibold text-foreground">
-                <div className="w-3 h-3 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full shadow-sm"></div>
+            <div className="space-y-1.5 sm:space-y-2">
+              <label className="flex items-center space-x-1.5 sm:space-x-2 text-xs sm:text-sm font-semibold text-foreground">
+                <div className="w-2 h-2 sm:w-3 sm:h-3 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full shadow-sm"></div>
                 <span>Sender Email</span>
               </label>
               <div className="relative group">
@@ -157,17 +162,17 @@ export function FilterPanel({
                       senderEmail: e.target.value,
                     })
                   }
-                  className="w-full px-6 py-4 bg-background/80 backdrop-blur-sm border border-border/50 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50 text-foreground placeholder-muted-foreground transition-all duration-300 hover:border-blue-500/30 hover:shadow-lg hover:shadow-blue-500/10 group-hover:-translate-y-0.5"
+                  className="w-full px-3 sm:px-4 lg:px-6 py-2.5 sm:py-3 lg:py-4 bg-background/80 backdrop-blur-sm border border-border/50 rounded-xl sm:rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50 text-foreground text-xs sm:text-sm placeholder-muted-foreground transition-all duration-300 hover:border-blue-500/30 hover:shadow-lg hover:shadow-blue-500/10 group-hover:-translate-y-0.5"
                 />
-                <div className="absolute inset-y-0 right-0 flex items-center pr-3">
-                  <Search className="h-4 w-4 text-blue-500" />
+                <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:pr-3">
+                  <Search className="h-3 w-3 sm:h-4 sm:w-4 text-blue-500" />
                 </div>
               </div>
             </div>
 
-            <div className="space-y-2">
-              <label className="flex items-center space-x-2 text-sm font-semibold text-foreground">
-                <div className="w-3 h-3 bg-gradient-to-r from-green-500 to-green-600 rounded-full shadow-sm"></div>
+            <div className="space-y-1.5 sm:space-y-2">
+              <label className="flex items-center space-x-1.5 sm:space-x-2 text-xs sm:text-sm font-semibold text-foreground">
+                <div className="w-2 h-2 sm:w-3 sm:h-3 bg-gradient-to-r from-green-500 to-green-600 rounded-full shadow-sm"></div>
                 <span>Receiver Email</span>
               </label>
               <div className="relative group">
@@ -181,17 +186,17 @@ export function FilterPanel({
                       receiverEmail: e.target.value,
                     })
                   }
-                  className="w-full px-4 py-3 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm border border-green-200/50 dark:border-green-600/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500 text-foreground placeholder-muted-foreground transition-all duration-300 hover:border-green-400 group-hover:shadow-md"
+                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm border border-green-200/50 dark:border-green-600/50 rounded-lg sm:rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500 text-foreground text-xs sm:text-sm placeholder-muted-foreground transition-all duration-300 hover:border-green-400 group-hover:shadow-md"
                 />
-                <div className="absolute inset-y-0 right-0 flex items-center pr-3">
-                  <Search className="h-4 w-4 text-green-500" />
+                <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:pr-3">
+                  <Search className="h-3 w-3 sm:h-4 sm:w-4 text-green-500" />
                 </div>
               </div>
             </div>
 
-            <div className="space-y-2">
-              <label className="flex items-center space-x-2 text-sm font-semibold text-foreground">
-                <div className="w-3 h-3 bg-gradient-to-r from-orange-500 to-orange-600 rounded-full shadow-sm"></div>
+            <div className="space-y-1.5 sm:space-y-2">
+              <label className="flex items-center space-x-1.5 sm:space-x-2 text-xs sm:text-sm font-semibold text-foreground">
+                <div className="w-2 h-2 sm:w-3 sm:h-3 bg-gradient-to-r from-orange-500 to-orange-600 rounded-full shadow-sm"></div>
                 <span>Status Filter</span>
               </label>
               <div className="relative group">
@@ -200,7 +205,7 @@ export function FilterPanel({
                   onChange={(e) =>
                     setFilterParams({ ...filterParams, status: e.target.value })
                   }
-                  className="w-full px-4 py-3 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm border border-orange-200/50 dark:border-orange-600/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 text-foreground transition-all duration-300 hover:border-orange-400 group-hover:shadow-md cursor-pointer appearance-none"
+                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm border border-orange-200/50 dark:border-orange-600/50 rounded-lg sm:rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 text-foreground text-xs sm:text-sm transition-all duration-300 hover:border-orange-400 group-hover:shadow-md cursor-pointer appearance-none"
                 >
                   <option value="">All Status</option>
                   {STATUS_OPTIONS.map((status) => (
@@ -211,9 +216,9 @@ export function FilterPanel({
                     </option>
                   ))}
                 </select>
-                <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:pr-3 pointer-events-none">
                   <svg
-                    className="h-4 w-4 text-orange-500"
+                    className="h-3 w-3 sm:h-4 sm:w-4 text-orange-500"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"

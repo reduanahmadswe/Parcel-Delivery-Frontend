@@ -51,17 +51,17 @@ export function Modal({
 
   return (
     <div
-      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-300"
+      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-3 sm:p-4 animate-in fade-in duration-300"
       onClick={handleBackdropClick}
     >
       <div
-        className={`bg-background/95 backdrop-blur-sm rounded-2xl shadow-2xl border border-border/50 ${sizeClasses[size]} w-full max-h-[90vh] overflow-y-auto animate-in zoom-in-95 slide-in-from-bottom-4 duration-300`}
+        className={`bg-background/95 backdrop-blur-sm rounded-xl sm:rounded-2xl shadow-2xl border border-border/50 ${sizeClasses[size]} w-full max-h-[90vh] overflow-y-auto animate-in zoom-in-95 slide-in-from-bottom-4 duration-300`}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="relative">
           {/* Modal glow effect */}
-          <div className="absolute -inset-1 bg-gradient-to-r from-red-500/20 via-blue-500/20 to-purple-500/20 rounded-2xl blur opacity-30"></div>
-          <div className="relative bg-background rounded-2xl">
+          <div className="absolute -inset-1 bg-gradient-to-r from-red-500/20 via-blue-500/20 to-purple-500/20 rounded-xl sm:rounded-2xl blur opacity-30"></div>
+          <div className="relative bg-background rounded-xl sm:rounded-2xl">
             {children}
           </div>
         </div>
@@ -114,10 +114,10 @@ export function StatusBadge({ status }: { status: string }) {
   return (
     <div className="relative group">
       <span
-        className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-semibold border ${config.bg} ${config.text} ${config.border} shadow-sm hover:shadow-md hover:${config.shadow} transition-all duration-300 group-hover:scale-105`}
+        className={`inline-flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-semibold border ${config.bg} ${config.text} ${config.border} shadow-sm hover:shadow-md hover:${config.shadow} transition-all duration-300 group-hover:scale-105`}
       >
-        <div className={`w-2 h-2 rounded-full ${config.dot} animate-pulse`}></div>
-        {status.charAt(0).toUpperCase() + status.slice(1)}
+        <div className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full ${config.dot} animate-pulse`}></div>
+        <span className="whitespace-nowrap">{status.charAt(0).toUpperCase() + status.slice(1)}</span>
       </span>
     </div>
   );
@@ -948,77 +948,77 @@ export function DataTable({
   onSearchChange: (term: string) => void;
 }) {
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Modern Search Bar */}
       <div className="relative group">
-        <div className="absolute inset-0 bg-gradient-to-r from-red-500/20 to-blue-500/20 rounded-xl blur opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-red-500/20 to-blue-500/20 rounded-lg sm:rounded-xl blur opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
         <div className="relative">
-          <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5 transition-colors group-hover:text-red-500 z-10 pointer-events-none" />
+          <Search className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4 sm:h-5 sm:w-5 transition-colors group-hover:text-red-500 z-10 pointer-events-none" />
           <input
             type="text"
             placeholder="Search users by name, email, or role..."
             value={searchTerm}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="pl-12 pr-6 py-4 w-full border border-border/50 rounded-xl bg-background/80 backdrop-blur-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500/50 hover:border-red-500/30 transition-all duration-300 shadow-lg hover:shadow-xl relative"
+            className="pl-9 sm:pl-12 pr-3 sm:pr-6 py-2.5 sm:py-3 lg:py-4 w-full border border-border/50 rounded-lg sm:rounded-xl bg-background/80 backdrop-blur-sm text-foreground text-xs sm:text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500/50 hover:border-red-500/30 transition-all duration-300 shadow-lg hover:shadow-xl relative"
           />
         </div>
       </div>
 
       {/* Users Grid Layout */}
-      <div className="grid grid-cols-1 gap-4">
+      <div className="grid grid-cols-1 gap-3 sm:gap-4">
         {data.map((user, index) => (
           <div
             key={index}
-            className="group bg-background/80 backdrop-blur-sm border border-border/50 rounded-2xl overflow-hidden hover:border-red-500/30 transition-all duration-500 hover:shadow-2xl hover:shadow-red-500/10 hover:-translate-y-1"
+            className="group bg-background/80 backdrop-blur-sm border border-border/50 rounded-xl sm:rounded-2xl overflow-hidden hover:border-red-500/30 transition-all duration-500 hover:shadow-2xl hover:shadow-red-500/10 hover:-translate-y-1"
           >
-            <div className="p-6">
-              <div className="flex items-center justify-between">
+            <div className="p-3 sm:p-4 lg:p-6">
+              <div className="flex flex-col xs:flex-row items-start xs:items-center gap-3 sm:gap-4">
                 {/* User Info Section */}
-                <div className="flex items-center gap-4 flex-1">
+                <div className="flex items-center gap-2.5 sm:gap-3 flex-1 w-full xs:w-auto">
                   {/* Avatar with gradient background */}
-                  <div className="relative">
-                    <div className="w-14 h-14 bg-gradient-to-br from-red-500 via-red-600 to-red-700 rounded-2xl flex items-center justify-center text-white font-bold text-lg shadow-lg group-hover:shadow-xl group-hover:scale-105 transition-all duration-300">
+                  <div className="relative flex-shrink-0">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 bg-gradient-to-br from-red-500 via-red-600 to-red-700 rounded-xl sm:rounded-2xl flex items-center justify-center text-white font-bold text-sm sm:text-base lg:text-lg shadow-lg group-hover:shadow-xl group-hover:scale-105 transition-all duration-300">
                       {user.name.charAt(0).toUpperCase()}
                     </div>
-                    <div className="absolute -top-1 -right-1 w-5 h-5 bg-green-500 border-2 border-background rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div className="absolute -top-0.5 -right-0.5 sm:-top-1 sm:-right-1 w-3 h-3 sm:w-4 sm:h-4 lg:w-5 lg:h-5 bg-green-500 border-2 border-background rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   </div>
 
                   {/* User Details */}
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-3 mb-2">
-                      <h3 className="font-semibold text-lg text-foreground group-hover:text-red-600 transition-colors duration-300 truncate">
+                    <div className="flex items-center gap-1.5 sm:gap-2 lg:gap-3 mb-1 sm:mb-1.5 lg:mb-2 flex-wrap">
+                      <h3 className="font-semibold text-sm sm:text-base lg:text-lg text-foreground group-hover:text-red-600 transition-colors duration-300 truncate">
                         {user.name}
                       </h3>
                       {/* Role Badge */}
-                      <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800 dark:from-blue-900/30 dark:to-blue-800/30 dark:text-blue-400 shadow-sm">
+                      <span className="inline-flex items-center px-2 sm:px-2.5 lg:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800 dark:from-blue-900/30 dark:to-blue-800/30 dark:text-blue-400 shadow-sm whitespace-nowrap">
                         {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
                       </span>
                     </div>
-                    <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                      <div className="flex items-center gap-1">
-                        <Mail className="w-4 h-4" />
+                    <div className="flex flex-col xs:flex-row xs:items-center gap-1 xs:gap-3 sm:gap-4 text-[11px] sm:text-xs lg:text-sm text-muted-foreground">
+                      <div className="flex items-center gap-1 min-w-0">
+                        <Mail className="w-3 h-3 sm:w-3.5 sm:h-3.5 lg:w-4 lg:h-4 flex-shrink-0" />
                         <span className="truncate">{user.email}</span>
                       </div>
-                      <div className="flex items-center gap-1">
-                        <Phone className="w-4 h-4" />
-                        <span>{user.phoneNumber || user.phone || "N/A"}</span>
+                      <div className="flex items-center gap-1 flex-shrink-0">
+                        <Phone className="w-3 h-3 sm:w-3.5 sm:h-3.5 lg:w-4 lg:h-4" />
+                        <span className="whitespace-nowrap">{user.phoneNumber || user.phone || "N/A"}</span>
                       </div>
                     </div>
                   </div>
                 </div>
 
                 {/* Status and Actions Section */}
-                <div className="flex items-center gap-4">
+                <div className="flex items-center justify-between xs:justify-end gap-2 sm:gap-3 lg:gap-4 w-full xs:w-auto">
                   {/* Enhanced Status Badge */}
-                  <div className="flex flex-col items-end gap-2">
+                  <div className="flex flex-col xs:items-end gap-1 sm:gap-1.5 lg:gap-2">
                     <StatusBadge status={user.status} />
-                    <span className="text-xs text-muted-foreground">
+                    <span className="text-[9px] sm:text-[10px] lg:text-xs text-muted-foreground whitespace-nowrap">
                       {new Date(user.createdAt).toLocaleDateString()}
                     </span>
                   </div>
 
                   {/* Action Buttons */}
-                  <div className="flex items-center gap-2 transition-all duration-300">
+                  <div className="flex items-center gap-1 sm:gap-1.5 lg:gap-2 transition-all duration-300">
                     {columns
                       .find((col) => col.accessorKey === "actions")
                       ?.cell(user)}
@@ -1028,31 +1028,31 @@ export function DataTable({
             </div>
 
             {/* Animated bottom border */}
-            <div className="h-1 bg-gradient-to-r from-red-500 via-red-600 to-red-700 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
+            <div className="h-0.5 sm:h-1 bg-gradient-to-r from-red-500 via-red-600 to-red-700 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
           </div>
         ))}
       </div>
 
       {/* Enhanced Empty State */}
       {data.length === 0 && (
-        <div className="text-center py-16">
+        <div className="text-center py-8 sm:py-12 lg:py-16">
           <div className="relative inline-block">
             <div className="absolute inset-0 bg-gradient-to-r from-red-500/20 to-blue-500/20 rounded-full blur-xl opacity-50"></div>
-            <div className="relative w-24 h-24 mx-auto bg-gradient-to-br from-muted to-muted/50 rounded-3xl flex items-center justify-center mb-6 shadow-xl">
-              <Users className="h-12 w-12 text-muted-foreground" />
+            <div className="relative w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 mx-auto bg-gradient-to-br from-muted to-muted/50 rounded-2xl sm:rounded-3xl flex items-center justify-center mb-4 sm:mb-5 lg:mb-6 shadow-xl">
+              <Users className="h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12 text-muted-foreground" />
             </div>
           </div>
-          <h3 className="text-xl font-semibold text-foreground mb-2">
+          <h3 className="text-base sm:text-lg lg:text-xl font-semibold text-foreground mb-1.5 sm:mb-2">
             No users found
           </h3>
-          <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+          <p className="text-xs sm:text-sm lg:text-base text-muted-foreground mb-4 sm:mb-5 lg:mb-6 max-w-md mx-auto px-4">
             {searchTerm
               ? "We couldn't find any users matching your search criteria. Try adjusting your search terms."
               : "Your user directory is empty. Start building your team by adding your first user."}
           </p>
           {!searchTerm && (
-            <button className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-xl hover:shadow-lg hover:shadow-red-500/25 transition-all duration-300 hover:-translate-y-0.5">
-              <Plus className="w-4 h-4" />
+            <button className="inline-flex items-center gap-1.5 sm:gap-2 px-4 sm:px-5 lg:px-6 py-2 sm:py-2.5 lg:py-3 bg-gradient-to-r from-red-500 to-red-600 text-white text-xs sm:text-sm rounded-lg sm:rounded-xl hover:shadow-lg hover:shadow-red-500/25 transition-all duration-300 hover:-translate-y-0.5">
+              <Plus className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               Add Your First User
             </button>
           )}
@@ -1088,43 +1088,43 @@ export function UserManagementHeader({
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-4 sm:space-y-6">
       {/* Modern Header with gradient background */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-red-500/10 via-red-600/5 to-transparent dark:from-red-900/20 dark:via-red-800/10 dark:to-transparent backdrop-blur-sm border border-red-500/20">
+      <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-br from-red-500/10 via-red-600/5 to-transparent dark:from-red-900/20 dark:via-red-800/10 dark:to-transparent backdrop-blur-sm border border-red-500/20">
         <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
-        <div className="relative p-8">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
-            <div className="space-y-2">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-2xl bg-gradient-to-br from-red-500 to-red-600 shadow-lg">
-                  <Users className="w-8 h-8 text-white" />
+        <div className="relative p-4 sm:p-6">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="p-1.5 sm:p-2 rounded-xl sm:rounded-2xl bg-gradient-to-br from-red-500 to-red-600 shadow-lg">
+                  <Users className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
                 </div>
-                <h1 className="text-3xl font-bold bg-gradient-to-r from-red-600 to-red-700 bg-clip-text text-transparent">
+                <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-red-600 to-red-700 bg-clip-text text-transparent">
                   User Management
                 </h1>
               </div>
-              <p className="text-muted-foreground text-lg ml-14">
+              <p className="text-muted-foreground text-xs sm:text-sm lg:text-base ml-8 sm:ml-11">
                 Manage users, roles, and access permissions with modern tools
               </p>
             </div>
             
-            <div className="flex gap-3">
+            <div className="flex gap-2 sm:gap-3">
               <button
                 onClick={onRefresh}
                 disabled={loading}
-                className="group relative flex items-center space-x-3 px-6 py-3 bg-background/80 backdrop-blur-sm hover:bg-background border border-border/50 hover:border-red-500/30 rounded-2xl transition-all duration-300 text-foreground font-medium shadow-lg hover:shadow-xl hover:shadow-red-500/10 hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="group relative flex items-center space-x-2 px-4 py-2 sm:px-5 sm:py-2.5 bg-background/80 backdrop-blur-sm hover:bg-background border border-border/50 hover:border-red-500/30 rounded-xl sm:rounded-2xl transition-all duration-300 text-foreground text-sm font-medium shadow-lg hover:shadow-xl hover:shadow-red-500/10 hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <RefreshCw className={`h-5 w-5 transition-transform duration-500 ${loading ? 'animate-spin' : 'group-hover:rotate-180'}`} />
-                <span>Refresh</span>
-                <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-red-500/0 to-red-600/0 group-hover:from-red-500/10 group-hover:to-red-600/10 transition-all duration-300"></div>
+                <RefreshCw className={`h-4 w-4 transition-transform duration-500 ${loading ? 'animate-spin' : 'group-hover:rotate-180'}`} />
+                <span className="hidden xs:inline">Refresh</span>
+                <div className="absolute inset-0 rounded-xl sm:rounded-2xl bg-gradient-to-r from-red-500/0 to-red-600/0 group-hover:from-red-500/10 group-hover:to-red-600/10 transition-all duration-300"></div>
               </button>
               
               <button
                 onClick={onCreateUser}
-                className="group relative flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-2xl hover:shadow-xl hover:shadow-red-500/25 transition-all duration-300 font-medium hover:-translate-y-0.5 overflow-hidden"
+                className="group relative flex items-center gap-2 px-4 py-2 sm:px-5 sm:py-2.5 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-xl sm:rounded-2xl hover:shadow-xl hover:shadow-red-500/25 transition-all duration-300 text-sm font-medium hover:-translate-y-0.5 overflow-hidden"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-white/0 to-white/0 group-hover:from-white/10 group-hover:to-white/5 transition-all duration-300"></div>
-                <Plus className="h-5 w-5 group-hover:rotate-90 transition-transform duration-300" />
+                <Plus className="h-4 w-4 group-hover:rotate-90 transition-transform duration-300" />
                 <span>Add User</span>
               </button>
             </div>
@@ -1133,103 +1133,103 @@ export function UserManagementHeader({
       </div>
 
       {/* Enhanced Stats Cards with hover effects */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {/* Total Users Card */}
-        <div className="group relative bg-background/80 backdrop-blur-sm border border-border/50 rounded-2xl p-6 hover:border-blue-500/30 transition-all duration-500 hover:shadow-2xl hover:shadow-blue-500/10 hover:-translate-y-1">
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-500/0 to-blue-600/0 group-hover:from-blue-500/5 group-hover:to-blue-600/5 rounded-2xl transition-all duration-500"></div>
+        <div className="group relative bg-background/80 backdrop-blur-sm border border-border/50 rounded-xl sm:rounded-2xl p-3 sm:p-4 hover:border-blue-500/30 transition-all duration-500 hover:shadow-2xl hover:shadow-blue-500/10 hover:-translate-y-1">
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-500/0 to-blue-600/0 group-hover:from-blue-500/5 group-hover:to-blue-600/5 rounded-xl sm:rounded-2xl transition-all duration-500"></div>
           <div className="relative flex items-center justify-between">
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground group-hover:text-blue-600 transition-colors duration-300">
+            <div className="space-y-1">
+              <p className="text-[10px] sm:text-xs font-medium text-muted-foreground group-hover:text-blue-600 transition-colors duration-300">
                 Total Users
               </p>
-              <p className="text-3xl font-bold text-foreground group-hover:text-blue-600 transition-colors duration-300">
+              <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground group-hover:text-blue-600 transition-colors duration-300">
                 {statsLoading ? (
-                  <div className="w-8 h-8 bg-muted animate-pulse rounded"></div>
+                  <div className="w-6 h-6 sm:w-8 sm:h-8 bg-muted animate-pulse rounded"></div>
                 ) : (
                   stats.total
                 )}
               </p>
-              <div className="text-xs text-muted-foreground">
+              <div className="text-[9px] sm:text-xs text-muted-foreground">
                 +{Math.floor(stats.total * 0.12)} this month
               </div>
             </div>
-            <div className="p-4 rounded-2xl bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-900/40 dark:to-blue-800/40 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-              <Users className="h-8 w-8 text-blue-600 dark:text-blue-400" />
+            <div className="p-2 sm:p-3 rounded-xl sm:rounded-2xl bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-900/40 dark:to-blue-800/40 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+              <Users className="h-5 w-5 sm:h-6 sm:w-6 lg:h-7 lg:w-7 text-blue-600 dark:text-blue-400" />
             </div>
           </div>
         </div>
 
         {/* Active Users Card */}
-        <div className="group relative bg-background/80 backdrop-blur-sm border border-border/50 rounded-2xl p-6 hover:border-green-500/30 transition-all duration-500 hover:shadow-2xl hover:shadow-green-500/10 hover:-translate-y-1">
-          <div className="absolute inset-0 bg-gradient-to-br from-green-500/0 to-green-600/0 group-hover:from-green-500/5 group-hover:to-green-600/5 rounded-2xl transition-all duration-500"></div>
+        <div className="group relative bg-background/80 backdrop-blur-sm border border-border/50 rounded-xl sm:rounded-2xl p-3 sm:p-4 hover:border-green-500/30 transition-all duration-500 hover:shadow-2xl hover:shadow-green-500/10 hover:-translate-y-1">
+          <div className="absolute inset-0 bg-gradient-to-br from-green-500/0 to-green-600/0 group-hover:from-green-500/5 group-hover:to-green-600/5 rounded-xl sm:rounded-2xl transition-all duration-500"></div>
           <div className="relative flex items-center justify-between">
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground group-hover:text-green-600 transition-colors duration-300">
+            <div className="space-y-1">
+              <p className="text-[10px] sm:text-xs font-medium text-muted-foreground group-hover:text-green-600 transition-colors duration-300">
                 Active Users
               </p>
-              <p className="text-3xl font-bold text-green-600 group-hover:scale-105 transition-transform duration-300">
+              <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-green-600 group-hover:scale-105 transition-transform duration-300">
                 {statsLoading ? (
-                  <div className="w-8 h-8 bg-muted animate-pulse rounded"></div>
+                  <div className="w-6 h-6 sm:w-8 sm:h-8 bg-muted animate-pulse rounded"></div>
                 ) : (
                   stats.active
                 )}
               </p>
-              <div className="text-xs text-green-600">
+              <div className="text-[9px] sm:text-xs text-green-600">
                 {stats.total > 0 ? Math.round((stats.active / stats.total) * 100) : 0}% of total
               </div>
             </div>
-            <div className="p-4 rounded-2xl bg-gradient-to-br from-green-100 to-green-200 dark:from-green-900/40 dark:to-green-800/40 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-              <Power className="h-8 w-8 text-green-600 dark:text-green-400" />
+            <div className="p-2 sm:p-3 rounded-xl sm:rounded-2xl bg-gradient-to-br from-green-100 to-green-200 dark:from-green-900/40 dark:to-green-800/40 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+              <Power className="h-5 w-5 sm:h-6 sm:w-6 lg:h-7 lg:w-7 text-green-600 dark:text-green-400" />
             </div>
           </div>
         </div>
 
         {/* Blocked Users Card */}
-        <div className="group relative bg-background/80 backdrop-blur-sm border border-border/50 rounded-2xl p-6 hover:border-red-500/30 transition-all duration-500 hover:shadow-2xl hover:shadow-red-500/10 hover:-translate-y-1">
-          <div className="absolute inset-0 bg-gradient-to-br from-red-500/0 to-red-600/0 group-hover:from-red-500/5 group-hover:to-red-600/5 rounded-2xl transition-all duration-500"></div>
+        <div className="group relative bg-background/80 backdrop-blur-sm border border-border/50 rounded-xl sm:rounded-2xl p-3 sm:p-4 hover:border-red-500/30 transition-all duration-500 hover:shadow-2xl hover:shadow-red-500/10 hover:-translate-y-1">
+          <div className="absolute inset-0 bg-gradient-to-br from-red-500/0 to-red-600/0 group-hover:from-red-500/5 group-hover:to-red-600/5 rounded-xl sm:rounded-2xl transition-all duration-500"></div>
           <div className="relative flex items-center justify-between">
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground group-hover:text-red-600 transition-colors duration-300">
+            <div className="space-y-1">
+              <p className="text-[10px] sm:text-xs font-medium text-muted-foreground group-hover:text-red-600 transition-colors duration-300">
                 Blocked Users
               </p>
-              <p className="text-3xl font-bold text-red-600 group-hover:scale-105 transition-transform duration-300">
+              <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-red-600 group-hover:scale-105 transition-transform duration-300">
                 {statsLoading ? (
-                  <div className="w-8 h-8 bg-muted animate-pulse rounded"></div>
+                  <div className="w-6 h-6 sm:w-8 sm:h-8 bg-muted animate-pulse rounded"></div>
                 ) : (
                   stats.blocked
                 )}
               </p>
-              <div className="text-xs text-red-600">
+              <div className="text-[9px] sm:text-xs text-red-600">
                 {stats.total > 0 ? Math.round((stats.blocked / stats.total) * 100) : 0}% of total
               </div>
             </div>
-            <div className="p-4 rounded-2xl bg-gradient-to-br from-red-100 to-red-200 dark:from-red-900/40 dark:to-red-800/40 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-              <PowerOff className="h-8 w-8 text-red-600 dark:text-red-400" />
+            <div className="p-2 sm:p-3 rounded-xl sm:rounded-2xl bg-gradient-to-br from-red-100 to-red-200 dark:from-red-900/40 dark:to-red-800/40 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+              <PowerOff className="h-5 w-5 sm:h-6 sm:w-6 lg:h-7 lg:w-7 text-red-600 dark:text-red-400" />
             </div>
           </div>
         </div>
 
         {/* Administrators Card */}
-        <div className="group relative bg-background/80 backdrop-blur-sm border border-border/50 rounded-2xl p-6 hover:border-purple-500/30 transition-all duration-500 hover:shadow-2xl hover:shadow-purple-500/10 hover:-translate-y-1">
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-500/0 to-purple-600/0 group-hover:from-purple-500/5 group-hover:to-purple-600/5 rounded-2xl transition-all duration-500"></div>
+        <div className="group relative bg-background/80 backdrop-blur-sm border border-border/50 rounded-xl sm:rounded-2xl p-3 sm:p-4 hover:border-purple-500/30 transition-all duration-500 hover:shadow-2xl hover:shadow-purple-500/10 hover:-translate-y-1">
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-500/0 to-purple-600/0 group-hover:from-purple-500/5 group-hover:to-purple-600/5 rounded-xl sm:rounded-2xl transition-all duration-500"></div>
           <div className="relative flex items-center justify-between">
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground group-hover:text-purple-600 transition-colors duration-300">
+            <div className="space-y-1">
+              <p className="text-[10px] sm:text-xs font-medium text-muted-foreground group-hover:text-purple-600 transition-colors duration-300">
                 Administrators
               </p>
-              <p className="text-3xl font-bold text-purple-600 group-hover:scale-105 transition-transform duration-300">
+              <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-purple-600 group-hover:scale-105 transition-transform duration-300">
                 {statsLoading ? (
-                  <div className="w-8 h-8 bg-muted animate-pulse rounded"></div>
+                  <div className="w-6 h-6 sm:w-8 sm:h-8 bg-muted animate-pulse rounded"></div>
                 ) : (
                   stats.admins
                 )}
               </p>
-              <div className="text-xs text-purple-600">
+              <div className="text-[9px] sm:text-xs text-purple-600">
                 {stats.total > 0 ? Math.round((stats.admins / stats.total) * 100) : 0}% of total
               </div>
             </div>
-            <div className="p-4 rounded-2xl bg-gradient-to-br from-purple-100 to-purple-200 dark:from-purple-900/40 dark:to-purple-800/40 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-              <Shield className="h-8 w-8 text-purple-600 dark:text-purple-400" />
+            <div className="p-2 sm:p-3 rounded-xl sm:rounded-2xl bg-gradient-to-br from-purple-100 to-purple-200 dark:from-purple-900/40 dark:to-purple-800/40 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+              <Shield className="h-5 w-5 sm:h-6 sm:w-6 lg:h-7 lg:w-7 text-purple-600 dark:text-purple-400" />
             </div>
           </div>
         </div>

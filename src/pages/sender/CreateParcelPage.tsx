@@ -379,44 +379,45 @@ export default function CreateParcelPage() {
   return (
     <ProtectedRoute allowedRoles={["sender"]}>
       <div className="min-h-screen bg-background mt-10">
-        <div className="max-w-7xl mx-auto pt-2 px-6 space-y-6 pb-24">
+        <div className="max-w-7xl mx-auto pt-2 px-3 sm:px-4 lg:px-6 space-y-4 sm:space-y-6 pb-16 sm:pb-24">
           {/* Enhanced Modern Header */}
-          <div className="relative overflow-hidden bg-gradient-to-br from-blue-600/10 via-purple-600/5 to-green-600/10 dark:from-blue-900/20 dark:via-purple-900/10 dark:to-green-900/20 rounded-3xl p-8 border border-border/50 shadow-lg">
+          <div className="relative overflow-hidden bg-gradient-to-br from-blue-600/10 via-purple-600/5 to-green-600/10 dark:from-blue-900/20 dark:via-purple-900/10 dark:to-green-900/20 rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 border border-border/50 shadow-lg">
             <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-purple-500/5 dark:from-blue-400/10 dark:to-purple-400/10"></div>
             <div className="relative">
-              <div className="flex items-center mb-6">
+              <div className="flex items-center mb-4 sm:mb-6">
                 <Link
                   to="/sender"
-                  className="group flex items-center text-muted-foreground hover:text-foreground mr-6 px-4 py-2 rounded-xl hover:bg-background/50 transition-all duration-200 border border-transparent hover:border-border/50"
+                  className="group flex items-center text-muted-foreground hover:text-foreground mr-4 sm:mr-6 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl hover:bg-background/50 transition-all duration-200 border border-transparent hover:border-border/50 text-xs sm:text-sm"
                 >
-                  <ArrowLeft className="h-5 w-5 mr-2 group-hover:-translate-x-1 transition-transform" />
-                  Back to Dashboard
+                  <ArrowLeft className="h-4 w-4 sm:h-5 sm:w-5 mr-1.5 sm:mr-2 group-hover:-translate-x-1 transition-transform" />
+                  <span className="hidden xs:inline">Back to Dashboard</span>
+                  <span className="xs:hidden">Back</span>
                 </Link>
               </div>
 
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-4">
-                  <div className="w-16 h-16 bg-gradient-to-r from-red-600 to-red-600 dark:from-red-700 dark:to-red-700 rounded-2xl flex items-center justify-center shadow-lg">
-                    <Package className="h-8 w-8 text-white" />
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div className="flex items-center space-x-3 sm:space-x-4">
+                  <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-r from-red-600 to-red-600 dark:from-red-700 dark:to-red-700 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg">
+                    <Package className="h-6 w-6 sm:h-8 sm:w-8 text-white" />
                   </div>
                   <div>
-                    <h1 className="text-4xl font-bold text-foreground flex items-center">
+                    <h1 className="text-xl xs:text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground flex items-center">
                       Create New Parcel
-                      <div className="w-2 h-2 bg-green-500 dark:bg-green-400 rounded-full ml-3 animate-pulse shadow-lg"></div>
+                      <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-green-500 dark:bg-green-400 rounded-full ml-2 sm:ml-3 animate-pulse shadow-lg"></div>
                     </h1>
-                    <p className="mt-2 text-muted-foreground text-lg">
+                    <p className="mt-1 sm:mt-2 text-muted-foreground text-xs sm:text-sm lg:text-base">
                       Fill in the details to create a new parcel delivery
                       request
                     </p>
                   </div>
                 </div>
 
-                <div className="hidden md:flex items-center space-x-2 bg-background/70 backdrop-blur-sm px-6 py-3 rounded-2xl border border-border shadow-md">
-                  <Calculator className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                  <span className="font-semibold text-foreground">
+                <div className="w-full sm:w-auto flex items-center space-x-2 bg-background/70 backdrop-blur-sm px-4 sm:px-6 py-2 sm:py-3 rounded-xl sm:rounded-2xl border border-border shadow-md">
+                  <Calculator className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600 dark:text-blue-400" />
+                  <span className="font-semibold text-foreground text-sm sm:text-base">
                     Estimated Fee:
                   </span>
-                  <span className="font-bold text-blue-600 dark:text-blue-400">
+                  <span className="font-bold text-blue-600 dark:text-blue-400 text-sm sm:text-base">
                     ৳{estimatedFee}
                   </span>
                 </div>
@@ -424,28 +425,28 @@ export default function CreateParcelPage() {
             </div>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-8">
+          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6 lg:space-y-8">
             {/* Enhanced Receiver Information */}
-            <div className="relative overflow-hidden bg-card/60 backdrop-blur-sm border border-border/50 rounded-3xl p-8 shadow-lg hover:shadow-xl transition-all duration-300">
+            <div className="relative overflow-hidden bg-card/60 backdrop-blur-sm border border-border/50 rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 shadow-lg hover:shadow-xl transition-all duration-300">
               <div className="absolute inset-0 bg-gradient-to-r from-green-500/5 to-teal-500/5 dark:from-green-400/10 dark:to-teal-400/10"></div>
               <div className="relative">
-                <div className="flex items-center space-x-3 mb-8">
-                  <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-teal-500 dark:from-green-600 dark:to-teal-600 rounded-xl flex items-center justify-center shadow-lg">
-                    <Package className="h-6 w-6 text-white" />
+                <div className="flex items-center space-x-2 sm:space-x-3 mb-4 sm:mb-6 lg:mb-8">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-green-500 to-teal-500 dark:from-green-600 dark:to-teal-600 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg">
+                    <Package className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
                   </div>
                   <div>
-                    <h2 className="text-2xl font-bold text-foreground">
+                    <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground">
                       Receiver Information
                     </h2>
-                    <p className="text-muted-foreground">
+                    <p className="text-muted-foreground text-xs sm:text-sm">
                       Details of the person receiving the parcel
                     </p>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                   <div className="space-y-2">
-                    <label className="block text-sm font-semibold text-muted-foreground">
+                    <label className="block text-xs sm:text-sm font-semibold text-muted-foreground">
                       Full Name *
                     </label>
                     <input
@@ -453,11 +454,11 @@ export default function CreateParcelPage() {
                       name="receiverInfo.name"
                       value={formData.receiverInfo.name}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-3 border border-border rounded-xl bg-background/50 text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-300 hover:bg-background/70"
+                      className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-border rounded-lg sm:rounded-xl bg-background/50 text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-300 hover:bg-background/70 text-sm sm:text-base"
                       placeholder="Enter receiver's full name"
                     />
                     {errors["receiverInfo.name"] && (
-                      <p className="mt-1 text-sm text-red-600 flex items-center">
+                      <p className="mt-1 text-xs sm:text-sm text-red-600 flex items-center">
                         <span className="w-1 h-1 bg-red-500 rounded-full mr-2"></span>
                         {errors["receiverInfo.name"]}
                       </p>
@@ -465,7 +466,7 @@ export default function CreateParcelPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <label className="block text-sm font-semibold text-muted-foreground">
+                    <label className="block text-xs sm:text-sm font-semibold text-muted-foreground">
                       Email Address *
                     </label>
                     <input
@@ -473,11 +474,11 @@ export default function CreateParcelPage() {
                       name="receiverInfo.email"
                       value={formData.receiverInfo.email}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-3 border border-border rounded-xl bg-background/50 text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-300 hover:bg-background/70"
+                      className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-border rounded-lg sm:rounded-xl bg-background/50 text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-300 hover:bg-background/70 text-sm sm:text-base"
                       placeholder="receiver@example.com"
                     />
                     {errors["receiverInfo.email"] && (
-                      <p className="mt-1 text-sm text-red-600 flex items-center">
+                      <p className="mt-1 text-xs sm:text-sm text-red-600 flex items-center">
                         <span className="w-1 h-1 bg-red-500 rounded-full mr-2"></span>
                         {errors["receiverInfo.email"]}
                       </p>
@@ -486,19 +487,19 @@ export default function CreateParcelPage() {
                 </div>
 
                 {/* Enhanced Address Section */}
-                <div className="mt-8 pt-8 border-t border-border/50">
-                  <div className="flex items-center space-x-3 mb-6">
-                    <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-teal-500 dark:from-blue-600 dark:to-teal-600 rounded-lg flex items-center justify-center">
-                      <Package className="h-4 w-4 text-white" />
+                <div className="mt-4 sm:mt-6 lg:mt-8 pt-4 sm:pt-6 lg:pt-8 border-t border-border/50">
+                  <div className="flex items-center space-x-2 sm:space-x-3 mb-4 sm:mb-6">
+                    <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-blue-500 to-teal-500 dark:from-blue-600 dark:to-teal-600 rounded-md sm:rounded-lg flex items-center justify-center">
+                      <Package className="h-3 w-3 sm:h-4 sm:w-4 text-white" />
                     </div>
-                    <h3 className="text-xl font-bold text-foreground">
+                    <h3 className="text-base sm:text-lg lg:text-xl font-bold text-foreground">
                       Delivery Address
                     </h3>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-6">
                     <div className="space-y-2">
-                      <label className="block text-sm font-semibold text-muted-foreground">
+                      <label className="block text-xs sm:text-sm font-semibold text-muted-foreground">
                         Phone Number *
                       </label>
                       <input
@@ -506,11 +507,11 @@ export default function CreateParcelPage() {
                         name="receiverInfo.phone"
                         value={formData.receiverInfo.phone}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3 border border-border rounded-xl bg-background/50 text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-300 hover:bg-background/70"
+                        className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-border rounded-lg sm:rounded-xl bg-background/50 text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-300 hover:bg-background/70 text-sm sm:text-base"
                         placeholder="+880123456789"
                       />
                       {errors["receiverInfo.phone"] && (
-                        <p className="mt-1 text-sm text-red-600 flex items-center">
+                        <p className="mt-1 text-xs sm:text-sm text-red-600 flex items-center">
                           <span className="w-1 h-1 bg-red-500 rounded-full mr-2"></span>
                           {errors["receiverInfo.phone"]}
                         </p>
@@ -518,7 +519,7 @@ export default function CreateParcelPage() {
                     </div>
 
                     <div className="space-y-2">
-                      <label className="block text-sm font-semibold text-muted-foreground">
+                      <label className="block text-xs sm:text-sm font-semibold text-muted-foreground">
                         Street Address *
                       </label>
                       <input
@@ -526,47 +527,54 @@ export default function CreateParcelPage() {
                         name="receiverInfo.address.street"
                         value={formData.receiverInfo.address.street}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3 border border-border rounded-xl bg-background/50 text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 hover:bg-background/70"
+                        className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-border rounded-lg sm:rounded-xl bg-background/50 text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 hover:bg-background/70 text-sm sm:text-base"
                         placeholder="123 Main Street, House No, Road No"
                       />
                       {errors["receiverInfo.address.street"] && (
-                        <p className="mt-1 text-sm text-red-600 flex items-center">
+                        <p className="mt-1 text-xs sm:text-sm text-red-600 flex items-center">
                           <span className="w-1 h-1 bg-red-500 rounded-full mr-2"></span>
                           {errors["receiverInfo.address.street"]}
                         </p>
                       )}
                     </div>
+                  </div>
 
                     {/* Enhanced Location Selection Info */}
-                    <div className="bg-gradient-to-r from-blue-50/50 to-cyan-50/50 dark:from-blue-950/20 dark:to-cyan-950/20 border border-blue-200/50 dark:border-blue-800/50 rounded-2xl p-4 mb-6">
+                    <div className="bg-gradient-to-r from-blue-50/50 to-cyan-50/50 dark:from-blue-950/20 dark:to-cyan-950/20 border border-blue-200/50 dark:border-blue-800/50 rounded-xl sm:rounded-2xl p-3 sm:p-4 mb-4 sm:mb-6">
                       <div className="flex items-center space-x-2 mb-2">
-                        <div className="w-6 h-6 bg-blue-600 dark:bg-blue-500 rounded-full flex items-center justify-center">
+                        <div className="w-5 h-5 sm:w-6 sm:h-6 bg-blue-600 dark:bg-blue-500 rounded-full flex items-center justify-center">
                           <span className="text-white text-xs font-bold">
                             💡
                           </span>
                         </div>
-                        <span className="font-semibold text-blue-700 dark:text-blue-300">
+                        <span className="font-semibold text-blue-700 dark:text-blue-300 text-xs sm:text-sm">
                           Location Selection Guide
                         </span>
                       </div>
-                      <p className="text-sm text-blue-700 dark:text-blue-300 leading-relaxed">
+                      <p className="text-xs sm:text-sm text-blue-700 dark:text-blue-300 leading-relaxed">
                         Select location step by step: First choose your city,
                         then select the division, and finally pick the postal
                         code area for accurate delivery.
                       </p>
                     </div>
                     {/* Cascading Dropdowns for City, Division, Postal Code */}
-                  </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-muted-foreground mb-2">
+                      <label className="block text-xs sm:text-sm font-medium text-muted-foreground mb-2">
                         City *
                       </label>
                       <select
                         value={selectedCity}
                         onChange={(e) => handleCityChange(e.target.value)}
-                        className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                        className="w-full px-3 sm:px-4 py-2 sm:py-2.5 border border-border rounded-lg sm:rounded-xl bg-background/80 backdrop-blur-sm text-foreground focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 hover:border-blue-400/50 transition-all duration-300 shadow-sm hover:shadow-md font-medium text-xs sm:text-sm appearance-none cursor-pointer"
+                        style={{
+                          backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
+                          backgroundRepeat: 'no-repeat',
+                          backgroundPosition: 'right 0.75rem center',
+                          backgroundSize: '1.25rem',
+                          paddingRight: '2.5rem'
+                        }}
                       >
                         <option value="">Select a city</option>
                         {availableCities.map((city) => (
@@ -576,21 +584,28 @@ export default function CreateParcelPage() {
                         ))}
                       </select>
                       {errors["receiverInfo.address.city"] && (
-                        <p className="mt-1 text-sm text-red-600">
+                        <p className="mt-1 text-xs sm:text-sm text-red-600">
                           {errors["receiverInfo.address.city"]}
                         </p>
                       )}
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-muted-foreground mb-2">
+                      <label className="block text-xs sm:text-sm font-medium text-muted-foreground mb-2">
                         State/Division *
                       </label>
                       <select
                         value={selectedDivision}
                         onChange={(e) => handleDivisionChange(e.target.value)}
                         disabled={!selectedCity}
-                        className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="w-full px-3 sm:px-4 py-2 sm:py-2.5 border border-border rounded-lg sm:rounded-xl bg-background/80 backdrop-blur-sm text-foreground focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 hover:border-blue-400/50 transition-all duration-300 shadow-sm hover:shadow-md font-medium text-xs sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed appearance-none cursor-pointer"
+                        style={{
+                          backgroundImage: !selectedCity ? 'none' : `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
+                          backgroundRepeat: 'no-repeat',
+                          backgroundPosition: 'right 0.75rem center',
+                          backgroundSize: '1.25rem',
+                          paddingRight: '2.5rem'
+                        }}
                       >
                         <option value="">
                           {!selectedCity
@@ -604,21 +619,28 @@ export default function CreateParcelPage() {
                         ))}
                       </select>
                       {errors["receiverInfo.address.state"] && (
-                        <p className="mt-1 text-sm text-red-600">
+                        <p className="mt-1 text-xs sm:text-sm text-red-600">
                           {errors["receiverInfo.address.state"]}
                         </p>
                       )}
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-muted-foreground mb-2">
+                      <label className="block text-xs sm:text-sm font-medium text-muted-foreground mb-2">
                         ZIP Code *
                       </label>
                       <select
                         value={formData.receiverInfo.address.zipCode}
                         onChange={(e) => handlePostalCodeChange(e.target.value)}
                         disabled={!selectedDivision}
-                        className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="w-full px-3 sm:px-4 py-2 sm:py-2.5 border border-border rounded-lg sm:rounded-xl bg-background/80 backdrop-blur-sm text-foreground focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 hover:border-blue-400/50 transition-all duration-300 shadow-sm hover:shadow-md font-medium text-xs sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed appearance-none cursor-pointer"
+                        style={{
+                          backgroundImage: !selectedDivision ? 'none' : `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
+                          backgroundRepeat: 'no-repeat',
+                          backgroundPosition: 'right 0.75rem center',
+                          backgroundSize: '1.25rem',
+                          paddingRight: '2.5rem'
+                        }}
                       >
                         <option value="">
                           {!selectedDivision
@@ -632,7 +654,7 @@ export default function CreateParcelPage() {
                         ))}
                       </select>
                       {errors["receiverInfo.address.zipCode"] && (
-                        <p className="mt-1 text-sm text-red-600">
+                        <p className="mt-1 text-xs sm:text-sm text-red-600">
                           {errors["receiverInfo.address.zipCode"]}
                         </p>
                       )}
@@ -643,31 +665,38 @@ export default function CreateParcelPage() {
             </div>
 
             {/* Parcel Details */}
-            <div className="bg-gradient-to-br from-blue-50/50 via-background to-purple-50/50 dark:from-blue-950/20 dark:via-background dark:to-purple-950/20 backdrop-blur-sm border border-border/50 rounded-2xl shadow-xl shadow-blue-500/5 dark:shadow-blue-400/10 p-8 hover:shadow-2xl hover:shadow-blue-500/10 dark:hover:shadow-blue-400/20 transition-all duration-500">
-              <div className="flex items-center gap-3 mb-8">
-                <div className="p-3 bg-gradient-to-br from-blue-500 to-purple-600 text-white rounded-xl shadow-lg">
-                  <Package className="h-6 w-6" />
+            <div className="bg-gradient-to-br from-blue-50/50 via-background to-purple-50/50 dark:from-blue-950/20 dark:via-background dark:to-purple-950/20 backdrop-blur-sm border border-border/50 rounded-xl sm:rounded-2xl shadow-xl shadow-blue-500/5 dark:shadow-blue-400/10 p-4 sm:p-6 lg:p-8 hover:shadow-2xl hover:shadow-blue-500/10 dark:hover:shadow-blue-400/20 transition-all duration-500">
+              <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6 lg:mb-8">
+                <div className="p-2 sm:p-3 bg-gradient-to-br from-blue-500 to-purple-600 text-white rounded-lg sm:rounded-xl shadow-lg">
+                  <Package className="h-5 w-5 sm:h-6 sm:w-6" />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
+                  <h2 className="text-lg sm:text-xl lg:text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
                     Parcel Details
                   </h2>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-xs sm:text-sm text-muted-foreground">
                     Specify your parcel type and weight
                   </p>
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
                 <div className="space-y-2">
-                  <label className="block text-sm font-semibold text-foreground mb-3">
+                  <label className="block text-xs sm:text-sm font-semibold text-foreground mb-2 sm:mb-3">
                     Parcel Type *
                   </label>
                   <select
                     name="parcelDetails.type"
                     value={formData.parcelDetails.type}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 bg-background/80 backdrop-blur-sm border border-border/50 rounded-xl text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 hover:border-blue-400/50 transition-all duration-300 shadow-sm hover:shadow-md font-medium"
+                    className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-background/80 backdrop-blur-sm border border-border/50 rounded-lg sm:rounded-xl text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 hover:border-blue-400/50 transition-all duration-300 shadow-sm hover:shadow-md font-medium text-xs sm:text-sm appearance-none cursor-pointer"
+                    style={{
+                      backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
+                      backgroundRepeat: 'no-repeat',
+                      backgroundPosition: 'right 0.75rem center',
+                      backgroundSize: '1.25rem',
+                      paddingRight: '2.5rem'
+                    }}
                   >
                     <option value="document">📄 Document</option>
                     <option value="package">📦 Package</option>
@@ -679,7 +708,7 @@ export default function CreateParcelPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="block text-sm font-semibold text-foreground mb-3">
+                  <label className="block text-xs sm:text-sm font-semibold text-foreground mb-2 sm:mb-3">
                     Weight (kg) *
                   </label>
                   <input
@@ -690,12 +719,12 @@ export default function CreateParcelPage() {
                     name="parcelDetails.weight"
                     value={formData.parcelDetails.weight}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 bg-background/80 backdrop-blur-sm border border-border/50 rounded-xl text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 hover:border-blue-400/50 transition-all duration-300 shadow-sm hover:shadow-md font-medium"
+                    className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-background/80 backdrop-blur-sm border border-border/50 rounded-lg sm:rounded-xl text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 hover:border-blue-400/50 transition-all duration-300 shadow-sm hover:shadow-md font-medium text-xs sm:text-sm"
                     placeholder="Enter weight (max 50kg)"
                   />
                   {errors["parcelDetails.weight"] && (
-                    <div className="mt-2 p-3 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800/30 rounded-xl">
-                      <p className="text-sm text-red-600 dark:text-red-400 font-medium">
+                    <div className="mt-2 p-2 sm:p-3 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800/30 rounded-lg sm:rounded-xl">
+                      <p className="text-xs sm:text-sm text-red-600 dark:text-red-400 font-medium">
                         ⚠️ {errors["parcelDetails.weight"]}
                       </p>
                     </div>
@@ -704,11 +733,11 @@ export default function CreateParcelPage() {
               </div>
 
               {/* Dimensions */}
-              <div className="mt-8">
-                <div className="flex items-center gap-2 mb-4">
-                  <div className="p-2 bg-gradient-to-br from-emerald-500 to-teal-600 text-white rounded-lg">
+              <div className="mt-4 sm:mt-6 lg:mt-8">
+                <div className="flex items-center gap-2 mb-3 sm:mb-4">
+                  <div className="p-1.5 sm:p-2 bg-gradient-to-br from-emerald-500 to-teal-600 text-white rounded-md sm:rounded-lg">
                     <svg
-                      className="h-4 w-4"
+                      className="h-3 w-3 sm:h-4 sm:w-4"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -721,11 +750,11 @@ export default function CreateParcelPage() {
                       />
                     </svg>
                   </div>
-                  <label className="text-sm font-semibold text-foreground">
+                  <label className="text-xs sm:text-sm font-semibold text-foreground">
                     Dimensions (cm) *
                   </label>
                 </div>
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-3 gap-2 sm:gap-3 lg:gap-4">
                   <div className="space-y-2">
                     <input
                       type="number"
@@ -734,12 +763,12 @@ export default function CreateParcelPage() {
                       name="parcelDetails.dimensions.length"
                       value={formData.parcelDetails.dimensions.length}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-3 bg-background/80 backdrop-blur-sm border border-border/50 rounded-xl text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 hover:border-emerald-400/50 transition-all duration-300 shadow-sm hover:shadow-md font-medium"
+                      className="w-full px-2 sm:px-3 lg:px-4 py-2 sm:py-2.5 lg:py-3 bg-background/80 backdrop-blur-sm border border-border/50 rounded-lg sm:rounded-xl text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 hover:border-emerald-400/50 transition-all duration-300 shadow-sm hover:shadow-md font-medium text-xs sm:text-sm"
                       placeholder="📏 Length"
                     />
                     {errors["parcelDetails.dimensions.length"] && (
-                      <div className="p-2 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800/30 rounded-lg">
-                        <p className="text-xs text-red-600 dark:text-red-400 font-medium">
+                      <div className="p-1.5 sm:p-2 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800/30 rounded-md sm:rounded-lg">
+                        <p className="text-[10px] sm:text-xs text-red-600 dark:text-red-400 font-medium">
                           {errors["parcelDetails.dimensions.length"]}
                         </p>
                       </div>
@@ -753,12 +782,12 @@ export default function CreateParcelPage() {
                       name="parcelDetails.dimensions.width"
                       value={formData.parcelDetails.dimensions.width}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-3 bg-background/80 backdrop-blur-sm border border-border/50 rounded-xl text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 hover:border-emerald-400/50 transition-all duration-300 shadow-sm hover:shadow-md font-medium"
+                      className="w-full px-2 sm:px-3 lg:px-4 py-2 sm:py-2.5 lg:py-3 bg-background/80 backdrop-blur-sm border border-border/50 rounded-lg sm:rounded-xl text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 hover:border-emerald-400/50 transition-all duration-300 shadow-sm hover:shadow-md font-medium text-xs sm:text-sm"
                       placeholder="📐 Width"
                     />
                     {errors["parcelDetails.dimensions.width"] && (
-                      <div className="p-2 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800/30 rounded-lg">
-                        <p className="text-xs text-red-600 dark:text-red-400 font-medium">
+                      <div className="p-1.5 sm:p-2 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800/30 rounded-md sm:rounded-lg">
+                        <p className="text-[10px] sm:text-xs text-red-600 dark:text-red-400 font-medium">
                           {errors["parcelDetails.dimensions.width"]}
                         </p>
                       </div>
@@ -772,12 +801,12 @@ export default function CreateParcelPage() {
                       name="parcelDetails.dimensions.height"
                       value={formData.parcelDetails.dimensions.height}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-3 bg-background/80 backdrop-blur-sm border border-border/50 rounded-xl text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 hover:border-emerald-400/50 transition-all duration-300 shadow-sm hover:shadow-md font-medium"
+                      className="w-full px-2 sm:px-3 lg:px-4 py-2 sm:py-2.5 lg:py-3 bg-background/80 backdrop-blur-sm border border-border/50 rounded-lg sm:rounded-xl text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 hover:border-emerald-400/50 transition-all duration-300 shadow-sm hover:shadow-md font-medium text-xs sm:text-sm"
                       placeholder="📊 Height"
                     />
                     {errors["parcelDetails.dimensions.height"] && (
-                      <div className="p-2 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800/30 rounded-lg">
-                        <p className="text-xs text-red-600 dark:text-red-400 font-medium">
+                      <div className="p-1.5 sm:p-2 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800/30 rounded-md sm:rounded-lg">
+                        <p className="text-[10px] sm:text-xs text-red-600 dark:text-red-400 font-medium">
                           {errors["parcelDetails.dimensions.height"]}
                         </p>
                       </div>
@@ -786,12 +815,12 @@ export default function CreateParcelPage() {
                 </div>
               </div>
 
-              <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="mt-4 sm:mt-6 lg:mt-8 grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                 <div className="space-y-2">
-                  <div className="flex items-center gap-2 mb-3">
-                    <div className="p-2 bg-gradient-to-br from-green-500 to-emerald-600 text-white rounded-lg">
+                  <div className="flex items-center gap-2 mb-2 sm:mb-3">
+                    <div className="p-1.5 sm:p-2 bg-gradient-to-br from-green-500 to-emerald-600 text-white rounded-md sm:rounded-lg">
                       <svg
-                        className="h-4 w-4"
+                        className="h-3 w-3 sm:h-4 sm:w-4"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -804,7 +833,7 @@ export default function CreateParcelPage() {
                         />
                       </svg>
                     </div>
-                    <label className="text-sm font-semibold text-foreground">
+                    <label className="text-xs sm:text-sm font-semibold text-foreground">
                       Estimated Value (BDT)
                     </label>
                   </div>
@@ -815,17 +844,17 @@ export default function CreateParcelPage() {
                     name="parcelDetails.value"
                     value={formData.parcelDetails.value}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 bg-background/80 backdrop-blur-sm border border-border/50 rounded-xl text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-green-500/50 focus:border-green-500/50 hover:border-green-400/50 transition-all duration-300 shadow-sm hover:shadow-md font-medium"
+                    className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-background/80 backdrop-blur-sm border border-border/50 rounded-lg sm:rounded-xl text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-green-500/50 focus:border-green-500/50 hover:border-green-400/50 transition-all duration-300 shadow-sm hover:shadow-md font-medium text-xs sm:text-sm"
                     placeholder="💰 0.00"
                   />
                 </div>
               </div>
 
-              <div className="mt-8">
-                <div className="flex items-center gap-2 mb-4">
-                  <div className="p-2 bg-gradient-to-br from-purple-500 to-indigo-600 text-white rounded-lg">
+              <div className="mt-4 sm:mt-6 lg:mt-8">
+                <div className="flex items-center gap-2 mb-3 sm:mb-4">
+                  <div className="p-1.5 sm:p-2 bg-gradient-to-br from-purple-500 to-indigo-600 text-white rounded-md sm:rounded-lg">
                     <svg
-                      className="h-4 w-4"
+                      className="h-3 w-3 sm:h-4 sm:w-4"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -838,7 +867,7 @@ export default function CreateParcelPage() {
                       />
                     </svg>
                   </div>
-                  <label className="text-sm font-semibold text-foreground">
+                  <label className="text-xs sm:text-sm font-semibold text-foreground">
                     Description *
                   </label>
                 </div>
@@ -847,12 +876,12 @@ export default function CreateParcelPage() {
                   value={formData.parcelDetails.description}
                   onChange={handleInputChange}
                   rows={4}
-                  className="w-full px-4 py-3 bg-background/80 backdrop-blur-sm border border-border/50 rounded-xl text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 hover:border-purple-400/50 transition-all duration-300 shadow-sm hover:shadow-md font-medium resize-none"
+                  className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-background/80 backdrop-blur-sm border border-border/50 rounded-lg sm:rounded-xl text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 hover:border-purple-400/50 transition-all duration-300 shadow-sm hover:shadow-md font-medium resize-none text-xs sm:text-sm"
                   placeholder="📝 Describe the contents of your parcel in detail..."
                 />
                 {errors["parcelDetails.description"] && (
-                  <div className="mt-2 p-3 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800/30 rounded-xl">
-                    <p className="text-sm text-red-600 dark:text-red-400 font-medium">
+                  <div className="mt-2 p-2 sm:p-3 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800/30 rounded-lg sm:rounded-xl">
+                    <p className="text-xs sm:text-sm text-red-600 dark:text-red-400 font-medium">
                       ⚠️ {errors["parcelDetails.description"]}
                     </p>
                   </div>
@@ -861,11 +890,11 @@ export default function CreateParcelPage() {
             </div>
 
             {/* Delivery Options */}
-            <div className="bg-gradient-to-br from-orange-50/50 via-background to-red-50/50 dark:from-orange-950/20 dark:via-background dark:to-red-950/20 backdrop-blur-sm border border-border/50 rounded-2xl shadow-xl shadow-orange-500/5 dark:shadow-orange-400/10 p-8 hover:shadow-2xl hover:shadow-orange-500/10 dark:hover:shadow-orange-400/20 transition-all duration-500">
-              <div className="flex items-center gap-3 mb-8">
-                <div className="p-3 bg-gradient-to-br from-orange-500 to-red-600 text-white rounded-xl shadow-lg">
+            <div className="bg-gradient-to-br from-orange-50/50 via-background to-red-50/50 dark:from-orange-950/20 dark:via-background dark:to-red-950/20 backdrop-blur-sm border border-border/50 rounded-xl sm:rounded-2xl shadow-xl shadow-orange-500/5 dark:shadow-orange-400/10 p-4 sm:p-6 lg:p-8 hover:shadow-2xl hover:shadow-orange-500/10 dark:hover:shadow-orange-400/20 transition-all duration-500">
+              <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6 lg:mb-8">
+                <div className="p-2 sm:p-3 bg-gradient-to-br from-orange-500 to-red-600 text-white rounded-lg sm:rounded-xl shadow-lg">
                   <svg
-                    className="h-6 w-6"
+                    className="h-5 w-5 sm:h-6 sm:w-6"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -879,21 +908,21 @@ export default function CreateParcelPage() {
                   </svg>
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold bg-gradient-to-r from-orange-600 to-red-600 dark:from-orange-400 dark:to-red-400 bg-clip-text text-transparent">
+                  <h2 className="text-lg sm:text-xl lg:text-2xl font-bold bg-gradient-to-r from-orange-600 to-red-600 dark:from-orange-400 dark:to-red-400 bg-clip-text text-transparent">
                     Delivery Options
                   </h2>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-xs sm:text-sm text-muted-foreground">
                     Choose your preferred delivery settings
                   </p>
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
                 <div className="space-y-2">
-                  <div className="flex items-center gap-2 mb-3">
-                    <div className="p-2 bg-gradient-to-br from-blue-500 to-cyan-600 text-white rounded-lg">
+                  <div className="flex items-center gap-2 mb-2 sm:mb-3">
+                    <div className="p-1.5 sm:p-2 bg-gradient-to-br from-blue-500 to-cyan-600 text-white rounded-md sm:rounded-lg">
                       <svg
-                        className="h-4 w-4"
+                        className="h-3 w-3 sm:h-4 sm:w-4"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -906,7 +935,7 @@ export default function CreateParcelPage() {
                         />
                       </svg>
                     </div>
-                    <label className="text-sm font-semibold text-foreground">
+                    <label className="text-xs sm:text-sm font-semibold text-foreground">
                       Preferred Delivery Date
                     </label>
                   </div>
@@ -920,22 +949,22 @@ export default function CreateParcelPage() {
                         .toISOString()
                         .split("T")[0]
                     }
-                    className="w-full px-4 py-3 bg-background/80 backdrop-blur-sm border border-border/50 rounded-xl text-foreground focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 hover:border-blue-400/50 transition-all duration-300 shadow-sm hover:shadow-md font-medium"
+                    className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-background/80 backdrop-blur-sm border border-border/50 rounded-lg sm:rounded-xl text-foreground focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 hover:border-blue-400/50 transition-all duration-300 shadow-sm hover:shadow-md font-medium text-xs sm:text-sm"
                   />
                 </div>
 
-                <div className="flex items-center gap-4 p-4 bg-gradient-to-r from-emerald-50/50 to-teal-50/50 dark:from-emerald-950/20 dark:to-teal-950/20 rounded-xl border border-emerald-200/50 dark:border-emerald-800/30 hover:shadow-md transition-all duration-300">
+                <div className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-gradient-to-r from-emerald-50/50 to-teal-50/50 dark:from-emerald-950/20 dark:to-teal-950/20 rounded-lg sm:rounded-xl border border-emerald-200/50 dark:border-emerald-800/30 hover:shadow-md transition-all duration-300">
                   <input
                     type="checkbox"
                     id="isUrgent"
                     name="deliveryInfo.isUrgent"
                     checked={formData.deliveryInfo.isUrgent}
                     onChange={handleInputChange}
-                    className="h-5 w-5 text-emerald-600 bg-background border-2 border-emerald-300 rounded-lg focus:ring-emerald-500 focus:ring-2 transition-all duration-300"
+                    className="h-4 w-4 sm:h-5 sm:w-5 text-emerald-600 bg-background border-2 border-emerald-300 rounded focus:ring-emerald-500 focus:ring-2 transition-all duration-300"
                   />
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1.5 sm:gap-2 flex-1">
                     <svg
-                      className="h-5 w-5 text-orange-500"
+                      className="h-4 w-4 sm:h-5 sm:w-5 text-orange-500 flex-shrink-0"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -949,7 +978,7 @@ export default function CreateParcelPage() {
                     </svg>
                     <label
                       htmlFor="isUrgent"
-                      className="text-sm font-semibold text-foreground cursor-pointer"
+                      className="text-xs sm:text-sm font-semibold text-foreground cursor-pointer"
                     >
                       Urgent Delivery
                       <span className="text-orange-600 dark:text-orange-400 font-bold ml-1">
@@ -960,11 +989,11 @@ export default function CreateParcelPage() {
                 </div>
               </div>
 
-              <div className="mt-8">
-                <div className="flex items-center gap-2 mb-4">
-                  <div className="p-2 bg-gradient-to-br from-indigo-500 to-purple-600 text-white rounded-lg">
+              <div className="mt-4 sm:mt-6 lg:mt-8">
+                <div className="flex items-center gap-2 mb-3 sm:mb-4">
+                  <div className="p-1.5 sm:p-2 bg-gradient-to-br from-indigo-500 to-purple-600 text-white rounded-md sm:rounded-lg">
                     <svg
-                      className="h-4 w-4"
+                      className="h-3 w-3 sm:h-4 sm:w-4"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -977,7 +1006,7 @@ export default function CreateParcelPage() {
                       />
                     </svg>
                   </div>
-                  <label className="text-sm font-semibold text-foreground">
+                  <label className="text-xs sm:text-sm font-semibold text-foreground">
                     Delivery Instructions
                   </label>
                 </div>
@@ -986,67 +1015,66 @@ export default function CreateParcelPage() {
                   value={formData.deliveryInfo.deliveryInstructions}
                   onChange={handleInputChange}
                   rows={4}
-                  className="w-full px-4 py-3 bg-background/80 backdrop-blur-sm border border-border/50 rounded-xl text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 hover:border-indigo-400/50 transition-all duration-300 shadow-sm hover:shadow-md font-medium resize-none"
+                  className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-background/80 backdrop-blur-sm border border-border/50 rounded-lg sm:rounded-xl text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 hover:border-indigo-400/50 transition-all duration-300 shadow-sm hover:shadow-md font-medium resize-none text-xs sm:text-sm"
                   placeholder="📋 Any special instructions for delivery (building access, floor, contact info, etc.)..."
                 />
               </div>
             </div>
 
             {/* Fee Estimation */}
-            <div className="bg-gradient-to-br from-emerald-50/50 via-background to-teal-50/50 dark:from-emerald-950/20 dark:via-background dark:to-teal-950/20 backdrop-blur-sm border border-emerald-200/50 dark:border-emerald-800/30 rounded-2xl shadow-xl shadow-emerald-500/5 dark:shadow-emerald-400/10 p-8 hover:shadow-2xl hover:shadow-emerald-500/10 dark:hover:shadow-emerald-400/20 transition-all duration-500">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="p-3 bg-gradient-to-br from-emerald-500 to-teal-600 text-white rounded-xl shadow-lg">
-                  <Calculator className="h-6 w-6" />
+            <div className="bg-gradient-to-br from-emerald-50/50 via-background to-teal-50/50 dark:from-emerald-950/20 dark:via-background dark:to-teal-950/20 backdrop-blur-sm border border-emerald-200/50 dark:border-emerald-800/30 rounded-xl sm:rounded-2xl shadow-xl shadow-emerald-500/5 dark:shadow-emerald-400/10 p-4 sm:p-6 lg:p-8 hover:shadow-2xl hover:shadow-emerald-500/10 dark:hover:shadow-emerald-400/20 transition-all duration-500">
+              <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+                <div className="p-2 sm:p-3 bg-gradient-to-br from-emerald-500 to-teal-600 text-white rounded-lg sm:rounded-xl shadow-lg">
+                  <Calculator className="h-5 w-5 sm:h-6 sm:w-6" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent">
+                  <h3 className="text-base sm:text-lg lg:text-xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent">
                     Estimated Delivery Fee
                   </h3>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-xs sm:text-sm text-muted-foreground">
                     Cost breakdown for your delivery
                   </p>
                 </div>
               </div>
-              <div className="bg-background/60 backdrop-blur-sm rounded-xl p-6 border border-emerald-200/30 dark:border-emerald-800/20">
-                <div className="space-y-4">
+              <div className="bg-background/60 backdrop-blur-sm rounded-lg sm:rounded-xl p-4 sm:p-5 lg:p-6 border border-emerald-200/30 dark:border-emerald-800/20">
+                <div className="space-y-3 sm:space-y-4">
                   <div className="flex justify-between items-center py-2 border-b border-emerald-200/30 dark:border-emerald-800/20">
-                    <span className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                      <span className="w-2 h-2 bg-emerald-500 rounded-full"></span>
+                    <span className="text-xs sm:text-sm font-medium text-muted-foreground flex items-center gap-1.5 sm:gap-2">
+                      <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-emerald-500 rounded-full"></span>
                       Base Fee:
                     </span>
-                    <span className="text-sm font-bold text-foreground">
+                    <span className="text-xs sm:text-sm font-bold text-foreground">
                       50 BDT
                     </span>
                   </div>
                   <div className="flex justify-between items-center py-2 border-b border-emerald-200/30 dark:border-emerald-800/20">
-                    <span className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                      <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
-                      Weight Fee ({formData.parcelDetails.weight || 0} kg × 20
-                      BDT):
+                    <span className="text-xs sm:text-sm font-medium text-muted-foreground flex items-center gap-1.5 sm:gap-2">
+                      <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-blue-500 rounded-full"></span>
+                      <span className="truncate">Weight Fee ({formData.parcelDetails.weight || 0} kg × 20 BDT):</span>
                     </span>
-                    <span className="text-sm font-bold text-foreground">
+                    <span className="text-xs sm:text-sm font-bold text-foreground whitespace-nowrap ml-2">
                       {(parseFloat(formData.parcelDetails.weight) || 0) * 20}{" "}
                       BDT
                     </span>
                   </div>
                   {formData.deliveryInfo.isUrgent && (
                     <div className="flex justify-between items-center py-2 border-b border-emerald-200/30 dark:border-emerald-800/20">
-                      <span className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                        <span className="w-2 h-2 bg-orange-500 rounded-full"></span>
+                      <span className="text-xs sm:text-sm font-medium text-muted-foreground flex items-center gap-1.5 sm:gap-2">
+                        <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-orange-500 rounded-full"></span>
                         Urgent Fee:
                       </span>
-                      <span className="text-sm font-bold text-orange-600 dark:text-orange-400">
+                      <span className="text-xs sm:text-sm font-bold text-orange-600 dark:text-orange-400">
                         100 BDT
                       </span>
                     </div>
                   )}
-                  <div className="pt-4 border-t-2 border-emerald-300/50 dark:border-emerald-700/50">
+                  <div className="pt-3 sm:pt-4 border-t-2 border-emerald-300/50 dark:border-emerald-700/50">
                     <div className="flex justify-between items-center">
-                      <span className="text-lg font-bold text-foreground flex items-center gap-2">
-                        <span className="w-3 h-3 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full"></span>
+                      <span className="text-base sm:text-lg font-bold text-foreground flex items-center gap-1.5 sm:gap-2">
+                        <span className="w-2 h-2 sm:w-3 sm:h-3 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full"></span>
                         Total:
                       </span>
-                      <span className="text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent">
+                      <span className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent">
                         {estimatedFee} BDT
                       </span>
                     </div>
@@ -1056,13 +1084,13 @@ export default function CreateParcelPage() {
             </div>
 
             {/* Submit Button */}
-            <div className="flex justify-end space-x-6 pt-8">
+            <div className="flex flex-col xs:flex-row justify-end gap-3 sm:gap-4 lg:gap-6 pt-4 sm:pt-6 lg:pt-8">
               <Link
                 to="/sender"
-                className="px-8 py-4 bg-background/80 backdrop-blur-sm border-2 border-border/50 rounded-xl text-muted-foreground hover:bg-muted/50 hover:text-foreground hover:border-border font-semibold transition-all duration-300 shadow-sm hover:shadow-lg flex items-center gap-2 group"
+                className="w-full xs:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-background/80 backdrop-blur-sm border-2 border-border/50 rounded-lg sm:rounded-xl text-muted-foreground hover:bg-muted/50 hover:text-foreground hover:border-border font-semibold transition-all duration-300 shadow-sm hover:shadow-lg flex items-center justify-center gap-2 group text-sm sm:text-base"
               >
                 <svg
-                  className="h-4 w-4 group-hover:-translate-x-1 transition-transform duration-300"
+                  className="h-3 w-3 sm:h-4 sm:w-4 group-hover:-translate-x-1 transition-transform duration-300"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -1079,20 +1107,20 @@ export default function CreateParcelPage() {
 
               <button
                 type="submit"
-                className="px-8 py-4 bg-gradient-to-br from-red-600 via-red-600 to-red-700 hover:from-red-700 hover:via-red-700 hover:to-red-800 text-white rounded-xl font-bold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-3 shadow-xl shadow-red-500/25 hover:shadow-2xl hover:shadow-red-500/40 hover:-translate-y-1 transform group"
+                className="w-full xs:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-br from-red-600 via-red-600 to-red-700 hover:from-red-700 hover:via-red-700 hover:to-red-800 text-white rounded-lg sm:rounded-xl font-bold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 sm:gap-3 shadow-xl shadow-red-500/25 hover:shadow-2xl hover:shadow-red-500/40 hover:-translate-y-1 transform group text-sm sm:text-base"
                 disabled={loading}
               >
                 {loading ? (
                   <>
-                    <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
+                    <div className="animate-spin rounded-full h-4 w-4 sm:h-5 sm:w-5 border-2 border-white border-t-transparent"></div>
                     <span>Creating Parcel...</span>
                   </>
                 ) : (
                   <>
-                    <Package className="h-5 w-5 group-hover:scale-110 transition-transform duration-300" />
+                    <Package className="h-4 w-4 sm:h-5 sm:w-5 group-hover:scale-110 transition-transform duration-300" />
                     <span>Create Parcel</span>
                     <svg
-                      className="h-4 w-4 group-hover:translate-x-1 transition-transform duration-300"
+                      className="h-3 w-3 sm:h-4 sm:w-4 group-hover:translate-x-1 transition-transform duration-300"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
