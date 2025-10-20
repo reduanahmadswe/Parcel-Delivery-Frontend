@@ -96,16 +96,16 @@ export default function AdminDashboard() {
   if (loading) {
     return (
       <AdminLayout>
-        <div className="min-h-screen bg-background p-4 sm:p-6 lg:p-8">
-          <div className="max-w-7xl mx-auto space-y-6">
+        <div className="min-h-screen bg-background p-3 sm:p-4 lg:p-6 xl:p-8">
+          <div className="max-w-7xl mx-auto space-y-4 sm:space-y-6">
             <div className="animate-pulse">
-              <div className="h-8 bg-muted rounded w-1/3 mb-6"></div>
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+              <div className="h-6 sm:h-8 bg-muted rounded w-2/3 sm:w-1/3 mb-4 sm:mb-6"></div>
+              <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
                 {[...Array(4)].map((_, i) => (
-                  <div key={`loading-card-${i}`} className="h-32 bg-gradient-to-br from-red-50/20 via-transparent to-green-50/20 dark:from-red-950/10 dark:to-green-950/10 border border-border rounded-xl"></div>
+                  <div key={`loading-card-${i}`} className="h-28 sm:h-32 bg-gradient-to-br from-red-50/20 via-transparent to-green-50/20 dark:from-red-950/10 dark:to-green-950/10 border border-border rounded-xl"></div>
                 ))}
               </div>
-              <div className="h-96 bg-gradient-to-br from-red-50/20 via-transparent to-green-50/20 dark:from-red-950/10 dark:to-green-950/10 border border-border rounded-xl"></div>
+              <div className="h-64 sm:h-96 bg-gradient-to-br from-red-50/20 via-transparent to-green-50/20 dark:from-red-950/10 dark:to-green-950/10 border border-border rounded-xl"></div>
             </div>
           </div>
         </div>
@@ -115,8 +115,8 @@ export default function AdminDashboard() {
 
   return (
     <AdminLayout>
-      <div className="min-h-screen bg-background p-4 sm:p-6 lg:p-8">
-        <div className="max-w-7xl mx-auto space-y-6">
+      <div className="min-h-screen bg-background p-3 sm:p-4 lg:p-6 xl:p-8">
+        <div className="max-w-7xl mx-auto space-y-4 sm:space-y-6">
           <AdminHeader onRefresh={() => { refetchUsers(); refetchParcels(); }} />
 
           <StatCards statCards={statCards} />
@@ -124,27 +124,28 @@ export default function AdminDashboard() {
           <RecentParcelsTable parcels={paginatedRecentParcels} />
 
           {recentParcels.length > 0 && (
-            <div className="px-6 py-4 border-t border-border bg-gradient-to-r from-red-50/10 via-transparent to-green-50/10 dark:from-red-950/5 dark:to-green-950/5 rounded-b-xl">
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div className="px-3 sm:px-4 lg:px-6 py-3 sm:py-4 border-t border-border bg-gradient-to-r from-red-50/10 via-transparent to-green-50/10 dark:from-red-950/5 dark:to-green-950/5 rounded-b-xl">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
                 <div className="flex items-center">
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-xs sm:text-sm text-muted-foreground">
                     Showing {(currentPage - 1) * itemsPerPage + 1} to {Math.min(currentPage * itemsPerPage, recentParcels.length)} of {recentParcels.length} parcels
                   </p>
                 </div>
 
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center justify-center sm:justify-end space-x-1 sm:space-x-2">
                   <button 
                     onClick={() => setCurrentPage((p) => Math.max(1, p - 1))} 
                     disabled={currentPage === 1} 
-                    className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200 ${currentPage > 1 ? 'bg-muted hover:bg-muted/80 text-foreground' : 'bg-muted/50 text-muted-foreground cursor-not-allowed'}`}
+                    className={`px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors duration-200 ${currentPage > 1 ? 'bg-muted hover:bg-muted/80 text-foreground' : 'bg-muted/50 text-muted-foreground cursor-not-allowed'}`}
                   >
-                    Previous
+                    <span className="hidden sm:inline">Previous</span>
+                    <span className="sm:hidden">Prev</span>
                   </button>
 
-                  {/* Smart Pagination - Show only 4 pages at a time */}
+                  {/* Smart Pagination - Show only 4 pages at a time on desktop, 3 on mobile */}
                   <div className="flex items-center space-x-1">
                     {(() => {
-                      const maxVisiblePages = 4;
+                      const maxVisiblePages = window.innerWidth < 640 ? 3 : 4;
                       let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
                       let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
                       
@@ -161,7 +162,7 @@ export default function AdminDashboard() {
                           <button
                             key={1}
                             onClick={() => setCurrentPage(1)}
-                            className="px-3 py-2 rounded-lg text-sm font-medium bg-muted hover:bg-muted/80 text-foreground transition-colors duration-200"
+                            className="px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium bg-muted hover:bg-muted/80 text-foreground transition-colors duration-200"
                           >
                             1
                           </button>
@@ -169,7 +170,7 @@ export default function AdminDashboard() {
                         
                         if (startPage > 2) {
                           pages.push(
-                            <span key="dots-start" className="px-2 text-muted-foreground text-sm">
+                            <span key="dots-start" className="px-1 sm:px-2 text-muted-foreground text-xs sm:text-sm">
                               ...
                             </span>
                           );
@@ -182,7 +183,7 @@ export default function AdminDashboard() {
                           <button
                             key={page}
                             onClick={() => setCurrentPage(page)}
-                            className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200 ${
+                            className={`px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors duration-200 ${
                               page === currentPage 
                                 ? 'bg-red-600 text-white shadow-lg' 
                                 : 'bg-muted hover:bg-muted/80 text-foreground'
@@ -197,7 +198,7 @@ export default function AdminDashboard() {
                       if (endPage < totalPages) {
                         if (endPage < totalPages - 1) {
                           pages.push(
-                            <span key="dots-end" className="px-2 text-muted-foreground text-sm">
+                            <span key="dots-end" className="px-1 sm:px-2 text-muted-foreground text-xs sm:text-sm">
                               ...
                             </span>
                           );
@@ -207,7 +208,7 @@ export default function AdminDashboard() {
                           <button
                             key={totalPages}
                             onClick={() => setCurrentPage(totalPages)}
-                            className="px-3 py-2 rounded-lg text-sm font-medium bg-muted hover:bg-muted/80 text-foreground transition-colors duration-200"
+                            className="px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium bg-muted hover:bg-muted/80 text-foreground transition-colors duration-200"
                           >
                             {totalPages}
                           </button>
@@ -221,7 +222,7 @@ export default function AdminDashboard() {
                   <button 
                     onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))} 
                     disabled={currentPage === totalPages} 
-                    className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200 ${currentPage < totalPages ? 'bg-muted hover:bg-muted/80 text-foreground' : 'bg-muted/50 text-muted-foreground cursor-not-allowed'}`}
+                    className={`px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors duration-200 ${currentPage < totalPages ? 'bg-muted hover:bg-muted/80 text-foreground' : 'bg-muted/50 text-muted-foreground cursor-not-allowed'}`}
                   >
                     Next
                   </button>

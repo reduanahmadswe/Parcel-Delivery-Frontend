@@ -260,26 +260,26 @@ export default function Navigation() {
 
   return (
     <nav className="bg-background/95 backdrop-blur-xl shadow-lg border-b border-border sticky top-0 z-50 transition-all duration-300">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 xl:px-8">
+        <div className="flex justify-between h-14 sm:h-16">
           {/* Logo and Brand */}
-          <div className="flex items-center">
+          <div className="flex items-center min-w-0 flex-1">
             <Link
               to="/"
-              className="flex items-center space-x-3 group"
+              className="flex items-center space-x-2 sm:space-x-3 group min-w-0"
               onClick={handleLinkClick}
             >
-              <div className="relative">
-                <div className="w-10 h-10 bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                  <Package className="h-6 w-6 text-white" />
+              <div className="relative flex-shrink-0">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                  <Package className="h-4 w-4 sm:h-6 sm:w-6 text-white" />
                 </div>
-                <div className="absolute -top-1 -right-1 h-3 w-3 bg-gradient-to-r from-green-400 to-green-500 rounded-full animate-pulse shadow-sm"></div>
+                <div className="absolute -top-0.5 -right-0.5 sm:-top-1 sm:-right-1 h-2 w-2 sm:h-3 sm:w-3 bg-gradient-to-r from-green-400 to-green-500 rounded-full animate-pulse shadow-sm"></div>
               </div>
-              <div className="flex flex-col">
-                <span className="text-xl font-bold text-foreground group-hover:text-red-500 transition-colors duration-300">
+              <div className="flex flex-col min-w-0">
+                <span className="text-base sm:text-xl font-bold text-foreground group-hover:text-red-500 transition-colors duration-300 truncate">
                   ParcelTrack
                 </span>
-                <span className="text-xs text-muted-foreground hidden sm:block">
+                <span className="text-[10px] sm:text-xs text-muted-foreground hidden sm:block">
                   Professional Delivery
                 </span>
               </div>
@@ -343,24 +343,26 @@ export default function Navigation() {
           </div>
 
           {/* User Section */}
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-1.5 sm:space-x-3 flex-shrink-0">
             {/* Theme Toggle */}
-            <ThemeToggle />
+            <div className="hidden xs:block">
+              <ThemeToggle />
+            </div>
 
             {user ? (
               <>
                 {/* Notifications - Only for admin */}
                 {user.role === "admin" && (
-                  <div className="relative" ref={notificationsRef}>
+                  <div className="relative hidden lg:block" ref={notificationsRef}>
                     <button
                       onClick={() =>
                         setIsNotificationsOpen(!isNotificationsOpen)
                       }
-                      className="relative p-2 text-muted-foreground hover:text-foreground hover:bg-accent/50 rounded-xl transition-all duration-300 group"
+                      className="relative p-1.5 sm:p-2 text-muted-foreground hover:text-foreground hover:bg-accent/50 rounded-lg sm:rounded-xl transition-all duration-300 group"
                     >
-                      <Bell className="h-5 w-5 group-hover:scale-110 transition-transform duration-300" />
+                      <Bell className="h-4 w-4 sm:h-5 sm:w-5 group-hover:scale-110 transition-transform duration-300" />
                       {notifications > 0 && (
-                        <span className="absolute -top-1 -right-1 h-5 w-5 bg-gradient-to-r from-red-500 to-red-600 text-white text-xs rounded-full flex items-center justify-center animate-pulse font-semibold shadow-lg">
+                        <span className="absolute -top-0.5 -right-0.5 sm:-top-1 sm:-right-1 h-4 w-4 sm:h-5 sm:w-5 bg-gradient-to-r from-red-500 to-red-600 text-white text-[10px] sm:text-xs rounded-full flex items-center justify-center animate-pulse font-semibold shadow-lg">
                           {notifications}
                         </span>
                       )}
@@ -368,17 +370,17 @@ export default function Navigation() {
 
                     {/* Notifications Dropdown */}
                     {isNotificationsOpen && (
-                      <div className="absolute right-0 mt-2 w-80 bg-background rounded-lg shadow-xl border border-border z-50 max-h-96 overflow-y-auto">
+                      <div className="absolute right-0 mt-2 w-72 sm:w-80 bg-background rounded-lg shadow-xl border border-border z-50 max-h-96 overflow-y-auto">
                         {/* Header */}
-                        <div className="bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 p-4 rounded-t-lg">
+                        <div className="bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 p-3 sm:p-4 rounded-t-lg">
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
-                              <Bell className="w-5 h-5 text-white" />
-                              <h3 className="text-white font-semibold">
+                              <Bell className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+                              <h3 className="text-white font-semibold text-sm sm:text-base">
                                 Notifications
                               </h3>
                             </div>
-                            <button className="text-xs text-white/80 hover:text-white bg-white/20 hover:bg-white/30 px-2 py-1 rounded transition-colors">
+                            <button className="text-[10px] sm:text-xs text-white/80 hover:text-white bg-white/20 hover:bg-white/30 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded transition-colors whitespace-nowrap">
                               Mark All Read
                             </button>
                           </div>
@@ -389,29 +391,29 @@ export default function Navigation() {
                           {notificationsList.map((notification) => (
                             <div
                               key={notification.id}
-                              className={`p-3 border-b border-border hover:bg-muted/50 transition-colors cursor-pointer ${
+                              className={`p-2.5 sm:p-3 border-b border-border hover:bg-muted/50 transition-colors cursor-pointer ${
                                 notification.unread
                                   ? "bg-blue-50/50 dark:bg-blue-900/20"
                                   : ""
                               }`}
                             >
-                              <div className="flex items-start gap-3">
-                                <div className="mt-1">
+                              <div className="flex items-start gap-2 sm:gap-3">
+                                <div className="mt-0.5 sm:mt-1 flex-shrink-0">
                                   {getIconForType(notification.type)}
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                  <div className="flex items-start justify-between">
-                                    <h4 className="font-medium text-foreground text-sm">
+                                  <div className="flex items-start justify-between gap-2">
+                                    <h4 className="font-medium text-foreground text-xs sm:text-sm line-clamp-1">
                                       {notification.title}
                                     </h4>
                                     {notification.unread && (
-                                      <div className="w-2 h-2 bg-blue-500 rounded-full ml-2 mt-1"></div>
+                                      <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-blue-500 rounded-full mt-1 flex-shrink-0"></div>
                                     )}
                                   </div>
-                                  <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
+                                  <p className="text-[10px] sm:text-xs text-muted-foreground mt-0.5 sm:mt-1 line-clamp-2">
                                     {notification.description}
                                   </p>
-                                  <span className="text-xs text-muted-foreground mt-1">
+                                  <span className="text-[10px] sm:text-xs text-muted-foreground mt-0.5 sm:mt-1 inline-block">
                                     {notification.time}
                                   </span>
                                 </div>
@@ -421,8 +423,8 @@ export default function Navigation() {
                         </div>
 
                         {/* Footer */}
-                        <div className="p-3 border-t border-border bg-muted/30">
-                          <button className="w-full text-center text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-200 font-medium">
+                        <div className="p-2.5 sm:p-3 border-t border-border bg-muted/30">
+                          <button className="w-full text-center text-xs sm:text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-200 font-medium">
                             View All Notifications
                           </button>
                         </div>
@@ -432,13 +434,13 @@ export default function Navigation() {
                 )}
 
                 {/* User Menu */}
-                <div className="relative" ref={userMenuRef}>
+                <div className="relative hidden lg:block" ref={userMenuRef}>
                   <button
                     onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                    className="flex items-center space-x-3 text-muted-foreground hover:text-foreground hover:bg-accent/50 px-3 py-2 rounded-xl transition-all duration-300 group"
+                    className="flex items-center space-x-2 sm:space-x-3 text-muted-foreground hover:text-foreground hover:bg-accent/50 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg sm:rounded-xl transition-all duration-300 group"
                   >
-                    <div className="flex items-center space-x-3">
-                      <div className="h-8 w-8 bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 rounded-xl flex items-center justify-center text-white font-semibold text-sm shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    <div className="flex items-center space-x-2 sm:space-x-3">
+                      <div className="h-7 w-7 sm:h-8 sm:w-8 bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 rounded-lg sm:rounded-xl flex items-center justify-center text-white font-semibold text-xs sm:text-sm shadow-lg group-hover:scale-110 transition-transform duration-300">
                         {user?.name?.charAt(0)?.toUpperCase()}
                       </div>
                       <div className="hidden md:block text-left">
@@ -448,7 +450,7 @@ export default function Navigation() {
                       </div>
                     </div>
                     <ChevronDown
-                      className={`h-4 w-4 transition-transform duration-300 ${
+                      className={`h-3 w-3 sm:h-4 sm:w-4 transition-transform duration-300 ${
                         isUserMenuOpen ? "rotate-180" : ""
                       }`}
                     />
@@ -456,17 +458,17 @@ export default function Navigation() {
 
                   {/* User Dropdown */}
                   {isUserMenuOpen && (
-                    <div className="absolute right-0 mt-3 w-64 bg-background/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-border py-2 z-50 animate-in fade-in-0 zoom-in-95 slide-in-from-top-2 duration-200">
-                      <div className="px-4 py-4 border-b border-border">
-                        <div className="flex items-center space-x-3">
-                          <div className="h-12 w-12 bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 rounded-xl flex items-center justify-center text-white font-bold shadow-lg">
+                    <div className="absolute right-0 mt-3 w-56 sm:w-64 bg-background/95 backdrop-blur-xl rounded-xl sm:rounded-2xl shadow-2xl border border-border py-2 z-50 animate-in fade-in-0 zoom-in-95 slide-in-from-top-2 duration-200">
+                      <div className="px-3 sm:px-4 py-3 sm:py-4 border-b border-border">
+                        <div className="flex items-center space-x-2.5 sm:space-x-3">
+                          <div className="h-10 w-10 sm:h-12 sm:w-12 bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 rounded-lg sm:rounded-xl flex items-center justify-center text-white font-bold shadow-lg flex-shrink-0">
                             {user?.name?.charAt(0)?.toUpperCase()}
                           </div>
-                          <div className="flex-1">
-                            <div className="text-sm font-semibold text-foreground">
+                          <div className="flex-1 min-w-0">
+                            <div className="text-xs sm:text-sm font-semibold text-foreground truncate">
                               {user?.name}
                             </div>
-                            <div className="text-sm text-muted-foreground truncate">
+                            <div className="text-xs sm:text-sm text-muted-foreground truncate">
                               {user?.email}
                             </div>
                           </div>
@@ -481,10 +483,10 @@ export default function Navigation() {
                             <Link
                               key={item.href}
                               to={item.href}
-                              className="flex items-center space-x-3 px-4 py-3 text-sm text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-all duration-200 group"
+                              className="flex items-center space-x-2.5 sm:space-x-3 px-3 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-sm text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-all duration-200 group"
                               onClick={() => setIsUserMenuOpen(false)}
                             >
-                              <Icon className="h-4 w-4 group-hover:scale-110 transition-transform duration-200" />
+                              <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4 group-hover:scale-110 transition-transform duration-200 flex-shrink-0" />
                               <span>{item.label}</span>
                             </Link>
                           );
@@ -494,9 +496,9 @@ export default function Navigation() {
                       <div className="border-t border-border pt-2">
                         <button
                           onClick={handleLogout}
-                          className="flex items-center space-x-3 w-full px-4 py-3 text-sm text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/20 transition-all duration-200 group"
+                          className="flex items-center space-x-2.5 sm:space-x-3 w-full px-3 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-sm text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/20 transition-all duration-200 group"
                         >
-                          <LogOut className="h-4 w-4 group-hover:scale-110 transition-transform duration-200" />
+                          <LogOut className="h-3.5 w-3.5 sm:h-4 sm:w-4 group-hover:scale-110 transition-transform duration-200 flex-shrink-0" />
                           <span>Sign out</span>
                         </button>
                       </div>
@@ -505,16 +507,16 @@ export default function Navigation() {
                 </div>
               </>
             ) : (
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-2 sm:space-x-3">
                 <Link
                   to="/login"
-                  className="text-muted-foreground hover:text-foreground px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 hover:bg-accent/50"
+                  className="text-muted-foreground hover:text-foreground px-2 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl text-xs sm:text-sm font-medium transition-all duration-300 hover:bg-accent/50 hidden xs:block"
                 >
                   Sign in
                 </Link>
                 <Link
                   to="/register"
-                  className="bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 hover:from-red-600 hover:to-red-700 dark:hover:from-red-700 dark:hover:to-red-800 text-white px-6 py-2 rounded-xl text-sm font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 hover:-translate-y-0.5"
+                  className="bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 hover:from-red-600 hover:to-red-700 dark:hover:from-red-700 dark:hover:to-red-800 text-white px-3 sm:px-6 py-1.5 sm:py-2 rounded-lg sm:rounded-xl text-xs sm:text-sm font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 hover:-translate-y-0.5 hidden xs:block"
                 >
                   Get Started
                 </Link>
@@ -525,12 +527,12 @@ export default function Navigation() {
             <div className="lg:hidden">
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="text-muted-foreground hover:text-foreground hover:bg-accent/50 p-2 rounded-xl transition-all duration-300 group"
+                className="text-muted-foreground hover:text-foreground hover:bg-accent/50 p-1.5 sm:p-2 rounded-lg sm:rounded-xl transition-all duration-300 group"
               >
                 {isMobileMenuOpen ? (
-                  <X className="h-6 w-6 group-hover:scale-110 transition-transform duration-300" />
+                  <X className="h-5 w-5 sm:h-6 sm:w-6 group-hover:scale-110 transition-transform duration-300" />
                 ) : (
-                  <Menu className="h-6 w-6 group-hover:scale-110 transition-transform duration-300" />
+                  <Menu className="h-5 w-5 sm:h-6 sm:w-6 group-hover:scale-110 transition-transform duration-300" />
                 )}
               </button>
             </div>
@@ -540,7 +542,7 @@ export default function Navigation() {
         {/* Mobile Navigation */}
         {isMobileMenuOpen && (
           <div className="lg:hidden border-t border-border bg-background/95 backdrop-blur-xl animate-in slide-in-from-top-2 duration-200">
-            <div className="px-4 py-4 space-y-1">
+            <div className="px-3 sm:px-4 py-3 sm:py-4 space-y-1">
               {navigationItems.map((item) => {
                 const Icon = item.icon;
                 const active = isActive(item.href);
@@ -552,27 +554,27 @@ export default function Navigation() {
                       handleNavClick(item.href);
                       setIsMobileMenuOpen(false);
                     }}
-                    className={`flex items-center space-x-3 px-3 py-3 rounded-xl text-sm font-medium transition-all duration-300 group w-full text-left relative ${
+                    className={`flex items-center space-x-2.5 sm:space-x-3 px-2.5 sm:px-3 py-2.5 sm:py-3 rounded-lg sm:rounded-xl text-xs sm:text-sm font-medium transition-all duration-300 group w-full text-left relative ${
                       active
                         ? "text-white bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 shadow-lg shadow-red-500/25"
                         : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
                     }`}
                   >
                     <Icon
-                      className={`h-5 w-5 transition-transform duration-300 ${
+                      className={`h-4 w-4 sm:h-5 sm:w-5 transition-transform duration-300 flex-shrink-0 ${
                         active ? "scale-110" : "group-hover:scale-110"
                       }`}
                     />
                     <span>{item.label}</span>
                     {active && (
-                      <div className="absolute right-3 top-1/2 transform -translate-y-1/2 w-2 h-2 bg-white rounded-full"></div>
+                      <div className="absolute right-2 sm:right-3 top-1/2 transform -translate-y-1/2 w-1.5 h-1.5 sm:w-2 sm:h-2 bg-white rounded-full"></div>
                     )}
                   </button>
                 ) : (
                   <Link
                     key={item.href}
                     to={item.href}
-                    className={`flex items-center space-x-3 px-3 py-3 rounded-xl text-sm font-medium transition-all duration-300 group relative ${
+                    className={`flex items-center space-x-2.5 sm:space-x-3 px-2.5 sm:px-3 py-2.5 sm:py-3 rounded-lg sm:rounded-xl text-xs sm:text-sm font-medium transition-all duration-300 group relative ${
                       active
                         ? "text-white bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 shadow-lg shadow-red-500/25"
                         : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
@@ -580,13 +582,13 @@ export default function Navigation() {
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     <Icon
-                      className={`h-5 w-5 transition-transform duration-300 ${
+                      className={`h-4 w-4 sm:h-5 sm:w-5 transition-transform duration-300 flex-shrink-0 ${
                         active ? "scale-110" : "group-hover:scale-110"
                       }`}
                     />
                     <span>{item.label}</span>
                     {active && (
-                      <div className="absolute right-3 top-1/2 transform -translate-y-1/2 w-2 h-2 bg-white rounded-full"></div>
+                      <div className="absolute right-2 sm:right-3 top-1/2 transform -translate-y-1/2 w-1.5 h-1.5 sm:w-2 sm:h-2 bg-white rounded-full"></div>
                     )}
                   </Link>
                 );
@@ -594,23 +596,30 @@ export default function Navigation() {
 
               {user && (
                 <>
-                  <div className="border-t border-border pt-4 mt-4">
-                    <div className="flex items-center space-x-3 px-3 py-3 bg-accent/20 rounded-xl">
-                      <div className="h-12 w-12 bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 rounded-xl flex items-center justify-center text-white font-bold shadow-lg">
+                  <div className="border-t border-border pt-3 sm:pt-4 mt-3 sm:mt-4">
+                    <div className="flex items-center space-x-2.5 sm:space-x-3 px-2.5 sm:px-3 py-2.5 sm:py-3 bg-accent/20 rounded-lg sm:rounded-xl">
+                      <div className="h-10 w-10 sm:h-12 sm:w-12 bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 rounded-lg sm:rounded-xl flex items-center justify-center text-white font-bold shadow-lg flex-shrink-0">
                         {user?.name?.charAt(0)?.toUpperCase()}
                       </div>
-                      <div className="flex-1">
-                        <div className="text-sm font-semibold text-foreground">
+                      <div className="flex-1 min-w-0">
+                        <div className="text-xs sm:text-sm font-semibold text-foreground truncate">
                           {user?.name}
                         </div>
-                        <div className="text-xs text-muted-foreground truncate">
+                        <div className="text-[10px] sm:text-xs text-muted-foreground truncate">
                           {user?.email}
                         </div>
                       </div>
                     </div>
                   </div>
 
-                  <div className="space-y-1 mt-4">
+                  <div className="space-y-1 mt-3 sm:mt-4">
+                    {/* Theme Toggle in Mobile Menu */}
+                    <div className="xs:hidden flex items-center space-x-2.5 px-2.5 py-2.5 text-muted-foreground">
+                      <Settings className="h-4 w-4 flex-shrink-0" />
+                      <span className="text-xs font-medium flex-1">Theme</span>
+                      <ThemeToggle />
+                    </div>
+
                     {userMenuItems.map((item) => {
                       const Icon = item.icon;
 
@@ -618,10 +627,10 @@ export default function Navigation() {
                         <Link
                           key={item.href}
                           to={item.href}
-                          className="flex items-center space-x-3 text-muted-foreground hover:text-foreground hover:bg-accent/50 px-3 py-3 rounded-xl text-sm font-medium transition-all duration-300 group"
+                          className="flex items-center space-x-2.5 sm:space-x-3 text-muted-foreground hover:text-foreground hover:bg-accent/50 px-2.5 sm:px-3 py-2.5 sm:py-3 rounded-lg sm:rounded-xl text-xs sm:text-sm font-medium transition-all duration-300 group"
                           onClick={() => setIsMobileMenuOpen(false)}
                         >
-                          <Icon className="h-5 w-5 group-hover:scale-110 transition-transform duration-300" />
+                          <Icon className="h-4 w-4 sm:h-5 sm:w-5 group-hover:scale-110 transition-transform duration-300 flex-shrink-0" />
                           <span>{item.label}</span>
                         </Link>
                       );
@@ -632,9 +641,9 @@ export default function Navigation() {
                         handleLogout();
                         setIsMobileMenuOpen(false);
                       }}
-                      className="flex items-center space-x-3 w-full text-left text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/20 px-3 py-3 rounded-xl text-sm font-medium transition-all duration-300 group"
+                      className="flex items-center space-x-2.5 sm:space-x-3 w-full text-left text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/20 px-2.5 sm:px-3 py-2.5 sm:py-3 rounded-lg sm:rounded-xl text-xs sm:text-sm font-medium transition-all duration-300 group"
                     >
-                      <LogOut className="h-5 w-5 group-hover:scale-110 transition-transform duration-300" />
+                      <LogOut className="h-4 w-4 sm:h-5 sm:w-5 group-hover:scale-110 transition-transform duration-300 flex-shrink-0" />
                       <span>Sign out</span>
                     </button>
                   </div>
@@ -642,17 +651,17 @@ export default function Navigation() {
               )}
 
               {!user && (
-                <div className="border-t border-border pt-4 mt-4 space-y-2">
+                <div className="border-t border-border pt-3 sm:pt-4 mt-3 sm:mt-4 space-y-2">
                   <Link
                     to="/login"
-                    className="block text-muted-foreground hover:text-foreground hover:bg-accent/50 px-3 py-3 rounded-xl text-sm font-medium transition-all duration-300"
+                    className="block text-muted-foreground hover:text-foreground hover:bg-accent/50 px-2.5 sm:px-3 py-2.5 sm:py-3 rounded-lg sm:rounded-xl text-xs sm:text-sm font-medium transition-all duration-300"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     Sign in
                   </Link>
                   <Link
                     to="/register"
-                    className="block bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 text-white hover:from-red-600 hover:to-red-700 dark:hover:from-red-700 dark:hover:to-red-800 px-3 py-3 rounded-xl text-sm font-semibold transition-all duration-300 text-center shadow-lg"
+                    className="block bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 text-white hover:from-red-600 hover:to-red-700 dark:hover:from-red-700 dark:hover:to-red-800 px-2.5 sm:px-3 py-2.5 sm:py-3 rounded-lg sm:rounded-xl text-xs sm:text-sm font-semibold transition-all duration-300 text-center shadow-lg"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     Get Started
