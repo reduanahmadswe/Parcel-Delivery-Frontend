@@ -1,5 +1,16 @@
 // Centralized environment config for Vite
-export const API_BASE = (import.meta as any).env?.VITE_API_URL ?? 'http://localhost:5000/api';
+// Normalize VITE_API_URL so it always points to the API base (ensures trailing /api)
+function ensureApiBase(raw?: string | null): string {
+    const fallback = 'http://localhost:5000/api';
+    if (!raw) return fallback;
+    // remove trailing slash
+    const trimmed = raw.replace(/\/+$/, '');
+    if (trimmed.endsWith('/api')) return trimmed;
+    return `${trimmed}/api`;
+}
+
+const rawApi = (import.meta as any).env?.VITE_API_URL as string | undefined;
+export const API_BASE = ensureApiBase(rawApi);
 export const IS_PROD = (import.meta as any).env?.PROD === true;
 export const IS_DEV = (import.meta as any).env?.DEV === true;
 
