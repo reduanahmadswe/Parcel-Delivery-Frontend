@@ -182,15 +182,15 @@ export function ReduxAuthProvider({ children }: { children: ReactNode }) {
       if (result && result.success && result.data) {
         console.log("🔍 Login result structure:", JSON.stringify(result, null, 2));
         
-        const { user: userData, token, refreshToken } = result.data;
+        const { user: userData, accessToken, refreshToken } = result.data;
         console.log("📝 Extracted user:", userData);
-        console.log("📝 Extracted token:", token ? "TOKEN_PRESENT" : "NO_TOKEN");
+        console.log("📝 Extracted token:", accessToken ? "TOKEN_PRESENT" : "NO_TOKEN");
         console.log("📝 Extracted refreshToken:", refreshToken ? "REFRESH_TOKEN_PRESENT" : "NO_REFRESH_TOKEN");
 
         dispatch(
           loginSuccess({
             user: userData,
-            token: token,
+            token: accessToken,
             refreshToken: refreshToken,
           })
         );
