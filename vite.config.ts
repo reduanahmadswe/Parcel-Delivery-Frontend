@@ -38,14 +38,7 @@ export default defineConfig({
     server: {
         port: 3000,
         open: true,
-        proxy: {
-            '/api': {
-                target: 'https://parcel-delivery-api.onrender.com',
-                changeOrigin: true,
-                secure: true,
-                rewrite: (path) => path.replace(/^\/api/, '/api')
-            }
-        }
+        // Proxy removed - using direct API calls
     },
     build: {
         outDir: 'dist',

@@ -98,7 +98,13 @@ export interface ApiResponse<T> {
 }
 
 export interface AuthResponse {
-  user: User;
+    success: boolean
+    data: {
+        user: User
+        token: string
+        refreshToken?: string
+    }
+    message: string
 }
 
 export interface UserStats {

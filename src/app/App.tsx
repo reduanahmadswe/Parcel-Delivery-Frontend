@@ -28,6 +28,7 @@ import SenderStatisticsPage from "../pages/sender/SenderStatisticsPage";
 // Admin Pages
 import NotificationsPage from "../pages/admin/NotificationsPage";
 import ParcelManagementPage from "../pages/admin/ParcelManagement";
+import APITestPage from "../pages/APITestPage";
 import SystemSettingsPage from "../pages/admin/SystemSettings";
 import UserManagementPage from "../pages/admin/UserManagement";
 import AdminDashboardPage from "../features/dashboard/AdminDashboard";
@@ -70,6 +71,14 @@ const App: React.FC = () => {
                     element={
                       <Layout>
                         <DebugAuthPage />
+                      </Layout>
+                    }
+                  />
+                  <Route
+                    path="/test-api"
+                    element={
+                      <Layout>
+                        <APITestPage />
                       </Layout>
                     }
                   />

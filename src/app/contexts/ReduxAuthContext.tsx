@@ -171,17 +171,27 @@ export function ReduxAuthProvider({ children }: { children: ReactNode }) {
     try {
       dispatch(setLoading(true));
 
+      console.log("🚀 Attempting login API call to backend...");
+      console.log("📧 Email:", email);
+      console.log("🔗 API Base URL:", "/api"); // Using proxy
+      
       const result = await loginMutation({ email, password }).unwrap();
-      console.debug("loginMutation result:", result);
+      console.log("✅ API Response received!");
+      console.debug("🔍 Full loginMutation result:", result);
 
-      if (result && (result as any).success && (result as any).data) {
-        const { user: userData, accessToken, refreshToken } = result.data;
+      if (result && result.success && result.data) {
+        console.log("🔍 Login result structure:", JSON.stringify(result, null, 2));
+        
+        const { user: userData, token, refreshToken } = result.data;
+        console.log("📝 Extracted user:", userData);
+        console.log("📝 Extracted token:", token ? "TOKEN_PRESENT" : "NO_TOKEN");
+        console.log("📝 Extracted refreshToken:", refreshToken ? "REFRESH_TOKEN_PRESENT" : "NO_REFRESH_TOKEN");
 
         dispatch(
           loginSuccess({
             user: userData,
-            token: accessToken,
-            refreshToken,
+            token: token,
+            refreshToken: refreshToken,
           })
         );
 
@@ -194,15 +204,21 @@ export function ReduxAuthProvider({ children }: { children: ReactNode }) {
         return { success: true, user: userData };
       }
 
-      throw new Error("Login failed");
+      console.error("❌ Login response invalid - no success or data field");
+      throw new Error("Login failed - invalid response structure");
     } catch (error: unknown) {
       dispatch(setLoading(false));
-      console.error("Login error:", error);
-      const errorMessage =
-        error && typeof error === "object" && "data" in error
-          ? (error as { data?: { message?: string } }).data?.message ||
-            "Login failed"
-          : "Login failed";
+      console.error("❌ Login error:", error);
+      
+      let errorMessage = "Login failed";
+      if (error && typeof error === "object") {
+        if ("data" in error) {
+          errorMessage = (error as { data?: { message?: string } }).data?.message || "Login failed";
+        } else if ("message" in error) {
+          errorMessage = (error as { message: string }).message;
+        }
+      }
+      
       toast.error(errorMessage);
       return { success: false };
     }

@@ -33,8 +33,20 @@ const baseQueryWithReauth: BaseQueryFn<
 > = async (args, api, extraOptions) => {
     // Set loading when making requests
     api.dispatch(setLoading(true));
+    
+    // Log the API call being made
+    const url = typeof args === 'string' ? args : args.url;
+    const method = typeof args === 'string' ? 'GET' : (args.method || 'GET');
+    console.log(`🌐 API Call: ${method} ${API_BASE_URL}${url}`);
 
     let result = await baseQuery(args, api, extraOptions);
+    
+    // Log the result
+    if (result.error) {
+        console.error(`❌ API Error:`, result.error);
+    } else {
+        console.log(`✅ API Success:`, result.data);
+    }
 
     // Handle 401 unauthorized - try to refresh token
     if (result.error && result.error.status === 401) {

@@ -54,6 +54,10 @@ export function LoginForm({
       const result = await login(data.email, data.password);
       if (result.success && result.user) {
         toast.success("Welcome back!");
+        
+        // Add a small delay to ensure Redux state is updated
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
         // Role-based redirect after login
         if (result.user.role === "admin") {
           navigate("/admin", { replace: true });
