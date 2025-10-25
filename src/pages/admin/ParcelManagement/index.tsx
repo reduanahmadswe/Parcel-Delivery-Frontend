@@ -105,8 +105,6 @@ export default function ParcelManagement() {
 
       showNotification("success", "Parcel status updated successfully!");
     } catch (error: any) {
-      console.error("Error updating parcel status:", error);
-
       let errorMessage = "Failed to update parcel status. Please try again.";
       if (error.response?.status === 400) {
         errorMessage =
@@ -134,7 +132,6 @@ export default function ParcelManagement() {
         `Parcel ${newFlaggedState ? "flagged" : "unflagged"} successfully!`
       );
     } catch (error) {
-      console.error("Error flagging parcel:", error);
       showNotification("error", "Failed to flag parcel. Please try again.");
     }
   };
@@ -151,7 +148,6 @@ export default function ParcelManagement() {
         } successfully!`
       );
     } catch (error) {
-      console.error("Error holding parcel:", error);
       showNotification(
         "error",
         "Failed to update parcel hold status. Please try again."
@@ -165,7 +161,6 @@ export default function ParcelManagement() {
       await fetchParcels();
       showNotification("success", "Parcel returned successfully!");
     } catch (error) {
-      console.error("Error returning parcel:", error);
       showNotification("error", "Failed to return parcel. Please try again.");
     }
   };
@@ -180,7 +175,6 @@ export default function ParcelManagement() {
       setSelectedParcel(null);
       showNotification("success", "Parcel deleted successfully!");
     } catch (error) {
-      console.error("Error deleting parcel:", error);
       showNotification("error", "Failed to delete parcel. Please try again.");
     }
   };

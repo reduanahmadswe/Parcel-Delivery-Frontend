@@ -309,16 +309,12 @@ export default function CreateParcelPage() {
         },
       };
 
-  if ((import.meta as any).env?.DEV) console.debug("Sending payload to backend:", payload);
-
       const response = await api.post("/parcels", payload);
       const parcel = response.data.data;
 
       toast.success("Parcel created successfully!");
       navigate(`/track?id=${parcel.trackingId}`);
     } catch (error: unknown) {
-      console.error("Full error object:", error);
-
       const apiError = error as {
         response?: {
           data?: {
@@ -339,12 +335,6 @@ export default function CreateParcelPage() {
       let errorMessage = "Failed to create parcel";
 
       if (apiError.response?.data) {
-          if ((import.meta as any).env?.DEV) console.debug("Backend error response:", apiError.response.data);
-          if ((import.meta as any).env?.DEV) console.debug(
-            "Backend error data details:",
-            JSON.stringify(apiError.response.data, null, 2)
-          );
-
         if (apiError.response.data.message) {
           errorMessage = apiError.response.data.message;
         } else if (apiError.response.data.errors) {
@@ -363,8 +353,7 @@ export default function CreateParcelPage() {
             )
             .join(", ");
         } else if (apiError.response.data.data) {
-          if ((import.meta as any).env?.DEV) console.debug("Validation errors:", apiError.response.data.data);
-          errorMessage = "Validation failed. Check console for details.";
+          errorMessage = "Validation failed.";
         }
       }
 

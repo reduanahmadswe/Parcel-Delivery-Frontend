@@ -46,10 +46,8 @@ export function useUserManagement() {
     const fetchUsers = useCallback(async () => {
         try {
             setLoading(true);
-            console.log("🔄 Fetching users from API...");
 
             const response = await api.get("/users");
-            console.log("✅ Raw API response:", response.data);
 
             const apiUsers = Array.isArray(response.data) 
                 ? response.data 
@@ -59,11 +57,8 @@ export function useUserManagement() {
                 .filter((user: ApiUser) => user && user.email)
                 .map(transformApiUser);
 
-            console.log("✅ Transformed users:", transformedUsers);
-
             setUsers(transformedUsers);
         } catch (error) {
-            console.error("❌ Error fetching users:", error);
             setUsers([]);
         } finally {
             setLoading(false);
@@ -74,7 +69,6 @@ export function useUserManagement() {
     const createUser = useCallback(async (formData: Partial<User>) => {
         try {
             setActionLoading(true);
-            console.log("Creating new user with data:", formData);
 
             // Convert Partial<User> to UserForm with required fields
             const userFormData: UserForm = {
@@ -92,12 +86,10 @@ export function useUserManagement() {
             };
 
             const response = await api.post("/users", userFormData);
-            console.log("User created successfully:", response.data);
 
             await fetchUsers();
             return { success: true, data: response.data };
         } catch (error) {
-            console.error("Error creating user:", error);
             return { success: false, error: error as Error };
         } finally {
             setActionLoading(false);
@@ -108,7 +100,6 @@ export function useUserManagement() {
     const updateUser = useCallback(async (userId: string | number, formData: Partial<User>) => {
         try {
             setActionLoading(true);
-            console.log("Updating user with ID:", userId);
 
             // Convert Partial<User> to UserUpdateForm
             const updateData: UserUpdateForm = {
@@ -125,12 +116,10 @@ export function useUserManagement() {
             };
 
             await api.put(`/users/${userId}`, updateData);
-            console.log("User updated successfully");
 
             await fetchUsers();
             return { success: true };
         } catch (error) {
-            console.error("Error updating user:", error);
             return { success: false, error: error as Error };
         } finally {
             setActionLoading(false);
@@ -141,15 +130,12 @@ export function useUserManagement() {
     const deleteUser = useCallback(async (userId: string | number) => {
         try {
             setActionLoading(true);
-            console.log("Deleting user with ID:", userId);
 
             await api.delete(`/users/${userId}`);
-            console.log("User deleted successfully");
 
             await fetchUsers();
             return { success: true };
         } catch (error) {
-            console.error("Error deleting user:", error);
             return { success: false, error: error as Error };
         } finally {
             setActionLoading(false);
@@ -160,7 +146,6 @@ export function useUserManagement() {
     const toggleUserStatus = useCallback(async (userId: string | number, reason?: string) => {
         try {
             setActionLoading(true);
-            console.log("Toggling user status for ID:", userId);
 
             const user = users.find((u) => u.id === userId);
             if (!user) {
@@ -176,12 +161,10 @@ export function useUserManagement() {
             };
 
             await api.patch(`/users/${userId}/block-status`, payload);
-            console.log(`User ${isCurrentlyBlocked ? "unblocked" : "blocked"} successfully`);
 
             await fetchUsers();
             return { success: true };
         } catch (error) {
-            console.error("Error toggling user status:", error);
             return { success: false, error: error as Error };
         } finally {
             setActionLoading(false);

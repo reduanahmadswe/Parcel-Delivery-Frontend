@@ -30,15 +30,6 @@ const authSlice = createSlice({
 
         // Login success
         loginSuccess: (state, action: PayloadAction<{ user: User; token: string; refreshToken?: string }>) => {
-            console.log('🔐 authSlice.loginSuccess called with:', {
-                hasUser: !!action.payload.user,
-                userEmail: action.payload.user?.email,
-                hasToken: !!action.payload.token,
-                tokenPreview: action.payload.token ? action.payload.token.substring(0, 30) + '...' : 'NONE',
-                hasRefreshToken: !!action.payload.refreshToken,
-                refreshTokenPreview: action.payload.refreshToken ? action.payload.refreshToken.substring(0, 30) + '...' : 'NONE',
-            });
-
             const { user, token, refreshToken } = action.payload;
             state.user = user;
             state.token = token;
@@ -46,16 +37,12 @@ const authSlice = createSlice({
             state.isAuthenticated = true;
             state.loading = false;
             
-            console.log('💾 Calling TokenManager.setTokens...');
             TokenManager.setTokens(token, refreshToken);
             
             // Ensure user info is also saved
             if (typeof window !== 'undefined') {
                 localStorage.setItem('userData', JSON.stringify(user));
-                console.log('✅ User data saved to localStorage');
             }
-            
-            console.log('✅ loginSuccess completed - Redux state updated');
         },
 
         // Login failure
@@ -77,14 +64,9 @@ const authSlice = createSlice({
 
         // Refresh token success
         refreshTokenSuccess: (state, action: PayloadAction<string>) => {
-            console.log('🔄 authSlice.refreshTokenSuccess called');
-            console.log('New access token:', action.payload.substring(0, 30) + '...');
-            
             state.token = action.payload;
             // Update token in storage
             TokenManager.setTokens(action.payload, state.refreshToken || undefined);
-            
-            console.log('✅ refreshTokenSuccess completed');
         },
 
         // Logout

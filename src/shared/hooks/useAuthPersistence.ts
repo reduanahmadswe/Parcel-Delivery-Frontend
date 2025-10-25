@@ -13,7 +13,6 @@ export function useAuthPersistence() {
         if (hasToken) {
             // Tokens exist, but we need to verify them with the server
             // This is handled by the AuthContext checkAuth function
-            console.log('Found stored authentication tokens, attempting to restore session...');
         }
     }, []);
 }

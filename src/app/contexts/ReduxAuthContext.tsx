@@ -77,44 +77,40 @@ export function ReduxAuthProvider({ children }: { children: ReactNode }) {
   // Initialize auth state on mount - only run once on app startup
   useEffect(() => {
     const initializeAuth = () => {
-      // Only clear authentication data on first app load when no active session exists
+      // Check if we should clear auth (first app load with no active session)
       if (AuthStateManager.shouldClearAuth()) {
-        console.log("Clearing authentication data on fresh app startup");
-
         TokenManager.clearTokens();
         localStorage.removeItem("userData");
         dispatch(logoutAction());
+      } else {
+        // Try to restore authentication from stored tokens
+        const token = TokenManager.getAccessToken();
+        const refreshToken = TokenManager.getRefreshToken();
+        const cachedUserStr = localStorage.getItem("userData");
+
+        if (token && cachedUserStr && !user) {
+          try {
+            const cachedUser = JSON.parse(cachedUserStr);
+            dispatch(
+              loginSuccess({
+                user: cachedUser,
+                token,
+                refreshToken: refreshToken || undefined,
+              })
+            );
+          } catch (error) {
+            localStorage.removeItem("userData");
+            TokenManager.clearTokens();
+            dispatch(logoutAction());
+          }
+        } else if (!token && user) {
+          // No token but user exists in Redux, clear it
+          dispatch(logoutAction());
+        }
       }
 
       // Mark as initialized
       AuthStateManager.markAsInitialized();
-
-      // If you want to restore authentication, uncomment the code below:
-      /*
-      const token = TokenManager.getAccessToken();
-      const refreshToken = TokenManager.getRefreshToken();
-      const cachedUserStr = localStorage.getItem("userData");
-
-      if (token && cachedUserStr && !user) {
-        try {
-          const cachedUser = JSON.parse(cachedUserStr);
-          dispatch(
-            loginSuccess({
-              user: cachedUser,
-              token,
-              refreshToken: refreshToken || undefined,
-            })
-          );
-        } catch (error) {
-          console.error("Failed to parse cached user data:", error);
-          localStorage.removeItem("userData");
-          TokenManager.clearTokens();
-        }
-      } else if (!token && user) {
-        // No token but user exists in Redux, clear it
-        dispatch(logoutAction());
-      }
-      */
     };
 
     initializeAuth();
@@ -144,8 +140,6 @@ export function ReduxAuthProvider({ children }: { children: ReactNode }) {
   // Handle authentication errors
   useEffect(() => {
     if (isUserError && userError) {
-      console.error("User authentication error:", userError);
-
       if (
         "status" in userError &&
         (userError.status === 401 || userError.status === 403)
@@ -171,22 +165,15 @@ export function ReduxAuthProvider({ children }: { children: ReactNode }) {
     try {
       dispatch(setLoading(true));
 
-      console.log("🚀 Attempting login API call to backend...");
-      console.log("📧 Email:", email);
-      console.log("🔗 API Base URL:", "/api"); // Using proxy
-      
       const result = await loginMutation({ email, password }).unwrap();
-      console.log("✅ API Response received!");
-      console.debug("🔍 Full loginMutation result:", result);
 
       if (result && result.success && result.data) {
-        console.log("🔍 Login result structure:", JSON.stringify(result, null, 2));
-        
         const { user: userData, accessToken, refreshToken } = result.data;
-        console.log("📝 Extracted user:", userData);
-        console.log("📝 Extracted token:", accessToken ? "TOKEN_PRESENT" : "NO_TOKEN");
-        console.log("📝 Extracted refreshToken:", refreshToken ? "REFRESH_TOKEN_PRESENT" : "NO_REFRESH_TOKEN");
 
+        // Save tokens immediately using TokenManager
+        TokenManager.setTokens(accessToken, refreshToken);
+
+        // Update Redux state
         dispatch(
           loginSuccess({
             user: userData,
@@ -195,6 +182,7 @@ export function ReduxAuthProvider({ children }: { children: ReactNode }) {
           })
         );
 
+        // Save user data to localStorage
         localStorage.setItem("userData", JSON.stringify(userData));
 
         // Mark session as active to prevent auto-logout
@@ -204,11 +192,9 @@ export function ReduxAuthProvider({ children }: { children: ReactNode }) {
         return { success: true, user: userData };
       }
 
-      console.error("❌ Login response invalid - no success or data field");
       throw new Error("Login failed - invalid response structure");
     } catch (error: unknown) {
       dispatch(setLoading(false));
-      console.error("❌ Login error:", error);
       
       let errorMessage = "Login failed";
       if (error && typeof error === "object") {
@@ -249,13 +235,19 @@ export function ReduxAuthProvider({ children }: { children: ReactNode }) {
   // Logout function
   const logout = async (): Promise<void> => {
     try {
-      logoutMutation().catch((error) => {
-        console.error("Logout API error:", error);
+      logoutMutation().catch(() => {
+        // Logout API error - ignore
       });
     } catch (error) {
-      console.error("Logout error:", error);
+      // Logout error - ignore
     } finally {
+      // Clear tokens using TokenManager
+      TokenManager.clearTokens();
+      
+      // Update Redux state
       dispatch(logoutAction());
+      
+      // Remove user data from localStorage (also done in TokenManager.clearTokens())
       localStorage.removeItem("userData");
 
       // Clear the active session
@@ -274,9 +266,15 @@ export function ReduxAuthProvider({ children }: { children: ReactNode }) {
         localStorage.setItem("userData", JSON.stringify(result.data.data));
       }
     } catch (error) {
-      console.error("Failed to refresh user:", error);
+      // Clear all authentication data
+      TokenManager.clearTokens();
       dispatch(logoutAction());
       localStorage.removeItem("userData");
+      
+      // Redirect to login if in browser
+      if (typeof window !== "undefined" && !window.location.pathname.includes("/login")) {
+        window.location.href = "/login";
+      }
     }
   };
 

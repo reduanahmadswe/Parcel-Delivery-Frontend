@@ -137,11 +137,11 @@ export function useReduxAuth() {
     const logout = async (): Promise<void> => {
         try {
             // Call API logout (don't wait for it)
-            logoutMutation().catch((error) => {
-                console.error('Logout API error:', error);
+            logoutMutation().catch(() => {
+                // Logout API error - ignore
             });
         } catch (error) {
-            console.error('Logout error:', error);
+            // Logout error - ignore
         } finally {
             // Always clear local state
             dispatch(logoutAction());
@@ -159,7 +159,6 @@ export function useReduxAuth() {
                 localStorage.setItem('userData', JSON.stringify(result.data.data));
             }
         } catch (error) {
-            console.error('Failed to refresh user:', error);
             // If refresh fails, clear everything
             dispatch(logoutAction());
             localStorage.removeItem('userData');

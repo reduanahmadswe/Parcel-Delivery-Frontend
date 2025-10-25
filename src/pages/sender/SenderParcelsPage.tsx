@@ -78,7 +78,7 @@ export default function SenderParcelsPage() {
       try {
         setRecentSearches(JSON.parse(saved));
       } catch (error) {
-        console.error("Error loading recent searches:", error);
+        // Error loading recent searches
       }
     }
   }, []);
@@ -121,8 +121,6 @@ export default function SenderParcelsPage() {
 
       const response = await api.get(`/parcels/me?${params.toString()}`);
 
-  if ((import.meta as any).env?.DEV) console.debug("API Response:", response.data);
-
       // Handle different response structures
       const data = response.data.data || response.data.parcels || response.data;
       const paginationData =
@@ -146,7 +144,6 @@ export default function SenderParcelsPage() {
         hasPrevPage: paginationData.hasPrevPage || page > 1,
       });
     } catch (error) {
-      console.error("Error fetching parcels:", error);
       toast.error("Failed to fetch parcels");
     } finally {
       setLoading(false);
@@ -592,14 +589,7 @@ export default function SenderParcelsPage() {
                                 to={`/status-history?id=${parcel.trackingId}`}
                                 className="text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300 transition-colors duration-200"
                                 title="View status history"
-                                onClick={() => {
-                                  if ((import.meta as any).env?.DEV) {
-                                    console.debug("🔗 Navigating to status history for:", {
-                                      trackingId: parcel.trackingId,
-                                      url: `/status-history?id=${parcel.trackingId}`,
-                                    });
-                                  }
-                                }}
+                                onClick={() => {}}
                               >
                                 <Calendar className="h-3 w-3 lg:h-4 lg:w-4" />
                               </Link>
@@ -656,14 +646,7 @@ export default function SenderParcelsPage() {
                               to={`/status-history?id=${parcel.trackingId}`}
                               className="text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300 transition-colors duration-200 p-1.5 rounded hover:bg-green-50 dark:hover:bg-green-900/20"
                               title="View status history"
-                              onClick={() => {
-                                if ((import.meta as any).env?.DEV) {
-                                  console.debug("🔗 Navigating to status history for:", {
-                                    trackingId: parcel.trackingId,
-                                    url: `/status-history?id=${parcel.trackingId}`,
-                                  });
-                                }
-                              }}
+                              onClick={() => {}}
                             >
                               <Calendar className="h-4 w-4" />
                             </Link>

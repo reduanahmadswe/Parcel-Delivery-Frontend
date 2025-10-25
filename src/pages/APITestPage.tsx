@@ -9,7 +9,7 @@ export default function APITestPage() {
     setTestResult("🧪 Testing API connectivity...\n");
     
     try {
-      console.log("🚀 Making API call to /api/auth/login");
+
       
       const response = await fetch('https://parcel-delivery-api.onrender.com/api/auth/login', {
         method: 'POST',
@@ -37,7 +37,6 @@ export default function APITestPage() {
       }
       
     } catch (error) {
-      console.error("❌ API Error:", error);
       setTestResult(prev => prev + `❌ API Error: ${error}\n`);
     }
     

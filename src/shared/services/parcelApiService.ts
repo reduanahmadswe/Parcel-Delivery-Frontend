@@ -30,32 +30,22 @@ export class ParcelApiService {
         let response;
         try {
             response = await api.get(`/admin${endpoint}`);
-            console.log("Using admin parcels endpoint");
         } catch {
-            console.log(
-                "Admin endpoint not available, trying general parcels endpoint"
-            );
             response = await api.get(endpoint);
         }
-
-        console.log("Full API response:", JSON.stringify(response.data, null, 2));
 
         // Try different possible data structures
         let parcelsData = null;
         if (response.data.data && Array.isArray(response.data.data)) {
             parcelsData = response.data.data;
-            console.log("Using response.data.data");
         } else if (
             response.data.parcels &&
             Array.isArray(response.data.parcels)
         ) {
             parcelsData = response.data.parcels;
-            console.log("Using response.data.parcels");
         } else if (Array.isArray(response.data)) {
             parcelsData = response.data;
-            console.log("Using response.data directly");
         } else {
-            console.log("No valid parcels array found in response");
             parcelsData = [];
         }
 
@@ -74,15 +64,7 @@ export class ParcelApiService {
             // Don't include deliveryInfo to avoid preferredDeliveryDate validation issues
         };
 
-        console.log("🔄 Sending status update request:", {
-            url: `/parcels/${parcelId}/status`,
-            method: "PATCH",
-            body: requestBody,
-            parcelId: parcelId,
-            parcelIdType: typeof parcelId,
-            parcelIdLength: parcelId?.toString().length,
-            status: status,
-        });
+
 
         await api.patch(`/parcels/${parcelId}/status`, requestBody);
     }

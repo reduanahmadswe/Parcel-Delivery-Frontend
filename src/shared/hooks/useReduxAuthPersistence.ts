@@ -49,8 +49,6 @@ export function useReduxAuthPersistence() {
             const hasBeenInitialized = sessionStorage.getItem('persistenceInitialized');
 
             if (!hasBeenInitialized) {
-                console.log("Clearing authentication data on startup from persistence hook (first time only)");
-
                 TokenManager.clearTokens();
                 localStorage.removeItem('userData');
                 dispatch(logout());
@@ -86,8 +84,6 @@ export function useReduxAuthPersistence() {
             const hasBeenInitialized = sessionStorage.getItem('persistenceInitialized');
             
             if (!hasBeenInitialized) {
-                console.log("Clearing authentication data on startup from persistence hook (first time only)");
-                
                 TokenManager.clearTokens();
                 localStorage.removeItem('userData');
                 dispatch(logout());
@@ -115,7 +111,6 @@ export function useReduxAuthPersistence() {
                         refreshToken: refreshToken || undefined,
                     }));
                 } catch (error) {
-                    console.error('Failed to parse cached user data:', error);
                     // Clear invalid cached data
                     localStorage.removeItem('userData');
                     TokenManager.clearTokens();
@@ -156,8 +151,6 @@ export function useReduxAuthPersistence() {
     // Handle authentication errors
     useEffect(() => {
         if (isUserError && userError) {
-            console.error('User authentication error:', userError);
-
             // Check if it's a 401/403 error
             if ('status' in userError && (userError.status === 401 || userError.status === 403)) {
                 // Token is invalid, logout
@@ -194,7 +187,7 @@ export function useReduxAuthPersistence() {
                                 refreshToken: refreshToken || undefined,
                             }));
                         } catch (error) {
-                            console.error('Failed to parse user data from storage:', error);
+                            // Failed to parse user data from storage
                         }
                     }
                 }

@@ -102,7 +102,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const initializeAuth = async () => {
     try {
       // ✅ Restore authentication on app startup
-      console.log("Initializing authentication...");
 
       // Check if we have tokens
       const token = TokenManager.getAccessToken();
@@ -115,7 +114,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         // Optionally verify token validity in background
         // You can uncomment this to verify token on every app load
-        // checkAuth().catch(console.error);
+        // checkAuth().catch(() => {});
       } else if (token) {
         // We have token but no cached user, need to fetch
         await checkAuth();
@@ -124,7 +123,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setLoading(false);
       }
     } catch (error) {
-      console.error("Failed to initialize auth:", error);
       setLoading(false);
     }
   };
@@ -166,23 +164,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           "status" in apiError.response &&
           (apiError.response.status === 401 || apiError.response.status === 403)
         ) {
-          console.error("Authentication failed - clearing tokens:", apiError);
           TokenManager.clearTokens();
           clearCachedUser();
           setUser(null);
         } else {
           // For network errors or server issues, keep the cached user
-          console.warn(
-            "Auth verification failed but keeping cached user:",
-            apiError
-          );
           if (cachedUser) {
             setUser(cachedUser);
           }
         }
       }
     } catch (error) {
-      console.error("Auth check failed:", error);
       // Only clear if there's a serious error and no cached user
       const cachedUser = getCachedUser();
       if (!cachedUser) {
@@ -203,7 +195,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return cached ? JSON.parse(cached) : null;
       }
     } catch (error) {
-      console.error("Failed to get cached user:", error);
+      // Failed to get cached user
     }
     return null;
   };
@@ -214,7 +206,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         localStorage.setItem("userData", JSON.stringify(user));
       }
     } catch (error) {
-      console.error("Failed to cache user:", error);
+      // Failed to cache user
     }
   };
 
@@ -224,7 +216,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         localStorage.removeItem("userData");
       }
     } catch (error) {
-      console.error("Failed to clear cached user:", error);
+      // Failed to clear cached user
     }
   };
 
@@ -235,24 +227,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const response = await api.post("/auth/login", { email, password });
 
-      console.log("🔍 Login Response:", response.data);
-
       // Store tokens using TokenManager
       if (response.data.data.accessToken) {
-        console.log("✅ Access Token Found:", response.data.data.accessToken.substring(0, 20) + "...");
         TokenManager.setTokens(
           response.data.data.accessToken,
           response.data.data.refreshToken
         );
         
-        // Verify token was stored
-        const storedToken = TokenManager.getAccessToken();
-        console.log("🔍 Token after storage:", storedToken ? "Stored successfully" : "❌ FAILED TO STORE");
-        
         // ✅ CRITICAL: Wait a bit to ensure token is fully persisted
         await new Promise(resolve => setTimeout(resolve, 100));
-      } else {
-        console.error("❌ No access token in response:", response.data);
       }
 
       const userData = response.data.data.user;
@@ -261,7 +244,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       toast.success("Login successful");
       return { success: true, user: userData };
     } catch (error) {
-      console.error("❌ Login error:", error);
       const message =
         (error as ApiError).response?.data?.message || "Login failed";
       toast.error(message);
@@ -286,7 +268,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       await api.post("/auth/logout");
     } catch (error) {
-      console.error("Logout error:", error);
+      // Logout error - ignore
     } finally {
       setUser(null);
       TokenManager.clearTokens();
@@ -304,7 +286,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setCachedUser(userData);
       }
     } catch (error) {
-      console.error("Failed to refresh user:", error);
       // If refresh fails, clear everything
       TokenManager.clearTokens();
       clearCachedUser();

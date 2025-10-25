@@ -72,7 +72,6 @@ export function LoginForm({
         toast.error("Invalid email or password");
       }
     } catch (error) {
-      console.error(error);
       toast.error("Login failed. Please try again.");
     }
   };
