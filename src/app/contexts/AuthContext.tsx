@@ -235,12 +235,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const response = await api.post("/auth/login", { email, password });
 
+      console.log("🔍 Login Response:", response.data);
+
       // Store tokens using TokenManager
       if (response.data.data.accessToken) {
+        console.log("✅ Access Token Found:", response.data.data.accessToken.substring(0, 20) + "...");
         TokenManager.setTokens(
           response.data.data.accessToken,
           response.data.data.refreshToken
         );
+        
+        // Verify token was stored
+        const storedToken = TokenManager.getAccessToken();
+        console.log("🔍 Token after storage:", storedToken ? "Stored successfully" : "❌ FAILED TO STORE");
+        
+        // ✅ CRITICAL: Wait a bit to ensure token is fully persisted
+        await new Promise(resolve => setTimeout(resolve, 100));
+      } else {
+        console.error("❌ No access token in response:", response.data);
       }
 
       const userData = response.data.data.user;
@@ -249,6 +261,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       toast.success("Login successful");
       return { success: true, user: userData };
     } catch (error) {
+      console.error("❌ Login error:", error);
       const message =
         (error as ApiError).response?.data?.message || "Login failed";
       toast.error(message);

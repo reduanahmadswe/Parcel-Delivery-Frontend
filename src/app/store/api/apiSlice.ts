@@ -13,8 +13,13 @@ const baseQuery = fetchBaseQuery({
     prepareHeaders: (headers) => {
         // Always get token from TokenManager (which checks localStorage/cookie)
         const token = TokenManager.getAccessToken();
+        console.log("🔍 prepareHeaders - Token:", token ? `${token.substring(0, 20)}...` : "❌ NO TOKEN");
+        
         if (token) {
             headers.set('authorization', `Bearer ${token}`);
+            console.log("✅ Authorization header set");
+        } else {
+            console.warn("⚠️ No token available for request");
         }
         headers.set('Content-Type', 'application/json');
         return headers;

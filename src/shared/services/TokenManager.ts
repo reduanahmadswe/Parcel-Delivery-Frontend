@@ -5,77 +5,91 @@ export class TokenManager {
     private static ACCESS_TOKEN_KEY = 'accessToken';
     private static REFRESH_TOKEN_KEY = 'refreshToken';
 
-    // Set tokens with both localStorage and cookies for better persistence
+    // Set tokens with localStorage (for cross-domain scenarios)
     static setTokens(accessToken: string, refreshToken?: string) {
         try {
-            // Store in cookies (primary)
-            // ✅ Important: Use 'none' for cross-site cookies in production
-            Cookies.set(this.ACCESS_TOKEN_KEY, accessToken, {
-                expires: 7, // 7 days
-                secure: true, // Always use secure in production
-                sameSite: 'none' // Allow cross-site cookies for different domains
-            });
-
-            if (refreshToken) {
-                Cookies.set(this.REFRESH_TOKEN_KEY, refreshToken, {
-                    expires: 30, // 30 days
-                    secure: true, // Always use secure in production
-                    sameSite: 'none' // Allow cross-site cookies for different domains
-                });
-            }
-
-            // Also store in localStorage as backup
+            // ✅ Primary: Store in localStorage (works cross-domain)
             if (typeof window !== 'undefined') {
                 localStorage.setItem(this.ACCESS_TOKEN_KEY, accessToken);
                 if (refreshToken) {
                     localStorage.setItem(this.REFRESH_TOKEN_KEY, refreshToken);
                 }
+                console.log("✅ Tokens stored in localStorage");
+            }
+
+            // Optional: Also try cookies (but won't work cross-domain on Render)
+            try {
+                Cookies.set(this.ACCESS_TOKEN_KEY, accessToken, {
+                    expires: 7,
+                    secure: true,
+                    sameSite: 'none'
+                });
+
+                if (refreshToken) {
+                    Cookies.set(this.REFRESH_TOKEN_KEY, refreshToken, {
+                        expires: 30,
+                        secure: true,
+                        sameSite: 'none'
+                    });
+                }
+            } catch (cookieError) {
+                console.warn("⚠️ Could not set cookies (expected for cross-domain):", cookieError);
             }
         } catch (error) {
             console.error('Failed to store tokens:', error);
         }
     }
 
-    // Get access token from cookies or localStorage
+    // Get access token from localStorage (primary) or cookies (fallback)
     static getAccessToken(): string | null {
         try {
-            // First try cookies
-            let token = Cookies.get(this.ACCESS_TOKEN_KEY);
-
-            // Fallback to localStorage
-            if (!token && typeof window !== 'undefined') {
+            // ✅ Primary: Try localStorage first (works cross-domain)
+            if (typeof window !== 'undefined') {
                 const localToken = localStorage.getItem(this.ACCESS_TOKEN_KEY);
                 if (localToken) {
-                    token = localToken;
-                    // If found in localStorage, restore to cookies
-                    Cookies.set(this.ACCESS_TOKEN_KEY, localToken, { expires: 7 });
+                    return localToken;
                 }
             }
 
-            return token || null;
+            // Fallback: Try cookies (won't work cross-domain but try anyway)
+            const cookieToken = Cookies.get(this.ACCESS_TOKEN_KEY);
+            if (cookieToken) {
+                // If found in cookie, sync to localStorage
+                if (typeof window !== 'undefined') {
+                    localStorage.setItem(this.ACCESS_TOKEN_KEY, cookieToken);
+                }
+                return cookieToken;
+            }
+
+            return null;
         } catch (error) {
             console.error('Failed to get access token:', error);
             return null;
         }
     }
 
-    // Get refresh token from cookies or localStorage
+    // Get refresh token from localStorage (primary) or cookies (fallback)
     static getRefreshToken(): string | null {
         try {
-            // First try cookies
-            let token = Cookies.get(this.REFRESH_TOKEN_KEY);
-
-            // Fallback to localStorage
-            if (!token && typeof window !== 'undefined') {
+            // ✅ Primary: Try localStorage first (works cross-domain)
+            if (typeof window !== 'undefined') {
                 const localToken = localStorage.getItem(this.REFRESH_TOKEN_KEY);
                 if (localToken) {
-                    token = localToken;
-                    // If found in localStorage, restore to cookies
-                    Cookies.set(this.REFRESH_TOKEN_KEY, localToken, { expires: 30 });
+                    return localToken;
                 }
             }
 
-            return token || null;
+            // Fallback: Try cookies (won't work cross-domain but try anyway)
+            const cookieToken = Cookies.get(this.REFRESH_TOKEN_KEY);
+            if (cookieToken) {
+                // If found in cookie, sync to localStorage
+                if (typeof window !== 'undefined') {
+                    localStorage.setItem(this.REFRESH_TOKEN_KEY, cookieToken);
+                }
+                return cookieToken;
+            }
+
+            return null;
         } catch (error) {
             console.error('Failed to get refresh token:', error);
             return null;
