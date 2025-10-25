@@ -9,17 +9,18 @@ export class TokenManager {
     static setTokens(accessToken: string, refreshToken?: string) {
         try {
             // Store in cookies (primary)
+            // ✅ Important: Use 'none' for cross-site cookies in production
             Cookies.set(this.ACCESS_TOKEN_KEY, accessToken, {
                 expires: 7, // 7 days
-                secure: IS_PROD,
-                sameSite: 'strict'
+                secure: true, // Always use secure in production
+                sameSite: 'none' // Allow cross-site cookies for different domains
             });
 
             if (refreshToken) {
                 Cookies.set(this.REFRESH_TOKEN_KEY, refreshToken, {
                     expires: 30, // 30 days
-                    secure: IS_PROD,
-                    sameSite: 'strict'
+                    secure: true, // Always use secure in production
+                    sameSite: 'none' // Allow cross-site cookies for different domains
                 });
             }
 

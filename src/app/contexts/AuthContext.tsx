@@ -101,17 +101,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const initializeAuth = async () => {
     try {
-      // Clear any existing authentication data on app startup
-      // This ensures users start in a logged-out state
-      console.log("Clearing authentication data on startup");
+      // ✅ Restore authentication on app startup
+      console.log("Initializing authentication...");
 
-      TokenManager.clearTokens();
-      clearCachedUser();
-      setUser(null);
-      setLoading(false);
-
-      // If you want to restore authentication, uncomment the code below:
-      /*
       // Check if we have tokens
       const token = TokenManager.getAccessToken();
       const cachedUser = getCachedUser();
@@ -121,8 +113,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setUser(cachedUser);
         setLoading(false);
 
-        // Verify in background
-        checkAuthInBackground();
+        // Optionally verify token validity in background
+        // You can uncomment this to verify token on every app load
+        // checkAuth().catch(console.error);
       } else if (token) {
         // We have token but no cached user, need to fetch
         await checkAuth();
@@ -130,7 +123,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         // No token, user is not authenticated
         setLoading(false);
       }
-      */
     } catch (error) {
       console.error("Failed to initialize auth:", error);
       setLoading(false);
