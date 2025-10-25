@@ -4,23 +4,22 @@ import { logout, refreshTokenSuccess, setLoading } from '../slices/authSlice';
 
 import { API_BASE } from '../../../shared/constants/config';
 
-const API_BASE_URL = API_BASE || 'https://parcel-delivery-api.onrender.com';
+const API_BASE_URL = API_BASE || 'https://parcel-delivery-api.onrender.com/api';
 
 // Base query with authentication
 const baseQuery = fetchBaseQuery({
     baseUrl: API_BASE_URL,
-    // credentials removed - we use Bearer tokens stored in localStorage
     prepareHeaders: (headers) => {
-        // Always get token from TokenManager (which checks localStorage/cookie)
+        // Get token from TokenManager (localStorage)
         const token = TokenManager.getAccessToken();
-        console.log("🔍 prepareHeaders - Token:", token ? `${token.substring(0, 20)}...` : "❌ NO TOKEN");
         
         if (token) {
-            headers.set('authorization', `Bearer ${token}`);
-            console.log("✅ Authorization header set");
+            headers.set('Authorization', `Bearer ${token}`);
+            console.log("✅ Token added to request:", token.substring(0, 30) + '...');
         } else {
             console.warn("⚠️ No token available for request");
         }
+        
         headers.set('Content-Type', 'application/json');
         return headers;
     },
@@ -39,32 +38,71 @@ const baseQueryWithReauth: BaseQueryFn<
 
     // Handle 401 unauthorized - try to refresh token
     if (result.error && result.error.status === 401) {
-        console.log('Sending refresh token');
+        console.log('🔄 401 Unauthorized - Attempting token refresh...');
+        
+        const refreshToken = TokenManager.getRefreshToken();
+        
+        if (!refreshToken) {
+            console.error('❌ No refresh token available - logging out');
+            api.dispatch(logout());
+            api.dispatch(setLoading(false));
+            
+            if (typeof window !== 'undefined') {
+                window.location.href = '/login';
+            }
+            return result;
+        }
 
-        // Try to refresh the token
-        const refreshResult = await baseQuery(
-            {
-                url: '/auth/refresh-token',
-                method: 'POST',
-                body: {
-                    refreshToken: TokenManager.getRefreshToken(),
+        try {
+            // Try to refresh the token
+            const refreshResult = await baseQuery(
+                {
+                    url: '/auth/refresh-token',
+                    method: 'POST',
+                    body: { refreshToken },
                 },
-            },
-            api,
-            extraOptions
-        );
+                api,
+                extraOptions
+            );
 
-        if (refreshResult.data) {
-            const refreshData = refreshResult.data as { accessToken: string };
+            // Check if refresh was successful
+            if (refreshResult.data) {
+                const responseData = refreshResult.data as any;
+                
+                // Handle backend response structure: { success: true, data: { accessToken, refreshToken } }
+                let newAccessToken: string | null = null;
+                let newRefreshToken: string | null = null;
 
-            // Update token in Redux and storage
-            api.dispatch(refreshTokenSuccess(refreshData.accessToken));
+                if (responseData.success && responseData.data) {
+                    // Backend returns: { success: true, data: { accessToken, refreshToken } }
+                    newAccessToken = responseData.data.accessToken;
+                    newRefreshToken = responseData.data.refreshToken;
+                } else if (responseData.accessToken) {
+                    // Direct token in response
+                    newAccessToken = responseData.accessToken;
+                    newRefreshToken = responseData.refreshToken;
+                }
 
-            // Retry original request with new token
-            result = await baseQuery(args, api, extraOptions);
-        } else {
+                if (newAccessToken) {
+                    console.log('✅ Token refresh successful');
+                    
+                    // Update tokens in storage
+                    TokenManager.setTokens(newAccessToken, newRefreshToken || refreshToken);
+                    
+                    // Update Redux state
+                    api.dispatch(refreshTokenSuccess(newAccessToken));
+
+                    // Retry original request with new token
+                    result = await baseQuery(args, api, extraOptions);
+                } else {
+                    throw new Error('No access token in refresh response');
+                }
+            } else if (refreshResult.error) {
+                throw new Error('Refresh token request failed');
+            }
+        } catch (refreshError) {
             // Refresh failed, logout user
-            console.log('Refresh token failed, logging out');
+            console.error('❌ Token refresh failed:', refreshError);
             api.dispatch(logout());
 
             // Redirect to login if in browser
