@@ -4,7 +4,7 @@ import { logout, refreshTokenSuccess, setLoading } from '../slices/authSlice';
 
 import { API_BASE } from '../../../shared/constants/config';
 
-const API_BASE_URL = API_BASE;
+const API_BASE_URL = API_BASE || 'https://parcel-delivery-api.onrender.com';
 
 // Base query with authentication
 const baseQuery = fetchBaseQuery({
