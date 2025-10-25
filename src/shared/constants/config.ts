@@ -3,6 +3,10 @@
 function ensureApiBase(raw?: string | null): string {
     const fallback = 'http://localhost:5000/api';
     if (!raw) return fallback;
+    
+    // If it's just "/api", return as-is (for Vite proxy)
+    if (raw === '/api') return '/api';
+    
     // remove trailing slash
     const trimmed = raw.replace(/\/+$/, '');
     if (trimmed.endsWith('/api')) return trimmed;

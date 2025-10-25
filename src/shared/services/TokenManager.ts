@@ -1,5 +1,4 @@
 import Cookies from 'js-cookie';
-import { IS_PROD } from '../constants/config';
 
 export class TokenManager {
     private static ACCESS_TOKEN_KEY = 'accessToken';

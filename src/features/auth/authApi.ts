@@ -21,7 +21,7 @@ export const authApi = baseApi.injectEndpoints({
         }),
         refreshToken: builder.mutation<AuthResponse, void>({
             query: () => ({
-                url: '/auth/refresh',
+                url: '/auth/refresh-token',
                 method: 'POST',
             }),
             invalidatesTags: ['Auth'],

@@ -7,7 +7,7 @@ const API_BASE_URL = API_BASE;
 // Create axios instance
 const api = axios.create({
   baseURL: API_BASE_URL,
-  withCredentials: true, // This is important for cookies
+  // withCredentials: true, // Removed - we use Bearer tokens, not cookies
   headers: {
     'Content-Type': 'application/json',
   },

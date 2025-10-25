@@ -8,8 +8,8 @@ const API_BASE_URL = API_BASE;
 
 // Base query with authentication
 const baseQuery = fetchBaseQuery({
-    baseUrl: "https://parcel-delivery-api.onrender.com/api",
-    credentials: 'include', // Include cookies
+    baseUrl: API_BASE_URL,
+    // credentials removed - we use Bearer tokens stored in localStorage
     prepareHeaders: (headers) => {
         // Always get token from TokenManager (which checks localStorage/cookie)
         const token = TokenManager.getAccessToken();
