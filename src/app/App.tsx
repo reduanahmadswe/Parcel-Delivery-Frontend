@@ -13,6 +13,7 @@ import NotFoundPage from "../pages/error/NotFoundPage";
 import PartnersPage from "../pages/public/PartnersPage";
 import ProfilePage from "../features/dashboard/ProfilePage";
 import StatusHistoryPage from "../features/tracking/StatusHistoryPage";
+import DebugAuthPage from "../pages/auth/DebugAuthPage";
 
 import TrackPage from "../pages/public/TrackPage";
 import UnauthorizedPage from "../pages/error/UnauthorizedPage";
@@ -61,6 +62,14 @@ const App: React.FC = () => {
                     element={
                       <Layout>
                         <LoginPage />
+                      </Layout>
+                    }
+                  />
+                  <Route
+                    path="/debug-auth"
+                    element={
+                      <Layout>
+                        <DebugAuthPage />
                       </Layout>
                     }
                   />

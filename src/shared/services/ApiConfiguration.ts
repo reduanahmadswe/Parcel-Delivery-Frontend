@@ -17,12 +17,20 @@ const api = axios.create({
 api.interceptors.request.use(
   (config) => {
     const token = TokenManager.getAccessToken();
+    console.log('🔍 API Request Interceptor - Token:', token ? `${token.substring(0, 30)}...` : '❌ NO TOKEN');
+    
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+      console.log('✅ Authorization header set:', `Bearer ${token.substring(0, 30)}...`);
+    } else {
+      console.warn('⚠️ No token found in TokenManager');
     }
+    
+    console.log('📡 API Request:', config.method?.toUpperCase(), config.url);
     return config;
   },
   (error) => {
+    console.error('❌ Request interceptor error:', error);
     return Promise.reject(error);
   }
 );
