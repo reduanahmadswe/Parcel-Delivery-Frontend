@@ -1,9 +1,9 @@
 "use client";
 
-import { useAuthPersistence } from "../../shared/hooks/useAuthPersistence";
+import { useAuthPersistence } from "../hooks/useAuthPersistence";
 import api from "@/services/ApiConfiguration";
 import { TokenManager } from "@/services/TokenManager";
-import { IS_DEV } from "@/constants/config";
+import { IS_DEV } from "../constants/config";
 import { User } from "@/types/GlobalTypeDefinitions";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";

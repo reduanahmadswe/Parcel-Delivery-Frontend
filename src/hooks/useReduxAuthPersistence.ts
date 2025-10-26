@@ -13,14 +13,14 @@ export function useReduxAuthPersistence() {
     const dispatch = useAppDispatch();
 
     // Safely access auth state
-    const isAuthenticated = useAppSelector((state) => {
+    const isAuthenticated = useAppSelector((state: any) => {
         if ('auth' in state && state.auth && typeof state.auth === 'object') {
             return (state.auth as any).isAuthenticated ?? false;
         }
         return false;
     });
 
-    const reduxToken = useAppSelector((state) => {
+    const reduxToken = useAppSelector((state: any) => {
         if ('auth' in state && state.auth && typeof state.auth === 'object') {
             return (state.auth as any).token ?? null;
         }

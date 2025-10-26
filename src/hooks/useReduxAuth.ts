@@ -46,21 +46,21 @@ export function useReduxAuth() {
     const { isLoading: persistenceLoading } = useReduxAuthPersistence();
 
     // Get state from Redux store
-    const user = useAppSelector((state) => {
+    const user = useAppSelector((state: any) => {
         if ('auth' in state && state.auth && typeof state.auth === 'object') {
             return (state.auth as AuthState).user;
         }
         return null;
     });
 
-    const isAuthenticated = useAppSelector((state) => {
+    const isAuthenticated = useAppSelector((state: any) => {
         if ('auth' in state && state.auth && typeof state.auth === 'object') {
             return (state.auth as AuthState).isAuthenticated ?? false;
         }
         return false;
     });
 
-    const authLoading = useAppSelector((state) => {
+    const authLoading = useAppSelector((state: any) => {
         if ('auth' in state && state.auth && typeof state.auth === 'object') {
             return (state.auth as AuthState).loading ?? false;
         }

@@ -10,20 +10,16 @@ export default defineConfig({
     resolve: {
         alias: {
             '@': path.resolve(__dirname, './src'),
-            '@/app': path.resolve(__dirname, './src/app'),
-            '@/shared': path.resolve(__dirname, './src/shared'),
             '@/components': path.resolve(__dirname, './src/components'),
             '@/features': path.resolve(__dirname, './src/features'),
             '@/pages': path.resolve(__dirname, './src/pages'),
-            
-            // Legacy paths for backwards compatibility
-            '@/constants': path.resolve(__dirname, './src/shared/constants'),
+            '@/constants': path.resolve(__dirname, './src/constants'),
             '@/types': path.resolve(__dirname, './src/types'),
             '@/utils': path.resolve(__dirname, './src/utils'),
             '@/hooks': path.resolve(__dirname, './src/hooks'),
             '@/services': path.resolve(__dirname, './src/services'),
-            '@/store': path.resolve(__dirname, './src/app/store'),
-            '@/contexts': path.resolve(__dirname, './src/app/contexts'),
+            '@/store': path.resolve(__dirname, './src/store'),
+            '@/contexts': path.resolve(__dirname, './src/contexts'),
             
             // some components import motion/react (a small alternative); map it to framer-motion
             'motion/react': 'framer-motion',

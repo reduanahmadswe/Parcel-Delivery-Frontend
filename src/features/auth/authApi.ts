@@ -1,5 +1,5 @@
-import { AuthResponse, LoginCredentials, RegisterData, User } from '../../shared/types';
-import { baseApi } from '../../shared/services/featuresApi';
+import { AuthResponse, LoginCredentials, RegisterData, User } from '../../types';
+import { baseApi } from '../../services/featuresApi';
 
 export const authApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({

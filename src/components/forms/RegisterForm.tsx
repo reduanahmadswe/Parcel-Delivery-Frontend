@@ -13,8 +13,8 @@ import {
   getCitiesList,
   getDivisionsByCity,
   getPostalCodesByDivision,
-} from "../../shared/constants/bangladeshData";
-import { useAuth } from "../../shared/hooks/useAuth";
+} from "../../constants/bangladeshData";
+import { useAuth } from "../../hooks/useAuth";
 import { cn } from "../../utils/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -292,7 +292,7 @@ export function RegisterForm({
                             className="flex h-8 w-full rounded-md border border-input bg-background px-2 py-1 text-xs ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                           >
                             <option value="">Select a city</option>
-                            {getCitiesList().map((city) => (
+                            {getCitiesList().map((city: any) => (
                               <option key={city} value={city}>
                                 {city}
                               </option>
@@ -330,7 +330,7 @@ export function RegisterForm({
                                   ? "Select a division"
                                   : "Select city first"}
                               </option>
-                              {divisions.map((division) => (
+                              {divisions.map((division: any) => (
                                 <option key={division} value={division}>
                                   {division}
                                 </option>
@@ -390,7 +390,7 @@ export function RegisterForm({
                                   ? "Select postal code"
                                   : "Select division first"}
                               </option>
-                              {postalCodes.map((postal) => (
+                              {postalCodes.map((postal: any) => (
                                 <option key={postal.code} value={postal.code}>
                                   {postal.code} - {postal.area}
                                 </option>

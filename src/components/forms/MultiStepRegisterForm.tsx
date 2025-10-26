@@ -22,8 +22,8 @@ import {
   getCitiesList,
   getDivisionsByCity,
   getPostalCodesByDivision,
-} from "../../shared/constants/bangladeshData";
-import { useAuth } from "../../shared/hooks/useAuth";
+} from "../../constants/bangladeshData";
+import { useAuth } from "../../hooks/useAuth";
 import { cn } from "../../utils/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -151,7 +151,7 @@ export function MultiStepRegisterForm({
       );
       // Handle PostalCode objects with code and area properties
       setPostalCodes(
-        divisionPostalCodes.map((item) => {
+        divisionPostalCodes.map((item: any) => {
           if (typeof item === "string") {
             return item;
           } else if (typeof item === "object" && item.code) {
@@ -549,7 +549,7 @@ export function MultiStepRegisterForm({
                           <SelectValue placeholder="Select your city" />
                         </SelectTrigger>
                         <SelectContent>
-                          {cities.map((city, index) => (
+                          {cities.map((city: any, index: number) => (
                             <SelectItem
                               key={`city-${index}-${city}`}
                               value={city}

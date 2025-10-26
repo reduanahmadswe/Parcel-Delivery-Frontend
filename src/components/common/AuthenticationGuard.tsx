@@ -1,7 +1,7 @@
 "use client";
 
-import { useAuth } from "../../shared/hooks/useAuth";
-import { User } from "../../shared/types";
+import { useAuth } from "../../hooks/useAuth";
+import { User } from "../../types";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
