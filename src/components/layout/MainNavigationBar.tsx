@@ -32,6 +32,8 @@ export default function Navigation() {
   const { user, logout } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
+
+
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
@@ -217,7 +219,7 @@ export default function Navigation() {
         ]
       : user?.role === "sender"
       ? [
-          { href: "/dashboard", label: "Overview", icon: BarChart3 },
+          { href: "/sender/dashboard", label: "Overview", icon: BarChart3 },
           { href: "/sender/parcels", label: "My Parcels", icon: Package },
           {
             href: "/sender/create",

@@ -55,19 +55,17 @@ export function LoginForm({
       if (result.success && result.user) {
         toast.success("Welcome back!");
         
-        // Add a small delay to ensure Redux state is updated
-        await new Promise(resolve => setTimeout(resolve, 100));
+        // Wait for Redux state to update
+        await new Promise(resolve => setTimeout(resolve, 200));
         
-        // Role-based redirect after login
-        if (result.user.role === "admin") {
-          navigate("/admin/dashboard", { replace: true });
-        } else if (result.user.role === "sender") {
-          navigate("/dashboard", { replace: true });
-        } else if (result.user.role === "receiver") {
-          navigate("/receiver/dashboard", { replace: true });
-        } else {
-          navigate("/", { replace: true });
-        }
+        // Role-based redirect - use window.location.replace for clean navigation
+        const dashboardPath = result.user.role === "admin" ? "/admin/dashboard"
+                            : result.user.role === "sender" ? "/sender/dashboard"  
+                            : result.user.role === "receiver" ? "/receiver/dashboard"
+                            : "/";
+        
+        // Replace current history entry to prevent back button issues
+        window.location.replace(dashboardPath);
       } else {
         toast.error("Invalid email or password");
       }

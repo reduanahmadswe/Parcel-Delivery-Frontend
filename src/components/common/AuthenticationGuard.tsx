@@ -26,20 +26,17 @@ export default function ProtectedRoute({
         return;
       }
 
+      // Redirect if user doesn't have access to this specific protected route
       if (allowedRoles.length > 0 && !allowedRoles.includes(user.role)) {
-        // Redirect based on user role
-        switch (user.role) {
-          case "admin":
-            navigate("/admin", { replace: true });
-            break;
-          case "sender":
-            navigate("/sender", { replace: true });
-            break;
-          case "receiver":
-            navigate("/receiver", { replace: true });
-            break;
-          default:
-            navigate("/", { replace: true });
+        // Don't navigate if already on correct dashboard
+        const currentPath = window.location.pathname;
+        const targetPath = user.role === "admin" ? "/admin/dashboard"
+                         : user.role === "sender" ? "/sender/dashboard"
+                         : user.role === "receiver" ? "/receiver/dashboard"
+                         : "/";
+        
+        if (currentPath !== targetPath) {
+          navigate(targetPath, { replace: true });
         }
         return;
       }

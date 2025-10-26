@@ -87,6 +87,29 @@ export const routes: RouteConfig[] = [
     layout: true,
   },
 
+  // Role-based redirect routes
+  {
+    path: "/admin",
+    element: <AdminDashboard />,
+    protected: true,
+    allowedRoles: ["admin"],
+    layout: true,
+  },
+  {
+    path: "/sender",
+    element: <SenderDashboard />,
+    protected: true,
+    allowedRoles: ["sender"],
+    layout: true,
+  },
+  {
+    path: "/receiver",
+    element: <ReceiverDashboard />,
+    protected: true,
+    allowedRoles: ["receiver"],
+    layout: true,
+  },
+
   // Protected Dashboard Routes
   {
     path: "/dashboard",
@@ -100,6 +123,13 @@ export const routes: RouteConfig[] = [
     element: <AdminDashboard />,
     protected: true,
     allowedRoles: ["admin"],
+    layout: true,
+  },
+  {
+    path: "/sender/dashboard",
+    element: <SenderDashboard />,
+    protected: true,
+    allowedRoles: ["sender"],
     layout: true,
   },
   {
