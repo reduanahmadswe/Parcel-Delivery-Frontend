@@ -17,6 +17,7 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { z } from "zod";
+import { useEffect } from "react";
 
 const loginSchema = z.object({
   email: z.string().email({
@@ -38,7 +39,7 @@ export function LoginForm({
   className,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
-  const { login } = useAuth();
+  const { login, user } = useAuth();
   const navigate = useNavigate();
 
   const form = useForm<z.infer<typeof loginSchema>>({
@@ -49,27 +50,36 @@ export function LoginForm({
     },
   });
 
+  // Redirect user to their dashboard when they become authenticated
+  useEffect(() => {
+    if (user) {
+      const dashboardPath = user.role === "admin" ? "/admin/dashboard"
+                          : user.role === "sender" ? "/sender/dashboard"  
+                          : user.role === "receiver" ? "/receiver/dashboard"
+                          : "/";
+      
+      console.log(`🎯 User authenticated, redirecting to: ${dashboardPath} for role: ${user.role}`);
+      navigate(dashboardPath, { replace: true });
+    }
+  }, [user, navigate]);
+
   const onSubmit = async (data: z.infer<typeof loginSchema>) => {
     try {
+      console.log("🚀 Starting login process...");
       const result = await login(data.email, data.password);
+      
+      console.log("🔍 Login result:", result);
+      
       if (result.success && result.user) {
-        toast.success("Welcome back!");
-        
-        // Wait for Redux state to update
-        await new Promise(resolve => setTimeout(resolve, 200));
-        
-        // Role-based redirect - use window.location.replace for clean navigation
-        const dashboardPath = result.user.role === "admin" ? "/admin/dashboard"
-                            : result.user.role === "sender" ? "/sender/dashboard"  
-                            : result.user.role === "receiver" ? "/receiver/dashboard"
-                            : "/";
-        
-        // Replace current history entry to prevent back button issues
-        window.location.replace(dashboardPath);
+        console.log("✅ Login successful for user:", result.user);
+        toast.success(`Welcome back, ${result.user.name}!`);
+        // Navigation will be handled by useEffect when user state changes
       } else {
+        console.error("❌ Login failed:", result);
         toast.error("Invalid email or password");
       }
     } catch (error) {
+      console.error("💥 Login error:", error);
       toast.error("Login failed. Please try again.");
     }
   };

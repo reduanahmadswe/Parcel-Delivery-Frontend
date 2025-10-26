@@ -20,29 +20,38 @@ export default function ProtectedRoute({
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log("🛡️ ProtectedRoute - Auth state:", { user: user?.email, role: user?.role, loading, allowedRoles });
+    
     if (!loading) {
       if (!user) {
+        console.log("🚫 No user, redirecting to:", redirectTo);
         navigate(redirectTo, { replace: true });
         return;
       }
 
       if (allowedRoles.length > 0 && !allowedRoles.includes(user.role)) {
+        console.log("🔄 Role mismatch. User role:", user.role, "Allowed:", allowedRoles);
         // Redirect based on user role
+        let roleDashboard = "/";
         switch (user.role) {
           case "admin":
-            navigate("/admin", { replace: true });
+            roleDashboard = "/admin/dashboard";
             break;
           case "sender":
-            navigate("/sender", { replace: true });
+            roleDashboard = "/sender/dashboard";
             break;
           case "receiver":
-            navigate("/receiver", { replace: true });
+            roleDashboard = "/receiver/dashboard";
             break;
           default:
-            navigate("/", { replace: true });
+            roleDashboard = "/";
         }
+        console.log("🎯 Redirecting to role dashboard:", roleDashboard);
+        navigate(roleDashboard, { replace: true });
         return;
       }
+      
+      console.log("✅ Access granted for user:", user.email, "Role:", user.role);
     }
   }, [user, loading, allowedRoles, redirectTo, navigate]);
 
