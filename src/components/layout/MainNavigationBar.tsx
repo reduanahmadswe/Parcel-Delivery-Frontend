@@ -1,5 +1,5 @@
 import ThemeToggle from "../ui/DarkLightThemeSwitcher";
-import { useAuth } from "../../shared/hooks/useAuth";
+import { useAuth } from "../../hooks/useAuth";
 import {
   AlertTriangle,
   BarChart3,
@@ -210,17 +210,17 @@ export default function Navigation() {
   const navigationItems: NavigationItem[] =
     user?.role === "admin"
       ? [
-          { href: "/admin", label: "Dashboard", icon: BarChart3 },
+          { href: "/admin/dashboard", label: "Dashboard", icon: BarChart3 },
           { href: "/admin/users", label: "Users", icon: Users },
           { href: "/admin/parcels", label: "Parcels", icon: Package },
           { href: "/admin/settings", label: "Settings", icon: Settings },
         ]
       : user?.role === "sender"
       ? [
-          { href: "/sender", label: "Overview", icon: BarChart3 },
+          { href: "/dashboard", label: "Overview", icon: BarChart3 },
           { href: "/sender/parcels", label: "My Parcels", icon: Package },
           {
-            href: "/sender/create-parcel",
+            href: "/sender/create",
             label: "Create Parcel",
             icon: Package,
           },
@@ -229,9 +229,9 @@ export default function Navigation() {
         ]
       : user?.role === "receiver"
       ? [
-          { href: "/receiver", label: "Dashboard", icon: BarChart3 },
-          { href: "/receiver/track", label: "Track Parcel", icon: Search },
-          { href: "/receiver/profile", label: "Profile", icon: User },
+          { href: "/receiver/dashboard", label: "Dashboard", icon: BarChart3 },
+          { href: "/track", label: "Track Parcel", icon: Search },
+          { href: "/profile", label: "Profile", icon: User },
           { href: "/contact", label: "Contact", icon: MessageSquare },
         ]
       : [

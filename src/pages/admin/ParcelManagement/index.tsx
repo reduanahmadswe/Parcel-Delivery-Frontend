@@ -16,7 +16,7 @@ import {
 } from "./hooks";
 import { ParcelDetailsModal, StatusUpdateModal } from "./modals";
 
-import { FilterParams, Parcel } from "../../../shared/services/parcelTypes";
+import { FilterParams, Parcel } from "../../../services/parcelTypes";
 
 export default function ParcelManagement() {
   // State management
@@ -729,4 +729,5 @@ export default function ParcelManagement() {
     </AdminLayout>
   );
 }
+
 

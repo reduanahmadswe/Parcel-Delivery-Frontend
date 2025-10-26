@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { TokenManager } from './TokenManager';
-import { API_BASE } from '../constants/config';
 
-const API_BASE_URL = API_BASE;
+// Direct API URL to avoid configuration issues
+const API_BASE_URL = 'https://parcel-delivery-api.onrender.com/api';
 
 // Create axios instance
 const api = axios.create({

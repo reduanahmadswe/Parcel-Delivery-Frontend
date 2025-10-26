@@ -15,7 +15,7 @@ import {
   UserPlus,
 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
-import { Parcel } from "../../../shared/services/parcelTypes";
+import { Parcel } from "../../../services/parcelTypes";
 
 interface ParcelActionsProps {
   parcel: Parcel;
@@ -305,4 +305,5 @@ export function createParcelColumns(actions: {
     },
   ];
 }
+
 

@@ -1,7 +1,7 @@
 // Centralized environment config for Vite
 // Normalize VITE_API_URL so it always points to the API base (ensures trailing /api)
 function ensureApiBase(raw?: string | null): string {
-    const fallback = 'http://localhost:5000/api';
+    const fallback = 'https://parcel-delivery-api.onrender.com/api';
     if (!raw) return fallback;
     
     // If it's just "/api", return as-is (for Vite proxy)

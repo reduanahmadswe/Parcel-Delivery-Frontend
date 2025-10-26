@@ -14,8 +14,8 @@ import {
   Weight,
   X,
 } from "lucide-react";
-import { formatDate, getStatusColor } from "../../shared/utils/HelperUtilities";
-import { Parcel } from "../../shared/types/GlobalTypeDefinitions";
+import { formatDate, getStatusColor } from "../../utils/HelperUtilities";
+import { Parcel } from "../../types/GlobalTypeDefinitions";
 
 interface ParcelDetailsModalProps {
   isOpen: boolean;

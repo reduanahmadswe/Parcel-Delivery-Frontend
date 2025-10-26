@@ -1,4 +1,4 @@
-import { TokenManager } from '../../../shared/services/TokenManager';
+import { TokenManager } from '../../services/TokenManager';
 import { User } from '@/types/GlobalTypeDefinitions';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 

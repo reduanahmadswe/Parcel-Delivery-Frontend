@@ -10,7 +10,7 @@ import {
   Truck,
   User,
 } from "lucide-react";
-import { Parcel, STATUS_OPTIONS } from "../../../shared/services/parcelTypes";
+import { Parcel, STATUS_OPTIONS } from "../../../services/parcelTypes";
 
 interface ParcelDetailsModalProps {
   isOpen: boolean;
@@ -457,5 +457,6 @@ export function StatusUpdateModal({
     </Modal>
   );
 }
+
 
 

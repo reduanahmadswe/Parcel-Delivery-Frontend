@@ -18,10 +18,10 @@ export default defineConfig({
             
             // Legacy paths for backwards compatibility
             '@/constants': path.resolve(__dirname, './src/shared/constants'),
-            '@/types': path.resolve(__dirname, './src/shared/types'),
-            '@/utils': path.resolve(__dirname, './src/shared/utils'),
-            '@/hooks': path.resolve(__dirname, './src/shared/hooks'),
-            '@/services': path.resolve(__dirname, './src/shared/services'),
+            '@/types': path.resolve(__dirname, './src/types'),
+            '@/utils': path.resolve(__dirname, './src/utils'),
+            '@/hooks': path.resolve(__dirname, './src/hooks'),
+            '@/services': path.resolve(__dirname, './src/services'),
             '@/store': path.resolve(__dirname, './src/app/store'),
             '@/contexts': path.resolve(__dirname, './src/app/contexts'),
             
@@ -38,7 +38,7 @@ export default defineConfig({
     server: {
         port: 3000,
         open: true,
-        // Proxy removed - using direct API calls
+       
     },
     build: {
         outDir: 'dist',

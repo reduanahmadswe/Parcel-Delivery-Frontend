@@ -5,10 +5,10 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import ProtectedRoute from "../../components/common/ProtectedRoute";
-import { useAuth } from "../../shared/hooks/useAuth";
-import api from "../../shared/services/ApiConfiguration";
-import { getStatusColor } from "../../shared/utils/HelperUtilities";
-import { Parcel } from "../../shared/types/GlobalTypeDefinitions";
+import { useAuth } from "../../hooks/useAuth";
+import api from "../../services/ApiConfiguration";
+import { getStatusColor } from "../../utils/HelperUtilities";
+import { Parcel } from "../../types/GlobalTypeDefinitions";
 import FooterSection from "../../pages/public/sections/FooterSection";
 import ParcelDetailsModal from "../../pages/sender/ParcelDetailsModal";
 

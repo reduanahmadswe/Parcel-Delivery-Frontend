@@ -1,5 +1,5 @@
 "use client";
-import { formatDate, getStatusColor } from "../../shared/utils/HelperUtilities";
+import { formatDate, getStatusColor } from "../../utils/HelperUtilities";
 import { Parcel } from "../../shared/types/GlobalTypeDefinitions";
 import {
   Calendar,

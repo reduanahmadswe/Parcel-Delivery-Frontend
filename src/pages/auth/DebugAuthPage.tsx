@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { TokenManager } from '../../shared/services/TokenManager';
-import api from '../../shared/services/ApiConfiguration';
+import { TokenManager } from '../../services/TokenManager';
+import api from '../../services/ApiConfiguration';
 import { Button } from '../../components/ui/button';
 
 export function DebugAuthPage() {

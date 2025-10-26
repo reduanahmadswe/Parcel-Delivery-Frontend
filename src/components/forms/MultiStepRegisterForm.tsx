@@ -24,7 +24,7 @@ import {
   getPostalCodesByDivision,
 } from "../../shared/constants/bangladeshData";
 import { useAuth } from "../../shared/hooks/useAuth";
-import { cn } from "../../shared/utils/utils";
+import { cn } from "../../utils/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   ArrowLeft,

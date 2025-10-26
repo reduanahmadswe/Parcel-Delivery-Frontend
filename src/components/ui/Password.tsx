@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-empty-object-type */
-import { cn } from "../../shared/utils/utils";
+import { cn } from "../../utils/utils";
 import { Eye, EyeOff } from "lucide-react";
 import * as React from "react";
 

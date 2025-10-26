@@ -1142,13 +1142,13 @@ export function UserManagementHeader({
               <p className="text-[10px] sm:text-xs font-medium text-muted-foreground group-hover:text-blue-600 transition-colors duration-300">
                 Total Users
               </p>
-              <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground group-hover:text-blue-600 transition-colors duration-300">
+              <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground group-hover:text-blue-600 transition-colors duration-300">
                 {statsLoading ? (
                   <div className="w-6 h-6 sm:w-8 sm:h-8 bg-muted animate-pulse rounded"></div>
                 ) : (
                   stats.total
                 )}
-              </p>
+              </div>
               <div className="text-[9px] sm:text-xs text-muted-foreground">
                 +{Math.floor(stats.total * 0.12)} this month
               </div>
@@ -1167,13 +1167,13 @@ export function UserManagementHeader({
               <p className="text-[10px] sm:text-xs font-medium text-muted-foreground group-hover:text-green-600 transition-colors duration-300">
                 Active Users
               </p>
-              <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-green-600 group-hover:scale-105 transition-transform duration-300">
+              <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-green-600 group-hover:scale-105 transition-transform duration-300">
                 {statsLoading ? (
                   <div className="w-6 h-6 sm:w-8 sm:h-8 bg-muted animate-pulse rounded"></div>
                 ) : (
                   stats.active
                 )}
-              </p>
+              </div>
               <div className="text-[9px] sm:text-xs text-green-600">
                 {stats.total > 0 ? Math.round((stats.active / stats.total) * 100) : 0}% of total
               </div>
@@ -1192,13 +1192,13 @@ export function UserManagementHeader({
               <p className="text-[10px] sm:text-xs font-medium text-muted-foreground group-hover:text-red-600 transition-colors duration-300">
                 Blocked Users
               </p>
-              <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-red-600 group-hover:scale-105 transition-transform duration-300">
+              <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-red-600 group-hover:scale-105 transition-transform duration-300">
                 {statsLoading ? (
                   <div className="w-6 h-6 sm:w-8 sm:h-8 bg-muted animate-pulse rounded"></div>
                 ) : (
                   stats.blocked
                 )}
-              </p>
+              </div>
               <div className="text-[9px] sm:text-xs text-red-600">
                 {stats.total > 0 ? Math.round((stats.blocked / stats.total) * 100) : 0}% of total
               </div>
@@ -1217,13 +1217,13 @@ export function UserManagementHeader({
               <p className="text-[10px] sm:text-xs font-medium text-muted-foreground group-hover:text-purple-600 transition-colors duration-300">
                 Administrators
               </p>
-              <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-purple-600 group-hover:scale-105 transition-transform duration-300">
+              <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-purple-600 group-hover:scale-105 transition-transform duration-300">
                 {statsLoading ? (
                   <div className="w-6 h-6 sm:w-8 sm:h-8 bg-muted animate-pulse rounded"></div>
                 ) : (
                   stats.admins
                 )}
-              </p>
+              </div>
               <div className="text-[9px] sm:text-xs text-purple-600">
                 {stats.total > 0 ? Math.round((stats.admins / stats.total) * 100) : 0}% of total
               </div>
@@ -1237,4 +1237,5 @@ export function UserManagementHeader({
     </div>
   );
 }
+
 

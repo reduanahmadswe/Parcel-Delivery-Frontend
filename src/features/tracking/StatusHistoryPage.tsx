@@ -1,5 +1,3 @@
-"use client";
-
 import {
   AlertCircle,
   ArrowLeft,
@@ -21,7 +19,7 @@ import {
 import { Suspense, useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { Link, useLocation } from "react-router-dom";
-import api from "../../shared/services/ApiConfiguration";
+import api from "../../services/ApiConfiguration";
 
 interface StatusHistoryItem {
   status: string;

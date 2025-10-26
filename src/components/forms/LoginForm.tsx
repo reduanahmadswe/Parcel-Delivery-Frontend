@@ -9,8 +9,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import Password from "@/components/ui/Password";
-import { useAuth } from "../../shared/hooks/useAuth";
-import { cn } from "../../shared/utils/utils";
+import { useAuth } from "../../hooks/useAuth";
+import { cn } from "../../utils/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Lock, Mail, Package, Shield, User } from "lucide-react";
 import { useForm } from "react-hook-form";
@@ -60,11 +60,11 @@ export function LoginForm({
         
         // Role-based redirect after login
         if (result.user.role === "admin") {
-          navigate("/admin", { replace: true });
+          navigate("/admin/dashboard", { replace: true });
         } else if (result.user.role === "sender") {
-          navigate("/sender", { replace: true });
+          navigate("/dashboard", { replace: true });
         } else if (result.user.role === "receiver") {
-          navigate("/receiver", { replace: true });
+          navigate("/receiver/dashboard", { replace: true });
         } else {
           navigate("/", { replace: true });
         }

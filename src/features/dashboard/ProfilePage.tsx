@@ -2,8 +2,8 @@ import { Eye, EyeOff, Mail, MapPin, Phone, Save, User } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import ProtectedRoute from "../../components/common/ProtectedRoute";
-import { useAuth } from "../../shared/hooks/useAuth";
-import api from "../../shared/services/ApiConfiguration";
+import { useAuth } from "../../hooks/useAuth";
+import api from "../../services/ApiConfiguration";
 import FooterSection from "../../pages/public/sections/FooterSection";
 
 interface UserProfile {

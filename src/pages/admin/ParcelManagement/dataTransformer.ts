@@ -1,5 +1,5 @@
 // Data transformation utilities for Parcel Management
-import { ApiParcel, Parcel } from "../../../shared/services/parcelTypes";
+import { ApiParcel, Parcel } from "../../../services/parcelTypes";
 
 export class ParcelDataTransformer {
   /**
@@ -222,7 +222,7 @@ export class ParcelDataTransformer {
   /**
    * Filter parcels based on advanced filter parameters
    */
-  static filterParcelsByParams(parcels: Parcel[], filterParams: import("../../../shared/services/parcelTypes").FilterParams): Parcel[] {
+  static filterParcelsByParams(parcels: Parcel[], filterParams: import("../../../services/parcelTypes").FilterParams): Parcel[] {
     return parcels.filter((parcel) => {
       // Filter by tracking number (exact or partial match)
       if (filterParams.trackingNumber && filterParams.trackingNumber.trim()) {
@@ -259,4 +259,5 @@ export class ParcelDataTransformer {
     });
   }
 }
+
 

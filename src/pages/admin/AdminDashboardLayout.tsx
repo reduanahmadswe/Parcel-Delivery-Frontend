@@ -1,4 +1,4 @@
-import { useAuth } from "../../shared/hooks/useAuth";
+import { useAuth } from "../../hooks/useAuth";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navigation from "../../components/layout/MainNavigationBar";
@@ -27,3 +27,4 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     </div>
   );
 }
+

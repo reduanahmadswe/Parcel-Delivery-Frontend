@@ -1,6 +1,6 @@
 "use client";
 
-import { formatDate, getStatusColor } from "../../../shared/utils/HelperUtilities";
+import { formatDate, getStatusColor } from "../../../utils/HelperUtilities";
 import {
   Calendar,
   CheckCircle,

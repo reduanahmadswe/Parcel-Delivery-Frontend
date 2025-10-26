@@ -32,3 +32,4 @@ export default function ParcelStatusOverview({ parcels }: Props) {
   );
 }
 
+

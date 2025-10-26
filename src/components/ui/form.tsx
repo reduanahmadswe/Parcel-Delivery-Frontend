@@ -1,4 +1,4 @@
-import { cn } from "../../shared/utils/utils";
+import { cn } from "../../utils/utils";
 import { Slot } from "@radix-ui/react-slot";
 import * as React from "react";
 import {

@@ -1,10 +1,9 @@
-import { TokenManager } from '../../../shared/services/TokenManager';
+import { TokenManager } from '../../services/TokenManager';
 import { BaseQueryFn, createApi, FetchArgs, fetchBaseQuery, FetchBaseQueryError } from '@reduxjs/toolkit/query/react';
 import { logout, refreshTokenSuccess, setLoading } from '../slices/authSlice';
 
-import { API_BASE } from '../../../shared/constants/config';
-
-const API_BASE_URL = API_BASE || 'https://parcel-delivery-api.onrender.com/api';
+// Direct API URL to avoid configuration issues
+const API_BASE_URL = 'https://parcel-delivery-api.onrender.com/api';
 
 // Base query with authentication
 const baseQuery = fetchBaseQuery({

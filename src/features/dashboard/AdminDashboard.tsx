@@ -1,10 +1,10 @@
 "use client";
 
-import api from "../../shared/services/ApiConfiguration";
-import AdminLayout from "../../pages/admin/AdminDashboardLayout";
+import api from "../../services/ApiConfiguration";
+// AdminLayout removed - using route-level layout instead
 import { CheckCircle, Package, Users } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useGetAllUsersQuery, useGetAllParcelsQuery } from "../../app/store/api/adminApi";
+import { useGetAllUsersQuery, useGetAllParcelsQuery } from "../../store/api/adminApi";
 
 import AdminHeader from "../../pages/admin/components/AdminHeader";
 import StatCards from "../../pages/admin/components/StatCards";
@@ -95,27 +95,24 @@ export default function AdminDashboard() {
 
   if (loading) {
     return (
-      <AdminLayout>
-        <div className="min-h-screen bg-background p-3 sm:p-4 lg:p-6 xl:p-8">
-          <div className="max-w-7xl mx-auto space-y-4 sm:space-y-6">
-            <div className="animate-pulse">
-              <div className="h-6 sm:h-8 bg-muted rounded w-2/3 sm:w-1/3 mb-4 sm:mb-6"></div>
-              <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
-                {[...Array(4)].map((_, i) => (
-                  <div key={`loading-card-${i}`} className="h-28 sm:h-32 bg-gradient-to-br from-red-50/20 via-transparent to-green-50/20 dark:from-red-950/10 dark:to-green-950/10 border border-border rounded-xl"></div>
-                ))}
-              </div>
-              <div className="h-64 sm:h-96 bg-gradient-to-br from-red-50/20 via-transparent to-green-50/20 dark:from-red-950/10 dark:to-green-950/10 border border-border rounded-xl"></div>
+      <div className="min-h-screen bg-background p-3 sm:p-4 lg:p-6 xl:p-8">
+        <div className="max-w-7xl mx-auto space-y-4 sm:space-y-6">
+          <div className="animate-pulse">
+            <div className="h-6 sm:h-8 bg-muted rounded w-2/3 sm:w-1/3 mb-4 sm:mb-6"></div>
+            <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
+              {[...Array(4)].map((_, i) => (
+                <div key={`loading-card-${i}`} className="h-28 sm:h-32 bg-gradient-to-br from-red-50/20 via-transparent to-green-50/20 dark:from-red-950/10 dark:to-green-950/10 border border-border rounded-xl"></div>
+              ))}
             </div>
+            <div className="h-64 sm:h-96 bg-gradient-to-br from-red-50/20 via-transparent to-green-50/20 dark:from-red-950/10 dark:to-green-950/10 border border-border rounded-xl"></div>
           </div>
         </div>
-      </AdminLayout>
+      </div>
     );
   }
 
   return (
-    <AdminLayout>
-      <div className="min-h-screen bg-background p-3 sm:p-4 lg:p-6 xl:p-8">
+    <div className="min-h-screen bg-background p-3 sm:p-4 lg:p-6 xl:p-8">
         <div className="max-w-7xl mx-auto space-y-4 sm:space-y-6">
           <AdminHeader onRefresh={() => { refetchUsers(); refetchParcels(); }} />
 
@@ -232,7 +229,6 @@ export default function AdminDashboard() {
           )}
         </div>
       </div>
-    </AdminLayout>
   );
 }
 

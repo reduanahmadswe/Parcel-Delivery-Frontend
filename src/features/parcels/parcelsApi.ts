@@ -5,8 +5,8 @@ import {
     PaginatedResponse,
     Parcel,
     ParcelFilters,
-} from '../../shared/types';
-import { baseApi } from '../../shared/services/featuresApi';
+} from '../../types';
+import { baseApi } from "../../services/featuresApi";
 
 export const parcelsApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({

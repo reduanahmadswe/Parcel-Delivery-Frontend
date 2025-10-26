@@ -1,7 +1,7 @@
 "use client";
 
-import { AuthStateManager } from "../../shared/services/AuthStateManager";
-import { TokenManager } from "../../shared/services/TokenManager";
+import { AuthStateManager } from "../services/AuthStateManager";
+import { TokenManager } from "../services/TokenManager";
 import {
   useGetCurrentUserQuery,
   useLoginMutation,
@@ -18,7 +18,7 @@ import {
   setLoading,
   updateUser,
 } from "../store/slices/authSlice";
-import { User } from "../../shared/types/GlobalTypeDefinitions";
+import { User } from "../types/GlobalTypeDefinitions";
 import { createContext, ReactNode, useContext, useEffect } from "react";
 import toast from "react-hot-toast";
 

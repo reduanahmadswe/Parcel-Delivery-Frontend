@@ -27,10 +27,10 @@
       "@/pages/*": ["./src/pages/*"],
       
       "@/constants/*": ["./src/shared/constants/*"],
-      "@/types/*": ["./src/shared/types/*"],
-      "@/utils/*": ["./src/shared/utils/*"],
-      "@/hooks/*": ["./src/shared/hooks/*"],
-      "@/services/*": ["./src/shared/services/*"],
+      "@/types/*": ["./src/types/*"],
+      "@/utils/*": ["./src/utils/*"],
+      "@/hooks/*": ["./src/hooks/*"],
+      "@/services/*": ["./src/services/*"],
       "@/store/*": ["./src/app/store/*"],
       "@/contexts/*": ["./src/app/contexts/*"]
     }
