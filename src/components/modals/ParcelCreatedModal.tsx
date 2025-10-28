@@ -15,10 +15,18 @@ export default function ParcelCreatedModal({ parcel, onClose }: Props) {
 
   if (!parcel) return null;
 
+  // Debug: Log parcel structure to console
+  console.log("📦 Parcel data in modal:", parcel);
+
   const trackingId = parcel.trackingId || parcel.id || "-";
+  
+  // Extract sender and receiver info from different possible structures
+  const senderName = parcel.senderInfo?.name || parcel.senderName || parcel.sender?.name || "-";
+  const receiverName = parcel.receiverInfo?.name || parcel.receiverName || parcel.receiver?.name || "-";
+  const receiverEmail = parcel.receiverInfo?.email || parcel.receiverEmail || parcel.receiver?.email || "-";
 
   const parcelText = () => {
-    return `Tracking ID: ${trackingId}\nSender: ${parcel.senderName || parcel.sender?.name || "-"}\nReceiver: ${parcel.receiverName || parcel.receiver?.name || parcel.receiverEmail || "-"}\nAddress: ${parcel.receiverAddress?.street || ""}, ${parcel.receiverAddress?.city || ""}, ${parcel.receiverAddress?.state || ""} ${parcel.receiverAddress?.zipCode || ""}\nType: ${parcel.parcelDetails?.type || parcel.type || "-"}\nWeight: ${parcel.parcelDetails?.weight || "-"} kg\nDimensions: ${parcel.parcelDetails?.dimensions?.length || ""} x ${parcel.parcelDetails?.dimensions?.width || ""} x ${parcel.parcelDetails?.dimensions?.height || ""} cm\nDescription: ${parcel.parcelDetails?.description || "-"}`;
+    return `Tracking ID: ${trackingId}\nSender: ${senderName}\nReceiver: ${receiverName}\nEmail: ${receiverEmail}\nAddress: ${parcel.receiverInfo?.address?.street || parcel.receiverAddress?.street || ""}, ${parcel.receiverInfo?.address?.city || parcel.receiverAddress?.city || ""}, ${parcel.receiverInfo?.address?.state || parcel.receiverAddress?.state || ""} ${parcel.receiverInfo?.address?.zipCode || parcel.receiverAddress?.zipCode || ""}\nType: ${parcel.parcelDetails?.type || parcel.type || "-"}\nWeight: ${parcel.parcelDetails?.weight || "-"} kg\nDimensions: ${parcel.parcelDetails?.dimensions?.length || ""} x ${parcel.parcelDetails?.dimensions?.width || ""} x ${parcel.parcelDetails?.dimensions?.height || ""} cm\nDescription: ${parcel.parcelDetails?.description || "-"}`;
   };
 
   const handleCopyText = async () => {
@@ -96,13 +104,13 @@ export default function ParcelCreatedModal({ parcel, onClose }: Props) {
               <User className="w-4 h-4 text-purple-600 dark:text-purple-400" />
               <div className="text-xs font-semibold text-purple-700 dark:text-purple-300">Sender</div>
             </div>
-            <div className="text-sm font-medium text-purple-900 dark:text-purple-100">{parcel.senderName || parcel.sender?.name || "-"}</div>
+            <div className="text-sm font-medium text-purple-900 dark:text-purple-100">{senderName}</div>
             
             <div className="flex items-center gap-2 mt-3 mb-2">
               <MapPin className="w-4 h-4 text-pink-600 dark:text-pink-400" />
               <div className="text-xs font-semibold text-pink-700 dark:text-pink-300">Receiver</div>
             </div>
-            <div className="text-sm font-medium text-pink-900 dark:text-pink-100">{parcel.receiverName || parcel.receiver?.name || parcel.receiverEmail || "-"}</div>
+            <div className="text-sm font-medium text-pink-900 dark:text-pink-100">{receiverName}</div>
           </div>
         </div>
 
