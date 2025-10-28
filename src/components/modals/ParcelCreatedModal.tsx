@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Download, Link as LinkIcon, FileText, Eye, CheckCircle2, Package, User, MapPin } from "lucide-react";
+import { Download, Link as LinkIcon, Eye, CheckCircle2, Package, User, MapPin, Phone, Mail, Box } from "lucide-react";
 import toast from "react-hot-toast";
 import { generateParcelPdf } from "../../utils/parcelExport";
 import { useNavigate } from "react-router-dom";
@@ -20,23 +20,32 @@ export default function ParcelCreatedModal({ parcel, onClose }: Props) {
 
   const trackingId = parcel.trackingId || parcel.id || "-";
   
-  // Extract sender and receiver info from different possible structures
-  const senderName = parcel.senderInfo?.name || parcel.senderName || parcel.sender?.name || "-";
-  const receiverName = parcel.receiverInfo?.name || parcel.receiverName || parcel.receiver?.name || "-";
-  const receiverEmail = parcel.receiverInfo?.email || parcel.receiverEmail || parcel.receiver?.email || "-";
-
-  const parcelText = () => {
-    return `Tracking ID: ${trackingId}\nSender: ${senderName}\nReceiver: ${receiverName}\nEmail: ${receiverEmail}\nAddress: ${parcel.receiverInfo?.address?.street || parcel.receiverAddress?.street || ""}, ${parcel.receiverInfo?.address?.city || parcel.receiverAddress?.city || ""}, ${parcel.receiverInfo?.address?.state || parcel.receiverAddress?.state || ""} ${parcel.receiverInfo?.address?.zipCode || parcel.receiverAddress?.zipCode || ""}\nType: ${parcel.parcelDetails?.type || parcel.type || "-"}\nWeight: ${parcel.parcelDetails?.weight || "-"} kg\nDimensions: ${parcel.parcelDetails?.dimensions?.length || ""} x ${parcel.parcelDetails?.dimensions?.width || ""} x ${parcel.parcelDetails?.dimensions?.height || ""} cm\nDescription: ${parcel.parcelDetails?.description || "-"}`;
-  };
-
-  const handleCopyText = async () => {
-    try {
-      await navigator.clipboard.writeText(parcelText());
-      toast.success("Parcel info copied to clipboard");
-    } catch (err) {
-      toast.error("Failed to copy parcel info");
-    }
-  };
+  // Extract sender info (from user session or parcel data)
+  const senderName = parcel.senderInfo?.name || parcel.senderName || parcel.sender?.name || "You";
+  
+  // Extract receiver info from backend response
+  const receiverName = parcel.receiverInfo?.name || parcel.receiverName || "-";
+  const receiverEmail = parcel.receiverInfo?.email || parcel.receiverEmail || "-";
+  const receiverPhone = parcel.receiverInfo?.phone || parcel.receiverPhone || "-";
+  
+  // Extract address
+  const address = parcel.receiverInfo?.address || parcel.receiverAddress || {};
+  const fullAddress = [
+    address.street,
+    address.city,
+    address.state,
+    address.zipCode,
+    address.country
+  ].filter(Boolean).join(", ") || "No address provided";
+  
+  // Extract parcel details
+  const parcelType = parcel.parcelDetails?.type || parcel.type || "-";
+  const weight = parcel.parcelDetails?.weight || parcel.weight || "-";
+  const dimensions = parcel.parcelDetails?.dimensions || parcel.dimensions || {};
+  const dimensionStr = dimensions.length && dimensions.width && dimensions.height 
+    ? `${dimensions.length} × ${dimensions.width} × ${dimensions.height} cm`
+    : "-";
+  const description = parcel.parcelDetails?.description || parcel.description || "-";
 
   const handleGeneratePdf = async () => {
     try {
@@ -65,82 +74,153 @@ export default function ParcelCreatedModal({ parcel, onClose }: Props) {
 
   const handleViewDetails = () => {
     onClose();
-    navigate(`/sender/parcels/${trackingId}`);
+    // Navigate to track page with tracking ID automatically filled and search
+    navigate(`/track?id=${encodeURIComponent(trackingId)}`);
   };
 
   return (
-    <div className="fixed inset-0 z-60 flex items-center justify-center">
-      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative bg-background rounded-2xl shadow-xl w-full max-w-2xl mx-4 p-6">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4">
+      <div className="absolute inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-sm" onClick={onClose} />
+      
+      <div className="relative bg-white dark:bg-gray-900 rounded-xl sm:rounded-2xl shadow-2xl w-full max-w-4xl max-h-[95vh] overflow-y-auto">
         {/* Header */}
-        <div className="flex items-start justify-between mb-4">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl">
-              <CheckCircle2 className="w-6 h-6 text-white" />
+        <div className="sticky top-0 bg-gradient-to-r from-green-500 to-emerald-600 p-4 sm:p-6 rounded-t-xl sm:rounded-t-2xl z-10">
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex items-center gap-2 sm:gap-3 flex-1">
+              <div className="p-1.5 sm:p-2 bg-white/20 backdrop-blur-sm rounded-lg sm:rounded-xl shrink-0">
+                <CheckCircle2 className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
+              </div>
+              <div className="min-w-0">
+                <h2 className="text-lg sm:text-2xl font-bold text-white truncate">Parcel Created Successfully!</h2>
+                <p className="text-xs sm:text-sm text-green-50 mt-0.5 sm:mt-1">Your parcel has been registered</p>
+              </div>
             </div>
-            <div>
-              <h3 className="text-xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
-                Parcel Created Successfully!
-              </h3>
-              <p className="text-sm text-muted-foreground mt-1">
-                You can download, copy, or share the parcel details below
-              </p>
-            </div>
-          </div>
-          <button className="text-muted-foreground hover:text-foreground transition" onClick={onClose}>✕</button>
-        </div>
-
-        <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="p-4 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 rounded-lg border border-blue-200 dark:border-blue-800">
-            <div className="flex items-center gap-2 mb-2">
-              <Package className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-              <div className="text-xs font-semibold text-blue-700 dark:text-blue-300">Tracking ID</div>
-            </div>
-            <div className="font-mono font-bold text-lg text-blue-900 dark:text-blue-100">{trackingId}</div>
-          </div>
-
-          <div className="p-4 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 rounded-lg border border-purple-200 dark:border-purple-800">
-            <div className="flex items-center gap-2 mb-2">
-              <User className="w-4 h-4 text-purple-600 dark:text-purple-400" />
-              <div className="text-xs font-semibold text-purple-700 dark:text-purple-300">Sender</div>
-            </div>
-            <div className="text-sm font-medium text-purple-900 dark:text-purple-100">{senderName}</div>
-            
-            <div className="flex items-center gap-2 mt-3 mb-2">
-              <MapPin className="w-4 h-4 text-pink-600 dark:text-pink-400" />
-              <div className="text-xs font-semibold text-pink-700 dark:text-pink-300">Receiver</div>
-            </div>
-            <div className="text-sm font-medium text-pink-900 dark:text-pink-100">{receiverName}</div>
+            <button 
+              className="text-white hover:bg-white/20 rounded-lg p-1.5 sm:p-2 transition-colors shrink-0" 
+              onClick={onClose}
+              aria-label="Close modal"
+            >
+              <span className="text-xl">✕</span>
+            </button>
           </div>
         </div>
 
-        <div className="mt-4 p-4 bg-muted/5 rounded-lg">
-          <div className="flex items-center justify-between mb-2">
-            <div className="text-sm font-semibold">Parcel summary</div>
+        {/* Content */}
+        <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
+          
+          {/* Tracking ID Card */}
+          <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 rounded-lg p-4 sm:p-6 border border-blue-200 dark:border-blue-800">
+            <div className="flex items-center gap-2 mb-3">
+              <Package className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+              <span className="text-sm font-semibold text-blue-700 dark:text-blue-300">Tracking ID</span>
+            </div>
+            <div className="font-mono font-bold text-xl sm:text-2xl text-blue-900 dark:text-blue-100 break-all">
+              {trackingId}
+            </div>
           </div>
-          <div className="text-sm text-muted-foreground whitespace-pre-wrap">{parcelText()}</div>
-        </div>
 
-        <div className="mt-4 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-end">
-          <button onClick={handleGeneratePdf} disabled={generatingPdf} className="inline-flex items-center gap-2 px-4 py-2 bg-white border rounded-lg hover:shadow transition">
-            <Download className="w-4 h-4" />
-            <span>{generatingPdf ? "Generating..." : "Share as PDF"}</span>
-          </button>
+          {/* Sender & Receiver Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {/* Sender Info */}
+            <div className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950/30 dark:to-purple-900/30 rounded-lg p-4 border border-purple-200 dark:border-purple-800">
+              <div className="flex items-center gap-2 mb-3">
+                <User className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                <h3 className="text-sm font-bold text-purple-700 dark:text-purple-300">Sender</h3>
+              </div>
+              <div className="space-y-2">
+                <div className="text-base font-medium text-purple-900 dark:text-purple-100">
+                  {senderName}
+                </div>
+              </div>
+            </div>
 
-          <button onClick={handleCopyText} className="inline-flex items-center gap-2 px-4 py-2 bg-white border rounded-lg hover:shadow transition">
-            <FileText className="w-4 h-4" />
-            Copy as Text
-          </button>
+            {/* Receiver Info */}
+            <div className="bg-gradient-to-br from-pink-50 to-rose-100 dark:from-pink-950/30 dark:to-rose-900/30 rounded-lg p-4 border border-pink-200 dark:border-pink-800">
+              <div className="flex items-center gap-2 mb-3">
+                <MapPin className="w-5 h-5 text-pink-600 dark:text-pink-400" />
+                <h3 className="text-sm font-bold text-pink-700 dark:text-pink-300">Receiver</h3>
+              </div>
+              <div className="space-y-2 text-sm">
+                <div className="flex items-start gap-2">
+                  <User className="w-4 h-4 text-pink-600 dark:text-pink-400 mt-0.5 shrink-0" />
+                  <span className="text-pink-900 dark:text-pink-100 font-medium break-words">{receiverName}</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <Mail className="w-4 h-4 text-pink-600 dark:text-pink-400 mt-0.5 shrink-0" />
+                  <span className="text-pink-800 dark:text-pink-200 break-all">{receiverEmail}</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <Phone className="w-4 h-4 text-pink-600 dark:text-pink-400 mt-0.5 shrink-0" />
+                  <span className="text-pink-800 dark:text-pink-200">{receiverPhone}</span>
+                </div>
+              </div>
+            </div>
+          </div>
 
-          <button onClick={handleShareTrackingLink} className="inline-flex items-center gap-2 px-4 py-2 bg-white border rounded-lg hover:shadow transition">
-            <LinkIcon className="w-4 h-4" />
-            Share Tracking Link
-          </button>
+          {/* Delivery Address */}
+          <div className="bg-gradient-to-br from-amber-50 to-orange-100 dark:from-amber-950/30 dark:to-orange-900/30 rounded-lg p-4 border border-amber-200 dark:border-amber-800">
+            <div className="flex items-center gap-2 mb-3">
+              <MapPin className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+              <h3 className="text-sm font-bold text-amber-700 dark:text-amber-300">Delivery Address</h3>
+            </div>
+            <p className="text-sm text-amber-900 dark:text-amber-100 leading-relaxed break-words">
+              {fullAddress}
+            </p>
+          </div>
 
-          <button onClick={handleViewDetails} className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:shadow transition">
-            <Eye className="w-4 h-4" />
-            View Parcel Details
-          </button>
+          {/* Parcel Details */}
+          <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+            <div className="flex items-center gap-2 mb-4">
+              <Box className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+              <h3 className="text-base font-bold text-gray-900 dark:text-gray-100">Parcel Details</h3>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+              <div>
+                <span className="text-gray-500 dark:text-gray-400 block mb-1">Type:</span>
+                <span className="text-gray-900 dark:text-gray-100 font-medium capitalize">{parcelType}</span>
+              </div>
+              <div>
+                <span className="text-gray-500 dark:text-gray-400 block mb-1">Weight:</span>
+                <span className="text-gray-900 dark:text-gray-100 font-medium">{weight} kg</span>
+              </div>
+              <div className="sm:col-span-2">
+                <span className="text-gray-500 dark:text-gray-400 block mb-1">Dimensions:</span>
+                <span className="text-gray-900 dark:text-gray-100 font-medium">{dimensionStr}</span>
+              </div>
+              <div className="sm:col-span-2">
+                <span className="text-gray-500 dark:text-gray-400 block mb-1">Description:</span>
+                <p className="text-gray-900 dark:text-gray-100 font-medium break-words">{description}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex flex-col sm:flex-row gap-3 pt-2">
+            <button 
+              onClick={handleGeneratePdf} 
+              disabled={generatingPdf} 
+              className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:shadow-md hover:border-gray-400 dark:hover:border-gray-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed text-gray-700 dark:text-gray-200"
+            >
+              <Download className="w-4 h-4" />
+              <span className="font-medium">{generatingPdf ? "Generating..." : "Download PDF"}</span>
+            </button>
+
+            <button 
+              onClick={handleShareTrackingLink} 
+              className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:shadow-md hover:border-gray-400 dark:hover:border-gray-500 transition-all text-gray-700 dark:text-gray-200"
+            >
+              <LinkIcon className="w-4 h-4" />
+              <span className="font-medium">Copy Tracking Link</span>
+            </button>
+
+            <button 
+              onClick={handleViewDetails} 
+              className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-lg shadow-md hover:shadow-lg transition-all font-medium"
+            >
+              <Eye className="w-4 h-4" />
+              <span>Track Parcel</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
