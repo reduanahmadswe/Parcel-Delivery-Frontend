@@ -1,9 +1,7 @@
 import React, { useState } from "react";
-import { Parcel } from "@/types/GlobalTypeDefinitions";
-import { Download, Link as LinkIcon, FileText, Eye } from "lucide-react";
+import { Download, Link as LinkIcon, FileText, Eye, CheckCircle2, Package, User, MapPin } from "lucide-react";
 import toast from "react-hot-toast";
 import { generateParcelPdf } from "../../utils/parcelExport";
-import { sendParcelEmails } from "../../services/notificationService";
 import { useNavigate } from "react-router-dom";
 
 interface Props {
@@ -13,7 +11,6 @@ interface Props {
 
 export default function ParcelCreatedModal({ parcel, onClose }: Props) {
   const navigate = useNavigate();
-  const [sendingEmails, setSendingEmails] = useState(false);
   const [generatingPdf, setGeneratingPdf] = useState(false);
 
   if (!parcel) return null;
@@ -58,49 +55,64 @@ export default function ParcelCreatedModal({ parcel, onClose }: Props) {
     }
   };
 
-  const handleSendEmails = async () => {
-    setSendingEmails(true);
-    try {
-      await sendParcelEmails(parcel);
-      toast.success("Notification emails queued/sent");
-    } catch (err) {
-      console.error(err);
-      toast.error("Failed to send notification emails");
-    } finally {
-      setSendingEmails(false);
-    }
-  };
-
   const handleViewDetails = () => {
     onClose();
-    navigate(`/parcels/${trackingId}`);
+    navigate(`/sender/parcels/${trackingId}`);
   };
 
   return (
     <div className="fixed inset-0 z-60 flex items-center justify-center">
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
       <div className="relative bg-background rounded-2xl shadow-xl w-full max-w-2xl mx-4 p-6">
-        <div className="flex items-start justify-between">
-          <div>
-            <h3 className="text-lg font-bold">Parcel Created</h3>
-            <p className="text-sm text-muted-foreground mt-1">Parcel was created successfully. You can copy, download or share the details below.</p>
+        {/* Header with gradient */}
+        <div className="flex items-start justify-between mb-4">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl">
+              <CheckCircle2 className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h3 className="text-xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+                Parcel Created Successfully!
+              </h3>
+              <p className="text-sm text-muted-foreground mt-1">
+                Emails have been sent to sender and receiver automatically
+              </p>
+            </div>
           </div>
-          <div>
-            <button className="text-muted-foreground hover:text-foreground" onClick={onClose}>✕</button>
+          <button className="text-muted-foreground hover:text-foreground transition" onClick={onClose}>✕</button>
+        </div>
+
+        {/* Email Notification Badge */}
+        <div className="mb-4 p-3 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 rounded-lg border border-green-200 dark:border-green-800">
+          <div className="flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 text-green-600 dark:text-green-400" />
+            <span className="text-sm font-medium text-green-700 dark:text-green-300">
+              📧 Notification emails sent automatically to both parties
+            </span>
           </div>
         </div>
 
         <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="p-4 bg-muted/10 rounded-lg">
-            <div className="text-xs text-muted-foreground">Tracking ID</div>
-            <div className="font-mono font-semibold mt-1">{trackingId}</div>
+          <div className="p-4 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 rounded-lg border border-blue-200 dark:border-blue-800">
+            <div className="flex items-center gap-2 mb-2">
+              <Package className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+              <div className="text-xs font-semibold text-blue-700 dark:text-blue-300">Tracking ID</div>
+            </div>
+            <div className="font-mono font-bold text-lg text-blue-900 dark:text-blue-100">{trackingId}</div>
           </div>
 
-          <div className="p-4 bg-muted/10 rounded-lg">
-            <div className="text-xs text-muted-foreground">Sender</div>
-            <div className="mt-1">{parcel.senderName || parcel.sender?.name || "-"}</div>
-            <div className="text-xs text-muted-foreground">Receiver</div>
-            <div className="mt-1">{parcel.receiverName || parcel.receiver?.name || parcel.receiverEmail || "-"}</div>
+          <div className="p-4 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 rounded-lg border border-purple-200 dark:border-purple-800">
+            <div className="flex items-center gap-2 mb-2">
+              <User className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+              <div className="text-xs font-semibold text-purple-700 dark:text-purple-300">Sender</div>
+            </div>
+            <div className="text-sm font-medium text-purple-900 dark:text-purple-100">{parcel.senderName || parcel.sender?.name || "-"}</div>
+            
+            <div className="flex items-center gap-2 mt-3 mb-2">
+              <MapPin className="w-4 h-4 text-pink-600 dark:text-pink-400" />
+              <div className="text-xs font-semibold text-pink-700 dark:text-pink-300">Receiver</div>
+            </div>
+            <div className="text-sm font-medium text-pink-900 dark:text-pink-100">{parcel.receiverName || parcel.receiver?.name || parcel.receiverEmail || "-"}</div>
           </div>
         </div>
 
@@ -127,12 +139,8 @@ export default function ParcelCreatedModal({ parcel, onClose }: Props) {
             Share Tracking Link
           </button>
 
-          <button onClick={handleSendEmails} disabled={sendingEmails} className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg hover:shadow transition">
+          <button onClick={handleViewDetails} className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:shadow transition">
             <Eye className="w-4 h-4" />
-            <span>{sendingEmails ? "Sending..." : "Send Notification Emails"}</span>
-          </button>
-
-          <button onClick={handleViewDetails} className="inline-flex items-center gap-2 px-4 py-2 bg-muted/10 rounded-lg">
             View Parcel Details
           </button>
         </div>

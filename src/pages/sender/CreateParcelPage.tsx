@@ -313,15 +313,18 @@ export default function CreateParcelPage() {
       const response = await api.post("/parcels", payload);
       const parcel = response.data.data;
 
-      toast.success("Parcel created successfully!");
-      // Show created parcel modal with options instead of immediate navigation
-      setCreatedParcel(parcel);
-
-      // Fire-and-forget: send notification emails from frontend service to backend email server
-      sendParcelEmails(parcel).catch((err) => {
-        console.error("Email send failed:", err);
-        toast.error("Failed to send notification emails (will not block creation)");
+      // Automatically send notification emails in background (non-blocking)
+      sendParcelEmails(parcel).then(() => {
+        console.log("✅ Notification emails sent successfully");
+      }).catch((err) => {
+        console.error("⚠️ Email send failed (non-blocking):", err);
+        // Don't show error toast - emails are optional feature
       });
+
+      toast.success("📦 Parcel created successfully!");
+      
+      // Show success modal with all details
+      setCreatedParcel(parcel);
     } catch (error: unknown) {
       const apiError = error as {
         response?: {

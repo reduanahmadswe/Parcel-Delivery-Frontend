@@ -1,8 +1,7 @@
 // Enhanced email notification service
-// Sends parcel creation emails to sender and receiver
+// Sends parcel creation emails to sender and receiver via backend API
 
-// @ts-ignore - Vite env variables
-const EMAIL_SERVER_URL = import.meta.env?.VITE_EMAIL_SERVER_URL || "http://localhost:4000";
+import api from './ApiConfiguration';
 
 export async function sendParcelEmails(parcel: any): Promise<any> {
   try {
@@ -15,36 +14,26 @@ export async function sendParcelEmails(parcel: any): Promise<any> {
     const trackingLink = `${window.location.origin}/track?id=${encodeURIComponent(trackingId)}`;
     
     const payload = {
-      parcel: {
-        trackingId,
-        senderEmail,
-        senderName,
-        receiverEmail,
-        receiverName,
-        trackingLink,
-        ...parcel
-      },
+      trackingId,
+      senderEmail,
+      senderName,
+      receiverEmail,
+      receiverName,
+      trackingLink,
+      parcelDetails: parcel.parcelDetails || {},
+      receiverAddress: parcel.receiverAddress || {}
     };
 
-    const response = await fetch(`${EMAIL_SERVER_URL}/send-emails`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
+    console.log("📧 Sending parcel notification emails...", payload);
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error("Email server error:", errorText);
-      throw new Error(errorText || "Failed to send emails");
-    }
+    // Call backend API to send emails
+    const response = await api.post('/notifications/send-parcel-emails', payload);
 
-    const result = await response.json();
-    console.log("✅ Emails sent successfully:", result);
-    return result;
-  } catch (error) {
+    console.log("✅ Emails sent successfully:", response.data);
+    return response.data;
+  } catch (error: any) {
     console.error("❌ Email sending error:", error);
-    throw error;
+    // Don't throw error - email failure shouldn't block parcel creation
+    return { success: false, error: error.message };
   }
 }
