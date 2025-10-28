@@ -6,7 +6,8 @@ export default function ConditionalNavigation() {
   const pathname = location.pathname;
 
   // Hide navigation on authentication pages
-  const hideNavigation = pathname === "/login" || pathname === "/register";
+  const hideNavigation =
+    pathname === "/login" || pathname === "/register" || pathname === "/debug-auth";
 
   if (hideNavigation) {
     return null;

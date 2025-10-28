@@ -99,59 +99,18 @@ export default function Navigation() {
 
   // Helper function to check if navigation item is active
   const isActive = (href: string) => {
-    // Exact match for home page
-    if (href === "/" && location.pathname === "/") return true;
+    // Hash links shouldn't be considered active by pathname
+    if (href.startsWith("#")) return false;
 
-    // Exact match for admin page
-    if (href === "/admin" && location.pathname === "/admin") return true;
+    // Exact match
+    if (location.pathname === href) return true;
 
-    // For sender routes, use exact matching to prevent overlap
-    if (href === "/sender" && location.pathname === "/sender") return true;
-    if (href === "/sender/parcels" && location.pathname === "/sender/parcels")
-      return true;
-    if (
-      href === "/sender/create-parcel" &&
-      location.pathname === "/sender/create-parcel"
-    )
-      return true;
-    if (
-      href === "/sender/statistics" &&
-      location.pathname === "/sender/statistics"
-    )
-      return true;
+    // Avoid marking parent prefixes active for sender/receiver base routes
+    const exactOnly = ["/", "/admin", "/sender", "/receiver"];
+    if (exactOnly.includes(href)) return location.pathname === href;
 
-    // For receiver routes, use exact matching to prevent overlap
-    if (href === "/receiver" && location.pathname === "/receiver") return true;
-    if (href === "/receiver/track" && location.pathname === "/receiver/track")
-      return true;
-    if (
-      href === "/receiver/history" &&
-      location.pathname === "/receiver/history"
-    )
-      return true;
-    if (
-      href === "/receiver/profile" &&
-      location.pathname === "/receiver/profile"
-    )
-      return true;
-
-    // Exact match for contact page
-    if (href === "/contact" && location.pathname === "/contact") return true;
-
-    // Exact match for track page
-    if (href === "/track" && location.pathname === "/track") return true;
-
-    // For other routes, use startsWith but exclude sender and receiver routes to prevent conflicts
-    if (
-      href !== "/" &&
-      href !== "/admin" &&
-      !href.startsWith("/sender") &&
-      !href.startsWith("/receiver") &&
-      location.pathname.startsWith(href)
-    )
-      return true;
-
-    return false;
+    // Otherwise consider a startsWith match (so /sender/parcels and /sender/parcels/123 match)
+    return location.pathname.startsWith(href + "/") || location.pathname === href;
   };
 
   const handleLogout = async () => {
@@ -222,7 +181,7 @@ export default function Navigation() {
           { href: "/sender/dashboard", label: "Overview", icon: BarChart3 },
           { href: "/sender/parcels", label: "My Parcels", icon: Package },
           {
-            href: "/sender/create",
+            href: "/sender/create-parcel",
             label: "Create Parcel",
             icon: Package,
           },
@@ -252,7 +211,7 @@ export default function Navigation() {
         ]
       : user?.role === "receiver"
       ? [
-          { href: "/receiver/profile", label: "Profile", icon: User },
+          { href: "/profile", label: "Profile", icon: User },
           { href: "/receiver/track", label: "Track Parcel", icon: Search },
         ]
       : [

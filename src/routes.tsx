@@ -69,6 +69,11 @@ export const routes: RouteConfig[] = [
     element: <PartnersPage />,
     layout: true,
   },
+  {
+    path: "/partners",
+    element: <PartnersPage />,
+    layout: true,
+  },
 
   // Auth Routes
   {
@@ -178,7 +183,7 @@ export const routes: RouteConfig[] = [
 
   // Sender Routes
   {
-    path: "/sender/create",
+    path: "/sender/create-parcel",
     element: <CreateParcelPage />,
     protected: true,
     allowedRoles: ["sender"],
@@ -203,6 +208,21 @@ export const routes: RouteConfig[] = [
   {
     path: "/receiver/track",
     element: <TrackPage />,
+    protected: true,
+    allowedRoles: ["receiver"],
+    layout: true,
+  },
+  // Receiver convenience / deep links
+  {
+    path: "/receiver/profile",
+    element: <ProfilePage />,
+    protected: true,
+    allowedRoles: ["receiver"],
+    layout: true,
+  },
+  {
+    path: "/receiver/history",
+    element: <ReceiverDashboard />,
     protected: true,
     allowedRoles: ["receiver"],
     layout: true,
