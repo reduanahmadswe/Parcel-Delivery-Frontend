@@ -5,7 +5,6 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 import ParcelCreatedModal from "@/components/modals/ParcelCreatedModal";
-import { sendParcelEmails } from "@/services/notificationService";
 import {
   getCitiesList,
   getDivisionsByCity,
@@ -312,14 +311,6 @@ export default function CreateParcelPage() {
 
       const response = await api.post("/parcels", payload);
       const parcel = response.data.data;
-
-      // Automatically send notification emails in background (non-blocking)
-      sendParcelEmails(parcel).then(() => {
-        console.log("✅ Notification emails sent successfully");
-      }).catch((err) => {
-        console.error("⚠️ Email send failed (non-blocking):", err);
-        // Don't show error toast - emails are optional feature
-      });
 
       toast.success("📦 Parcel created successfully!");
       

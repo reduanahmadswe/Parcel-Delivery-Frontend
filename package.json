@@ -8,7 +8,6 @@
     "dev": "vite",
     "build": "tsc && vite build && node scripts/copy-redirects.js",
     "preview": "vite preview",
-    "email-server": "node server/sendEmail.js",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "type-check": "tsc --noEmit"
   },
@@ -22,7 +21,7 @@
     "logistics",
     "frontend"
   ],
-  "author": "Reduan Ahmad <your-email@example.com>",
+  "author": "Reduan Ahmad <reduanahmadswe@gmail.com>",
   "license": "MIT",
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",

@@ -64,7 +64,7 @@ export default function ParcelCreatedModal({ parcel, onClose }: Props) {
     <div className="fixed inset-0 z-60 flex items-center justify-center">
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
       <div className="relative bg-background rounded-2xl shadow-xl w-full max-w-2xl mx-4 p-6">
-        {/* Header with gradient */}
+        {/* Header */}
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl">
@@ -75,21 +75,11 @@ export default function ParcelCreatedModal({ parcel, onClose }: Props) {
                 Parcel Created Successfully!
               </h3>
               <p className="text-sm text-muted-foreground mt-1">
-                Emails have been sent to sender and receiver automatically
+                You can download, copy, or share the parcel details below
               </p>
             </div>
           </div>
           <button className="text-muted-foreground hover:text-foreground transition" onClick={onClose}>✕</button>
-        </div>
-
-        {/* Email Notification Badge */}
-        <div className="mb-4 p-3 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 rounded-lg border border-green-200 dark:border-green-800">
-          <div className="flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-green-600 dark:text-green-400" />
-            <span className="text-sm font-medium text-green-700 dark:text-green-300">
-              📧 Notification emails sent automatically to both parties
-            </span>
-          </div>
         </div>
 
         <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
