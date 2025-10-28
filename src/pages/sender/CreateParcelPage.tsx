@@ -6,6 +6,8 @@ import { ArrowLeft, Calculator, Package } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
+import ParcelCreatedModal from "@/components/modals/ParcelCreatedModal";
+import { sendParcelEmails } from "@/services/notificationService";
 import {
   getCitiesList,
   getDivisionsByCity,
@@ -55,6 +57,7 @@ export default function CreateParcelPage() {
 
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [createdParcel, setCreatedParcel] = useState<any | null>(null);
 
   // Bangladesh data states for cascading dropdowns
   const [availableCities] = useState(getCitiesList());
@@ -313,7 +316,14 @@ export default function CreateParcelPage() {
       const parcel = response.data.data;
 
       toast.success("Parcel created successfully!");
-      navigate(`/track?id=${parcel.trackingId}`);
+      // Show created parcel modal with options instead of immediate navigation
+      setCreatedParcel(parcel);
+
+      // Fire-and-forget: send notification emails from frontend service to backend email server
+      sendParcelEmails(parcel).catch((err) => {
+        console.error("Email send failed:", err);
+        toast.error("Failed to send notification emails (will not block creation)");
+      });
     } catch (error: unknown) {
       const apiError = error as {
         response?: {
@@ -1126,6 +1136,12 @@ export default function CreateParcelPage() {
               </button>
             </div>
           </form>
+          {createdParcel && (
+            <ParcelCreatedModal
+              parcel={createdParcel}
+              onClose={() => setCreatedParcel(null)}
+            />
+          )}
         </div>
       </div>
       <FooterSection />

@@ -1,13 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { useEffect } from 'react';
 import { TokenManager } from '@/services/TokenManager';
 import { useGetCurrentUserQuery } from '@/store/api/authApi';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import {
-    loginSuccess,
-    logout,
-    setLoading
-} from '@/store/slices/authSlice';
-import { useEffect } from 'react';
+import { loginSuccess, logout, setLoading } from '@/store/slices/authSlice';
 
 export function useReduxAuthPersistence() {
     const dispatch = useAppDispatch();
@@ -43,24 +39,11 @@ export function useReduxAuthPersistence() {
     // Initialize auth state from storage on mount - only run once on app startup
     useEffect(() => {
         const initializeAuth = () => {
+            // Do not forcibly clear tokens on first load — this caused a race where
+            // another persistence hook could wipe state after a fresh login.
+            // Instead, restore auth only when both a token and cached user are present.
             dispatch(setLoading(true));
 
-            // Only clear authentication data on first app load, not on subsequent renders
-            const hasBeenInitialized = sessionStorage.getItem('persistenceInitialized');
-
-            if (!hasBeenInitialized) {
-                TokenManager.clearTokens();
-                localStorage.removeItem('userData');
-                dispatch(logout());
-
-                // Mark as initialized so this doesn't run again during the session
-                sessionStorage.setItem('persistenceInitialized', 'true');
-            }
-
-            dispatch(setLoading(false));
-
-            // If you want to restore authentication, uncomment the code below:
-            /*
             const token = TokenManager.getAccessToken();
             const refreshToken = TokenManager.getRefreshToken();
             const cachedUserStr = localStorage.getItem('userData');
@@ -68,60 +51,23 @@ export function useReduxAuthPersistence() {
             if (token && cachedUserStr) {
                 try {
                     const cachedUser = JSON.parse(cachedUserStr);
-
                     // Restore auth state immediately for better UX
-                    dispatch(loginSuccess({
-                        user: cachedUser,
-                        token,
-                        refreshToken: refreshToken || undefined,
-                    }));
-    // Initialize auth state from storage on mount - only run once on app startup
-    useEffect(() => {
-        const initializeAuth = () => {
-            dispatch(setLoading(true));
-
-            // Only clear authentication data on first app load, not on subsequent renders
-            const hasBeenInitialized = sessionStorage.getItem('persistenceInitialized');
-            
-            if (!hasBeenInitialized) {
-                TokenManager.clearTokens();
-                localStorage.removeItem('userData');
-                dispatch(logout());
-                
-                // Mark as initialized so this doesn't run again during the session
-                sessionStorage.setItem('persistenceInitialized', 'true');
-            }
-
-            dispatch(setLoading(false));
-
-            // If you want to restore authentication, uncomment the code below:
-            /*
-            const token = TokenManager.getAccessToken();
-            const refreshToken = TokenManager.getRefreshToken();
-            const cachedUserStr = localStorage.getItem('userData');
-
-            if (token && cachedUserStr) {
-                try {
-                    const cachedUser = JSON.parse(cachedUserStr);
-
-                    // Restore auth state immediately for better UX
-                    dispatch(loginSuccess({
-                        user: cachedUser,
-                        token,
-                        refreshToken: refreshToken || undefined,
-                    }));
+                    dispatch(
+                        loginSuccess({
+                            user: cachedUser,
+                            token,
+                            refreshToken: refreshToken || undefined,
+                        })
+                    );
                 } catch (error) {
                     // Clear invalid cached data
                     localStorage.removeItem('userData');
                     TokenManager.clearTokens();
+                    dispatch(logout());
                 }
-            } else if (!token) {
-                // No token, ensure we're logged out
-                dispatch(logout());
             }
 
             dispatch(setLoading(false));
-            */
         };
 
         initializeAuth();
@@ -136,11 +82,13 @@ export function useReduxAuthPersistence() {
             const refreshToken = TokenManager.getRefreshToken();
 
             if (token) {
-                dispatch(loginSuccess({
-                    user,
-                    token,
-                    refreshToken: refreshToken || undefined,
-                }));
+                dispatch(
+                    loginSuccess({
+                        user,
+                        token,
+                        refreshToken: refreshToken || undefined,
+                    })
+                );
 
                 // Cache user data in localStorage
                 localStorage.setItem('userData', JSON.stringify(user));
@@ -174,18 +122,20 @@ export function useReduxAuthPersistence() {
                     dispatch(logout());
                 } else if (!isAuthenticated) {
                     // Token was added in another tab, re-initialize
-                    const token = event.newValue;
+                    const token = event.newValue as string;
                     const refreshToken = TokenManager.getRefreshToken();
                     const cachedUserStr = localStorage.getItem('userData');
 
                     if (cachedUserStr) {
                         try {
                             const cachedUser = JSON.parse(cachedUserStr);
-                            dispatch(loginSuccess({
-                                user: cachedUser,
-                                token,
-                                refreshToken: refreshToken || undefined,
-                            }));
+                            dispatch(
+                                loginSuccess({
+                                    user: cachedUser,
+                                    token,
+                                    refreshToken: refreshToken || undefined,
+                                })
+                            );
                         } catch (error) {
                             // Failed to parse user data from storage
                         }
@@ -224,4 +174,3 @@ export function useReduxAuthPersistence() {
         hasToken: !!hasToken,
     };
 }
-

@@ -50,7 +50,10 @@ export function LoginForm({
     },
   });
 
-  // Redirect user to their dashboard when they become authenticated
+  // ✅ DISABLED: This useEffect causes issues on first login
+  // Navigation is now handled directly in onSubmit after successful login
+  // This prevents double navigation and ensures proper state propagation
+  /*
   useEffect(() => {
     if (user) {
       const dashboardPath = user.role === "admin" ? "/admin/dashboard"
@@ -62,24 +65,38 @@ export function LoginForm({
       navigate(dashboardPath, { replace: true });
     }
   }, [user, navigate]);
+  */
 
   const onSubmit = async (data: z.infer<typeof loginSchema>) => {
     try {
-      console.log("🚀 Starting login process...");
+      console.log("🚀 [LoginForm] Starting login process...");
       const result = await login(data.email, data.password);
       
-      console.log("🔍 Login result:", result);
+      console.log("🔍 [LoginForm] Login result:", result);
       
       if (result.success && result.user) {
-        console.log("✅ Login successful for user:", result.user);
+        console.log("✅ [LoginForm] Login successful for user:", result.user.email, "role:", result.user.role);
         toast.success(`Welcome back, ${result.user.name}!`);
-        // Navigation will be handled by useEffect when user state changes
+        
+        // ✅ CRITICAL FIX: Wait longer to ensure all state updates propagate
+        // This gives time for: localStorage save, Redux update, persist, and event dispatch
+        console.log("⏳ [LoginForm] Waiting for state propagation...");
+        await new Promise(resolve => setTimeout(resolve, 200));
+        
+        // Navigate using the returned user data
+        const dashboardPath = result.user.role === "admin" ? "/admin/dashboard"
+                            : result.user.role === "sender" ? "/sender/dashboard"
+                            : result.user.role === "receiver" ? "/receiver/dashboard"
+                            : "/";
+        
+        console.log("🧭 [LoginForm] Navigating to:", dashboardPath);
+        navigate(dashboardPath, { replace: true });
       } else {
-        console.error("❌ Login failed:", result);
+        console.error("❌ [LoginForm] Login failed:", result);
         toast.error("Invalid email or password");
       }
     } catch (error) {
-      console.error("💥 Login error:", error);
+      console.error("💥 [LoginForm] Login error:", error);
       toast.error("Login failed. Please try again.");
     }
   };

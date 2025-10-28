@@ -1,5 +1,7 @@
 import ThemeToggle from "../ui/DarkLightThemeSwitcher";
 import { useAuth } from "../../hooks/useAuth";
+import { useAppSelector } from "../../store/hooks";
+import { selectCurrentUser } from "../../store/slices/authSlice";
 import {
   AlertTriangle,
   BarChart3,
@@ -29,7 +31,86 @@ interface NavigationItem {
 }
 
 export default function Navigation() {
-  const { user, logout } = useAuth();
+  // Use selector for immediate updates and useAuth for actions
+  const userFromStore = useAppSelector(selectCurrentUser);
+  const { logout } = useAuth();
+  
+  // ✅ CRITICAL FIX: Use local state with multiple fallback sources
+  // This ensures navbar shows correct user data even on first login
+  const [user, setUser] = useState<typeof userFromStore>(() => {
+    // Initial state: try Redux first, then localStorage
+    if (userFromStore) return userFromStore;
+    try {
+      const cachedUser = localStorage.getItem('userData');
+      return cachedUser ? JSON.parse(cachedUser) : null;
+    } catch {
+      return null;
+    }
+  });
+  
+  // ✅ Update from Redux store when it changes
+  useEffect(() => {
+    if (userFromStore) {
+      console.log("📊 [Navigation] Redux user updated:", userFromStore.email, "role:", userFromStore.role);
+      setUser(userFromStore);
+    } else if (!userFromStore) {
+      // Redux user is null/undefined - check localStorage before clearing
+      console.warn("⚠️ [Navigation] Redux user is null, checking localStorage");
+      try {
+        const cachedUser = localStorage.getItem('userData');
+        const hasToken = localStorage.getItem('accessToken');
+        
+        if (cachedUser && hasToken) {
+          const parsed = JSON.parse(cachedUser);
+          console.log("🔄 [Navigation] Restoring user from localStorage:", parsed.email, "role:", parsed.role);
+          setUser(parsed);
+        } else if (!hasToken) {
+          // No token means truly logged out
+          console.log("🚪 [Navigation] No token, clearing user");
+          setUser(null);
+        }
+      } catch (error) {
+        console.error("❌ [Navigation] Failed to parse cached user");
+      }
+    }
+  }, [userFromStore]);
+  
+  // ✅ Listen for custom login event for immediate updates
+  useEffect(() => {
+    const handleUserLogin = (event: CustomEvent) => {
+      const userData = event.detail?.user;
+      if (userData) {
+        console.log("📢 [Navigation] Received userLoggedIn event, role:", userData.role);
+        setUser(userData);
+      }
+    };
+    
+    window.addEventListener('userLoggedIn', handleUserLogin as EventListener);
+    return () => {
+      window.removeEventListener('userLoggedIn', handleUserLogin as EventListener);
+    };
+  }, []);
+  
+  // ✅ Fallback: Check localStorage periodically (every 500ms) if user is null
+  useEffect(() => {
+    if (!user) {
+      const interval = setInterval(() => {
+        try {
+          const cachedUser = localStorage.getItem('userData');
+          if (cachedUser) {
+            const parsed = JSON.parse(cachedUser);
+            console.log("🔄 [Navigation] Loaded user from localStorage:", parsed.email, "role:", parsed.role);
+            setUser(parsed);
+          }
+        } catch (error) {
+          // Ignore parse errors
+        }
+      }, 500);
+      
+      return () => clearInterval(interval);
+    }
+  }, [user]);
+  
   const location = useLocation();
   const navigate = useNavigate();
 

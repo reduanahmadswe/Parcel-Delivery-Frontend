@@ -1,6 +1,7 @@
 "use client";
 
 import { useAuth } from "../../hooks/useAuth";
+import { AuthStateManager } from "../../services/AuthStateManager";
 import { User } from "../../types";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -22,7 +23,9 @@ export default function ProtectedRoute({
   useEffect(() => {
     console.log("🛡️ ProtectedRoute - Auth state:", { user: user?.email, role: user?.role, loading, allowedRoles });
     
-    if (!loading) {
+    // Only perform access checks after auth persistence initialization to avoid
+    // redirecting while other auth persistence logic is still restoring state.
+    if (!loading && AuthStateManager.isInitialized()) {
       if (!user) {
         console.log("🚫 No user, redirecting to:", redirectTo);
         navigate(redirectTo, { replace: true });

@@ -18,6 +18,13 @@ export class AuthStateManager {
     }
 
     /**
+     * Check if auth initialization has already been performed this session
+     */
+    static isInitialized(): boolean {
+        return sessionStorage.getItem(this.AUTH_INITIALIZED_KEY) === 'true';
+    }
+
+    /**
      * Check if user has an active session (logged in)
      */
     static hasActiveSession(): boolean {

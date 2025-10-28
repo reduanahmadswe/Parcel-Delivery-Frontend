@@ -31,18 +31,23 @@ const authSlice = createSlice({
         // Login success
         loginSuccess: (state, action: PayloadAction<{ user: User; token: string; refreshToken?: string }>) => {
             const { user, token, refreshToken } = action.payload;
+            
+            // ✅ Update Redux state immediately
             state.user = user;
             state.token = token;
             state.refreshToken = refreshToken || null;
             state.isAuthenticated = true;
             state.loading = false;
             
-            TokenManager.setTokens(token, refreshToken);
+            // Debug log to trace when loginSuccess is dispatched
+            try {
+                if (typeof window !== 'undefined') {
+                    console.debug('[authSlice] loginSuccess dispatched for user:', user?.email, 'role:', user?.role);
+                }
+            } catch (err) {}
             
-            // Ensure user info is also saved
-            if (typeof window !== 'undefined') {
-                localStorage.setItem('userData', JSON.stringify(user));
-            }
+            // Note: TokenManager and localStorage updates are now handled in ReduxAuthContext
+            // to avoid duplication and ensure proper timing
         },
 
         // Login failure
@@ -76,6 +81,13 @@ const authSlice = createSlice({
             state.refreshToken = null;
             state.isAuthenticated = false;
             state.loading = false;
+            // Debug log to trace logout reducer
+            try {
+                if (typeof window !== 'undefined') {
+                    console.debug('[authSlice] logout reducer executed');
+                }
+            } catch (err) {}
+
             TokenManager.clearTokens();
             if (typeof window !== 'undefined') {
                 localStorage.removeItem('userData');
