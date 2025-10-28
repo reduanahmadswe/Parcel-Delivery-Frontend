@@ -2,16 +2,12 @@ services:
   - type: web
     name: parcel-delivery-frontend
     env: static
-    buildCommand: npm run build
+    buildCommand: npm install && npm run build
     staticPublishPath: ./dist
     pullRequestPreviewsEnabled: true
     envVars:
       - key: VITE_API_URL
         value: https://parcel-delivery-api.onrender.com/api
-    routes:
-      - type: rewrite
-        source: /*
-        destination: /index.html
     headers:
       - path: /*
         name: Cache-Control

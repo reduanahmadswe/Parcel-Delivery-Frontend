@@ -1,12 +1,26 @@
 import react from '@vitejs/plugin-react'
 import autoprefixer from 'autoprefixer'
+import fs from 'fs'
 import path from 'path'
 import tailwindcss from 'tailwindcss'
 import { defineConfig } from 'vite'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-    plugins: [react()],
+    plugins: [
+        react(),
+        {
+            name: 'copy-redirects',
+            writeBundle() {
+                const srcPath = path.resolve(__dirname, 'public/_redirects')
+                const destPath = path.resolve(__dirname, 'dist/_redirects')
+                if (fs.existsSync(srcPath)) {
+                    fs.copyFileSync(srcPath, destPath)
+                    console.log('✓ _redirects file copied to dist/')
+                }
+            }
+        }
+    ],
     // Explicitly set public directory (default is 'public')
     publicDir: 'public',
     resolve: {
