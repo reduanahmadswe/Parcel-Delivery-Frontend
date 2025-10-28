@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { Download, Link as LinkIcon, Eye, CheckCircle2, Package, User, MapPin, Phone, Mail, Box } from "lucide-react";
+import { Download, Link as LinkIcon, Eye, CheckCircle2, Package, User, MapPin, Phone, Mail, Box, Send } from "lucide-react";
 import toast from "react-hot-toast";
 import { generateParcelPdf } from "../../utils/parcelExport";
 import { useNavigate } from "react-router-dom";
+import { API_BASE } from "../../constants/config";
 
 interface Props {
   parcel: any; // parcel object returned from API
@@ -12,6 +13,7 @@ interface Props {
 export default function ParcelCreatedModal({ parcel, onClose }: Props) {
   const navigate = useNavigate();
   const [generatingPdf, setGeneratingPdf] = useState(false);
+  const [sendingEmail, setSendingEmail] = useState(false);
 
   if (!parcel) return null;
 
@@ -51,12 +53,76 @@ export default function ParcelCreatedModal({ parcel, onClose }: Props) {
     try {
       setGeneratingPdf(true);
       await generateParcelPdf(parcel);
-      toast.success("PDF generated / downloaded");
+      toast.success("PDF generated successfully!");
     } catch (err) {
       console.error(err);
       toast.error("Failed to generate PDF");
     } finally {
       setGeneratingPdf(false);
+    }
+  };
+
+  const handleSendEmail = async () => {
+    try {
+      setSendingEmail(true);
+      
+      // Prepare email data for backend
+      const emailData = {
+        trackingId,
+        senderInfo: {
+          name: senderName,
+          email: parcel.senderInfo?.email || parcel.senderEmail,
+          phone: parcel.senderInfo?.phone || parcel.senderPhone
+        },
+        receiverInfo: {
+          name: receiverName,
+          email: receiverEmail,
+          phone: receiverPhone,
+          address: {
+            street: address.street || "",
+            city: address.city || "",
+            state: address.state || "",
+            zipCode: address.zipCode || "",
+            country: address.country || ""
+          }
+        },
+        parcelDetails: {
+          type: parcelType,
+          weight: weight,
+          dimensions: {
+            length: dimensions.length || 0,
+            width: dimensions.width || 0,
+            height: dimensions.height || 0
+          },
+          description: description
+        }
+      };
+
+      // Send email request to backend
+      const response = await fetch(`${API_BASE}/parcels/send-email`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(emailData)
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to send email');
+      }
+
+      const result = await response.json();
+      
+      if (result.success) {
+        toast.success("📧 Emails sent successfully to sender and receiver!");
+      } else {
+        toast.error(result.message || "Failed to send emails");
+      }
+    } catch (err) {
+      console.error("Email sending error:", err);
+      toast.error("Failed to send emails. Please try again.");
+    } finally {
+      setSendingEmail(false);
     }
   };
 
@@ -206,11 +272,20 @@ export default function ParcelCreatedModal({ parcel, onClose }: Props) {
             </button>
 
             <button 
+              onClick={handleSendEmail} 
+              disabled={sendingEmail} 
+              className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-lg shadow-md hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+            >
+              <Send className="w-4 h-4" />
+              <span>{sendingEmail ? "Sending..." : "Send Email"}</span>
+            </button>
+
+            <button 
               onClick={handleShareTrackingLink} 
               className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:shadow-md hover:border-gray-400 dark:hover:border-gray-500 transition-all text-gray-700 dark:text-gray-200"
             >
               <LinkIcon className="w-4 h-4" />
-              <span className="font-medium">Copy Tracking Link</span>
+              <span className="font-medium">Copy Link</span>
             </button>
 
             <button 
