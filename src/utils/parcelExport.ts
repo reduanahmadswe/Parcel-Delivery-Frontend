@@ -9,11 +9,12 @@ export async function generateParcelPdf(parcel: any) {
     const pageWidth = doc.internal.pageSize.getWidth();
     const pageHeight = doc.internal.pageSize.getHeight();
 
-    // Project Theme Colors (matching the modal and UI)
-    const green: [number, number, number] = [34, 197, 94]; // Green-500 (from modal header gradient)
-    const emerald: [number, number, number] = [16, 185, 129]; // Emerald-500
+    // Project Theme Colors (Red/White combination from project)
+    const primaryRed: [number, number, number] = [239, 68, 68]; // Red-500 (Primary brand color)
+    const darkRed: [number, number, number] = [220, 38, 38]; // Red-600
+    const lightRed: [number, number, number] = [254, 226, 226]; // Red-100
     const blue: [number, number, number] = [59, 130, 246]; // Blue-500
-    const purple: [number, number, number] = [168, 85, 247]; // Purple-500
+    const purple: [number, number, number] = [147, 51, 234]; // Purple-600
     const pink: [number, number, number] = [236, 72, 153]; // Pink-500
     const amber: [number, number, number] = [245, 158, 11]; // Amber-500
     const gray900: [number, number, number] = [17, 24, 39]; // Gray-900 (dark text)
@@ -55,60 +56,72 @@ export async function generateParcelPdf(parcel: any) {
       : "N/A";
     const description = parcelDetails.description || parcel.description || "No description provided";
 
-    // ==================== HEADER ====================
-    // Gradient background effect (green to emerald)
-    doc.setFillColor(34, 197, 94); // Green-500
-    doc.rect(0, 0, pageWidth, 120, "F");
+    // ==================== MODERN HEADER ====================
+    // Main red gradient background
+    doc.setFillColor(...primaryRed);
+    doc.rect(0, 0, pageWidth, 100, "F");
     
-    // Accent stripe
-    doc.setFillColor(16, 185, 129); // Emerald-500
-    doc.rect(0, 110, pageWidth, 10, "F");
+    // Darker red accent stripe at bottom
+    doc.setFillColor(...darkRed);
+    doc.rect(0, 90, pageWidth, 10, "F");
+    
+    // Decorative white accent line
+    doc.setFillColor(...white);
+    doc.rect(0, 85, pageWidth, 2, "F");
 
-    // Logo/Title
+    // Logo/Title with shadow effect
     doc.setTextColor(...white);
-    doc.setFontSize(36);
+    doc.setFontSize(40);
     doc.setFont("helvetica", "bold");
-    doc.text("ParcelTrack", 40, 55);
+    doc.text("ParcelTrack", 40, 50);
     
-    doc.setFontSize(13);
+    doc.setFontSize(12);
     doc.setFont("helvetica", "normal");
-    doc.text("Professional Delivery Service", 40, 80);
+    doc.text("Professional Delivery Service", 40, 70);
     
-    // Date on right side
-    doc.setFontSize(10);
+    // Date badge on right side with white background
+    doc.setFontSize(9);
     const dateStr = new Date().toLocaleDateString('en-US', { 
       year: 'numeric', 
       month: 'long', 
       day: 'numeric' 
     });
-    doc.text(dateStr, pageWidth - 40, 55, { align: "right" });
+    
+    // White date box
+    const dateWidth = doc.getTextWidth(dateStr) + 20;
+    doc.setFillColor(...white);
+    doc.roundedRect(pageWidth - dateWidth - 40, 35, dateWidth, 25, 3, 3, "F");
+    
+    doc.setTextColor(...primaryRed);
+    doc.setFont("helvetica", "bold");
+    doc.text(dateStr, pageWidth - 40 - dateWidth / 2, 50, { align: "center" });
 
     // ==================== TRACKING ID SECTION ====================
-    let yPos = 155;
+    let yPos = 130;
     
-    // Blue gradient box for tracking ID
+    // Light blue background for tracking ID
     doc.setFillColor(219, 234, 254); // Blue-100
-    doc.roundedRect(40, yPos, pageWidth - 80, 70, 10, 10, "F");
+    doc.roundedRect(40, yPos, pageWidth - 80, 65, 10, 10, "F");
     
-    // Border
-    doc.setDrawColor(59, 130, 246); // Blue-500
+    // Blue border
+    doc.setDrawColor(...blue);
     doc.setLineWidth(2);
-    doc.roundedRect(40, yPos, pageWidth - 80, 70, 10, 10, "S");
+    doc.roundedRect(40, yPos, pageWidth - 80, 65, 10, 10, "S");
     
-    yPos += 25;
+    yPos += 22;
     doc.setTextColor(37, 99, 235); // Blue-600
-    doc.setFontSize(11);
+    doc.setFontSize(10);
     doc.setFont("helvetica", "bold");
-    doc.text("📦 TRACKING ID", 55, yPos);
+    doc.text("TRACKING ID", 55, yPos);
     
-    yPos += 25;
+    yPos += 23;
     doc.setTextColor(30, 58, 138); // Blue-900
-    doc.setFontSize(22);
+    doc.setFontSize(20);
     doc.setFont("helvetica", "bold");
     doc.text(trackingId, 55, yPos);
 
     // ==================== SENDER & RECEIVER SECTION ====================
-    yPos += 50;
+    yPos += 40;
     
     // Two-column layout
     const leftCol = 40;
@@ -116,149 +129,149 @@ export async function generateParcelPdf(parcel: any) {
     const colWidth = (pageWidth / 2) - 60;
 
     // SENDER BOX (Purple theme)
-    doc.setFillColor(250, 245, 255); // Purple-50
-    doc.roundedRect(leftCol, yPos, colWidth, 120, 8, 8, "F");
-    doc.setDrawColor(168, 85, 247); // Purple-500
+    doc.setFillColor(245, 243, 255); // Purple-50
+    doc.roundedRect(leftCol, yPos, colWidth, 110, 8, 8, "F");
+    doc.setDrawColor(...purple);
     doc.setLineWidth(1.5);
-    doc.roundedRect(leftCol, yPos, colWidth, 120, 8, 8, "S");
+    doc.roundedRect(leftCol, yPos, colWidth, 110, 8, 8, "S");
     
-    let senderY = yPos + 25;
-    doc.setTextColor(126, 34, 206); // Purple-700
-    doc.setFontSize(13);
+    let senderY = yPos + 22;
+    doc.setTextColor(...purple);
+    doc.setFontSize(12);
     doc.setFont("helvetica", "bold");
-    doc.text("👤 Sender", leftCol + 15, senderY);
+    doc.text("Sender", leftCol + 15, senderY);
     
-    senderY += 25;
+    senderY += 20;
     doc.setTextColor(...gray900);
-    doc.setFontSize(10);
+    doc.setFontSize(9);
     doc.setFont("helvetica", "bold");
     doc.text("Name:", leftCol + 15, senderY);
     doc.setFont("helvetica", "normal");
-    const senderNameLines = doc.splitTextToSize(senderName, colWidth - 70);
-    doc.text(senderNameLines, leftCol + 60, senderY);
+    const senderNameLines = doc.splitTextToSize(senderName, colWidth - 60);
+    doc.text(senderNameLines, leftCol + 50, senderY);
     
-    senderY += 20;
+    senderY += 18;
     doc.setFont("helvetica", "bold");
     doc.text("Email:", leftCol + 15, senderY);
     doc.setFont("helvetica", "normal");
-    const senderEmailLines = doc.splitTextToSize(senderEmail, colWidth - 70);
-    doc.text(senderEmailLines, leftCol + 60, senderY);
+    const senderEmailLines = doc.splitTextToSize(senderEmail, colWidth - 60);
+    doc.text(senderEmailLines, leftCol + 50, senderY);
     
-    senderY += 20;
+    senderY += 18;
     doc.setFont("helvetica", "bold");
     doc.text("Phone:", leftCol + 15, senderY);
     doc.setFont("helvetica", "normal");
-    doc.text(senderPhone, leftCol + 60, senderY);
+    doc.text(senderPhone, leftCol + 50, senderY);
 
     // RECEIVER BOX (Pink theme)
     doc.setFillColor(253, 242, 248); // Pink-50
-    doc.roundedRect(rightCol, yPos, colWidth, 120, 8, 8, "F");
-    doc.setDrawColor(236, 72, 153); // Pink-500
+    doc.roundedRect(rightCol, yPos, colWidth, 110, 8, 8, "F");
+    doc.setDrawColor(...pink);
     doc.setLineWidth(1.5);
-    doc.roundedRect(rightCol, yPos, colWidth, 120, 8, 8, "S");
+    doc.roundedRect(rightCol, yPos, colWidth, 110, 8, 8, "S");
     
-    let receiverY = yPos + 25;
-    doc.setTextColor(219, 39, 119); // Pink-600
-    doc.setFontSize(13);
+    let receiverY = yPos + 22;
+    doc.setTextColor(...pink);
+    doc.setFontSize(12);
     doc.setFont("helvetica", "bold");
-    doc.text("📍 Receiver", rightCol + 15, receiverY);
+    doc.text("Receiver", rightCol + 15, receiverY);
     
-    receiverY += 25;
+    receiverY += 20;
     doc.setTextColor(...gray900);
-    doc.setFontSize(10);
+    doc.setFontSize(9);
     doc.setFont("helvetica", "bold");
     doc.text("Name:", rightCol + 15, receiverY);
     doc.setFont("helvetica", "normal");
-    const receiverNameLines = doc.splitTextToSize(receiverName, colWidth - 70);
-    doc.text(receiverNameLines, rightCol + 60, receiverY);
+    const receiverNameLines = doc.splitTextToSize(receiverName, colWidth - 60);
+    doc.text(receiverNameLines, rightCol + 50, receiverY);
     
-    receiverY += 20;
+    receiverY += 18;
     doc.setFont("helvetica", "bold");
     doc.text("Email:", rightCol + 15, receiverY);
     doc.setFont("helvetica", "normal");
-    const receiverEmailLines = doc.splitTextToSize(receiverEmail, colWidth - 70);
-    doc.text(receiverEmailLines, rightCol + 60, receiverY);
+    const receiverEmailLines = doc.splitTextToSize(receiverEmail, colWidth - 60);
+    doc.text(receiverEmailLines, rightCol + 50, receiverY);
     
-    receiverY += 20;
+    receiverY += 18;
     doc.setFont("helvetica", "bold");
     doc.text("Phone:", rightCol + 15, receiverY);
     doc.setFont("helvetica", "normal");
-    doc.text(receiverPhone, rightCol + 60, receiverY);
+    doc.text(receiverPhone, rightCol + 50, receiverY);
 
     // ==================== DELIVERY ADDRESS SECTION ====================
-    yPos += 145;
+    yPos += 130;
     
     // Amber theme box
     doc.setFillColor(254, 243, 199); // Amber-100
-    doc.roundedRect(40, yPos, pageWidth - 80, 75, 8, 8, "F");
-    doc.setDrawColor(245, 158, 11); // Amber-500
+    doc.roundedRect(40, yPos, pageWidth - 80, 65, 8, 8, "F");
+    doc.setDrawColor(...amber);
     doc.setLineWidth(1.5);
-    doc.roundedRect(40, yPos, pageWidth - 80, 75, 8, 8, "S");
+    doc.roundedRect(40, yPos, pageWidth - 80, 65, 8, 8, "S");
     
-    yPos += 25;
+    yPos += 22;
     doc.setTextColor(180, 83, 9); // Amber-700
-    doc.setFontSize(13);
+    doc.setFontSize(12);
     doc.setFont("helvetica", "bold");
-    doc.text("🏠 Delivery Address", 55, yPos);
+    doc.text("Delivery Address", 55, yPos);
     
-    yPos += 25;
+    yPos += 20;
     doc.setTextColor(...gray900);
-    doc.setFontSize(10);
+    doc.setFontSize(9);
     doc.setFont("helvetica", "normal");
     const addressLines = doc.splitTextToSize(fullAddress, pageWidth - 110);
     doc.text(addressLines, 55, yPos);
 
     // ==================== PARCEL DETAILS SECTION ====================
-    yPos += 75;
+    yPos += 55;
     
     // Gray box with border
     doc.setFillColor(249, 250, 251); // Gray-50
-    doc.roundedRect(40, yPos, pageWidth - 80, 140, 8, 8, "F");
-    doc.setDrawColor(156, 163, 175); // Gray-400
+    doc.roundedRect(40, yPos, pageWidth - 80, 125, 8, 8, "F");
+    doc.setDrawColor(...gray500);
     doc.setLineWidth(1.5);
-    doc.roundedRect(40, yPos, pageWidth - 80, 140, 8, 8, "S");
+    doc.roundedRect(40, yPos, pageWidth - 80, 125, 8, 8, "S");
     
-    yPos += 25;
+    yPos += 22;
     doc.setTextColor(...gray900);
-    doc.setFontSize(13);
+    doc.setFontSize(12);
     doc.setFont("helvetica", "bold");
-    doc.text("📦 Parcel Details", 55, yPos);
+    doc.text("Parcel Details", 55, yPos);
     
-    yPos += 25;
-    doc.setFontSize(10);
+    yPos += 22;
+    doc.setFontSize(9);
     
     // Grid layout for details
     doc.setFont("helvetica", "bold");
     doc.text("Type:", 55, yPos);
     doc.setFont("helvetica", "normal");
-    doc.text(parcelType, 120, yPos);
+    doc.text(parcelType, 110, yPos);
     
     doc.setFont("helvetica", "bold");
     doc.text("Weight:", pageWidth / 2 + 20, yPos);
     doc.setFont("helvetica", "normal");
-    doc.text(`${weight} kg`, pageWidth / 2 + 80, yPos);
+    doc.text(`${weight} kg`, pageWidth / 2 + 70, yPos);
     
-    yPos += 20;
+    yPos += 18;
     doc.setFont("helvetica", "bold");
     doc.text("Dimensions:", 55, yPos);
     doc.setFont("helvetica", "normal");
-    doc.text(dimText, 120, yPos);
+    doc.text(dimText, 110, yPos);
     
-    yPos += 25;
+    yPos += 22;
     doc.setFont("helvetica", "bold");
     doc.text("Description:", 55, yPos);
-    yPos += 15;
+    yPos += 13;
     doc.setFont("helvetica", "normal");
     const descLines = doc.splitTextToSize(description, pageWidth - 110);
     doc.text(descLines, 55, yPos);
 
     // ==================== FOOTER ====================
-    const footerY = pageHeight - 120; // Increased space for QR code
+    const footerY = pageHeight - 115; // Space for QR code
     
     // Divider line
     doc.setDrawColor(...gray500);
     doc.setLineWidth(0.5);
-    doc.line(40, footerY - 15, pageWidth - 40, footerY - 15);
+    doc.line(40, footerY - 12, pageWidth - 40, footerY - 12);
     
     // Generate QR Code for tracking link
     const trackLink = `${window.location.origin}/track?id=${trackingId}`;
@@ -272,13 +285,16 @@ export async function generateParcelPdf(parcel: any) {
     });
     
     // QR Code Box (Right side)
-    const qrSize = 90;
+    const qrSize = 85;
     const qrX = pageWidth - 40 - qrSize;
-    const qrY = footerY - 10;
+    const qrY = footerY - 8;
     
-    // QR Code background
-    doc.setFillColor(249, 250, 251); // Gray-50
+    // QR Code background with border
+    doc.setFillColor(...white);
     doc.roundedRect(qrX - 5, qrY - 5, qrSize + 10, qrSize + 10, 5, 5, "F");
+    doc.setDrawColor(...gray500);
+    doc.setLineWidth(1);
+    doc.roundedRect(qrX - 5, qrY - 5, qrSize + 10, qrSize + 10, 5, 5, "S");
     
     // Add QR code image
     doc.addImage(qrCodeDataUrl, 'PNG', qrX, qrY, qrSize, qrSize);
@@ -290,7 +306,7 @@ export async function generateParcelPdf(parcel: any) {
     doc.text("Scan to Track", qrX + qrSize / 2, qrY + qrSize + 12, { align: "center" });
     
     // Footer text (Left side)
-    doc.setFontSize(9);
+    doc.setFontSize(8);
     doc.setTextColor(...gray500);
     doc.setFont("helvetica", "normal");
     doc.text(`Generated on: ${new Date().toLocaleString('en-US', { 
@@ -299,21 +315,21 @@ export async function generateParcelPdf(parcel: any) {
     })}`, 40, footerY);
     
     doc.setFont("helvetica", "bold");
-    doc.text("ParcelTrack © 2025", 40, footerY + 15);
+    doc.text("ParcelTrack © 2025", 40, footerY + 13);
     doc.setFont("helvetica", "normal");
-    doc.text("Professional Delivery Services", 40, footerY + 28);
+    doc.text("Professional Delivery Services", 40, footerY + 25);
     
     // Tracking link text
-    doc.setFontSize(8);
-    doc.setTextColor(59, 130, 246); // Blue-500 for link
-    const maxLinkWidth = qrX - 60; // Space before QR code
+    doc.setFontSize(7);
+    doc.setTextColor(...blue);
+    const maxLinkWidth = qrX - 55; // Space before QR code
     const trackLinkLines = doc.splitTextToSize(`Track online: ${trackLink}`, maxLinkWidth);
-    doc.text(trackLinkLines, 40, footerY + 45);
+    doc.text(trackLinkLines, 40, footerY + 40);
     
     // Watermark/Badge
-    doc.setFontSize(7);
+    doc.setFontSize(6);
     doc.setTextColor(...gray500);
-    doc.text("Document verified and generated by ParcelTrack System", qrX + qrSize / 2, qrY + qrSize + 24, { align: "center" });
+    doc.text("Document verified and generated by ParcelTrack System", qrX + qrSize / 2, qrY + qrSize + 22, { align: "center" });
 
     // Save PDF with descriptive filename
     const timestamp = new Date().toISOString().split('T')[0];
