@@ -1,2 +1,8 @@
-# Redirect all routes to index.html for client-side routing
-/*    /index.html   200
+# SPA routing - redirect all requests to index.html
+# This ensures client-side routing works even after page refresh
+
+# API requests should not be redirected
+/api/*  https://parcel-delivery-api.onrender.com/api/:splat  200
+
+# All other routes should serve index.html for React Router
+/*      /index.html   200

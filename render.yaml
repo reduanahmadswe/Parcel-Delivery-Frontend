@@ -8,10 +8,6 @@ services:
     envVars:
       - key: VITE_API_URL
         value: https://parcel-delivery-api.onrender.com/api
-    routes:
-      - type: rewrite
-        source: /*
-        destination: /index.html
     headers:
       - path: /*
         name: Cache-Control
