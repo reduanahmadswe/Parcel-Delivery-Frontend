@@ -4,6 +4,7 @@ services:
     env: static
     buildCommand: npm run build
     staticPublishPath: ./dist
+    pullRequestPreviewsEnabled: true
     envVars:
       - key: VITE_API_URL
         value: https://parcel-delivery-api.onrender.com/api
@@ -11,3 +12,10 @@ services:
       - type: rewrite
         source: /*
         destination: /index.html
+    headers:
+      - path: /*
+        name: Cache-Control
+        value: public, max-age=0, must-revalidate
+      - path: /assets/*
+        name: Cache-Control
+        value: public, max-age=31536000, immutable
