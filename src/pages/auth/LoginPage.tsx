@@ -8,11 +8,16 @@ import {
   Truck,
   Users,
 } from "lucide-react";
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { LoginForm } from "../../components/forms/LoginForm";
 
 const LoginPage: React.FC = () => {
+  useEffect(() => {
+    console.log("🔐 [LoginPage] Login page mounted");
+    console.log("📍 [LoginPage] Current URL:", window.location.href);
+  }, []);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-blue-950 dark:to-indigo-950">
       <div className="min-h-screen grid lg:grid-cols-2">
