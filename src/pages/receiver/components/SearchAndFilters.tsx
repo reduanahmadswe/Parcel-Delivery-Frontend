@@ -28,29 +28,29 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
   ];
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 mb-6">
-      <div className="p-6">
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+    <div className="bg-background rounded-lg sm:rounded-xl lg:rounded-2xl shadow-lg border border-border">
+      <div className="p-4 sm:p-5 lg:p-6">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 sm:gap-4">
           {/* Search */}
-          <div className="flex-1 max-w-md">
+          <div className="flex-1 max-w-full lg:max-w-md">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4 sm:w-5 sm:h-5" />
               <input
                 type="text"
-                placeholder="Search by tracking number, description, or sender..."
+                placeholder="Search by tracking number..."
                 value={filters.searchTerm}
                 onChange={(e) => onSearchChange(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
+                className="w-full pl-9 sm:pl-10 pr-3 sm:pr-4 py-2 sm:py-3 border border-border rounded-lg sm:rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent bg-muted text-foreground placeholder-muted-foreground text-sm sm:text-base"
               />
             </div>
           </div>
 
           {/* Sort Controls */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             <select
               value={filters.sortBy}
               onChange={(e) => onSortChange(e.target.value)}
-              className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500"
+              className="px-3 sm:px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-red-500 text-xs sm:text-sm"
             >
               <option value="createdAt">Sort by Date</option>
               <option value="status">Sort by Status</option>
@@ -61,7 +61,7 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
               onClick={() =>
                 onSortOrderChange(filters.sortOrder === "asc" ? "desc" : "asc")
               }
-              className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600"
+              className="px-2 sm:px-3 py-2 border border-border rounded-lg bg-background text-foreground hover:bg-muted transition-colors text-sm sm:text-base"
             >
               {filters.sortOrder === "asc" ? "↑" : "↓"}
             </button>
@@ -69,23 +69,23 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
         </div>
 
         {/* Filter Tabs */}
-        <div className="flex flex-wrap gap-2 mt-4">
+        <div className="flex flex-wrap gap-2 mt-3 sm:mt-4">
           {filterOptions.map((status) => (
             <button
               key={status.key}
               onClick={() => onFilterChange(status.key)}
-              className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
+              className={`inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl text-xs sm:text-sm font-medium transition-all duration-200 ${
                 filters.filter === status.key
                   ? "bg-gradient-to-r from-red-600 to-red-700 text-white shadow-lg"
-                  : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
+                  : "bg-muted text-foreground hover:bg-muted/80"
               }`}
             >
               {status.label}
               <span
-                className={`px-2 py-0.5 rounded-full text-xs ${
+                className={`px-1.5 sm:px-2 py-0.5 rounded-full text-[10px] xs:text-xs ${
                   filters.filter === status.key
                     ? "bg-white/20 text-white"
-                    : "bg-gray-200 dark:bg-gray-600 text-gray-600 dark:text-gray-400"
+                    : "bg-background text-muted-foreground"
                 }`}
               >
                 {status.count}

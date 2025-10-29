@@ -79,7 +79,7 @@ export default function ReceiverDashboard() {
       try {
         setIsLoading(true);
 
-        // First, get ALL parcels for accurate statistics (like sender does)
+        // Get all parcels for statistics
         const allParcels = await receiverApiService.fetchAllParcels(user.email);
 
         // Calculate statistics from ALL parcels
@@ -176,10 +176,10 @@ export default function ReceiverDashboard() {
 
   if (loading || isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-red-600 mx-auto mb-4"></div>
-          <p className="text-gray-600 dark:text-gray-400">
+          <div className="animate-spin rounded-full h-12 w-12 sm:h-16 sm:w-16 border-b-4 border-red-600 mx-auto mb-4"></div>
+          <p className="text-muted-foreground text-sm sm:text-base">
             Loading your parcels...
           </p>
         </div>
@@ -188,66 +188,59 @@ export default function ReceiverDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="min-h-screen bg-background mt-8 sm:mt-10 lg:mt-11">
+      <div className="max-w-7xl mx-auto pt-2 sm:pt-3 px-3 xs:px-4 sm:px-5 lg:px-6 xl:px-8 space-y-4 sm:space-y-5 lg:space-y-6 pb-20 sm:pb-24">
         {/* Header */}
-        <div className="mb-8">
-          <div className="bg-gradient-to-r from-red-50/50 via-transparent to-pink-50/50 dark:from-red-950/20 dark:to-pink-950/20 border border-gray-200 dark:border-gray-700 rounded-xl p-6">
-            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-              <div>
-                <h1 className="text-4xl font-bold bg-gradient-to-r from-red-600 to-red-700 dark:from-red-400 dark:to-red-500 bg-clip-text text-transparent">
-                  Receiver Dashboard
-                </h1>
-                <p className="mt-2 text-gray-600 dark:text-gray-400 text-lg">
-                  Welcome back,{" "}
-                  <span className="font-semibold text-gray-900 dark:text-white">
-                    {user?.name}
+        <div className="bg-gradient-to-r from-red-50/50 via-transparent to-pink-50/50 dark:from-red-950/20 dark:to-pink-950/20 border border-border rounded-lg sm:rounded-xl lg:rounded-2xl p-4 sm:p-5 lg:p-6 xl:p-8">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 sm:gap-4">
+            <div className="space-y-2 sm:space-y-3">
+              <h1 className="text-xl xs:text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground">
+                Receiver Dashboard
+              </h1>
+              <p className="text-xs xs:text-sm sm:text-base text-muted-foreground">
+                Welcome back, <span className="font-semibold text-foreground">{user?.name}</span>! Here are your received parcels and delivery tracking information.
+              </p>
+              <div className="mt-2 sm:mt-3 flex flex-wrap items-center gap-2 xs:gap-3 sm:gap-4 text-xs xs:text-sm">
+                <span className="inline-flex items-center text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/20 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg">
+                  <Package className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-1.5" />
+                  {stats.total} Total
+                </span>
+                <span className="inline-flex items-center text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-950/20 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg">
+                  <BarChart3 className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-1.5" />
+                  {stats.successRate}% Success
+                </span>
+                {stats.pending + stats.inTransit > 0 && (
+                  <span className="inline-flex items-center text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-950/20 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg">
+                    <Truck className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-1.5" />
+                    {stats.pending + stats.inTransit} Incoming
                   </span>
-                  ! Here are your received parcels and delivery tracking
-                  information.
-                </p>
-                <div className="mt-3 flex items-center space-x-4 text-sm">
-                  <span className="inline-flex items-center text-blue-600 dark:text-blue-400">
-                    <Package className="h-4 w-4 mr-1" />
-                    {stats.total} Total Received
-                  </span>
-                  <span className="inline-flex items-center text-green-600 dark:text-green-400">
-                    <BarChart3 className="h-4 w-4 mr-1" />
-                    {stats.successRate}% Delivery Rate
-                  </span>
-                  {stats.pending + stats.inTransit > 0 && (
-                    <span className="inline-flex items-center text-orange-600 dark:text-orange-400">
-                      <Truck className="h-4 w-4 mr-1" />
-                      {stats.pending + stats.inTransit} Incoming
-                    </span>
-                  )}
-                </div>
-              </div>
-              <div className="flex items-center space-x-3">
-                <button
-                  onClick={refreshData}
-                  disabled={isRefreshing}
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white disabled:opacity-50"
-                >
-                  <RefreshCw
-                    className={`w-4 h-4 ${isRefreshing ? "animate-spin" : ""}`}
-                  />
-                  Refresh
-                </button>
-                <button
-                  onClick={handleExportParcels}
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white rounded-lg shadow-lg hover:shadow-xl transition-all duration-200"
-                >
-                  <Download className="w-4 h-4" />
-                  Export
-                </button>
+                )}
               </div>
             </div>
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+              <button
+                onClick={refreshData}
+                disabled={isRefreshing}
+                className="inline-flex items-center gap-2 px-3 sm:px-4 py-2 bg-background dark:bg-muted border border-border rounded-lg shadow-sm hover:shadow-md transition-all duration-200 text-foreground hover:bg-muted disabled:opacity-50 text-xs sm:text-sm"
+              >
+                <RefreshCw
+                  className={`w-3 h-3 sm:w-4 sm:h-4 ${isRefreshing ? "animate-spin" : ""}`}
+                />
+                <span className="hidden xs:inline">Refresh</span>
+              </button>
+              <button
+                onClick={handleExportParcels}
+                className="inline-flex items-center gap-2 px-3 sm:px-4 py-2 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 text-xs sm:text-sm"
+              >
+                <Download className="w-3 h-3 sm:w-4 sm:h-4" />
+                <span className="hidden xs:inline">Export</span>
+              </button>
+            </div>
           </div>
-
-          {/* Statistics */}
-          <StatsCards stats={stats} />
         </div>
+
+        {/* Statistics */}
+        <StatsCards stats={stats} />
 
         {/* Search and Filters */}
         <SearchAndFilters
@@ -281,12 +274,12 @@ export default function ReceiverDashboard() {
 
         {/* Empty State */}
         {stats.total === 0 && (
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-8 text-center hover:shadow-xl hover:border-blue-200 dark:hover:border-blue-800 transition-all duration-300 hover:scale-[1.02] cursor-pointer group mb-6">
-            <BarChart3 className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500 mb-4 group-hover:text-blue-600 group-hover:scale-110 transition-all duration-300" />
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2 group-hover:text-blue-600 transition-colors duration-300">
+          <div className="bg-background rounded-lg sm:rounded-xl lg:rounded-2xl shadow-lg border border-border p-6 sm:p-8 text-center hover:shadow-xl hover:border-blue-200 dark:hover:border-blue-800 transition-all duration-300 hover:scale-[1.02] cursor-pointer group mb-6">
+            <BarChart3 className="mx-auto h-10 w-10 sm:h-12 sm:w-12 text-muted-foreground mb-4 group-hover:text-blue-600 group-hover:scale-110 transition-all duration-300" />
+            <h3 className="text-base sm:text-lg font-medium text-foreground mb-2 group-hover:text-blue-600 transition-colors duration-300">
               No parcels received yet
             </h3>
-            <p className="text-gray-600 dark:text-gray-400 mb-4 group-hover:text-blue-500 transition-colors duration-300">
+            <p className="text-sm sm:text-base text-muted-foreground mb-4 group-hover:text-blue-500 transition-colors duration-300">
               When someone sends you a parcel, it will appear here with all the
               tracking details and delivery information.
             </p>

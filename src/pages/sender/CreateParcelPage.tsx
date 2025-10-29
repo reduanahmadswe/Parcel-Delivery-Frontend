@@ -208,6 +208,119 @@ export default function CreateParcelPage() {
     return baseFee + weightFee + urgentFee;
   };
 
+  // Real-time email validation with database check
+  const validateEmail = async (email: string) => {
+    if (!email.trim()) {
+      return false;
+    }
+    
+    // First check email format
+    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    
+    if (!emailRegex.test(email)) {
+      toast.error("⚠️ Enter correct email address", {
+        duration: 4000,
+        position: "top-center",
+        style: {
+          background: '#FEE2E2',
+          color: '#991B1B',
+          fontWeight: 'bold',
+        },
+      });
+      setErrors(prev => ({
+        ...prev,
+        "receiverInfo.email": "Enter your correct email address"
+      }));
+      return false;
+    }
+
+    // Then check if email exists in database
+    try {
+      const response = await api.get(`/auth/check-email?email=${encodeURIComponent(email)}`);
+      
+      console.log('Email verification response:', response.data); // Debug log
+      
+      // Check different possible response formats
+      const emailExists = response.data?.exists || 
+                         response.data?.data?.exists || 
+                         response.data?.success;
+      
+      if (!emailExists) {
+        toast.error("⚠️ Email not exist in database", {
+          duration: 4000,
+          position: "top-center",
+          style: {
+            background: '#FEE2E2',
+            color: '#991B1B',
+            fontWeight: 'bold',
+          },
+        });
+        setErrors(prev => ({
+          ...prev,
+          "receiverInfo.email": "Email not exist"
+        }));
+        return false;
+      } else {
+        setErrors(prev => {
+          const newErrors = { ...prev };
+          delete newErrors["receiverInfo.email"];
+          return newErrors;
+        });
+        return true;
+      }
+    } catch (error) {
+      // Log the actual error for debugging
+      console.error('Email verification error:', error);
+      
+      toast.error("⚠️ Unable to verify email - Please try again", {
+        duration: 4000,
+        position: "top-center",
+        style: {
+          background: '#FEE2E2',
+          color: '#991B1B',
+          fontWeight: 'bold',
+        },
+      });
+      setErrors(prev => ({
+        ...prev,
+        "receiverInfo.email": "Unable to verify email"
+      }));
+      return false;
+    }
+  };
+
+  // Real-time phone validation with alert
+  const validatePhone = (phone: string) => {
+    if (!phone.trim()) {
+      return;
+    }
+    
+    // Bangladesh phone number formats:
+    // 1. Local: 01X-XXXXXXXX (11 digits starting with 01)
+    // 2. International: +8801X-XXXXXXXX (starts with +88)
+    const cleanPhone = phone.replace(/[\s\-]/g, ''); // Remove spaces and dashes
+    
+    const localFormat = /^01[3-9]\d{8}$/; // 01712345678
+    const internationalFormat = /^\+8801[3-9]\d{8}$/; // +8801712345678
+    
+    if (!localFormat.test(cleanPhone) && !internationalFormat.test(cleanPhone)) {
+      toast.error("⚠️ Please enter a correct phone number format (e.g., 01712345678 or +8801712345678)", {
+        duration: 4000,
+        position: "top-center",
+      });
+      setErrors(prev => ({
+        ...prev,
+        "receiverInfo.phone": "Please enter a valid Bangladesh phone number (01XXXXXXXXX or +8801XXXXXXXXX)"
+      }));
+    } else {
+      setErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors["receiverInfo.phone"];
+        return newErrors;
+      });
+    }
+  };
+
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
 
@@ -217,12 +330,22 @@ export default function CreateParcelPage() {
     if (!formData.receiverInfo.email.trim()) {
       newErrors["receiverInfo.email"] = "Receiver email is required";
     } else if (
-      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.receiverInfo.email)
+      !/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(formData.receiverInfo.email)
     ) {
-      newErrors["receiverInfo.email"] = "Please enter a valid email address";
+      newErrors["receiverInfo.email"] = "Enter your correct email address";
     }
-    if (!formData.receiverInfo.phone.trim())
+    
+    if (!formData.receiverInfo.phone.trim()) {
       newErrors["receiverInfo.phone"] = "Receiver phone is required";
+    } else {
+      const cleanPhone = formData.receiverInfo.phone.replace(/[\s\-]/g, '');
+      const localFormat = /^01[3-9]\d{8}$/; // 01712345678
+      const internationalFormat = /^\+8801[3-9]\d{8}$/; // +8801712345678
+      
+      if (!localFormat.test(cleanPhone) && !internationalFormat.test(cleanPhone)) {
+        newErrors["receiverInfo.phone"] = "Please enter a valid Bangladesh phone number (01XXXXXXXXX or +8801XXXXXXXXX)";
+      }
+    }
     if (!formData.receiverInfo.address.street.trim())
       newErrors["receiverInfo.address.street"] = "Street address is required";
     if (!formData.receiverInfo.address.city.trim())
@@ -270,6 +393,12 @@ export default function CreateParcelPage() {
     e.preventDefault();
 
     if (!validateForm()) return;
+
+    // Check email exists in database before submission
+    const emailValid = await validateEmail(formData.receiverInfo.email);
+    if (!emailValid) {
+      return; // validateEmail already shows the appropriate toast message
+    }
 
     setLoading(true);
 
@@ -466,6 +595,7 @@ export default function CreateParcelPage() {
                       name="receiverInfo.email"
                       value={formData.receiverInfo.email}
                       onChange={handleInputChange}
+                      onBlur={(e) => validateEmail(e.target.value)}
                       className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-border rounded-lg sm:rounded-xl bg-background/50 text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-300 hover:bg-background/70 text-sm sm:text-base"
                       placeholder="receiver@example.com"
                     />
@@ -499,8 +629,9 @@ export default function CreateParcelPage() {
                         name="receiverInfo.phone"
                         value={formData.receiverInfo.phone}
                         onChange={handleInputChange}
+                        onBlur={(e) => validatePhone(e.target.value)}
                         className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-border rounded-lg sm:rounded-xl bg-background/50 text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-300 hover:bg-background/70 text-sm sm:text-base"
-                        placeholder="+880123456789"
+                        placeholder="01712345678"
                       />
                       {errors["receiverInfo.phone"] && (
                         <p className="mt-1 text-xs sm:text-sm text-red-600 flex items-center">
