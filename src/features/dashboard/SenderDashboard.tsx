@@ -10,7 +10,7 @@ import api from "../../services/ApiConfiguration";
 import { getStatusColor } from "../../utils/HelperUtilities";
 import { Parcel } from "../../types/GlobalTypeDefinitions";
 import FooterSection from "../../pages/public/sections/FooterSection";
-import ParcelDetailsModal from "../../pages/sender/ParcelDetailsModal";
+import ParcelDetailsModal from "../../components/modals/ParcelDetailsModal";
 
 interface ApiError {
   response?: {

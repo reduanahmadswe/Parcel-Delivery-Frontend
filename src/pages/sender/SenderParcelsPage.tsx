@@ -18,7 +18,7 @@ import api from "../../services/ApiConfiguration";
 import { formatDate, getStatusColor } from "../../utils/HelperUtilities";
 import { Parcel } from "../../types/GlobalTypeDefinitions";
 import FooterSection from "../public/sections/FooterSection";
-import ParcelDetailsModal from "./ParcelDetailsModal";
+import ParcelDetailsModal from "../../components/modals/ParcelDetailsModal";
 
 interface ApiError {
   response?: {
