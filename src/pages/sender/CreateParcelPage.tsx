@@ -276,15 +276,16 @@ export default function CreateParcelPage() {
     try {
       // Convert string values to numbers and format according to backend API
       const payload = {
-        receiverName: formData.receiverInfo.name,
         receiverEmail: formData.receiverInfo.email,
-        receiverPhone: formData.receiverInfo.phone,
-        receiverAddress: {
-          street: formData.receiverInfo.address.street,
-          city: formData.receiverInfo.address.city,
-          state: formData.receiverInfo.address.state,
-          zipCode: formData.receiverInfo.address.zipCode,
-          country: formData.receiverInfo.address.country || "Bangladesh",
+        receiverInfo: {
+          phone: formData.receiverInfo.phone,
+          address: {
+            street: formData.receiverInfo.address.street,
+            city: formData.receiverInfo.address.city,
+            state: formData.receiverInfo.address.state,
+            zipCode: formData.receiverInfo.address.zipCode,
+            country: formData.receiverInfo.address.country || "Bangladesh",
+          },
         },
         parcelDetails: {
           type: formData.parcelDetails.type,
