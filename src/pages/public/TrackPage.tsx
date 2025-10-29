@@ -8,7 +8,8 @@ import {
   Search,
   XCircle,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import api from "../../services/ApiConfiguration";
 import {
   formatDate,
@@ -27,10 +28,41 @@ interface ApiError {
 }
 
 export default function TrackPage() {
+  const [searchParams] = useSearchParams();
   const [trackingId, setTrackingId] = useState("");
   const [parcel, setParcel] = useState<Parcel | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  // 🚀 Auto-track when URL has tracking ID parameter
+  useEffect(() => {
+    const trackingIdFromUrl = searchParams.get("id");
+    if (trackingIdFromUrl) {
+      setTrackingId(trackingIdFromUrl);
+      // Automatically search for the parcel
+      handleTrackFromUrl(trackingIdFromUrl);
+    }
+  }, [searchParams]);
+
+  const handleTrackFromUrl = async (id: string) => {
+    if (!id.trim()) return;
+
+    setLoading(true);
+    setError("");
+    setParcel(null);
+
+    try {
+      const response = await api.get(`/parcels/track/${id.trim()}`);
+      setParcel(response.data.data);
+    } catch (err) {
+      setError(
+        (err as ApiError).response?.data?.message ||
+          "Parcel not found. Please check your tracking ID."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleTrack = async (e: React.FormEvent) => {
     e.preventDefault();

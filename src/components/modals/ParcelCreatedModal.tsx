@@ -1,10 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Download, Link as LinkIcon, Eye, CheckCircle2, Package, User, MapPin, Phone, Mail, Box } from "lucide-react";
 import toast from "react-hot-toast";
 import { generateParcelPdf } from "../../utils/parcelExport";
 import { useNavigate } from "react-router-dom";
-import { API_BASE } from "../../constants/config";
-import { TokenManager } from "../../services/TokenManager";
 
 interface Props {
   parcel: any; // parcel object returned from API
@@ -48,85 +46,6 @@ export default function ParcelCreatedModal({ parcel, onClose }: Props) {
     ? `${dimensions.length} × ${dimensions.width} × ${dimensions.height} cm`
     : "-";
   const description = parcel.parcelDetails?.description || parcel.description || "-";
-
-  // 🚀 Auto-send email when modal opens
-  useEffect(() => {
-    const sendEmailAutomatically = async () => {
-      try {
-        // Get authentication token
-        const token = TokenManager.getAccessToken();
-        
-        if (!token) {
-          console.warn("⚠️ No auth token found - skipping auto email send");
-          return;
-        }
-
-        // Prepare email data for backend
-        const emailData = {
-          trackingId,
-          senderInfo: {
-            name: senderName,
-            email: parcel.senderInfo?.email || parcel.senderEmail,
-            phone: parcel.senderInfo?.phone || parcel.senderPhone
-          },
-          receiverInfo: {
-            name: receiverName,
-            email: receiverEmail,
-            phone: receiverPhone,
-            address: {
-              street: address.street || "",
-              city: address.city || "",
-              state: address.state || "",
-              zipCode: address.zipCode || "",
-              country: address.country || ""
-            }
-          },
-          parcelDetails: {
-            type: parcelType,
-            weight: weight,
-            dimensions: {
-              length: dimensions.length || 0,
-              width: dimensions.width || 0,
-              height: dimensions.height || 0
-            },
-            description: description
-          }
-        };
-
-        // Send email request to backend
-        const response = await fetch(`${API_BASE}/parcels/send-email`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-          },
-          body: JSON.stringify(emailData)
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to send email');
-        }
-
-        const result = await response.json();
-        
-        if (result.success) {
-          toast.success("📧 Confirmation emails sent to sender and receiver!");
-        } else {
-          console.warn("Email send failed:", result.message);
-        }
-      } catch (err) {
-        console.error("Auto email sending error:", err);
-        // Don't show error toast to user - it's automatic
-      }
-    };
-
-    // Send email automatically after a short delay (to let modal render)
-    const timer = setTimeout(() => {
-      sendEmailAutomatically();
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, [parcel]); // Only run once when modal opens
 
   const handleGeneratePdf = async () => {
     try {
