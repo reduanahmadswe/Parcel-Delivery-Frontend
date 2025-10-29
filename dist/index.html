@@ -9,7 +9,24 @@
       name="description"
       content="Professional parcel delivery and tracking system"
     />
-    <script type="module" crossorigin src="/assets/index-ee58f26c.js"></script>
+    <!-- Theme Script - Prevents Flash of Wrong Theme -->
+    <script>
+      (function() {
+        try {
+          const theme = localStorage.getItem('theme');
+          const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          
+          if (theme === 'dark' || (theme === 'system' && prefersDark)) {
+            document.documentElement.classList.add('dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+          }
+        } catch (e) {
+          console.error('Theme initialization error:', e);
+        }
+      })();
+    </script>
+    <script type="module" crossorigin src="/assets/index-28d49d92.js"></script>
     <link rel="stylesheet" href="/assets/index-223a49ca.css">
   </head>
   <body>
