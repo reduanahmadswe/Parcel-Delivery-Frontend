@@ -224,12 +224,7 @@ export async function generateParcelPdf(parcel: any) {
     // ==================== PARCEL DETAILS SECTION ====================
     yPos += 55;
     
-    // Gray box with border
-    doc.setFillColor(249, 250, 251); // Gray-50
-    doc.roundedRect(40, yPos, pageWidth - 80, 125, 8, 8, "F");
-    doc.setDrawColor(...gray500);
-    doc.setLineWidth(1.5);
-    doc.roundedRect(40, yPos, pageWidth - 80, 125, 8, 8, "S");
+    const parcelDetailsStartY = yPos; // Store start position for box
     
     yPos += 22;
     doc.setTextColor(...gray900);
@@ -264,9 +259,24 @@ export async function generateParcelPdf(parcel: any) {
     doc.setFont("helvetica", "normal");
     const descLines = doc.splitTextToSize(description, pageWidth - 110);
     doc.text(descLines, 55, yPos);
+    
+    // Calculate actual height needed for description
+    const descHeight = descLines.length * 13;
+    yPos += descHeight;
+    
+    // Add padding at bottom of box
+    yPos += 15;
+    
+    // Now draw the box with correct height
+    const parcelDetailsHeight = yPos - parcelDetailsStartY;
+    doc.setFillColor(249, 250, 251); // Gray-50
+    doc.roundedRect(40, parcelDetailsStartY, pageWidth - 80, parcelDetailsHeight, 8, 8, "F");
+    doc.setDrawColor(...gray500);
+    doc.setLineWidth(1.5);
+    doc.roundedRect(40, parcelDetailsStartY, pageWidth - 80, parcelDetailsHeight, 8, 8, "S");
 
     // ==================== QR CODE SECTION ====================
-    yPos += Math.max(descLines.length * 13, 25); // Space after description
+    yPos += 25; // Space after Parcel Details box
     
     // Generate QR Code for tracking link
     const trackLink = `${window.location.origin}/track?id=${trackingId}`;
