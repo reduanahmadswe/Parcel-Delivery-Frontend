@@ -16,13 +16,17 @@ import FloatingParticles from "./FloatingParticles";
 export default function HeroSection() {
   return (
     <section className="relative min-h-screen flex flex-col overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-      {/* Background Image */}
+      {/* Responsive Background Image */}
       <div className="absolute inset-0 z-0">
-        <img
-          src="/Pathao-Shop.jpg"
-          alt="Professional delivery person with packages"
-          className="object-cover object-center w-full h-full scale-105 hover:scale-100 transition-transform duration-[10s] ease-out"
-        />
+        {/* Responsive image: use different image for mobile */}
+        <picture>
+          <source media="(max-width: 640px)" srcSet="/delivery-mobile.jpg" />
+          <img
+            src="/Pathao-Shop.jpg"
+            alt="Professional delivery person with packages"
+            className="object-cover object-center w-full h-full xs:h-[320px] sm:h-[500px] md:h-[700px] lg:h-screen scale-105 hover:scale-100 transition-transform duration-[10s] ease-out"
+          />
+        </picture>
         {/* Enhanced Modern Overlay */}
         <div className="absolute inset-0 bg-gradient-to-br from-slate-900/50 via-slate-800/30 to-slate-900/70"></div>
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20"></div>
@@ -63,7 +67,7 @@ export default function HeroSection() {
 
       {/* Main Content Section */}
       <div className="relative z-10 flex-1 flex items-center justify-center">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 w-full text-center">
+        <div className="max-w-4xl mx-auto px-2 xs:px-3 sm:px-6 lg:px-8 w-full text-center">
           {/* Floating Trust Badge */}
           <motion.div
             initial={{ opacity: 0, y: 50, scale: 0.8 }}
@@ -84,10 +88,10 @@ export default function HeroSection() {
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
-            className="space-y-6"
+            className="space-y-4 xs:space-y-5 sm:space-y-6"
           >
             <motion.h1
-              className="text-5xl sm:text-6xl lg:text-8xl font-bold leading-[0.9] text-white"
+              className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-bold leading-[0.95] text-white"
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
@@ -123,7 +127,7 @@ export default function HeroSection() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
-            className="text-xl sm:text-2xl text-gray-100 mb-12 max-w-3xl mx-auto leading-relaxed font-light"
+            className="text-base xs:text-lg sm:text-xl md:text-2xl text-gray-100 mb-8 sm:mb-12 max-w-3xl mx-auto leading-relaxed font-light"
           >
             Experience{" "}
             <motion.span
@@ -142,7 +146,7 @@ export default function HeroSection() {
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.8, ease: "easeOut" }}
-            className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16"
+            className="flex flex-col xs:flex-row gap-3 xs:gap-6 justify-center items-center mb-10 sm:mb-16"
           >
             <motion.div
               whileHover={{ scale: 1.05, y: -5 }}
@@ -153,7 +157,7 @@ export default function HeroSection() {
               <div className="absolute inset-0 bg-gradient-to-r from-red-500 to-orange-500 rounded-2xl blur-xl opacity-70 group-hover:opacity-100 transition-opacity duration-300" />
               <Link
                 to="/sender/create-parcel"
-                className="relative bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-12 py-5 rounded-2xl font-bold text-lg transition-all duration-300 inline-flex items-center justify-center gap-3 shadow-2xl border border-red-400/50 backdrop-blur-sm"
+                className="relative bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-4 xs:px-8 sm:px-12 py-3 xs:py-4 sm:py-5 rounded-2xl font-bold text-base xs:text-lg transition-all duration-300 inline-flex items-center justify-center gap-2 xs:gap-3 shadow-2xl border border-red-400/50 backdrop-blur-sm"
               >
                 <Package className="w-6 h-6" />
                 Send Package
@@ -175,7 +179,7 @@ export default function HeroSection() {
               <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-2xl blur-xl opacity-0 group-hover:opacity-70 transition-opacity duration-300" />
               <Link
                 to="/track"
-                className="relative bg-white/10 backdrop-blur-xl border-2 border-white/30 text-white hover:bg-white hover:text-slate-900 px-12 py-5 rounded-2xl font-bold text-lg transition-all duration-300 inline-flex items-center justify-center gap-3 shadow-xl hover:shadow-2xl"
+                className="relative bg-white/10 backdrop-blur-xl border-2 border-white/30 text-white hover:bg-white hover:text-slate-900 px-4 xs:px-8 sm:px-12 py-3 xs:py-4 sm:py-5 rounded-2xl font-bold text-base xs:text-lg transition-all duration-300 inline-flex items-center justify-center gap-2 xs:gap-3 shadow-xl hover:shadow-2xl"
               >
                 <Package className="w-6 h-6" />
                 Track Package
@@ -188,20 +192,20 @@ export default function HeroSection() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1.0, ease: "easeOut" }}
-            className="flex flex-wrap justify-center gap-6 mt-12 pt-8 border-t border-white/25"
+            className="flex flex-wrap justify-center gap-2 xs:gap-4 sm:gap-6 mt-6 sm:mt-12 pt-6 sm:pt-8 border-t border-white/25"
           >
             {/* 24/7 Support */}
             <motion.div
               whileHover={{ scale: 1.05, y: -5 }}
               transition={{ type: "spring", stiffness: 300 }}
-              className="group flex items-center gap-3 bg-white/10 backdrop-blur-lg rounded-2xl px-6 py-4 border border-white/20 hover:bg-white/15 hover:border-white/30 transition-all duration-300 shadow-xl"
+              className="group flex items-center gap-2 xs:gap-3 bg-white/10 backdrop-blur-lg rounded-2xl px-3 xs:px-6 py-2 xs:py-4 border border-white/20 hover:bg-white/15 hover:border-white/30 transition-all duration-300 shadow-xl"
             >
               <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
                 <Clock className="w-6 h-6 text-white" />
               </div>
               <div>
-                <div className="text-xl font-bold text-white">24/7</div>
-                <div className="text-gray-200 text-sm font-medium">Support</div>
+                <div className="text-base xs:text-xl font-bold text-white">24/7</div>
+                <div className="text-gray-200 text-xs xs:text-sm font-medium">Support</div>
               </div>
             </motion.div>
 
@@ -209,14 +213,14 @@ export default function HeroSection() {
             <motion.div
               whileHover={{ scale: 1.05, y: -5 }}
               transition={{ type: "spring", stiffness: 300 }}
-              className="group flex items-center gap-3 bg-white/10 backdrop-blur-lg rounded-2xl px-6 py-4 border border-white/20 hover:bg-white/15 hover:border-white/30 transition-all duration-300 shadow-xl"
+              className="group flex items-center gap-2 xs:gap-3 bg-white/10 backdrop-blur-lg rounded-2xl px-3 xs:px-6 py-2 xs:py-4 border border-white/20 hover:bg-white/15 hover:border-white/30 transition-all duration-300 shadow-xl"
             >
               <div className="w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
                 <Zap className="w-6 h-6 text-white" />
               </div>
               <div>
-                <div className="text-xl font-bold text-white">Same Day</div>
-                <div className="text-gray-200 text-sm font-medium">
+                <div className="text-base xs:text-xl font-bold text-white">Same Day</div>
+                <div className="text-gray-200 text-xs xs:text-sm font-medium">
                   Express*
                 </div>
               </div>
@@ -226,14 +230,14 @@ export default function HeroSection() {
             <motion.div
               whileHover={{ scale: 1.05, y: -5 }}
               transition={{ type: "spring", stiffness: 300 }}
-              className="group flex items-center gap-3 bg-white/10 backdrop-blur-lg rounded-2xl px-6 py-4 border border-white/20 hover:bg-white/15 hover:border-white/30 transition-all duration-300 shadow-xl"
+              className="group flex items-center gap-2 xs:gap-3 bg-white/10 backdrop-blur-lg rounded-2xl px-3 xs:px-6 py-2 xs:py-4 border border-white/20 hover:bg-white/15 hover:border-white/30 transition-all duration-300 shadow-xl"
             >
               <div className="w-12 h-12 bg-gradient-to-br from-green-400 to-green-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
                 <Target className="w-6 h-6 text-white" />
               </div>
               <div>
-                <div className="text-xl font-bold text-white">99.9%</div>
-                <div className="text-gray-200 text-sm font-medium">Success</div>
+                <div className="text-base xs:text-xl font-bold text-white">99.9%</div>
+                <div className="text-gray-200 text-xs xs:text-sm font-medium">Success</div>
               </div>
             </motion.div>
           </motion.div>

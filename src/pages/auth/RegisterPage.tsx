@@ -12,37 +12,37 @@ const MultiStepRegisterForm = React.lazy(() =>
 
 const RegisterPage: React.FC = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/20">
-      <div className="min-h-screen grid lg:grid-cols-5">
-        {/* Left Panel - Form (3 columns) */}
-        <div className="lg:col-span-2 flex flex-col relative">
+    <div className="h-screen overflow-hidden bg-gradient-to-br from-background via-background to-red-50/20 dark:to-red-950/10">
+      <div className="h-screen grid lg:grid-cols-5">
+        {/* Left Panel - Form (2 columns) */}
+        <div className="lg:col-span-2 flex flex-col relative overflow-y-auto">
           {/* Animated Background Elements */}
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            <div className="absolute top-20 left-10 w-32 h-32 bg-blue-500/5 rounded-full blur-2xl animate-pulse" />
+            <div className="absolute top-20 left-10 w-32 h-32 bg-red-500/5 dark:bg-red-400/10 rounded-full blur-2xl animate-pulse" />
             <div
-              className="absolute bottom-32 right-10 w-40 h-40 bg-green-500/5 rounded-full blur-3xl animate-pulse"
+              className="absolute bottom-32 right-10 w-40 h-40 bg-red-600/5 dark:bg-red-500/10 rounded-full blur-3xl animate-pulse"
               style={{ animationDelay: "1s" }}
             />
           </div>
 
           {/* Header */}
-          <div className="relative z-10 p-6 lg:p-8">
+          <div className="relative z-10 p-3 sm:p-4 lg:p-6 flex-shrink-0">
             <Link
               to="/"
-              className="inline-flex items-center gap-3 text-muted-foreground hover:text-foreground transition-all duration-300 group hover:scale-105"
+              className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-all duration-300 group hover:scale-105"
             >
-              <div className="p-2 rounded-xl bg-accent/50 group-hover:bg-accent transition-colors duration-300">
-                <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform duration-300" />
+              <div className="p-1.5 sm:p-2 rounded-xl bg-red-50 dark:bg-red-950/50 group-hover:bg-red-100 dark:group-hover:bg-red-900/50 transition-colors duration-300">
+                <ArrowLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover:-translate-x-1 transition-transform duration-300" />
               </div>
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                  <Package className="w-6 h-6 text-white" />
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 sm:w-9 sm:h-9 bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                  <Package className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                 </div>
                 <div>
-                  <span className="font-bold text-xl text-foreground block">
+                  <span className="font-bold text-base sm:text-lg text-foreground block">
                     ParcelTrack
                   </span>
-                  <span className="text-xs text-muted-foreground">
+                  <span className="text-xs text-muted-foreground hidden sm:block">
                     Join Our Network
                   </span>
                 </div>
@@ -50,14 +50,14 @@ const RegisterPage: React.FC = () => {
             </Link>
           </div>
 
-          {/* Form Container */}
-          <div className="relative z-10 flex-1 flex items-center justify-center p-6 lg:p-8">
-            <div className="w-full max-w-md">
-              <div className="space-y-6">
+          {/* Form Container - Scrollable */}
+          <div className="relative z-10 flex-1 flex items-start lg:items-center justify-center px-3 py-4 sm:px-4 sm:py-6 lg:px-6 lg:py-8 overflow-y-auto">
+            <div className="w-full max-w-md my-auto">
+              <div className="space-y-3 sm:space-y-4">
                 <React.Suspense
                   fallback={
                     <div className="flex items-center justify-center p-12">
-                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600" />
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600 dark:border-red-500" />
                     </div>
                   }
                 >
@@ -68,53 +68,52 @@ const RegisterPage: React.FC = () => {
           </div>
 
           {/* Footer */}
-          <div className="relative z-10 p-6 lg:p-8 text-center space-y-3">
-            <div className="flex items-center justify-center gap-6 text-xs text-muted-foreground">
+          <div className="relative z-10 p-3 sm:p-4 lg:p-6 text-center space-y-2 flex-shrink-0 border-t border-border/30 dark:border-border/20 bg-background/50 dark:bg-background/30">
+            <div className="flex items-center justify-center gap-3 sm:gap-4 text-xs text-muted-foreground flex-wrap">
               <div className="flex items-center gap-1">
-                <Shield className="w-3 h-3 text-green-500" />
-                <span>Data Protection</span>
+                <Shield className="w-3 h-3 text-red-500 dark:text-red-400 flex-shrink-0" />
+                <span className="hidden sm:inline">Secure</span>
               </div>
               <div className="flex items-center gap-1">
-                <Users className="w-3 h-3 text-blue-500" />
-                <span>Growing Community</span>
+                <Users className="w-3 h-3 text-red-600 dark:text-red-500 flex-shrink-0" />
+                <span className="hidden sm:inline">Community</span>
               </div>
               <div className="flex items-center gap-1">
-                <Star className="w-3 h-3 text-yellow-500" />
-                <span>Premium Service</span>
+                <Star className="w-3 h-3 text-yellow-500 dark:text-yellow-400 flex-shrink-0" />
+                <span className="hidden sm:inline">Premium</span>
               </div>
             </div>
-            <p className="text-xs text-muted-foreground">
-              © 2025 ParcelTrack. All rights reserved. Secure delivery solutions
-              for Bangladesh.
+            <p className="text-xs text-muted-foreground hidden sm:block">
+              © 2025 ParcelTrack. All rights reserved.
             </p>
           </div>
         </div>
 
         {/* Right Panel - Hero Image (2 columns) */}
-        <div className="lg:col-span-3 relative overflow-hidden bg-gradient-to-br from-blue-50 via-green-50 to-teal-50 dark:from-blue-950/30 dark:via-green-950/30 dark:to-teal-950/30">
+        <div className="hidden lg:block lg:col-span-3 relative overflow-hidden bg-gradient-to-br from-red-50 via-orange-50 to-red-100 dark:from-red-950/30 dark:via-orange-950/20 dark:to-red-900/30">
           {/* Enhanced Hero Image with Better Fit */}
           <div className="absolute inset-0">
             <img
-              src="/Pathao-Shop.jpg"
+              src="/signup.png"
               alt="Join Parcel Delivery Network"
-              className="w-full h-full object-cover object-center scale-110 hover:scale-105 transition-transform duration-700 ease-out"
+              className="w-full h-full object-cover object-center hover:scale-105 transition-transform duration-700 ease-out"
               style={{
-                filter: "brightness(0.85) contrast(1.1) saturate(1.2)",
+                filter: "brightness(0.95) contrast(1.05) saturate(1.1)",
               }}
             />
 
-            {/* Enhanced Gradient Overlays */}
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 via-transparent to-green-600/10" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-black/20" />
-            <div className="absolute inset-0 bg-gradient-to-br from-transparent via-green-500/5 to-blue-500/10" />
+            {/* Enhanced Gradient Overlays for Dark Mode */}
+            <div className="absolute inset-0 bg-gradient-to-r from-red-600/10 via-transparent to-orange-600/5 dark:from-red-900/40 dark:via-transparent dark:to-orange-900/20" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-black/10 dark:from-black/50 dark:via-transparent dark:to-black/30" />
+            <div className="absolute inset-0 bg-gradient-to-br from-transparent via-red-500/5 to-orange-500/10 dark:from-transparent dark:via-red-800/10 dark:to-orange-800/15" />
           </div>
 
           {/* Floating Elements */}
           <div className="absolute top-10 right-10 animate-bounce">
-            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 shadow-xl border border-white/20">
+            <div className="bg-white/10 dark:bg-white/5 backdrop-blur-md rounded-2xl p-4 shadow-xl border border-white/20 dark:border-white/10">
               <div className="flex items-center gap-3">
-                <div className="w-3 h-3 bg-blue-400 rounded-full animate-pulse" />
-                <span className="text-white text-sm font-medium">
+                <div className="w-3 h-3 bg-red-400 dark:bg-red-500 rounded-full animate-pulse" />
+                <span className="text-white text-sm font-medium drop-shadow-md">
                   Join Network
                 </span>
               </div>
@@ -122,39 +121,39 @@ const RegisterPage: React.FC = () => {
           </div>
 
           <div className="absolute bottom-20 left-10 animate-pulse">
-            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 shadow-xl border border-white/20 max-w-sm">
+            <div className="bg-white/10 dark:bg-white/5 backdrop-blur-md rounded-2xl p-6 shadow-xl border border-white/20 dark:border-white/10 max-w-sm">
               <div className="flex items-center gap-4 mb-3">
-                <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-green-600 rounded-xl flex items-center justify-center">
+                <div className="w-12 h-12 bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 rounded-xl flex items-center justify-center shadow-lg">
                   <Users className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <p className="text-white font-semibold text-sm">
+                  <p className="text-white font-semibold text-sm drop-shadow-md">
                     Growing Network
                   </p>
-                  <p className="text-white/80 text-xs">
+                  <p className="text-white/80 dark:text-white/70 text-xs">
                     10,000+ Active Members
                   </p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <div className="flex-1 bg-white/20 rounded-full h-2">
-                  <div className="bg-gradient-to-r from-blue-400 to-green-500 h-2 rounded-full w-3/5" />
+                <div className="flex-1 bg-white/20 dark:bg-white/10 rounded-full h-2">
+                  <div className="bg-gradient-to-r from-red-400 to-orange-500 dark:from-red-500 dark:to-orange-600 h-2 rounded-full w-3/5" />
                 </div>
-                <span className="text-white/90 text-xs font-medium">60%</span>
+                <span className="text-white/90 dark:text-white/80 text-xs font-medium drop-shadow-md">60%</span>
               </div>
             </div>
           </div>
 
           {/* Enhanced Brand Watermark */}
           <div className="absolute bottom-8 right-8">
-            <div className="bg-white/5 backdrop-blur-xl rounded-2xl px-6 py-4 border border-white/10">
+            <div className="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl px-6 py-4 border border-white/10 dark:border-white/5 shadow-2xl">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-gradient-to-r from-red-500 to-red-600 rounded-xl flex items-center justify-center shadow-lg">
+                <div className="w-10 h-10 bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 rounded-xl flex items-center justify-center shadow-lg">
                   <Package className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <p className="text-white font-bold text-lg">ParcelTrack</p>
-                  <p className="text-white/70 text-xs">
+                  <p className="text-white font-bold text-lg drop-shadow-md">ParcelTrack</p>
+                  <p className="text-white/70 dark:text-white/60 text-xs">
                     Join Our Professional Network
                   </p>
                 </div>

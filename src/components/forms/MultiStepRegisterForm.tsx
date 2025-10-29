@@ -216,55 +216,55 @@ export function MultiStepRegisterForm({
   };
 
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
+    <div className={cn("flex flex-col gap-4 sm:gap-5", className)} {...props}>
       {/* Step Progress Indicator */}
-      <div className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-2xl border border-border/30 p-6 shadow-lg">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-4">
+      <div className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-xl sm:rounded-2xl border border-border/30 p-3 sm:p-4 shadow-lg">
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
             <div
               className={cn(
-                "w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm transition-all duration-300",
+                "w-7 h-7 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl flex items-center justify-center font-bold text-xs sm:text-sm transition-all duration-300 flex-shrink-0",
                 currentStep === 1
-                  ? "bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg"
+                  ? "bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 text-white shadow-lg"
                   : "bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-lg"
               )}
             >
-              {currentStep === 1 ? "1" : <Check className="w-5 h-5" />}
+              {currentStep === 1 ? "1" : <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4" />}
             </div>
-            <div>
-              <p className="font-semibold text-foreground">Basic Information</p>
-              <p className="text-xs text-muted-foreground">
-                Personal & Account Details
+            <div className="min-w-0">
+              <p className="font-semibold text-foreground text-xs sm:text-sm truncate">Basic Info</p>
+              <p className="text-xs text-muted-foreground hidden md:block">
+                Personal & Account
               </p>
             </div>
           </div>
 
-          <div className="flex-1 mx-4">
-            <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+          <div className="flex-1 mx-2 sm:mx-3 min-w-[30px] max-w-[80px]">
+            <div className="h-1.5 sm:h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
               <div
-                className="h-full bg-gradient-to-r from-blue-500 to-indigo-600 transition-all duration-500 ease-out"
+                className="h-full bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 transition-all duration-500 ease-out"
                 style={{ width: currentStep === 1 ? "50%" : "100%" }}
               ></div>
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
             <div
               className={cn(
-                "w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm transition-all duration-300",
+                "w-7 h-7 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl flex items-center justify-center font-bold text-xs sm:text-sm transition-all duration-300 flex-shrink-0",
                 currentStep === 2
-                  ? "bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg"
+                  ? "bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 text-white shadow-lg"
                   : "bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400"
               )}
             >
               2
             </div>
-            <div>
-              <p className="font-semibold text-foreground">
-                Address Information
+            <div className="min-w-0">
+              <p className="font-semibold text-foreground text-xs sm:text-sm truncate">
+                Address
               </p>
-              <p className="text-xs text-muted-foreground">
-                Location & Contact Details
+              <p className="text-xs text-muted-foreground hidden md:block">
+                Location & Contact
               </p>
             </div>
           </div>
@@ -273,15 +273,15 @@ export function MultiStepRegisterForm({
 
       {/* Step 1 - Basic Information */}
       {currentStep === 1 && (
-        <div className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-3xl border border-border/30 p-8 shadow-2xl">
-          <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-3xl flex items-center justify-center mx-auto mb-4 shadow-xl">
-              <User className="w-8 h-8 text-white" />
+        <div className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-2xl sm:rounded-3xl border border-border/30 p-4 sm:p-6 lg:p-7 shadow-2xl">
+          <div className="text-center mb-4 sm:mb-6">
+            <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 rounded-2xl sm:rounded-3xl flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-xl">
+              <User className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 text-white" />
             </div>
-            <h2 className="text-2xl font-bold text-foreground mb-2">
+            <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground mb-1.5 sm:mb-2">
               Create Account
             </h2>
-            <p className="text-muted-foreground">
+            <p className="text-xs sm:text-sm text-muted-foreground">
               Let&apos;s start with your basic information
             </p>
           </div>
@@ -289,26 +289,26 @@ export function MultiStepRegisterForm({
           <Form {...step1Form}>
             <form
               onSubmit={step1Form.handleSubmit(handleStep1Submit)}
-              className="space-y-6"
+              className="space-y-4 sm:space-y-5"
             >
               <FormField
                 control={step1Form.control}
                 name="name"
                 render={({ field }) => (
-                  <FormItem className="space-y-3">
-                    <FormLabel className="text-sm font-bold text-foreground flex items-center gap-2">
-                      <User className="w-4 h-4 text-blue-500" />
+                  <FormItem className="space-y-2 sm:space-y-3">
+                    <FormLabel className="text-xs sm:text-sm font-bold text-foreground flex items-center gap-2">
+                      <User className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-red-500 dark:text-red-400" />
                       Full Name
                     </FormLabel>
                     <FormControl>
                       <div className="relative group">
                         <Input
                           placeholder="Enter your full name"
-                          className="pl-12 h-14 text-base bg-gradient-to-r from-gray-50 to-gray-100 dark:from-slate-800 dark:to-slate-700 border-2 border-gray-200 dark:border-slate-600 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 rounded-2xl transition-all duration-300 hover:border-gray-300 dark:hover:border-slate-500"
+                          className="pl-10 sm:pl-12 h-11 sm:h-12 lg:h-14 text-sm sm:text-base bg-gradient-to-r from-gray-50 to-gray-100 dark:from-slate-800 dark:to-slate-700 border-2 border-gray-200 dark:border-slate-600 focus:border-red-500 dark:focus:border-red-400 focus:ring-4 focus:ring-red-500/20 dark:focus:ring-red-400/20 rounded-xl sm:rounded-2xl transition-all duration-300 hover:border-gray-300 dark:hover:border-slate-500"
                           {...field}
                         />
-                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                          <User className="w-5 h-5 text-gray-400 group-focus-within:text-blue-500 transition-colors duration-300" />
+                        <div className="absolute inset-y-0 left-0 pl-3 sm:pl-4 flex items-center pointer-events-none">
+                          <User className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 dark:text-gray-500 group-focus-within:text-red-500 dark:group-focus-within:text-red-400 transition-colors duration-300" />
                         </div>
                       </div>
                     </FormControl>
@@ -321,9 +321,9 @@ export function MultiStepRegisterForm({
                 control={step1Form.control}
                 name="email"
                 render={({ field }) => (
-                  <FormItem className="space-y-3">
-                    <FormLabel className="text-sm font-bold text-foreground flex items-center gap-2">
-                      <Mail className="w-4 h-4 text-blue-500" />
+                  <FormItem className="space-y-2 sm:space-y-3">
+                    <FormLabel className="text-xs sm:text-sm font-bold text-foreground flex items-center gap-2">
+                      <Mail className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-red-500 dark:text-red-400" />
                       Email Address
                     </FormLabel>
                     <FormControl>
@@ -331,11 +331,11 @@ export function MultiStepRegisterForm({
                         <Input
                           placeholder="Enter your email address"
                           type="email"
-                          className="pl-12 h-14 text-base bg-gradient-to-r from-gray-50 to-gray-100 dark:from-slate-800 dark:to-slate-700 border-2 border-gray-200 dark:border-slate-600 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 rounded-2xl transition-all duration-300 hover:border-gray-300 dark:hover:border-slate-500"
+                          className="pl-10 sm:pl-12 h-11 sm:h-12 lg:h-14 text-sm sm:text-base bg-gradient-to-r from-gray-50 to-gray-100 dark:from-slate-800 dark:to-slate-700 border-2 border-gray-200 dark:border-slate-600 focus:border-red-500 dark:focus:border-red-400 focus:ring-4 focus:ring-red-500/20 dark:focus:ring-red-400/20 rounded-xl sm:rounded-2xl transition-all duration-300 hover:border-gray-300 dark:hover:border-slate-500"
                           {...field}
                         />
-                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                          <Mail className="w-5 h-5 text-gray-400 group-focus-within:text-blue-500 transition-colors duration-300" />
+                        <div className="absolute inset-y-0 left-0 pl-3 sm:pl-4 flex items-center pointer-events-none">
+                          <Mail className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 dark:text-gray-500 group-focus-within:text-red-500 dark:group-focus-within:text-red-400 transition-colors duration-300" />
                         </div>
                       </div>
                     </FormControl>
@@ -348,27 +348,26 @@ export function MultiStepRegisterForm({
                 control={step1Form.control}
                 name="phone"
                 render={({ field }) => (
-                  <FormItem className="space-y-3">
-                    <FormLabel className="text-sm font-bold text-foreground flex items-center gap-2">
-                      <Phone className="w-4 h-4 text-blue-500" />
+                  <FormItem className="space-y-2 sm:space-y-3">
+                    <FormLabel className="text-xs sm:text-sm font-bold text-foreground flex items-center gap-2">
+                      <Phone className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-red-500 dark:text-red-400" />
                       Phone Number
                     </FormLabel>
                     <FormControl>
                       <div className="relative group">
                         <Input
                           placeholder="01700000000 or +8801700000000"
-                          className="pl-12 h-14 text-base bg-gradient-to-r from-gray-50 to-gray-100 dark:from-slate-800 dark:to-slate-700 border-2 border-gray-200 dark:border-slate-600 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 rounded-2xl transition-all duration-300 hover:border-gray-300 dark:hover:border-slate-500"
+                          className="pl-10 sm:pl-12 h-11 sm:h-12 lg:h-14 text-sm sm:text-base bg-gradient-to-r from-gray-50 to-gray-100 dark:from-slate-800 dark:to-slate-700 border-2 border-gray-200 dark:border-slate-600 focus:border-red-500 dark:focus:border-red-400 focus:ring-4 focus:ring-red-500/20 dark:focus:ring-red-400/20 rounded-xl sm:rounded-2xl transition-all duration-300 hover:border-gray-300 dark:hover:border-slate-500"
                           {...field}
                         />
-                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                          <Phone className="w-5 h-5 text-gray-400 group-focus-within:text-blue-500 transition-colors duration-300" />
+                        <div className="absolute inset-y-0 left-0 pl-3 sm:pl-4 flex items-center pointer-events-none">
+                          <Phone className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 dark:text-gray-500 group-focus-within:text-red-500 dark:group-focus-within:text-red-400 transition-colors duration-300" />
                         </div>
                       </div>
                     </FormControl>
                     <FormMessage className="text-xs text-red-500" />
-                    <p className="text-xs text-muted-foreground">
-                      Enter phone number without spaces or dashes (e.g.,
-                      01700000000)
+                    <p className="text-xs text-muted-foreground hidden sm:block">
+                      Enter phone number without spaces or dashes
                     </p>
                   </FormItem>
                 )}
@@ -378,9 +377,9 @@ export function MultiStepRegisterForm({
                 control={step1Form.control}
                 name="role"
                 render={({ field }) => (
-                  <FormItem className="space-y-3">
-                    <FormLabel className="text-sm font-bold text-foreground flex items-center gap-2">
-                      <UserCheck className="w-4 h-4 text-blue-500" />
+                  <FormItem className="space-y-2 sm:space-y-3">
+                    <FormLabel className="text-xs sm:text-sm font-bold text-foreground flex items-center gap-2">
+                      <UserCheck className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-red-500 dark:text-red-400" />
                       Account Type
                     </FormLabel>
                     <FormControl>
@@ -388,19 +387,19 @@ export function MultiStepRegisterForm({
                         onValueChange={field.onChange}
                         value={field.value || ""}
                       >
-                        <SelectTrigger className="h-14 text-base bg-gradient-to-r from-gray-50 to-gray-100 dark:from-slate-800 dark:to-slate-700 border-2 border-gray-200 dark:border-slate-600 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 rounded-2xl transition-all duration-300 hover:border-gray-300 dark:hover:border-slate-500">
+                        <SelectTrigger className="h-11 sm:h-12 lg:h-14 text-sm sm:text-base bg-gradient-to-r from-gray-50 to-gray-100 dark:from-slate-800 dark:to-slate-700 border-2 border-gray-200 dark:border-slate-600 focus:border-red-500 dark:focus:border-red-400 focus:ring-4 focus:ring-red-500/20 dark:focus:ring-red-400/20 rounded-xl sm:rounded-2xl transition-all duration-300 hover:border-gray-300 dark:hover:border-slate-500">
                           <SelectValue placeholder="Select your account type" />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem key="sender" value="sender">
                             <div className="flex items-center gap-2">
-                              <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                              <div className="w-2 h-2 bg-red-500 dark:bg-red-400 rounded-full"></div>
                               Sender - Send packages
                             </div>
                           </SelectItem>
                           <SelectItem key="receiver" value="receiver">
                             <div className="flex items-center gap-2">
-                              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                              <div className="w-2 h-2 bg-orange-500 dark:bg-orange-400 rounded-full"></div>
                               Receiver - Receive packages
                             </div>
                           </SelectItem>
@@ -416,20 +415,20 @@ export function MultiStepRegisterForm({
                 control={step1Form.control}
                 name="password"
                 render={({ field }) => (
-                  <FormItem className="space-y-3">
-                    <FormLabel className="text-sm font-bold text-foreground flex items-center gap-2">
-                      <Lock className="w-4 h-4 text-blue-500" />
+                  <FormItem className="space-y-2 sm:space-y-3">
+                    <FormLabel className="text-xs sm:text-sm font-bold text-foreground flex items-center gap-2">
+                      <Lock className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-red-500 dark:text-red-400" />
                       Password
                     </FormLabel>
                     <FormControl>
                       <div className="relative group">
                         <Password
                           placeholder="Create a strong password"
-                          className="pl-12 h-14 text-base bg-gradient-to-r from-gray-50 to-gray-100 dark:from-slate-800 dark:to-slate-700 border-2 border-gray-200 dark:border-slate-600 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 rounded-2xl transition-all duration-300 hover:border-gray-300 dark:hover:border-slate-500"
+                          className="pl-10 sm:pl-12 h-11 sm:h-12 lg:h-14 text-sm sm:text-base bg-gradient-to-r from-gray-50 to-gray-100 dark:from-slate-800 dark:to-slate-700 border-2 border-gray-200 dark:border-slate-600 focus:border-red-500 dark:focus:border-red-400 focus:ring-4 focus:ring-red-500/20 dark:focus:ring-red-400/20 rounded-xl sm:rounded-2xl transition-all duration-300 hover:border-gray-300 dark:hover:border-slate-500"
                           {...field}
                         />
-                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                          <Lock className="w-5 h-5 text-gray-400 group-focus-within:text-blue-500 transition-colors duration-300" />
+                        <div className="absolute inset-y-0 left-0 pl-3 sm:pl-4 flex items-center pointer-events-none">
+                          <Lock className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 dark:text-gray-500 group-focus-within:text-red-500 dark:group-focus-within:text-red-400 transition-colors duration-300" />
                         </div>
                       </div>
                     </FormControl>
@@ -442,20 +441,20 @@ export function MultiStepRegisterForm({
                 control={step1Form.control}
                 name="confirmPassword"
                 render={({ field }) => (
-                  <FormItem className="space-y-3">
-                    <FormLabel className="text-sm font-bold text-foreground flex items-center gap-2">
-                      <Lock className="w-4 h-4 text-blue-500" />
+                  <FormItem className="space-y-2 sm:space-y-3">
+                    <FormLabel className="text-xs sm:text-sm font-bold text-foreground flex items-center gap-2">
+                      <Lock className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-red-500 dark:text-red-400" />
                       Confirm Password
                     </FormLabel>
                     <FormControl>
                       <div className="relative group">
                         <Password
                           placeholder="Confirm your password"
-                          className="pl-12 h-14 text-base bg-gradient-to-r from-gray-50 to-gray-100 dark:from-slate-800 dark:to-slate-700 border-2 border-gray-200 dark:border-slate-600 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 rounded-2xl transition-all duration-300 hover:border-gray-300 dark:hover:border-slate-500"
+                          className="pl-10 sm:pl-12 h-11 sm:h-12 lg:h-14 text-sm sm:text-base bg-gradient-to-r from-gray-50 to-gray-100 dark:from-slate-800 dark:to-slate-700 border-2 border-gray-200 dark:border-slate-600 focus:border-red-500 dark:focus:border-red-400 focus:ring-4 focus:ring-red-500/20 dark:focus:ring-red-400/20 rounded-xl sm:rounded-2xl transition-all duration-300 hover:border-gray-300 dark:hover:border-slate-500"
                           {...field}
                         />
-                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                          <Lock className="w-5 h-5 text-gray-400 group-focus-within:text-blue-500 transition-colors duration-300" />
+                        <div className="absolute inset-y-0 left-0 pl-3 sm:pl-4 flex items-center pointer-events-none">
+                          <Lock className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 dark:text-gray-500 group-focus-within:text-red-500 dark:group-focus-within:text-red-400 transition-colors duration-300" />
                         </div>
                       </div>
                     </FormControl>
@@ -467,7 +466,7 @@ export function MultiStepRegisterForm({
               <Button
                 type="submit"
                 disabled={step1Form.formState.isSubmitting}
-                className="w-full h-14 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:via-indigo-700 hover:to-purple-700 text-white font-bold text-base rounded-2xl transition-all duration-300 hover:scale-[1.02] hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                className="w-full h-11 sm:h-12 lg:h-14 bg-gradient-to-r from-red-600 via-red-700 to-orange-600 hover:from-red-700 hover:via-red-800 hover:to-orange-700 dark:from-red-700 dark:via-red-800 dark:to-orange-700 dark:hover:from-red-800 dark:hover:via-red-900 dark:hover:to-orange-800 text-white font-bold text-sm sm:text-base rounded-xl sm:rounded-2xl transition-all duration-300 hover:scale-[1.02] hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
               >
                 {step1Form.formState.isSubmitting ? (
                   <div className="flex items-center gap-3">
@@ -488,15 +487,15 @@ export function MultiStepRegisterForm({
 
       {/* Step 2 - Address Information */}
       {currentStep === 2 && (
-        <div className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-3xl border border-border/30 p-8 shadow-2xl">
-          <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-600 rounded-3xl flex items-center justify-center mx-auto mb-4 shadow-xl">
-              <MapPin className="w-8 h-8 text-white" />
+        <div className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-2xl sm:rounded-3xl border border-border/30 p-4 sm:p-6 lg:p-7 shadow-2xl">
+          <div className="text-center mb-4 sm:mb-6">
+            <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-gradient-to-r from-orange-500 to-red-600 dark:from-orange-600 dark:to-red-700 rounded-2xl sm:rounded-3xl flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-xl">
+              <MapPin className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 text-white" />
             </div>
-            <h2 className="text-2xl font-bold text-foreground mb-2">
+            <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground mb-1.5 sm:mb-2">
               Address Information
             </h2>
-            <p className="text-muted-foreground">
+            <p className="text-xs sm:text-sm text-muted-foreground">
               Complete your profile with location details
             </p>
           </div>
@@ -504,26 +503,26 @@ export function MultiStepRegisterForm({
           <Form {...step2Form}>
             <form
               onSubmit={step2Form.handleSubmit(handleStep2Submit)}
-              className="space-y-6"
+              className="space-y-4 sm:space-y-5"
             >
               <FormField
                 control={step2Form.control}
                 name="address"
                 render={({ field }) => (
-                  <FormItem className="space-y-3">
-                    <FormLabel className="text-sm font-bold text-foreground flex items-center gap-2">
-                      <MapPin className="w-4 h-4 text-green-500" />
+                  <FormItem className="space-y-2 sm:space-y-3">
+                    <FormLabel className="text-xs sm:text-sm font-bold text-foreground flex items-center gap-2">
+                      <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-orange-500 dark:text-orange-400" />
                       Street Address
                     </FormLabel>
                     <FormControl>
                       <div className="relative group">
                         <Input
                           placeholder="Enter your full address"
-                          className="pl-12 h-14 text-base bg-gradient-to-r from-gray-50 to-gray-100 dark:from-slate-800 dark:to-slate-700 border-2 border-gray-200 dark:border-slate-600 focus:border-green-500 focus:ring-4 focus:ring-green-500/20 rounded-2xl transition-all duration-300 hover:border-gray-300 dark:hover:border-slate-500"
+                          className="pl-10 sm:pl-12 h-11 sm:h-12 lg:h-14 text-sm sm:text-base bg-gradient-to-r from-gray-50 to-gray-100 dark:from-slate-800 dark:to-slate-700 border-2 border-gray-200 dark:border-slate-600 focus:border-orange-500 dark:focus:border-orange-400 focus:ring-4 focus:ring-orange-500/20 dark:focus:ring-orange-400/20 rounded-xl sm:rounded-2xl transition-all duration-300 hover:border-gray-300 dark:hover:border-slate-500"
                           {...field}
                         />
-                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                          <MapPin className="w-5 h-5 text-gray-400 group-focus-within:text-green-500 transition-colors duration-300" />
+                        <div className="absolute inset-y-0 left-0 pl-3 sm:pl-4 flex items-center pointer-events-none">
+                          <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 dark:text-gray-500 group-focus-within:text-orange-500 dark:group-focus-within:text-orange-400 transition-colors duration-300" />
                         </div>
                       </div>
                     </FormControl>
@@ -536,8 +535,8 @@ export function MultiStepRegisterForm({
                 control={step2Form.control}
                 name="city"
                 render={({ field }) => (
-                  <FormItem className="space-y-3">
-                    <FormLabel className="text-sm font-bold text-foreground">
+                  <FormItem className="space-y-2 sm:space-y-3">
+                    <FormLabel className="text-xs sm:text-sm font-bold text-foreground">
                       City
                     </FormLabel>
                     <FormControl>
@@ -545,7 +544,7 @@ export function MultiStepRegisterForm({
                         onValueChange={field.onChange}
                         value={field.value || ""}
                       >
-                        <SelectTrigger className="h-14 text-base bg-gradient-to-r from-gray-50 to-gray-100 dark:from-slate-800 dark:to-slate-700 border-2 border-gray-200 dark:border-slate-600 focus:border-green-500 focus:ring-4 focus:ring-green-500/20 rounded-2xl transition-all duration-300 hover:border-gray-300 dark:hover:border-slate-500">
+                        <SelectTrigger className="h-11 sm:h-12 lg:h-14 text-sm sm:text-base bg-gradient-to-r from-gray-50 to-gray-100 dark:from-slate-800 dark:to-slate-700 border-2 border-gray-200 dark:border-slate-600 focus:border-orange-500 dark:focus:border-orange-400 focus:ring-4 focus:ring-orange-500/20 dark:focus:ring-orange-400/20 rounded-xl sm:rounded-2xl transition-all duration-300 hover:border-gray-300 dark:hover:border-slate-500">
                           <SelectValue placeholder="Select your city" />
                         </SelectTrigger>
                         <SelectContent>
@@ -569,8 +568,8 @@ export function MultiStepRegisterForm({
                 control={step2Form.control}
                 name="division"
                 render={({ field }) => (
-                  <FormItem className="space-y-3">
-                    <FormLabel className="text-sm font-bold text-foreground">
+                  <FormItem className="space-y-2 sm:space-y-3">
+                    <FormLabel className="text-xs sm:text-sm font-bold text-foreground">
                       Division
                     </FormLabel>
                     <FormControl>
@@ -579,7 +578,7 @@ export function MultiStepRegisterForm({
                         value={field.value || ""}
                         disabled={!selectedCity}
                       >
-                        <SelectTrigger className="h-14 text-base bg-gradient-to-r from-gray-50 to-gray-100 dark:from-slate-800 dark:to-slate-700 border-2 border-gray-200 dark:border-slate-600 focus:border-green-500 focus:ring-4 focus:ring-green-500/20 rounded-2xl transition-all duration-300 hover:border-gray-300 dark:hover:border-slate-500 disabled:opacity-50">
+                        <SelectTrigger className="h-11 sm:h-12 lg:h-14 text-sm sm:text-base bg-gradient-to-r from-gray-50 to-gray-100 dark:from-slate-800 dark:to-slate-700 border-2 border-gray-200 dark:border-slate-600 focus:border-orange-500 dark:focus:border-orange-400 focus:ring-4 focus:ring-orange-500/20 dark:focus:ring-orange-400/20 rounded-xl sm:rounded-2xl transition-all duration-300 hover:border-gray-300 dark:hover:border-slate-500 disabled:opacity-50">
                           <SelectValue placeholder="Select your division" />
                         </SelectTrigger>
                         <SelectContent>
@@ -603,8 +602,8 @@ export function MultiStepRegisterForm({
                 control={step2Form.control}
                 name="postalCode"
                 render={({ field }) => (
-                  <FormItem className="space-y-3">
-                    <FormLabel className="text-sm font-bold text-foreground">
+                  <FormItem className="space-y-2 sm:space-y-3">
+                    <FormLabel className="text-xs sm:text-sm font-bold text-foreground">
                       Postal Code
                     </FormLabel>
                     <FormControl>
@@ -613,7 +612,7 @@ export function MultiStepRegisterForm({
                         value={field.value || ""}
                         disabled={!selectedDivision}
                       >
-                        <SelectTrigger className="h-14 text-base bg-gradient-to-r from-gray-50 to-gray-100 dark:from-slate-800 dark:to-slate-700 border-2 border-gray-200 dark:border-slate-600 focus:border-green-500 focus:ring-4 focus:ring-green-500/20 rounded-2xl transition-all duration-300 hover:border-gray-300 dark:hover:border-slate-500 disabled:opacity-50">
+                        <SelectTrigger className="h-11 sm:h-12 lg:h-14 text-sm sm:text-base bg-gradient-to-r from-gray-50 to-gray-100 dark:from-slate-800 dark:to-slate-700 border-2 border-gray-200 dark:border-slate-600 focus:border-orange-500 dark:focus:border-orange-400 focus:ring-4 focus:ring-orange-500/20 dark:focus:ring-orange-400/20 rounded-xl sm:rounded-2xl transition-all duration-300 hover:border-gray-300 dark:hover:border-slate-500 disabled:opacity-50">
                           <SelectValue placeholder="Select your postal code" />
                         </SelectTrigger>
                         <SelectContent>
@@ -633,32 +632,32 @@ export function MultiStepRegisterForm({
                 )}
               />
 
-              <div className="flex gap-4">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-2">
                 <Button
                   type="button"
                   onClick={goBackToStep1}
                   variant="outline"
-                  className="flex-1 h-14 border-2 border-gray-300 dark:border-gray-600 text-foreground hover:border-gray-400 dark:hover:border-gray-500 rounded-2xl transition-all duration-300 hover:scale-[1.02]"
+                  className="flex-1 h-11 sm:h-12 lg:h-14 border-2 border-gray-300 dark:border-gray-600 text-foreground hover:border-gray-400 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-slate-700 rounded-xl sm:rounded-2xl transition-all duration-300 hover:scale-[1.02]"
                 >
-                  <div className="flex items-center gap-3">
-                    <ArrowLeft className="w-5 h-5" />
-                    <span>Back</span>
+                  <div className="flex items-center justify-center gap-2 sm:gap-3">
+                    <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+                    <span className="text-sm sm:text-base font-semibold">Back</span>
                   </div>
                 </Button>
 
                 <Button
                   type="submit"
                   disabled={step2Form.formState.isSubmitting}
-                  className="flex-1 h-14 bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 hover:from-green-700 hover:via-emerald-700 hover:to-teal-700 text-white font-bold text-base rounded-2xl transition-all duration-300 hover:scale-[1.02] hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                  className="flex-1 h-11 sm:h-12 lg:h-14 bg-gradient-to-r from-red-600 via-orange-600 to-red-700 hover:from-red-700 hover:via-orange-700 hover:to-red-800 dark:from-red-700 dark:via-orange-700 dark:to-red-800 dark:hover:from-red-800 dark:hover:via-orange-800 dark:hover:to-red-900 text-white font-bold text-sm sm:text-base rounded-xl sm:rounded-2xl transition-all duration-300 hover:scale-[1.02] hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                 >
                   {step2Form.formState.isSubmitting ? (
-                    <div className="flex items-center gap-3">
-                      <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                      Creating Account...
+                    <div className="flex items-center justify-center gap-2 sm:gap-3">
+                      <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                      Creating...
                     </div>
                   ) : (
-                    <div className="flex items-center gap-3">
-                      <UserCheck className="w-5 h-5" />
+                    <div className="flex items-center justify-center gap-2 sm:gap-3">
+                      <UserCheck className="w-4 h-4 sm:w-5 sm:h-5" />
                       <span>Create Account</span>
                     </div>
                   )}
@@ -670,17 +669,17 @@ export function MultiStepRegisterForm({
       )}
 
       {/* Additional Info */}
-      <div className="text-center space-y-4">
-        <p className="text-sm text-muted-foreground">
+      <div className="text-center space-y-3 sm:space-y-4">
+        <p className="text-xs sm:text-sm text-muted-foreground">
           Already have an account?{" "}
           <Link
             to="/login"
-            className="font-semibold text-blue-600 hover:text-blue-700 transition-colors duration-300 hover:underline"
+            className="font-semibold text-red-600 dark:text-red-500 hover:text-red-700 dark:hover:text-red-400 transition-colors duration-300 hover:underline"
           >
             Sign in here
           </Link>
         </p>
-        <p className="text-xs text-muted-foreground">
+        <p className="text-xs text-muted-foreground hidden sm:block">
           By creating an account, you agree to our Terms of Service and Privacy
           Policy.
         </p>
