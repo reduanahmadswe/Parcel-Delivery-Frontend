@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import { generateParcelPdf } from "../../utils/parcelExport";
 import { useNavigate } from "react-router-dom";
 import { API_BASE } from "../../constants/config";
+import { TokenManager } from "../../services/TokenManager";
 
 interface Props {
   parcel: any; // parcel object returned from API
@@ -98,11 +99,21 @@ export default function ParcelCreatedModal({ parcel, onClose }: Props) {
         }
       };
 
+      // Get authentication token
+      const token = TokenManager.getAccessToken();
+      
+      if (!token) {
+        toast.error("Please login to send emails");
+        setSendingEmail(false);
+        return;
+      }
+
       // Send email request to backend
       const response = await fetch(`${API_BASE}/parcels/send-email`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify(emailData)
       });
