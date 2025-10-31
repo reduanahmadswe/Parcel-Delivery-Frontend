@@ -417,16 +417,6 @@ export default function Navigation() {
             {user ? (
               <>
                 {}
-                <button
-                  onClick={handleLogout}
-                  className="hidden lg:flex items-center space-x-2 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-red-600 hover:text-white hover:bg-gradient-to-r hover:from-red-500 hover:to-red-600 dark:hover:from-red-600 dark:hover:to-red-700 rounded-lg sm:rounded-xl transition-all duration-300 group border border-red-200 dark:border-red-800 hover:border-red-500"
-                  title="Logout"
-                >
-                  <LogOut className="h-4 w-4 group-hover:scale-110 transition-transform duration-200" />
-                  <span>Logout</span>
-                </button>
-
-                {}
                 {user.role === "admin" && (
                   <div className="relative hidden lg:block" ref={notificationsRef}>
                     <button
