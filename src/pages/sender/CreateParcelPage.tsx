@@ -286,6 +286,7 @@ export default function CreateParcelPage() {
 
     const cleanPhone = phone.replace(/[\s\-]/g, ''); 
     
+    // Accept both formats: 01XXXXXXXXX or +8801XXXXXXXXX
     const localFormat = /^01[3-9]\d{8}$/; 
     const internationalFormat = /^\+8801[3-9]\d{8}$/; 
     

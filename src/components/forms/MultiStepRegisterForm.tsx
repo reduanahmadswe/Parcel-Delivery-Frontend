@@ -50,9 +50,9 @@ const step1Schema = z
       .min(3, { message: "Name must be at least 3 characters" })
       .max(50, { message: "Name must be less than 50 characters" }),
     email: z.string().email({ message: "Please enter a valid email address" }),
-    phone: z.string().regex(/^[\+]?[1-9][\d]{0,15}$/, {
+    phone: z.string().regex(/^(\+8801|01)[3-9]\d{8}$/, {
       message:
-        "Please enter a valid phone number (e.g., +8801700000000 or 01700000000)",
+        "Please enter a valid Bangladesh phone number (e.g., +8801700000000 or 01700000000)",
     }),
     role: z
       .enum(["sender", "receiver"], { message: "Please select a role" })
@@ -354,8 +354,8 @@ export function MultiStepRegisterForm({
                       </div>
                     </FormControl>
                     <FormMessage className="text-xs text-red-500" />
-                    <p className="text-xs text-muted-foreground hidden sm:block">
-                      Enter phone number without spaces or dashes
+                    <p className="text-xs text-muted-foreground">
+                      Format: 01XXXXXXXXX or +8801XXXXXXXXX (Bangladesh numbers only)
                     </p>
                   </FormItem>
                 )}
