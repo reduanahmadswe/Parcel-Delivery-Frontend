@@ -44,10 +44,13 @@ export default function SenderParcelsPage() {
   const { user } = useAuth();
   const [parcels, setParcels] = useState<Parcel[]>([]);
   const [loading, setLoading] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
+  const [isBackgroundRefresh, setIsBackgroundRefresh] = useState(false);
   const [filterStatus, setFilterStatus] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
   const fetchingRef = useRef(false);
+  const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   // Modal states
   const [selectedParcel, setSelectedParcel] = useState<Parcel | null>(null);
@@ -81,10 +84,9 @@ export default function SenderParcelsPage() {
       const customEvent = event as CustomEvent<{ key: string; timestamp: number }>;
       const { key } = customEvent.detail;
       
-      
-      // If sender parcels cache is invalidated, refetch current page
+      // If sender parcels cache is invalidated, refetch current page silently
       if (key.includes('sender:parcels:') || key === 'SENDER_DASHBOARD') {
-        fetchParcels(currentPage, true);
+        fetchParcels(currentPage, true, true); // Silent background refresh
       }
     };
 
@@ -94,6 +96,37 @@ export default function SenderParcelsPage() {
     // Cleanup
     return () => {
       window.removeEventListener('cache-invalidated', handleCacheInvalidation);
+    };
+  }, [currentPage]);
+
+  // Auto-refresh data every 30 seconds for live updates (silent)
+  useEffect(() => {
+    // Start polling for live updates
+    pollingIntervalRef.current = setInterval(() => {
+      fetchParcels(currentPage, true, true); // Force refresh silently in background
+    }, 30000); // 30 seconds
+
+    // Cleanup interval on unmount
+    return () => {
+      if (pollingIntervalRef.current) {
+        clearInterval(pollingIntervalRef.current);
+      }
+    };
+  }, [currentPage]);
+
+  // Refresh data when user returns to the tab (Page Visibility API) - silent
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        // User returned to the tab, refresh data silently
+        fetchParcels(currentPage, true, true);
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, [currentPage]);
 
@@ -131,7 +164,7 @@ export default function SenderParcelsPage() {
     }
   }, [filterStatus, debouncedSearchTerm]);
 
-  const fetchParcels = async (page: number = 1, force: boolean = false) => {
+  const fetchParcels = async (page: number = 1, force: boolean = false, silent: boolean = false) => {
     // Prevent concurrent fetches
     if (fetchingRef.current) return;
 
@@ -149,12 +182,18 @@ export default function SenderParcelsPage() {
           setParcels(cachedData.parcels);
           setPagination(cachedData.pagination);
           setLoading(false);
+          setInitialLoading(false);
           fetchingRef.current = false;
           return;
         }
       }
 
-      setLoading(true);
+      // Only show loading for initial load or manual refresh
+      if (!silent) {
+        setLoading(true);
+      } else {
+        setIsBackgroundRefresh(true);
+      }
 
       // Build query parameters
       const params = new URLSearchParams({
@@ -200,9 +239,14 @@ export default function SenderParcelsPage() {
       // Cache the results
       adminCache.set(cacheKey, { parcels: parcelsData, pagination: paginationInfo });
     } catch (error) {
-      toast.error("Failed to fetch parcels");
+      // Only show error toast for non-silent refresh
+      if (!silent) {
+        toast.error("Failed to fetch parcels");
+      }
     } finally {
       setLoading(false);
+      setInitialLoading(false);
+      setIsBackgroundRefresh(false);
       fetchingRef.current = false;
     }
   };
@@ -408,7 +452,7 @@ export default function SenderParcelsPage() {
     );
   });
 
-  if (loading) {
+  if (loading && initialLoading) {
     return (
       <ProtectedRoute allowedRoles={["sender"]}>
         <div className="min-h-screen bg-background flex items-center justify-center">

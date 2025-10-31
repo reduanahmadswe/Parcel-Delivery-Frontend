@@ -102,11 +102,14 @@ export default function ParcelManagement() {
     setNewStatus("");
 
     try {
-      // 2️⃣ API Call in background
+      // 2️⃣ API Call in background - Cache will auto-invalidate
       await updateStatus(previousParcel.id, newStatus);
-
-      // 3️⃣ Fetch fresh data and invalidate all related caches
-      await fetchParcels(true);
+      
+      // 3️⃣ Background refresh without user noticing
+      // fetchParcels will use cache invalidation to update seamlessly
+      setTimeout(() => {
+        fetchParcels(true);
+      }, 100);
       
       // 4️⃣ Success notification
       showNotification("success", "Parcel status updated successfully!");
@@ -144,8 +147,10 @@ export default function ParcelManagement() {
       // 2️⃣ API call
       await flagParcel(parcel.id, newFlaggedState);
       
-      // 3️⃣ Refresh and invalidate cache
-      await fetchParcels(true);
+      // 3️⃣ Background refresh without blocking UI
+      setTimeout(() => {
+        fetchParcels(true);
+      }, 100);
       
       showNotification(
         "success",
@@ -171,8 +176,10 @@ export default function ParcelManagement() {
       // 2️⃣ API call
       await holdParcel(parcel.id, newHoldState);
       
-      // 3️⃣ Refresh and invalidate cache
-      await fetchParcels(true);
+      // 3️⃣ Background refresh without blocking UI
+      setTimeout(() => {
+        fetchParcels(true);
+      }, 100);
       
       showNotification(
         "success",
@@ -201,8 +208,10 @@ export default function ParcelManagement() {
       // 2️⃣ API call
       await returnParcel(parcel.id);
       
-      // 3️⃣ Refresh and invalidate cache
-      await fetchParcels(true);
+      // 3️⃣ Background refresh without blocking UI
+      setTimeout(() => {
+        fetchParcels(true);
+      }, 100);
       
       showNotification("success", "Parcel returned successfully!");
     } catch (error) {
@@ -226,13 +235,17 @@ export default function ParcelManagement() {
       // 2️⃣ API call
       await deleteParcel(deletedParcelId);
       
-      // 3️⃣ Refresh and invalidate cache
-      await fetchParcels(true);
+      // 3️⃣ Background refresh without blocking UI
+      setTimeout(() => {
+        fetchParcels(true);
+      }, 100);
       
       showNotification("success", "Parcel deleted successfully!");
     } catch (error) {
       // Rollback on error - re-add the parcel
-      await fetchParcels(true);
+      setTimeout(() => {
+        fetchParcels(true);
+      }, 100);
       showNotification("error", "Failed to delete parcel. Please try again.");
     }
   };

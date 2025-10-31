@@ -20,17 +20,72 @@ export default function SenderStatisticsPage() {
   const { user } = useAuth();
   const [parcels, setParcels] = useState<Parcel[]>([]);
   const [loading, setLoading] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
+  const [isBackgroundRefresh, setIsBackgroundRefresh] = useState(false);
   const isMountedRef = useRef(false);
   const fetchingRef = useRef(false);
+  const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Listen for cache invalidation events
+  useEffect(() => {
+    const handleCacheInvalidation = (event: Event) => {
+      const customEvent = event as CustomEvent<{ key: string; timestamp: number }>;
+      const { key } = customEvent.detail;
+      
+      // If sender statistics cache is invalidated, refetch data silently
+      if (key === 'SENDER_STATISTICS' || key === 'SENDER_DASHBOARD' || key === 'MY_LIST' || key.includes('sender:parcels:')) {
+        fetchParcels(true, true); // true = silent background refresh
+      }
+    };
+
+    // Add event listener
+    window.addEventListener('cache-invalidated', handleCacheInvalidation);
+
+    // Cleanup
+    return () => {
+      window.removeEventListener('cache-invalidated', handleCacheInvalidation);
+    };
+  }, []);
+
+  // Auto-refresh data every 30 seconds for live updates (silent)
+  useEffect(() => {
+    // Start polling for live updates
+    pollingIntervalRef.current = setInterval(() => {
+      fetchParcels(true, true); // Force refresh silently in background
+    }, 30000); // 30 seconds
+
+    // Cleanup interval on unmount
+    return () => {
+      if (pollingIntervalRef.current) {
+        clearInterval(pollingIntervalRef.current);
+      }
+    };
+  }, []);
+
+  // Refresh data when user returns to the tab (Page Visibility API) - silent
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        // User returned to the tab, refresh data silently
+        fetchParcels(true, true);
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, []);
 
   useEffect(() => {
     if (!isMountedRef.current) {
       isMountedRef.current = true;
-      fetchParcels(false); // Use cache if available
+      fetchParcels(false, false); // Initial load - show loading
     }
   }, []);
 
-  const fetchParcels = async (force: boolean = false) => {
+  const fetchParcels = async (force: boolean = false, silent: boolean = false) => {
     // Prevent concurrent fetches
     if (fetchingRef.current) return;
 
@@ -43,12 +98,18 @@ export default function SenderStatisticsPage() {
         if (cachedData) {
           setParcels(cachedData);
           setLoading(false);
+          setInitialLoading(false);
           fetchingRef.current = false;
           return;
         }
       }
 
-      setLoading(true);
+      // Only show loading for initial load or manual refresh
+      if (!silent) {
+        setLoading(true);
+      } else {
+        setIsBackgroundRefresh(true);
+      }
       
       // Try multiple endpoints to get all data (similar to dashboard)
       let response;
@@ -107,11 +168,15 @@ export default function SenderStatisticsPage() {
 
       setParcels(allParcels);
     } catch (error) {
-      toast.error("Failed to fetch parcels");
+      // Only show error toast for non-silent refresh
+      if (!silent) {
+        toast.error("Failed to fetch parcels");
+      }
     } finally {
       setLoading(false);
+      setInitialLoading(false);
+      setIsBackgroundRefresh(false);
       fetchingRef.current = false;
-      setLoading(false);
     }
   };
 
@@ -129,7 +194,7 @@ export default function SenderStatisticsPage() {
     requested: parcels.filter((p) => p.currentStatus === "requested").length,
   };
 
-  if (loading) {
+  if (loading && initialLoading) {
     return (
       <ProtectedRoute allowedRoles={["sender"]}>
         <div className="min-h-screen bg-background flex items-center justify-center">

@@ -118,6 +118,22 @@ export const parcelsApi = baseApi.injectEndpoints({
 
                 try {
                     await queryFulfilled;
+                    
+                    // Also emit legacy cache invalidation events for adminCache-based components
+                    const timestamp = Date.now();
+                    try {
+                        window.dispatchEvent(new CustomEvent('cache-invalidated', { 
+                            detail: { key: 'MY_LIST', timestamp } 
+                        }));
+                        window.dispatchEvent(new CustomEvent('cache-invalidated', { 
+                            detail: { key: 'SENDER_DASHBOARD', timestamp } 
+                        }));
+                        window.dispatchEvent(new CustomEvent('cache-invalidated', { 
+                            detail: { key: 'SENDER_STATISTICS', timestamp } 
+                        }));
+                    } catch (err) {
+                        console.warn('Failed to emit cache invalidation:', err);
+                    }
                 } catch {
                     // Revert optimistic update on error
                     patchResult.undo();
@@ -154,6 +170,22 @@ export const parcelsApi = baseApi.injectEndpoints({
                             Object.assign(draft, result);
                         })
                     );
+                    
+                    // Emit cache invalidation events
+                    const timestamp = Date.now();
+                    try {
+                        window.dispatchEvent(new CustomEvent('cache-invalidated', { 
+                            detail: { key: 'SENDER_DASHBOARD', timestamp } 
+                        }));
+                        window.dispatchEvent(new CustomEvent('cache-invalidated', { 
+                            detail: { key: 'SENDER_STATISTICS', timestamp } 
+                        }));
+                        window.dispatchEvent(new CustomEvent('cache-invalidated', { 
+                            detail: { key: 'sender:parcels:', timestamp } 
+                        }));
+                    } catch (err) {
+                        console.warn('Failed to emit cache invalidation:', err);
+                    }
                 } catch {
                     patchResult.undo();
                 }
@@ -191,6 +223,22 @@ export const parcelsApi = baseApi.injectEndpoints({
 
                 try {
                     await queryFulfilled;
+                    
+                    // Emit cache invalidation events
+                    const timestamp = Date.now();
+                    try {
+                        window.dispatchEvent(new CustomEvent('cache-invalidated', { 
+                            detail: { key: 'SENDER_DASHBOARD', timestamp } 
+                        }));
+                        window.dispatchEvent(new CustomEvent('cache-invalidated', { 
+                            detail: { key: 'SENDER_STATISTICS', timestamp } 
+                        }));
+                        window.dispatchEvent(new CustomEvent('cache-invalidated', { 
+                            detail: { key: 'sender:parcels:', timestamp } 
+                        }));
+                    } catch (err) {
+                        console.warn('Failed to emit cache invalidation:', err);
+                    }
                 } catch {
                     patchResult.undo();
                 }
@@ -229,6 +277,22 @@ export const parcelsApi = baseApi.injectEndpoints({
 
                 try {
                     await queryFulfilled;
+                    
+                    // Emit cache invalidation events
+                    const timestamp = Date.now();
+                    try {
+                        window.dispatchEvent(new CustomEvent('cache-invalidated', { 
+                            detail: { key: 'SENDER_DASHBOARD', timestamp } 
+                        }));
+                        window.dispatchEvent(new CustomEvent('cache-invalidated', { 
+                            detail: { key: 'SENDER_STATISTICS', timestamp } 
+                        }));
+                        window.dispatchEvent(new CustomEvent('cache-invalidated', { 
+                            detail: { key: 'sender:parcels:', timestamp } 
+                        }));
+                    } catch (err) {
+                        console.warn('Failed to emit cache invalidation:', err);
+                    }
                 } catch {
                     patchResults.forEach(patch => patch.undo());
                 }
@@ -247,6 +311,30 @@ export const parcelsApi = baseApi.injectEndpoints({
                 'Dashboard',
                 'Stats',
             ],
+            // Emit cache invalidation events after successful cancellation
+            async onQueryStarted({ id }, { queryFulfilled }) {
+                try {
+                    await queryFulfilled;
+                    
+                    // Emit cache invalidation events
+                    const timestamp = Date.now();
+                    try {
+                        window.dispatchEvent(new CustomEvent('cache-invalidated', { 
+                            detail: { key: 'SENDER_DASHBOARD', timestamp } 
+                        }));
+                        window.dispatchEvent(new CustomEvent('cache-invalidated', { 
+                            detail: { key: 'SENDER_STATISTICS', timestamp } 
+                        }));
+                        window.dispatchEvent(new CustomEvent('cache-invalidated', { 
+                            detail: { key: 'sender:parcels:', timestamp } 
+                        }));
+                    } catch (err) {
+                        console.warn('Failed to emit cache invalidation:', err);
+                    }
+                } catch {
+                    // Error already handled by RTK Query
+                }
+            },
         }),
         getDashboardStats: builder.query<ApiResponse<DashboardStats>, void>({
             query: () => '/parcels/stats/dashboard',

@@ -4,14 +4,13 @@
 // This file focuses on state orchestration and layout
 
 import AdminLayout from "@/pages/admin/AdminDashboardLayout";
-import { Edit, Eye, Power, PowerOff, Trash2 } from "lucide-react";
+import { Edit, Power, PowerOff, Trash2 } from "lucide-react";
 import { useState } from "react";
 import {
   BlockUserModal,
   DataTable,
   DeleteUserModal,
   StatusBadge,
-  UserDetailsModal,
   UserFormModal,
   UserManagementHeader,
 } from "./components";
@@ -27,8 +26,6 @@ export default function AdminUsersPage() {
   const [userToBlock, setUserToBlock] = useState<User | null>(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [userToDelete, setUserToDelete] = useState<User | null>(null);
-  const [showDetailsModal, setShowDetailsModal] = useState(false);
-  const [userToView, setUserToView] = useState<User | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
 
   // Pagination state
@@ -92,11 +89,6 @@ export default function AdminUsersPage() {
       setShowDeleteModal(false);
       setUserToDelete(null);
     }
-  };
-
-  const handleViewUser = (user: User) => {
-    setUserToView(user);
-    setShowDetailsModal(true);
   };
 
   const handleBlockUser = (user: User) => {
@@ -177,14 +169,6 @@ export default function AdminUsersPage() {
       accessorKey: "actions",
       cell: (user: User) => (
         <div className="flex items-center gap-0.5 sm:gap-1 lg:gap-2">
-          <button
-            onClick={() => handleViewUser(user)}
-            className="group relative p-1.5 sm:p-2 lg:p-3 text-purple-600 hover:text-white rounded-lg sm:rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/25 hover:-translate-y-0.5 overflow-hidden"
-            title="View User Details"
-          >
-            <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg sm:rounded-xl"></div>
-            <Eye className="h-3 w-3 sm:h-3.5 sm:w-3.5 lg:h-4 lg:w-4 relative z-10 group-hover:scale-110 transition-transform duration-300" />
-          </button>
           <button
             onClick={() => handleEditUser(user)}
             className="group relative p-1.5 sm:p-2 lg:p-3 text-blue-600 hover:text-white rounded-lg sm:rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/25 hover:-translate-y-0.5 overflow-hidden"
@@ -418,18 +402,6 @@ export default function AdminUsersPage() {
             userName={userToDelete?.name || ""}
             userEmail={userToDelete?.email || ""}
           />
-
-          {/* User Details Modal */}
-          {showDetailsModal && userToView && (
-            <UserDetailsModal
-              isOpen={showDetailsModal}
-              onClose={() => {
-                setShowDetailsModal(false);
-                setUserToView(null);
-              }}
-              user={userToView}
-            />
-          )}
         </div>
       </div>
     </AdminLayout>

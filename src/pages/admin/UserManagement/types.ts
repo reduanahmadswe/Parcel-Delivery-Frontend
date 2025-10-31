@@ -53,6 +53,7 @@ export interface ApiUser {
 
 export interface User extends Record<string, unknown> {
     id: string | number;
+    _id?: string | number; // MongoDB style ID
     name: string;
     email: string;
     role: "admin" | "sender" | "receiver" | "user";
