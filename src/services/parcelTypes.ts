@@ -1,8 +1,8 @@
-// Type definitions for Parcel Management system
+
 
 export interface ApiParcel {
     id?: number;
-    _id?: string | number; // MongoDB ObjectId
+    _id?: string | number; 
     senderId?: string;
     receiverId?: string;
     senderInfo?: {
@@ -67,11 +67,11 @@ export interface ApiParcel {
     createdAt?: string | { $date: string };
     updatedAt?: string | { $date: string };
     trackingId?: string;
-    // Legacy field support for backward compatibility
+    
     trackingNumber?: string;
     tracking_number?: string;
-    status?: string; // fallback to currentStatus
-    // Additional legacy fields
+    status?: string; 
+    
     type?: string;
     parcelType?: string;
     description?: string;
@@ -149,7 +149,7 @@ export interface ApiParcel {
     assignedPersonnel?: string;
     assigned_personnel?: string;
     assignedTo?: string;
-    [key: string]: unknown; // For any additional fields
+    [key: string]: unknown; 
 }
 
 export interface Parcel extends Record<string, unknown> {

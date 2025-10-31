@@ -28,7 +28,7 @@ interface ParcelListProps {
   onViewDetails: (parcel: Parcel) => void;
   onConfirmDelivery: (parcelId: string, note?: string) => void;
   isConfirming: boolean;
-  // Pagination props
+  
   pagination?: PaginationInfo;
   onPageChange?: (page: number) => void;
   loading?: boolean;
@@ -45,7 +45,7 @@ const ParcelList: React.FC<ParcelListProps> = ({
   loading = false,
   searchTerm = "",
 }) => {
-  // Pagination handlers
+  
   const handlePageChange = (newPage: number) => {
     if (
       onPageChange &&
@@ -108,7 +108,7 @@ const ParcelList: React.FC<ParcelListProps> = ({
             )}
           </span>
         </h2>
-        {/* Loading indicator */}
+        {}
         {loading && (
           <div className="mt-2 flex items-center space-x-2 text-xs sm:text-sm text-muted-foreground">
             <div className="animate-spin rounded-full h-3 w-3 sm:h-4 sm:w-4 border-b-2 border-red-600"></div>
@@ -247,7 +247,7 @@ const ParcelList: React.FC<ParcelListProps> = ({
         ))}
       </div>
 
-      {/* Pagination */}
+      {}
       {parcels.length > 0 && pagination && pagination.totalPages > 1 && (
         <div className="px-3 xs:px-4 sm:px-6 py-3 sm:py-4 border-t border-border">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
@@ -264,7 +264,7 @@ const ParcelList: React.FC<ParcelListProps> = ({
             </div>
 
             <div className="flex items-center justify-center gap-1 sm:gap-2">
-              {/* Previous Button */}
+              {}
               <button
                 onClick={handlePrevPage}
                 disabled={!pagination.hasPrevPage || loading}
@@ -279,9 +279,9 @@ const ParcelList: React.FC<ParcelListProps> = ({
                 <span className="xs:hidden">Prev</span>
               </button>
 
-              {/* Page Numbers */}
+              {}
               <div className="flex items-center gap-1">
-                {/* First page */}
+                {}
                 {pagination.currentPage > 3 && (
                   <>
                     <button
@@ -299,7 +299,7 @@ const ParcelList: React.FC<ParcelListProps> = ({
                   </>
                 )}
 
-                {/* Current page and surrounding pages */}
+                {}
                 {Array.from({ length: pagination.totalPages }, (_, i) => i + 1)
                   .filter(
                     (page) =>
@@ -325,7 +325,7 @@ const ParcelList: React.FC<ParcelListProps> = ({
                     </button>
                   ))}
 
-                {/* Last page */}
+                {}
                 {pagination.currentPage < pagination.totalPages - 2 && (
                   <>
                     {pagination.currentPage < pagination.totalPages - 3 && (
@@ -344,7 +344,7 @@ const ParcelList: React.FC<ParcelListProps> = ({
                 )}
               </div>
 
-              {/* Next Button */}
+              {}
               <button
                 onClick={handleNextPage}
                 disabled={!pagination.hasNextPage || loading}

@@ -58,10 +58,8 @@ export default function CreateParcelPage() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [createdParcel, setCreatedParcel] = useState<any | null>(null);
 
-  // RTK Query mutation for creating parcels (ensures cache invalidation)
   const [createParcel, { isLoading: isCreating }] = useCreateParcelMutation();
 
-  // Bangladesh data states for cascading dropdowns
   const [availableCities] = useState(getCitiesList());
   const [availableDivisions, setAvailableDivisions] = useState<string[]>([]);
   const [availablePostalCodes, setAvailablePostalCodes] = useState<
@@ -142,13 +140,11 @@ export default function CreateParcelPage() {
       }));
     }
 
-    // Clear error when user starts typing
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
     }
   };
 
-  // Handle city selection - update divisions and reset dependent fields
   const handleCityChange = (cityName: string) => {
     setSelectedCity(cityName);
     setSelectedDivision("");
@@ -156,7 +152,6 @@ export default function CreateParcelPage() {
     setAvailableDivisions(divisions);
     setAvailablePostalCodes([]);
 
-    // Update form data
     setFormData((prev) => ({
       ...prev,
       receiverInfo: {
@@ -171,13 +166,11 @@ export default function CreateParcelPage() {
     }));
   };
 
-  // Handle division selection - update postal codes
   const handleDivisionChange = (divisionName: string) => {
     setSelectedDivision(divisionName);
     const postalCodes = getPostalCodesByDivision(selectedCity, divisionName);
     setAvailablePostalCodes(postalCodes);
 
-    // Update form data
     setFormData((prev) => ({
       ...prev,
       receiverInfo: {
@@ -191,7 +184,6 @@ export default function CreateParcelPage() {
     }));
   };
 
-  // Handle postal code selection
   const handlePostalCodeChange = (postalCode: string) => {
     setFormData((prev) => ({
       ...prev,
@@ -207,19 +199,17 @@ export default function CreateParcelPage() {
 
   const calculateEstimatedFee = () => {
     const weight = parseFloat(formData.parcelDetails.weight) || 0;
-    const baseFee = 50; // BDT
-    const weightFee = weight * 20; // 20 BDT per kg
+    const baseFee = 50; 
+    const weightFee = weight * 20; 
     const urgentFee = formData.deliveryInfo.isUrgent ? 100 : 0;
     return baseFee + weightFee + urgentFee;
   };
 
-  // Real-time email validation with database check
   const validateEmail = async (email: string) => {
     if (!email.trim()) {
       return false;
     }
-    
-    // First check email format
+
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     
     if (!emailRegex.test(email)) {
@@ -239,15 +229,11 @@ export default function CreateParcelPage() {
       return false;
     }
 
-    // Then check if email exists in database
     try {
       const response = await api.get(`/auth/check-email?email=${encodeURIComponent(email)}`);
-      
-      
-      // Check different possible response formats - fixed to check data.exists first
+
       const emailExists = response.data?.data?.exists ?? response.data?.exists ?? false;
-      
-      
+
       if (!emailExists) {
         toast.error("⚠️ Email not exist in database. Receiver must register first!", {
           duration: 5000,
@@ -264,7 +250,7 @@ export default function CreateParcelPage() {
         }));
         return false;
       } else {
-        // Email exists, clear any previous errors
+        
         setErrors(prev => {
           const newErrors = { ...prev };
           delete newErrors["receiverInfo.email"];
@@ -273,7 +259,7 @@ export default function CreateParcelPage() {
         return true;
       }
     } catch (error) {
-      // Log the actual error for debugging
+      
       console.error('Email verification error:', error);
       
       toast.error("⚠️ Unable to verify email - Please try again", {
@@ -293,19 +279,15 @@ export default function CreateParcelPage() {
     }
   };
 
-  // Real-time phone validation with alert
   const validatePhone = (phone: string) => {
     if (!phone.trim()) {
       return;
     }
+
+    const cleanPhone = phone.replace(/[\s\-]/g, ''); 
     
-    // Bangladesh phone number formats:
-    // 1. Local: 01X-XXXXXXXX (11 digits starting with 01)
-    // 2. International: +8801X-XXXXXXXX (starts with +88)
-    const cleanPhone = phone.replace(/[\s\-]/g, ''); // Remove spaces and dashes
-    
-    const localFormat = /^01[3-9]\d{8}$/; // 01712345678
-    const internationalFormat = /^\+8801[3-9]\d{8}$/; // +8801712345678
+    const localFormat = /^01[3-9]\d{8}$/; 
+    const internationalFormat = /^\+8801[3-9]\d{8}$/; 
     
     if (!localFormat.test(cleanPhone) && !internationalFormat.test(cleanPhone)) {
       toast.error("⚠️ Please enter a correct phone number format (e.g., 01712345678 or +8801712345678)", {
@@ -328,7 +310,6 @@ export default function CreateParcelPage() {
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
 
-    // Receiver Info Validation
     if (!formData.receiverInfo.name.trim())
       newErrors["receiverInfo.name"] = "Receiver name is required";
     if (!formData.receiverInfo.email.trim()) {
@@ -343,8 +324,8 @@ export default function CreateParcelPage() {
       newErrors["receiverInfo.phone"] = "Receiver phone is required";
     } else {
       const cleanPhone = formData.receiverInfo.phone.replace(/[\s\-]/g, '');
-      const localFormat = /^01[3-9]\d{8}$/; // 01712345678
-      const internationalFormat = /^\+8801[3-9]\d{8}$/; // +8801712345678
+      const localFormat = /^01[3-9]\d{8}$/; 
+      const internationalFormat = /^\+8801[3-9]\d{8}$/; 
       
       if (!localFormat.test(cleanPhone) && !internationalFormat.test(cleanPhone)) {
         newErrors["receiverInfo.phone"] = "Please enter a valid Bangladesh phone number (01XXXXXXXXX or +8801XXXXXXXXX)";
@@ -359,7 +340,6 @@ export default function CreateParcelPage() {
     if (!formData.receiverInfo.address.zipCode.trim())
       newErrors["receiverInfo.address.zipCode"] = "ZIP code is required";
 
-    // Parcel Details Validation
     if (
       !formData.parcelDetails.weight ||
       parseFloat(formData.parcelDetails.weight) <= 0
@@ -398,16 +378,15 @@ export default function CreateParcelPage() {
 
     if (!validateForm()) return;
 
-    // Check email exists in database before submission
     const emailValid = await validateEmail(formData.receiverInfo.email);
     if (!emailValid) {
-      return; // validateEmail already shows the appropriate toast message
+      return; 
     }
 
     setLoading(true);
 
     try {
-      // Convert string values to numbers and format according to backend API
+      
       const payload = {
         receiverName: formData.receiverInfo.name,
         receiverEmail: formData.receiverInfo.email,
@@ -435,23 +414,20 @@ export default function CreateParcelPage() {
             ? new Date(
                 formData.deliveryInfo.preferredDeliveryDate
               ).toISOString()
-            : new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString(), // 48 hours from now
+            : new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString(), 
           deliveryInstructions:
             formData.deliveryInfo.deliveryInstructions || "",
           isUrgent: formData.deliveryInfo.isUrgent || false,
         },
       } as any;
 
-  // Use RTK Query mutation so cache invalidation & optimistic updates happen
   const response = await createParcel(payload).unwrap();
       const parcel = response.data;
 
       toast.success("📦 Parcel created successfully!");
 
-      // Show success modal with all details
       setCreatedParcel(parcel);
 
-      // Invalidate all sender-related caches for instant update across all pages
       invalidateAllSenderCaches();
     } catch (error: unknown) {
       const apiError = error as {
@@ -486,7 +462,7 @@ export default function CreateParcelPage() {
         } else if (apiError.response.data.details) {
           errorMessage = apiError.response.data.details;
         } else if (apiError.response.data.data?.errorSources) {
-          // Handle backend validation errors
+          
           const validationErrors = apiError.response.data.data.errorSources;
           errorMessage = validationErrors
             .map(
@@ -511,7 +487,7 @@ export default function CreateParcelPage() {
     <ProtectedRoute allowedRoles={["sender"]}>
       <div className="min-h-screen bg-background mt-10">
         <div className="max-w-7xl mx-auto pt-2 px-3 sm:px-4 lg:px-6 space-y-4 sm:space-y-6 pb-16 sm:pb-24">
-          {/* Enhanced Modern Header */}
+          {}
           <div className="relative overflow-hidden bg-gradient-to-br from-blue-600/10 via-purple-600/5 to-green-600/10 dark:from-blue-900/20 dark:via-purple-900/10 dark:to-green-900/20 rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 border border-border/50 shadow-lg">
             <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-purple-500/5 dark:from-blue-400/10 dark:to-purple-400/10"></div>
             <div className="relative">
@@ -557,7 +533,7 @@ export default function CreateParcelPage() {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6 lg:space-y-8">
-            {/* Enhanced Receiver Information */}
+            {}
             <div className="relative overflow-hidden bg-card/60 backdrop-blur-sm border border-border/50 rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 shadow-lg hover:shadow-xl transition-all duration-300">
               <div className="absolute inset-0 bg-gradient-to-r from-green-500/5 to-teal-500/5 dark:from-green-400/10 dark:to-teal-400/10"></div>
               <div className="relative">
@@ -601,7 +577,7 @@ export default function CreateParcelPage() {
                       Email Address *
                     </label>
                     
-                    {/* Info Alert */}
+                    {}
                     <div className="mb-3 p-3 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 rounded-lg">
                       <p className="text-xs text-blue-700 dark:text-blue-300 flex items-start gap-2">
                         <span className="text-sm">ℹ️</span>
@@ -630,7 +606,7 @@ export default function CreateParcelPage() {
                   </div>
                 </div>
 
-                {/* Enhanced Address Section */}
+                {}
                 <div className="mt-4 sm:mt-6 lg:mt-8 pt-4 sm:pt-6 lg:pt-8 border-t border-border/50">
                   <div className="flex items-center space-x-2 sm:space-x-3 mb-4 sm:mb-6">
                     <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-blue-500 to-teal-500 dark:from-blue-600 dark:to-teal-600 rounded-md sm:rounded-lg flex items-center justify-center">
@@ -684,7 +660,7 @@ export default function CreateParcelPage() {
                     </div>
                   </div>
 
-                    {/* Enhanced Location Selection Info */}
+                    {}
                     <div className="bg-gradient-to-r from-blue-50/50 to-cyan-50/50 dark:from-blue-950/20 dark:to-cyan-950/20 border border-blue-200/50 dark:border-blue-800/50 rounded-xl sm:rounded-2xl p-3 sm:p-4 mb-4 sm:mb-6">
                       <div className="flex items-center space-x-2 mb-2">
                         <div className="w-5 h-5 sm:w-6 sm:h-6 bg-blue-600 dark:bg-blue-500 rounded-full flex items-center justify-center">
@@ -702,7 +678,7 @@ export default function CreateParcelPage() {
                         code area for accurate delivery.
                       </p>
                     </div>
-                    {/* Cascading Dropdowns for City, Division, Postal Code */}
+                    {}
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                     <div>
@@ -809,7 +785,7 @@ export default function CreateParcelPage() {
               </div>
             </div>
 
-            {/* Parcel Details */}
+            {}
             <div className="bg-gradient-to-br from-blue-50/50 via-background to-purple-50/50 dark:from-blue-950/20 dark:via-background dark:to-purple-950/20 backdrop-blur-sm border border-border/50 rounded-xl sm:rounded-2xl shadow-xl shadow-blue-500/5 dark:shadow-blue-400/10 p-4 sm:p-6 lg:p-8 hover:shadow-2xl hover:shadow-blue-500/10 dark:hover:shadow-blue-400/20 transition-all duration-500">
               <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6 lg:mb-8">
                 <div className="p-2 sm:p-3 bg-gradient-to-br from-blue-500 to-purple-600 text-white rounded-lg sm:rounded-xl shadow-lg">
@@ -877,7 +853,7 @@ export default function CreateParcelPage() {
                 </div>
               </div>
 
-              {/* Dimensions */}
+              {}
               <div className="mt-4 sm:mt-6 lg:mt-8">
                 <div className="flex items-center gap-2 mb-3 sm:mb-4">
                   <div className="p-1.5 sm:p-2 bg-gradient-to-br from-emerald-500 to-teal-600 text-white rounded-md sm:rounded-lg">
@@ -1034,7 +1010,7 @@ export default function CreateParcelPage() {
               </div>
             </div>
 
-            {/* Delivery Options */}
+            {}
             <div className="bg-gradient-to-br from-orange-50/50 via-background to-red-50/50 dark:from-orange-950/20 dark:via-background dark:to-red-950/20 backdrop-blur-sm border border-border/50 rounded-xl sm:rounded-2xl shadow-xl shadow-orange-500/5 dark:shadow-orange-400/10 p-4 sm:p-6 lg:p-8 hover:shadow-2xl hover:shadow-orange-500/10 dark:hover:shadow-orange-400/20 transition-all duration-500">
               <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6 lg:mb-8">
                 <div className="p-2 sm:p-3 bg-gradient-to-br from-orange-500 to-red-600 text-white rounded-lg sm:rounded-xl shadow-lg">
@@ -1166,7 +1142,7 @@ export default function CreateParcelPage() {
               </div>
             </div>
 
-            {/* Fee Estimation */}
+            {}
             <div className="bg-gradient-to-br from-emerald-50/50 via-background to-teal-50/50 dark:from-emerald-950/20 dark:via-background dark:to-teal-950/20 backdrop-blur-sm border border-emerald-200/50 dark:border-emerald-800/30 rounded-xl sm:rounded-2xl shadow-xl shadow-emerald-500/5 dark:shadow-emerald-400/10 p-4 sm:p-6 lg:p-8 hover:shadow-2xl hover:shadow-emerald-500/10 dark:hover:shadow-emerald-400/20 transition-all duration-500">
               <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
                 <div className="p-2 sm:p-3 bg-gradient-to-br from-emerald-500 to-teal-600 text-white rounded-lg sm:rounded-xl shadow-lg">
@@ -1228,7 +1204,7 @@ export default function CreateParcelPage() {
               </div>
             </div>
 
-            {/* Submit Button */}
+            {}
             <div className="flex flex-col xs:flex-row justify-end gap-3 sm:gap-4 lg:gap-6 pt-4 sm:pt-6 lg:pt-8">
               <Link
                 to="/sender"

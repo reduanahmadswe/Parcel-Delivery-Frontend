@@ -135,7 +135,6 @@ export interface ParcelStats {
   unpaidParcels: number;
 }
 
-// Admin Dashboard Real-time Stats
 export interface AdminDashboardStats {
   totalUsers: number;
   totalParcels: number;
@@ -148,8 +147,8 @@ export interface AdminDashboardStats {
     total: number;
   };
   parcelStatusCounts: {
-    pending: number;      // requested + approved
-    inTransit: number;    // dispatched + in-transit
+    pending: number;      
+    inTransit: number;    
     delivered: number;
     cancelled: number;
     returned: number;

@@ -98,7 +98,7 @@ export default function DataTable<T extends Record<string, unknown>>({
     <div
       className={`bg-white dark:bg-black rounded-lg shadow ${className}`}
     >
-      {/* Search Bar */}
+      {}
       {searchable && (
         <div className="p-4 border-b border-slate-200 dark:border-slate-600">
           <div className="relative">
@@ -114,7 +114,7 @@ export default function DataTable<T extends Record<string, unknown>>({
         </div>
       )}
 
-      {/* Table */}
+      {}
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead className="bg-slate-50 dark:bg-slate-900">
@@ -176,7 +176,7 @@ export default function DataTable<T extends Record<string, unknown>>({
         </table>
       </div>
 
-      {/* Enhanced Pagination - Same as Recent Parcels */}
+      {}
       {pagination && data.length > 0 && (
         <div className="px-6 py-4 border-t border-border bg-gradient-to-r from-red-50/10 via-transparent to-green-50/10 dark:from-red-950/5 dark:to-green-950/5">
           <div className="flex items-center justify-between">

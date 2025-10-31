@@ -32,7 +32,7 @@ export default function ParcelDetailsModal({
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-background rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-        {/* Header */}
+        {}
         <div className="flex items-center justify-between p-6 border-b border-border">
           <div>
             <h2 className="text-2xl font-bold text-foreground">
@@ -51,7 +51,7 @@ export default function ParcelDetailsModal({
         </div>
 
         <div className="p-6 space-y-6">
-          {/* Status */}
+          {}
           <div className="bg-muted/30 rounded-lg p-4">
             <div className="flex items-center justify-between">
               <h3 className="text-lg font-semibold text-foreground mb-2">
@@ -77,7 +77,7 @@ export default function ParcelDetailsModal({
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Sender Information */}
+            {}
             <div className="bg-blue-50/50 dark:bg-blue-950/20 rounded-lg p-4">
               <h3 className="text-lg font-semibold text-foreground mb-3 flex items-center">
                 <User className="h-5 w-5 mr-2 text-blue-600" />
@@ -117,7 +117,7 @@ export default function ParcelDetailsModal({
               </div>
             </div>
 
-            {/* Receiver Information */}
+            {}
             <div className="bg-green-50/50 dark:bg-green-950/20 rounded-lg p-4">
               <h3 className="text-lg font-semibold text-foreground mb-3 flex items-center">
                 <User className="h-5 w-5 mr-2 text-green-600" />
@@ -158,7 +158,7 @@ export default function ParcelDetailsModal({
             </div>
           </div>
 
-          {/* Parcel Details */}
+          {}
           <div className="bg-purple-50/50 dark:bg-purple-950/20 rounded-lg p-4">
             <h3 className="text-lg font-semibold text-foreground mb-3 flex items-center">
               <Package className="h-5 w-5 mr-2 text-purple-600" />
@@ -219,7 +219,7 @@ export default function ParcelDetailsModal({
             </div>
           </div>
 
-          {/* Delivery Information */}
+          {}
           <div className="bg-orange-50/50 dark:bg-orange-950/20 rounded-lg p-4">
             <h3 className="text-lg font-semibold text-foreground mb-3 flex items-center">
               <Truck className="h-5 w-5 mr-2 text-orange-600" />
@@ -261,7 +261,7 @@ export default function ParcelDetailsModal({
             </div>
           </div>
 
-          {/* Fee Information */}
+          {}
           {parcel.fee && (
             <div className="bg-yellow-50/50 dark:bg-yellow-950/20 rounded-lg p-4">
               <h3 className="text-lg font-semibold text-foreground mb-3 flex items-center">
@@ -291,7 +291,7 @@ export default function ParcelDetailsModal({
             </div>
           )}
 
-          {/* Dates */}
+          {}
           <div className="bg-muted/30 rounded-lg p-4">
             <h3 className="text-lg font-semibold text-foreground mb-3 flex items-center">
               <Calendar className="h-5 w-5 mr-2" />
@@ -316,7 +316,7 @@ export default function ParcelDetailsModal({
           </div>
         </div>
 
-        {/* Footer */}
+        {}
         <div className="flex justify-end space-x-3 p-6 border-t border-border">
           <button
             onClick={onClose}

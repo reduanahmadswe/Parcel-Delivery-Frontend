@@ -1,12 +1,11 @@
 import { fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-// Direct API URL to avoid configuration issues
 const API_BASE_URL = 'https://parcel-delivery-api.onrender.com/api';
 
 const baseQuery = fetchBaseQuery({
     baseUrl: API_BASE_URL,
     prepareHeaders: (headers, { getState }) => {
-        // Type assertion for the persisted state
+        
         const state = getState() as { auth: { token: string | null } }
         const token = state.auth.token
         if (token) {
@@ -19,6 +18,5 @@ const baseQuery = fetchBaseQuery({
 
 import { apiSlice } from '../store/api/apiSlice';
 
-// Re-export the store-registered apiSlice as `baseApi` to keep backwards compatibility
 export const baseApi = apiSlice;
 

@@ -1,6 +1,5 @@
 "use client";
 
-// Main Parcel Management Component
 import AdminLayout from "../AdminDashboardLayout";
 import ConfirmDialog from "../../../components/modals/ConfirmationDialog";
 
@@ -19,7 +18,7 @@ import { ParcelDetailsModal, StatusUpdateModal } from "./modals";
 import { FilterParams, Parcel } from "../../../services/parcelTypes";
 
 export default function ParcelManagement() {
-  // State management
+  
   const [filteredParcels, setFilteredParcels] = useState<Parcel[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedParcel, setSelectedParcel] = useState<Parcel | null>(null);
@@ -34,11 +33,9 @@ export default function ParcelManagement() {
     trackingNumber: "TRK-202",
   });
 
-  // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
-  // Custom hooks
   const { notification, showNotification, hideNotification } =
     useNotification();
   const { parcels, setParcels, loading, fetchParcels } =
@@ -53,68 +50,57 @@ export default function ParcelManagement() {
   } = useParcelActions();
   const { statusLog, fetchStatusLog } = useStatusLog();
 
-  // Filter parcels based on search term and filter parameters
   useEffect(() => {
     let filtered = parcels;
-    
-    // First apply advanced filters (from Smart Filters)
+
     filtered = ParcelDataTransformer.filterParcelsByParams(filtered, filterParams);
-    
-    // Then apply search term filter (from search bar)
+
     if (searchTerm.trim()) {
       filtered = ParcelDataTransformer.filterParcels(filtered, searchTerm);
     }
     
     setFilteredParcels(filtered);
-    // Reset to first page when filtering changes
+    
     setCurrentPage(1);
   }, [parcels, searchTerm, filterParams]);
 
-  // Pagination logic
   const totalPages = Math.max(1, Math.ceil(filteredParcels.length / itemsPerPage));
   const paginatedParcels = filteredParcels.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
 
-  // Handle search term change with pagination reset
   const handleSearchChange = (term: string) => {
     setSearchTerm(term);
     setCurrentPage(1);
   };
 
-  // Event handlers
   const handleUpdateStatus = async () => {
     if (!selectedParcel || !newStatus) return;
 
-    // 1️⃣ INSTANT UI Update (Optimistic)
     const updatedParcels = parcels.map((parcel) =>
       parcel.id === selectedParcel.id
         ? { ...parcel, status: newStatus as Parcel["status"] }
         : parcel
     );
     setParcels(updatedParcels);
-    
-    // Close modal immediately for better UX
+
     setShowStatusModal(false);
     const previousParcel = selectedParcel;
     setSelectedParcel(null);
     setNewStatus("");
 
     try {
-      // 2️⃣ API Call in background - Cache will auto-invalidate
-      await updateStatus(previousParcel.id, newStatus);
       
-      // 3️⃣ Background refresh without user noticing
-      // fetchParcels will use cache invalidation to update seamlessly
+      await updateStatus(previousParcel.id, newStatus);
+
       setTimeout(() => {
         fetchParcels(true);
       }, 100);
-      
-      // 4️⃣ Success notification
+
       showNotification("success", "Parcel status updated successfully!");
     } catch (error: any) {
-      // 5️⃣ Rollback on error
+      
       setParcels(parcels);
       
       let errorMessage = "Failed to update parcel status. Please try again.";
@@ -136,18 +122,16 @@ export default function ParcelManagement() {
 
   const handleFlagParcel = async (parcel: Parcel) => {
     const newFlaggedState = !parcel.isFlagged;
-    
-    // 1️⃣ Instant UI update
+
     const updatedParcels = parcels.map((p) =>
       p.id === parcel.id ? { ...p, isFlagged: newFlaggedState } : p
     );
     setParcels(updatedParcels);
     
     try {
-      // 2️⃣ API call
-      await flagParcel(parcel.id, newFlaggedState);
       
-      // 3️⃣ Background refresh without blocking UI
+      await flagParcel(parcel.id, newFlaggedState);
+
       setTimeout(() => {
         fetchParcels(true);
       }, 100);
@@ -157,7 +141,7 @@ export default function ParcelManagement() {
         `Parcel ${newFlaggedState ? "flagged" : "unflagged"} successfully!`
       );
     } catch (error) {
-      // Rollback on error
+      
       setParcels(parcels);
       showNotification("error", "Failed to flag parcel. Please try again.");
     }
@@ -165,18 +149,16 @@ export default function ParcelManagement() {
 
   const handleHoldParcel = async (parcel: Parcel) => {
     const newHoldState = !parcel.isOnHold;
-    
-    // 1️⃣ Instant UI update
+
     const updatedParcels = parcels.map((p) =>
       p.id === parcel.id ? { ...p, isOnHold: newHoldState } : p
     );
     setParcels(updatedParcels);
     
     try {
-      // 2️⃣ API call
-      await holdParcel(parcel.id, newHoldState);
       
-      // 3️⃣ Background refresh without blocking UI
+      await holdParcel(parcel.id, newHoldState);
+
       setTimeout(() => {
         fetchParcels(true);
       }, 100);
@@ -188,7 +170,7 @@ export default function ParcelManagement() {
         } successfully!`
       );
     } catch (error) {
-      // Rollback on error
+      
       setParcels(parcels);
       showNotification(
         "error",
@@ -198,24 +180,23 @@ export default function ParcelManagement() {
   };
 
   const handleReturnParcel = async (parcel: Parcel) => {
-    // 1️⃣ Instant UI update - change status to 'returned'
+    
     const updatedParcels = parcels.map((p) =>
       p.id === parcel.id ? { ...p, status: 'returned' as Parcel["status"] } : p
     );
     setParcels(updatedParcels);
     
     try {
-      // 2️⃣ API call
-      await returnParcel(parcel.id);
       
-      // 3️⃣ Background refresh without blocking UI
+      await returnParcel(parcel.id);
+
       setTimeout(() => {
         fetchParcels(true);
       }, 100);
       
       showNotification("success", "Parcel returned successfully!");
     } catch (error) {
-      // Rollback on error
+      
       setParcels(parcels);
       showNotification("error", "Failed to return parcel. Please try again.");
     }
@@ -224,7 +205,6 @@ export default function ParcelManagement() {
   const handleDeleteParcel = async () => {
     if (!selectedParcel) return;
 
-    // 1️⃣ Instant UI update - remove from list
     const updatedParcels = parcels.filter((p) => p.id !== selectedParcel.id);
     setParcels(updatedParcels);
     setShowConfirmDialog(false);
@@ -232,17 +212,16 @@ export default function ParcelManagement() {
     setSelectedParcel(null);
     
     try {
-      // 2️⃣ API call
-      await deleteParcel(deletedParcelId);
       
-      // 3️⃣ Background refresh without blocking UI
+      await deleteParcel(deletedParcelId);
+
       setTimeout(() => {
         fetchParcels(true);
       }, 100);
       
       showNotification("success", "Parcel deleted successfully!");
     } catch (error) {
-      // Rollback on error - re-add the parcel
+      
       setTimeout(() => {
         fetchParcels(true);
       }, 100);
@@ -271,13 +250,11 @@ export default function ParcelManagement() {
     [showNotification]
   );
 
-  // Error handling for parcels hook
   useEffect(() => {
     const handleError = (error: Error) => {
       handleParcelsError(error);
     };
 
-    // This is a simplified error handling - in a real app you might use error boundaries
     window.addEventListener("unhandledrejection", (event) => {
       if (event.reason?.message?.includes("parcels")) {
         handleError(event.reason);
@@ -289,7 +266,6 @@ export default function ParcelManagement() {
     };
   }, [handleParcelsError]);
 
-  // Quick Find Parcel by Tracking Number
   useEffect(() => {
     const handleQuickFind = (event: CustomEvent) => {
       const { trackingNumber } = event.detail;
@@ -298,14 +274,13 @@ export default function ParcelManagement() {
       );
       
       if (foundParcel) {
-        // Show parcel details
+        
         setSelectedParcel(foundParcel);
         setShowDetailsModal(true);
-        
-        // Show success notification
+
         showNotification("success", `Parcel found: ${trackingNumber}`);
       } else {
-        // Show error notification
+        
         showNotification("error", `No parcel found with tracking number: ${trackingNumber}`);
       }
     };
@@ -319,7 +294,7 @@ export default function ParcelManagement() {
 
   return (
     <AdminLayout>
-      {/* Modern Enhanced Notification System */}
+      {}
       {notification && (
         <div className="fixed top-4 sm:top-6 right-4 sm:right-6 z-50 animate-fade-in max-w-[calc(100vw-2rem)] sm:max-w-md">
           <div
@@ -374,10 +349,10 @@ export default function ParcelManagement() {
         </div>
       )}
 
-      {/* Modern Main Container with Enhanced Parcel Tracking Theme */}
+      {}
       <div className="min-h-screen bg-[hsl(var(--background))] mt-4 sm:mt-6 lg:mt-8">
         <div className="max-w-7xl mx-auto pt-1 sm:pt-2 px-3 sm:px-4 lg:px-6 space-y-4 sm:space-y-6 lg:space-y-8 pb-12 sm:pb-16 lg:pb-20">
-          {/* Enhanced Filter Panel */}
+          {}
           <FilterPanel
             filterParams={filterParams}
             setFilterParams={setFilterParams}
@@ -392,7 +367,7 @@ export default function ParcelManagement() {
             onRefresh={fetchParcels}
           />
 
-          {/* Modern Search Results Summary */}
+          {}
           {searchTerm && (
             <div className="relative overflow-hidden parcel-search-result p-4 sm:p-5 lg:p-6 shadow-lg hover:shadow-xl transition-all duration-300 group animate-fade-in">
               <div className="absolute inset-0 bg-gradient-to-r from-red-500/5 to-orange-500/5"></div>
@@ -427,11 +402,11 @@ export default function ParcelManagement() {
             </div>
           )}
 
-          {/* Modern Enhanced Data Table Container */}
+          {}
           <div className="relative overflow-hidden bg-background/80 backdrop-blur-sm border border-border/50 rounded-2xl sm:rounded-3xl shadow-2xl hover:shadow-3xl hover:shadow-red-500/10 transition-all duration-500 group hover:-translate-y-1">
             <div className="absolute inset-0 bg-gradient-to-br from-red-500/5 via-orange-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
             <div className="relative">
-              {/* Modern Table Header */}
+              {}
               <div className="bg-gradient-to-r from-red-500/10 via-orange-500/10 to-purple-500/10 border-b border-border/30 p-4 sm:p-6 lg:p-8 rounded-t-2xl sm:rounded-t-3xl">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
                   <div className="flex items-center space-x-2.5 sm:space-x-3 lg:space-x-4">
@@ -460,7 +435,7 @@ export default function ParcelManagement() {
                 </div>
               </div>
 
-              {/* Enhanced Parcel Cards */}
+              {}
               {loading ? (
                 <div className="space-y-3 sm:space-y-4 p-3 sm:p-4 lg:p-6">
                   {[...Array(5)].map((_, i) => (
@@ -487,9 +462,9 @@ export default function ParcelManagement() {
                     >
                       <div className="p-3 sm:p-4 lg:p-6">
                         <div className="flex flex-col xs:flex-row items-start xs:items-center gap-3 sm:gap-4">
-                          {/* Parcel Info Section */}
+                          {}
                           <div className="flex items-center gap-2.5 sm:gap-3 lg:gap-4 flex-1 w-full xs:w-auto">
-                            {/* Package Icon with gradient background */}
+                            {}
                             <div className="relative flex-shrink-0">
                               <div className="w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 bg-gradient-to-br from-red-500 via-red-600 to-red-700 rounded-xl sm:rounded-2xl flex items-center justify-center text-white font-bold shadow-lg group-hover/card:shadow-xl group-hover/card:scale-105 transition-all duration-300">
                                 <Package className="w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7" />
@@ -497,13 +472,13 @@ export default function ParcelManagement() {
                               <div className="absolute -top-0.5 -right-0.5 sm:-top-1 sm:-right-1 w-3 h-3 sm:w-4 sm:h-4 lg:w-5 lg:h-5 bg-green-500 border-2 border-background rounded-full opacity-0 group-hover/card:opacity-100 transition-opacity duration-300"></div>
                             </div>
 
-                            {/* Parcel Details */}
+                            {}
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-1.5 sm:gap-2 lg:gap-3 mb-1 sm:mb-1.5 lg:mb-2 flex-wrap">
                                 <h3 className="font-semibold text-sm sm:text-base lg:text-lg text-foreground group-hover/card:text-red-600 transition-colors duration-300 truncate">
                                   {parcel.trackingNumber}
                                 </h3>
-                                {/* Priority Badge */}
+                                {}
                                 <span className={`inline-flex items-center px-2 sm:px-2.5 lg:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium shadow-sm ${
                                   parcel.isUrgent 
                                     ? 'bg-gradient-to-r from-red-100 to-red-200 text-red-800 dark:from-red-900/30 dark:to-red-800/30 dark:text-red-400'
@@ -533,9 +508,9 @@ export default function ParcelManagement() {
                             </div>
                           </div>
 
-                          {/* Status and Actions Section */}
+                          {}
                           <div className="flex items-center justify-between xs:justify-end gap-2 sm:gap-3 lg:gap-4 w-full xs:w-auto">
-                            {/* Enhanced Status Badge */}
+                            {}
                             <div className="flex flex-col xs:items-end gap-1 sm:gap-1.5 lg:gap-2">
                               <span className={`inline-flex items-center gap-1 sm:gap-1.5 lg:gap-2 px-2 sm:px-2.5 lg:px-3 py-1 sm:py-1.5 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-semibold border shadow-sm hover:shadow-md transition-all duration-300 group-hover/card:scale-105 ${
                                 parcel.status === 'approved' 
@@ -561,7 +536,7 @@ export default function ParcelManagement() {
                               </span>
                             </div>
 
-                            {/* Action Buttons */}
+                            {}
                             <div className="flex items-center gap-0.5 sm:gap-1 lg:gap-2 transition-all duration-300">
                               <button
                                 onClick={(e) => {
@@ -630,14 +605,14 @@ export default function ParcelManagement() {
                         </div>
                       </div>
 
-                      {/* Animated bottom border */}
+                      {}
                       <div className="h-0.5 sm:h-1 bg-gradient-to-r from-red-500 via-red-600 to-red-700 transform scale-x-0 group-hover/card:scale-x-100 transition-transform duration-500 origin-left"></div>
                     </div>
                   ))}
                 </div>
               )}
 
-              {/* Enhanced Pagination */}
+              {}
               {filteredParcels.length > 0 && (
                 <div className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4 mt-4 sm:mt-6 lg:mt-8 p-3 sm:p-4 bg-background/50 backdrop-blur-sm rounded-xl sm:rounded-2xl border border-border/50">
                   <div className="text-xs sm:text-sm text-muted-foreground text-center sm:text-left">
@@ -653,20 +628,18 @@ export default function ParcelManagement() {
                       <span className="xs:hidden">Prev</span>
                     </button>
 
-                    {/* Smart Pagination - Show only 3 pages on mobile, 4 on desktop */}
+                    {}
                     {(() => {
                       const maxVisiblePages = window.innerWidth < 640 ? 3 : 4;
                       let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
                       let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
-                      
-                      // Adjust start page if we're near the end
+
                       if (endPage - startPage + 1 < maxVisiblePages) {
                         startPage = Math.max(1, endPage - maxVisiblePages + 1);
                       }
 
                       const pages = [];
-                      
-                      // Show first page if not in range
+
                       if (startPage > 1) {
                         pages.push(
                           <button
@@ -687,7 +660,6 @@ export default function ParcelManagement() {
                         }
                       }
 
-                      // Show visible page range
                       for (let page = startPage; page <= endPage; page++) {
                         pages.push(
                           <button
@@ -704,7 +676,6 @@ export default function ParcelManagement() {
                         );
                       }
 
-                      // Show last page if not in range
                       if (endPage < totalPages) {
                         if (endPage < totalPages - 1) {
                           pages.push(
@@ -739,7 +710,7 @@ export default function ParcelManagement() {
                 </div>
               )}
 
-              {/* Enhanced Empty State */}
+              {}
               {filteredParcels.length === 0 && !loading && (
                 <div className="text-center py-8 sm:py-12 lg:py-16 px-4">
                   <div className="relative inline-block">
@@ -759,7 +730,7 @@ export default function ParcelManagement() {
         </div>
       </div>
 
-      {/* Parcel Details Modal */}
+      {}
       <ParcelDetailsModal
         isOpen={showDetailsModal}
         onClose={() => {
@@ -770,7 +741,7 @@ export default function ParcelManagement() {
         onUpdateStatus={openStatusModal}
       />
 
-      {/* Status Update Modal */}
+      {}
       <StatusUpdateModal
         isOpen={showStatusModal}
         onClose={() => {
@@ -785,7 +756,7 @@ export default function ParcelManagement() {
         loading={actionLoading}
       />
 
-      {/* Delete Confirmation Dialog */}
+      {}
       <ConfirmDialog
         isOpen={showConfirmDialog}
         onClose={() => setShowConfirmDialog(false)}

@@ -1,10 +1,9 @@
 import { User } from '@/types/GlobalTypeDefinitions';
 import { apiSlice } from './apiSlice';
 
-// Auth API endpoints
 export const authApiSlice = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
-        // Login
+        
         login: builder.mutation<
             {
                 success: boolean;
@@ -23,7 +22,6 @@ export const authApiSlice = apiSlice.injectEndpoints({
             }),
         }),
 
-        // Register
         register: builder.mutation<
             { success: boolean; message: string },
             {
@@ -48,7 +46,6 @@ export const authApiSlice = apiSlice.injectEndpoints({
             }),
         }),
 
-        // Get current user
         getCurrentUser: builder.query<
             { success: boolean; data: User },
             void
@@ -57,7 +54,6 @@ export const authApiSlice = apiSlice.injectEndpoints({
             providesTags: ['User'],
         }),
 
-        // Refresh token
         refreshToken: builder.mutation<
             { accessToken: string },
             { refreshToken: string }
@@ -69,7 +65,6 @@ export const authApiSlice = apiSlice.injectEndpoints({
             }),
         }),
 
-        // Logout
         logout: builder.mutation<{ success: boolean }, void>({
             query: () => ({
                 url: '/auth/logout',

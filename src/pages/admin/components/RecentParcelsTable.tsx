@@ -21,7 +21,7 @@ interface Props {
 export default function RecentParcelsTable({ parcels }: Props) {
     return (
         <div className="bg-background rounded-xl shadow-sm border border-border overflow-hidden">
-            {/* Header */}
+            {}
             <div className="px-3 sm:px-4 lg:px-6 py-3 sm:py-4 bg-gradient-to-r from-red-50/50 via-transparent to-green-50/50 dark:from-red-950/20 dark:to-green-950/20 border-b border-border">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
                     <div className="flex items-center gap-3 sm:gap-4">
@@ -48,7 +48,7 @@ export default function RecentParcelsTable({ parcels }: Props) {
                 </div>
             </div>
 
-            {/* Mobile Card View - Hidden on md+ */}
+            {}
             <div className="block md:hidden">
                 {parcels.length === 0 ? (
                     <div className="px-4 py-8 text-center">
@@ -104,7 +104,7 @@ export default function RecentParcelsTable({ parcels }: Props) {
                 )}
             </div>
 
-            {/* Desktop Table View - Hidden on mobile */}
+            {}
             <div className="hidden md:block overflow-x-auto">
                 <table className="w-full">
                     <thead className="bg-muted/50">

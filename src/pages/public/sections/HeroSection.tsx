@@ -1,5 +1,3 @@
-"use client";
-
 import {
   ArrowRight,
   Clock,
@@ -15,10 +13,10 @@ import FloatingParticles from "./FloatingParticles";
 
 export default function HeroSection() {
   return (
-    <section className="relative min-h-screen flex flex-col overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-      {/* Responsive Background Image */}
+    <section id="hero" className="relative min-h-screen flex flex-col overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+      {}
       <div className="absolute inset-0 z-0">
-        {/* Responsive image: use different image for mobile */}
+        {}
         <picture>
           <source media="(max-width: 640px)" srcSet="/delivery-mobile.jpg" />
           <img
@@ -27,16 +25,16 @@ export default function HeroSection() {
             className="object-cover object-center w-full h-full xs:h-[320px] sm:h-[500px] md:h-[700px] lg:h-screen scale-105 hover:scale-100 transition-transform duration-[10s] ease-out"
           />
         </picture>
-        {/* Enhanced Modern Overlay */}
+        {}
         <div className="absolute inset-0 bg-gradient-to-br from-slate-900/50 via-slate-800/30 to-slate-900/70"></div>
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20"></div>
         <div className="absolute inset-0 bg-gradient-radial from-transparent via-black/10 to-black/30"></div>
       </div>
 
-      {/* Floating Particles Animation */}
+      {}
       <FloatingParticles />
 
-      {/* Animated Background Elements */}
+      {}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
           animate={{
@@ -65,10 +63,10 @@ export default function HeroSection() {
         />
       </div>
 
-      {/* Main Content Section */}
+      {}
       <div className="relative z-10 flex-1 flex items-center justify-center">
         <div className="max-w-4xl mx-auto px-2 xs:px-3 sm:px-6 lg:px-8 w-full text-center">
-          {/* Floating Trust Badge */}
+          {}
           <motion.div
             initial={{ opacity: 0, y: 50, scale: 0.8 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -83,7 +81,7 @@ export default function HeroSection() {
             <Star className="relative w-5 h-5 ml-3 text-yellow-400 fill-current animate-pulse" />
           </motion.div>
 
-          {/* Hero Heading with Advanced Typography */}
+          {}
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
@@ -122,7 +120,7 @@ export default function HeroSection() {
             </motion.h1>
           </motion.div>
 
-          {/* Enhanced Description */}
+          {}
           <motion.p
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -141,7 +139,7 @@ export default function HeroSection() {
             service for all your shipping needs.
           </motion.p>
 
-          {/* Advanced CTA Section */}
+          {}
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
@@ -187,14 +185,14 @@ export default function HeroSection() {
             </motion.div>
           </motion.div>
 
-          {/* Quick Stats with enhanced design */}
+          {}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1.0, ease: "easeOut" }}
             className="flex flex-wrap justify-center gap-2 xs:gap-4 sm:gap-6 mt-6 sm:mt-12 pt-6 sm:pt-8 border-t border-white/25"
           >
-            {/* 24/7 Support */}
+            {}
             <motion.div
               whileHover={{ scale: 1.05, y: -5 }}
               transition={{ type: "spring", stiffness: 300 }}
@@ -209,7 +207,7 @@ export default function HeroSection() {
               </div>
             </motion.div>
 
-            {/* Same Day Delivery */}
+            {}
             <motion.div
               whileHover={{ scale: 1.05, y: -5 }}
               transition={{ type: "spring", stiffness: 300 }}
@@ -226,7 +224,7 @@ export default function HeroSection() {
               </div>
             </motion.div>
 
-            {/* Success Rate */}
+            {}
             <motion.div
               whileHover={{ scale: 1.05, y: -5 }}
               transition={{ type: "spring", stiffness: 300 }}

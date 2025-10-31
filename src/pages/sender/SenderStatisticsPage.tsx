@@ -26,35 +26,29 @@ export default function SenderStatisticsPage() {
   const fetchingRef = useRef(false);
   const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Listen for cache invalidation events
   useEffect(() => {
     const handleCacheInvalidation = (event: Event) => {
       const customEvent = event as CustomEvent<{ key: string; timestamp: number }>;
       const { key } = customEvent.detail;
-      
-      // If sender statistics cache is invalidated, refetch data silently
+
       if (key === 'SENDER_STATISTICS' || key === 'SENDER_DASHBOARD' || key === 'MY_LIST' || key.includes('sender:parcels:')) {
-        fetchParcels(true, true); // true = silent background refresh
+        fetchParcels(true, true); 
       }
     };
 
-    // Add event listener
     window.addEventListener('cache-invalidated', handleCacheInvalidation);
 
-    // Cleanup
     return () => {
       window.removeEventListener('cache-invalidated', handleCacheInvalidation);
     };
   }, []);
 
-  // Auto-refresh data every 30 seconds for live updates (silent)
   useEffect(() => {
-    // Start polling for live updates
+    
     pollingIntervalRef.current = setInterval(() => {
-      fetchParcels(true, true); // Force refresh silently in background
-    }, 30000); // 30 seconds
+      fetchParcels(true, true); 
+    }, 30000); 
 
-    // Cleanup interval on unmount
     return () => {
       if (pollingIntervalRef.current) {
         clearInterval(pollingIntervalRef.current);
@@ -62,11 +56,10 @@ export default function SenderStatisticsPage() {
     };
   }, []);
 
-  // Refresh data when user returns to the tab (Page Visibility API) - silent
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (!document.hidden) {
-        // User returned to the tab, refresh data silently
+        
         fetchParcels(true, true);
       }
     };
@@ -81,18 +74,17 @@ export default function SenderStatisticsPage() {
   useEffect(() => {
     if (!isMountedRef.current) {
       isMountedRef.current = true;
-      fetchParcels(false, false); // Initial load - show loading
+      fetchParcels(false, false); 
     }
   }, []);
 
   const fetchParcels = async (force: boolean = false, silent: boolean = false) => {
-    // Prevent concurrent fetches
+    
     if (fetchingRef.current) return;
 
     try {
       fetchingRef.current = true;
 
-      // Check cache first (unless force refresh)
       if (!force) {
         const cachedData = adminCache.get<Parcel[]>(CACHE_KEYS.SENDER_STATISTICS);
         if (cachedData) {
@@ -104,18 +96,15 @@ export default function SenderStatisticsPage() {
         }
       }
 
-      // Only show loading for initial load or manual refresh
       if (!silent) {
         setLoading(true);
       } else {
         setIsBackgroundRefresh(true);
       }
-      
-      // Try multiple endpoints to get all data (similar to dashboard)
+
       let response;
       let allParcels = [];
 
-      // Method 1: Try with high limit parameter
       try {
         response = await api.get("/parcels/me?limit=10000");
         if (response.data.data?.length > 10) {
@@ -124,7 +113,6 @@ export default function SenderStatisticsPage() {
       } catch (err) {
       }
 
-      // Method 2: Try no-pagination with limit
       if (allParcels.length <= 10) {
         try {
           response = await api.get("/parcels/me/no-pagination?limit=10000");
@@ -132,11 +120,10 @@ export default function SenderStatisticsPage() {
             allParcels = response.data.data;
           }
         } catch (err) {
-          // Method 2 failed
+          
         }
       }
 
-      // Method 3: Try pagination with multiple pages
       if (allParcels.length <= 10) {
         try {
           const page1 = await api.get("/parcels/me?page=1&limit=10000");
@@ -149,26 +136,24 @@ export default function SenderStatisticsPage() {
             allParcels = combinedData;
           }
         } catch (err) {
-          // Method 3 failed
+          
         }
       }
 
-      // Method 4: Fallback to original endpoint
       if (allParcels.length === 0) {
         try {
           response = await api.get("/parcels/me/no-pagination");
           allParcels = response.data.data || [];
         } catch (err) {
-          // Fallback failed
+          
         }
       }
 
-      // Cache the results
       adminCache.set(CACHE_KEYS.SENDER_STATISTICS, allParcels);
 
       setParcels(allParcels);
     } catch (error) {
-      // Only show error toast for non-silent refresh
+      
       if (!silent) {
         toast.error("Failed to fetch parcels");
       }
@@ -190,7 +175,7 @@ export default function SenderStatisticsPage() {
     ).length,
     delivered: parcels.filter((p) => p.currentStatus === "delivered").length,
     cancelled: parcels.filter((p) => p.currentStatus === "cancelled").length,
-    // Legacy support for old status names
+    
     requested: parcels.filter((p) => p.currentStatus === "requested").length,
   };
 
@@ -208,7 +193,7 @@ export default function SenderStatisticsPage() {
     <ProtectedRoute allowedRoles={["sender"]}>
       <div className="min-h-screen bg-background mt-8 sm:mt-10 lg:mt-11">
         <div className="max-w-7xl mx-auto pt-2 sm:pt-3 px-3 xs:px-4 sm:px-5 lg:px-6 xl:px-8 space-y-4 sm:space-y-5 lg:space-y-6 pb-20 sm:pb-24">
-          {/* Header */}
+          {}
           <div className="bg-gradient-to-r from-purple-50/50 via-transparent to-blue-50/50 dark:from-purple-950/20 dark:to-blue-950/20 border border-border rounded-lg sm:rounded-xl lg:rounded-2xl p-4 sm:p-5 lg:p-6 xl:p-8">
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 sm:gap-4">
               <div className="space-y-2 sm:space-y-3">
@@ -248,7 +233,7 @@ export default function SenderStatisticsPage() {
             </div>
           </div>
 
-          {/* Current Overview - Live Data - Responsive Grid Layout */}
+          {}
           <div className="bg-background rounded-lg shadow-sm border border-border p-4 sm:p-5 lg:p-6 hover:shadow-lg hover:border-blue-200 dark:hover:border-blue-800 transition-all duration-300 hover:bg-gradient-to-br hover:from-blue-50/20 hover:to-purple-50/20 dark:hover:from-blue-950/10 dark:hover:to-purple-950/10">
             <h2 className="text-base xs:text-lg sm:text-xl font-semibold text-foreground mb-4 sm:mb-5 lg:mb-6 flex items-center">
               <BarChart3 className="h-4 w-4 sm:h-5 sm:w-5 mr-2 text-blue-600" />
@@ -258,9 +243,9 @@ export default function SenderStatisticsPage() {
               </span>
             </h2>
             
-            {/* Responsive Grid Layout */}
+            {}
             <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-3 gap-3 xs:gap-4 sm:gap-5 lg:gap-6">
-              {/* Total Parcels */}
+              {}
               <div className="bg-gradient-to-br from-blue-50/50 to-blue-100/50 dark:from-blue-950/20 dark:to-blue-900/20 border border-blue-200 dark:border-blue-800/50 rounded-lg sm:rounded-xl p-4 sm:p-5 hover:shadow-lg hover:scale-[1.03] hover:border-blue-300 dark:hover:border-blue-700 transition-all duration-300 cursor-pointer">
                 <div className="flex items-center gap-3 sm:gap-4">
                   <div className="p-2 sm:p-2.5 bg-blue-50 dark:bg-blue-950/20 rounded-lg sm:rounded-xl transition-colors duration-300 hover:bg-blue-100 dark:hover:bg-blue-900/30 flex-shrink-0">
@@ -282,7 +267,7 @@ export default function SenderStatisticsPage() {
                 </div>
               </div>
 
-              {/* Pending */}
+              {}
               <div className="bg-gradient-to-br from-yellow-50/50 to-yellow-100/50 dark:from-yellow-950/20 dark:to-yellow-900/20 border border-yellow-200 dark:border-yellow-800/50 rounded-lg sm:rounded-xl p-4 sm:p-5 hover:shadow-lg hover:scale-[1.03] hover:border-yellow-300 dark:hover:border-yellow-700 transition-all duration-300 cursor-pointer">
                 <div className="flex items-center gap-3 sm:gap-4">
                   <div className="p-2 sm:p-2.5 bg-yellow-50 dark:bg-yellow-950/20 rounded-lg sm:rounded-xl transition-colors duration-300 hover:bg-yellow-100 dark:hover:bg-yellow-900/30 flex-shrink-0">
@@ -304,7 +289,7 @@ export default function SenderStatisticsPage() {
                 </div>
               </div>
 
-              {/* In Transit */}
+              {}
               <div className="bg-gradient-to-br from-purple-50/50 to-purple-100/50 dark:from-purple-950/20 dark:to-purple-900/20 border border-purple-200 dark:border-purple-800/50 rounded-lg sm:rounded-xl p-4 sm:p-5 hover:shadow-lg hover:scale-[1.03] hover:border-purple-300 dark:hover:border-purple-700 transition-all duration-300 cursor-pointer">
                 <div className="flex items-center gap-3 sm:gap-4">
                   <div className="p-2 sm:p-2.5 bg-purple-50 dark:bg-purple-950/20 rounded-lg sm:rounded-xl transition-colors duration-300 hover:bg-purple-100 dark:hover:bg-purple-900/30 flex-shrink-0">
@@ -326,7 +311,7 @@ export default function SenderStatisticsPage() {
                 </div>
               </div>
 
-              {/* Delivered */}
+              {}
               <div className="bg-gradient-to-br from-green-50/50 to-green-100/50 dark:from-green-950/20 dark:to-green-900/20 border border-green-200 dark:border-green-800/50 rounded-lg sm:rounded-xl p-4 sm:p-5 hover:shadow-lg hover:scale-[1.03] hover:border-green-300 dark:hover:border-green-700 transition-all duration-300 cursor-pointer">
                 <div className="flex items-center gap-3 sm:gap-4">
                   <div className="p-2 sm:p-2.5 bg-green-50 dark:bg-green-950/20 rounded-lg sm:rounded-xl transition-colors duration-300 hover:bg-green-100 dark:hover:bg-green-900/30 flex-shrink-0">
@@ -350,7 +335,7 @@ export default function SenderStatisticsPage() {
                 </div>
               </div>
 
-              {/* Cancelled */}
+              {}
               <div className="bg-gradient-to-br from-red-50/50 to-red-100/50 dark:from-red-950/20 dark:to-red-900/20 border border-red-200 dark:border-red-800/50 rounded-lg sm:rounded-xl p-4 sm:p-5 hover:shadow-lg hover:scale-[1.03] hover:border-red-300 dark:hover:border-red-700 transition-all duration-300 cursor-pointer">
                 <div className="flex items-center gap-3 sm:gap-4">
                   <div className="p-2 sm:p-2.5 bg-red-50 dark:bg-red-950/20 rounded-lg sm:rounded-xl transition-colors duration-300 hover:bg-red-100 dark:hover:bg-red-900/30 flex-shrink-0">
@@ -374,7 +359,7 @@ export default function SenderStatisticsPage() {
             </div>
           </div>
 
-          {/* Statistics Overview */}
+          {}
           <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-3 xs:gap-4 sm:gap-5 lg:gap-6">
             <div className="bg-background rounded-lg sm:rounded-xl shadow-sm border border-border p-4 sm:p-5 lg:p-6 hover:shadow-xl hover:border-green-200 dark:hover:border-green-800 transition-all duration-300 hover:scale-[1.03] cursor-pointer group">
               <div className="flex items-center justify-between">
@@ -456,9 +441,9 @@ export default function SenderStatisticsPage() {
             </div>
           </div>
 
-          {/* Detailed Statistics */}
+          {}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 lg:gap-6">
-            {/* Status Distribution */}
+            {}
             <div className="bg-background rounded-lg sm:rounded-xl shadow-sm border border-border p-4 sm:p-5 lg:p-6 hover:shadow-xl hover:border-blue-200 dark:hover:border-blue-800 transition-all duration-300 hover:scale-[1.02] cursor-pointer group">
               <h3 className="text-base xs:text-lg sm:text-xl font-semibold text-foreground mb-3 sm:mb-4 group-hover:text-blue-600 transition-colors duration-300">
                 Status Distribution
@@ -535,7 +520,7 @@ export default function SenderStatisticsPage() {
               </div>
             </div>
 
-            {/* Monthly Breakdown */}
+            {}
             <div className="bg-background rounded-lg sm:rounded-xl shadow-sm border border-border p-4 sm:p-5 lg:p-6 hover:shadow-xl hover:border-purple-200 dark:hover:border-purple-800 transition-all duration-300 hover:scale-[1.02] cursor-pointer group">
               <h3 className="text-base xs:text-lg sm:text-xl font-semibold text-foreground mb-3 sm:mb-4 group-hover:text-purple-600 transition-colors duration-300">
                 Monthly Overview
@@ -592,7 +577,7 @@ export default function SenderStatisticsPage() {
             </div>
           </div>
 
-          {/* Empty State */}
+          {}
           {stats.total === 0 && (
             <div className="bg-background rounded-lg sm:rounded-xl shadow-sm border border-border p-6 sm:p-8 lg:p-10 text-center hover:shadow-xl hover:border-blue-200 dark:hover:border-blue-800 transition-all duration-300 hover:scale-[1.02] cursor-pointer group">
               <BarChart3 className="mx-auto h-10 w-10 sm:h-12 sm:w-12 lg:h-14 lg:w-14 text-muted-foreground mb-3 sm:mb-4 group-hover:text-blue-600 group-hover:scale-110 transition-all duration-300" />

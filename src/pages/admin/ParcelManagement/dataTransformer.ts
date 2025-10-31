@@ -1,12 +1,10 @@
-// Data transformation utilities for Parcel Management
+
 import { ApiParcel, Parcel } from "../../../services/parcelTypes";
 
 export class ParcelDataTransformer {
-  /**
-   * Transform API parcel data to frontend Parcel format
-   */
+  
   static transformApiParcelToParcel(parcel: ApiParcel, index: number): Parcel {
-    // Handle MongoDB _id field
+    
     const parcelId = parcel.id || parcel._id || 0;
 
     const processedParcel: Parcel = {
@@ -162,14 +160,9 @@ export class ParcelDataTransformer {
           : parcel.updatedAt?.$date || new Date().toISOString(),
     };
 
-    
-
     return processedParcel;
   }
 
-  /**
-   * Transform array of API parcels to frontend Parcel format
-   */
   static transformApiParcelsToFrontend(apiParcels: ApiParcel[]): Parcel[] {
     if (!Array.isArray(apiParcels) || apiParcels.length === 0) {
       return [];
@@ -180,9 +173,6 @@ export class ParcelDataTransformer {
     );
   }
 
-  /**
-   * Filter parcels based on search term
-   */
   static filterParcels(parcels: Parcel[], searchTerm: string): Parcel[] {
     if (!searchTerm.trim()) {
       return parcels;
@@ -190,7 +180,7 @@ export class ParcelDataTransformer {
 
     const searchLower = searchTerm.toLowerCase().trim();
     return parcels.filter((parcel) => {
-      // Search in tracking number, sender name, recipient name, status, and description
+      
       const searchableFields = [
         parcel.trackingNumber,
         parcel.senderName,
@@ -208,12 +198,9 @@ export class ParcelDataTransformer {
     });
   }
 
-  /**
-   * Filter parcels based on advanced filter parameters
-   */
   static filterParcelsByParams(parcels: Parcel[], filterParams: import("../../../services/parcelTypes").FilterParams): Parcel[] {
     return parcels.filter((parcel) => {
-      // Filter by tracking number (exact or partial match)
+      
       if (filterParams.trackingNumber && filterParams.trackingNumber.trim()) {
         const trackingLower = filterParams.trackingNumber.toLowerCase().trim();
         if (!parcel.trackingNumber?.toLowerCase().includes(trackingLower)) {
@@ -221,7 +208,6 @@ export class ParcelDataTransformer {
         }
       }
 
-      // Filter by sender email
       if (filterParams.senderEmail && filterParams.senderEmail.trim()) {
         const senderEmailLower = filterParams.senderEmail.toLowerCase().trim();
         if (!parcel.senderEmail?.toLowerCase().includes(senderEmailLower)) {
@@ -229,7 +215,6 @@ export class ParcelDataTransformer {
         }
       }
 
-      // Filter by receiver email
       if (filterParams.receiverEmail && filterParams.receiverEmail.trim()) {
         const receiverEmailLower = filterParams.receiverEmail.toLowerCase().trim();
         if (!parcel.recipientEmail?.toLowerCase().includes(receiverEmailLower)) {
@@ -237,7 +222,6 @@ export class ParcelDataTransformer {
         }
       }
 
-      // Filter by status
       if (filterParams.status && filterParams.status.trim()) {
         if (parcel.status !== filterParams.status) {
           return false;

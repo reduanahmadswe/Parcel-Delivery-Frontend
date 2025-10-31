@@ -1,4 +1,4 @@
-/* eslint-disable prefer-const */
+
 import { cn } from "../../utils/utils";
 import { CheckCircle } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";

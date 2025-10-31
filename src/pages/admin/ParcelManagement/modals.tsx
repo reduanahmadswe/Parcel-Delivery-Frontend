@@ -1,4 +1,4 @@
-// Modal components for Parcel Management
+
 import Modal from "../../../components/modals/ModalDialogComponent";
 import StatusBadge from "../../../components/common/StatusIndicatorBadge";
 import {
@@ -35,7 +35,7 @@ export function ParcelDetailsModal({
       size="xl"
     >
       <div className="space-y-4 sm:space-y-6 lg:space-y-8">
-        {/* Modern Enhanced Header Section */}
+        {}
         <div className="group relative overflow-hidden bg-gradient-to-br from-red-50/80 via-orange-50/80 to-purple-50/80 dark:from-black/80 dark:via-slate-900/80 dark:to-slate-800/80 backdrop-blur-sm rounded-xl sm:rounded-2xl lg:rounded-3xl p-3 sm:p-4 lg:p-6 xl:p-8 border border-red-200/30 dark:border-slate-600/20 hover:shadow-2xl hover:shadow-red-500/10 transition-all duration-500">
           <div className="absolute inset-0 bg-gradient-to-r from-red-500/5 to-orange-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
           <div className="relative">
@@ -68,7 +68,7 @@ export function ParcelDetailsModal({
           </div>
         </div>
 
-        {/* Modern Enhanced Basic Information Card */}
+        {}
         <div className="group relative overflow-hidden bg-card/80 backdrop-blur-xl border border-border/50 rounded-2xl sm:rounded-3xl p-3 sm:p-4 lg:p-6 xl:p-8 shadow-xl hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-500 hover:-translate-y-1">
           <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-indigo-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
           <div className="relative">
@@ -145,9 +145,9 @@ export function ParcelDetailsModal({
           </div>
         </div>
 
-        {/* Modern Sender & Recipient Information */}
+        {}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 lg:gap-6 xl:gap-8">
-          {/* Enhanced Sender Card */}
+          {}
           <div className="relative overflow-hidden bg-card/80 backdrop-blur-xl border border-border/50 rounded-2xl sm:rounded-3xl p-3 sm:p-4 lg:p-6 xl:p-8 shadow-xl">
             <div className="absolute inset-0 bg-gradient-to-r from-green-500/5 to-emerald-500/5"></div>
             <div className="relative">
@@ -193,7 +193,7 @@ export function ParcelDetailsModal({
             </div>
           </div>
 
-          {/* Enhanced Recipient Card */}
+          {}
           <div className="relative overflow-hidden bg-card/80 backdrop-blur-xl border border-border/50 rounded-2xl sm:rounded-3xl p-3 sm:p-4 lg:p-6 xl:p-8 shadow-xl">
             <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 to-violet-500/5"></div>
             <div className="relative">
@@ -252,7 +252,7 @@ export function ParcelDetailsModal({
           </div>
         </div>
 
-        {/* Enhanced Additional Information */}
+        {}
         <div className="relative overflow-hidden bg-card/80 backdrop-blur-xl border border-border/50 rounded-2xl sm:rounded-3xl p-3 sm:p-4 lg:p-6 xl:p-8 shadow-xl">
           <div className="absolute inset-0 bg-gradient-to-r from-orange-500/5 to-amber-500/5"></div>
           <div className="relative">
@@ -311,7 +311,7 @@ export function ParcelDetailsModal({
           </div>
         </div>
 
-        {/* Enhanced Action Buttons */}
+        {}
         <div className="flex flex-col xs:flex-row justify-end gap-2 sm:gap-3 lg:gap-4 xl:gap-6 pt-3 sm:pt-4 lg:pt-6 xl:pt-8 border-t border-border">
           <button
             onClick={onClose}
@@ -364,7 +364,7 @@ export function StatusUpdateModal({
       size="md"
     >
       <div className="space-y-3 sm:space-y-4 lg:space-y-6 xl:space-y-8">
-        {/* Enhanced Header */}
+        {}
         <div className="relative overflow-hidden bg-gradient-to-br from-red-50 via-orange-50 to-purple-50 dark:from-red-900/20 dark:via-orange-900/20 dark:to-purple-900/20 rounded-2xl sm:rounded-3xl p-3 sm:p-4 lg:p-5 xl:p-6 border border-red-200/30 dark:border-red-700/20">
           <div className="absolute inset-0 bg-gradient-to-r from-red-500/5 to-orange-500/5"></div>
           <div className="relative text-center">
@@ -380,7 +380,7 @@ export function StatusUpdateModal({
           </div>
         </div>
 
-        {/* Current Status Card */}
+        {}
         <div className="relative overflow-hidden bg-card/80 backdrop-blur-xl border border-border/50 rounded-xl sm:rounded-2xl p-3 sm:p-4 lg:p-5 xl:p-6 shadow-lg">
           <div className="absolute inset-0 bg-gradient-to-r from-gray-500/5 to-slate-500/5"></div>
           <div className="relative">
@@ -398,7 +398,7 @@ export function StatusUpdateModal({
           </div>
         </div>
 
-        {/* New Status Selection */}
+        {}
         <div className="relative overflow-hidden bg-card/80 backdrop-blur-xl border border-border/50 rounded-xl sm:rounded-2xl p-3 sm:p-4 lg:p-5 xl:p-6 shadow-lg">
           <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-purple-500/5"></div>
           <div className="relative">
@@ -426,7 +426,7 @@ export function StatusUpdateModal({
           </div>
         </div>
 
-        {/* Enhanced Action Buttons */}
+        {}
         <div className="flex flex-col xs:flex-row justify-end gap-2 sm:gap-3 lg:gap-4 xl:gap-6 pt-3 sm:pt-4 lg:pt-5 xl:pt-6 border-t border-border">
           <button
             onClick={onClose}

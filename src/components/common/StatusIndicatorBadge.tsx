@@ -9,7 +9,7 @@ export default function StatusBadge({
   variant = "parcel",
   className = "",
 }: StatusBadgeProps) {
-  // Handle undefined, null, or non-string status values
+  
   const safeStatus = status?.toString() || "unknown";
 
   const getStatusConfig = () => {
@@ -51,7 +51,6 @@ export default function StatusBadge({
       }
     }
 
-    // Custom variant - status-based styling
     switch (safeStatus.toLowerCase()) {
       case "active":
         return "bg-gradient-to-r from-green-100 to-green-200 text-green-800 dark:from-green-900/50 dark:to-green-800/50 dark:text-green-200 border border-green-300 dark:border-green-600 shadow-sm";

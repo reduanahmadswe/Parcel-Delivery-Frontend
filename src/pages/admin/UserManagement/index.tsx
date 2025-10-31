@@ -1,8 +1,5 @@
 "use client";
 
-// Main User Management Component - Modern and Clean
-// This file focuses on state orchestration and layout
-
 import AdminLayout from "@/pages/admin/AdminDashboardLayout";
 import { Edit, Power, PowerOff, Trash2 } from "lucide-react";
 import { useState } from "react";
@@ -18,7 +15,7 @@ import { useUserManagement } from "./hooks";
 import { User } from "./types";
 
 export default function AdminUsersPage() {
-  // State for modals and UI
+  
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
@@ -28,11 +25,9 @@ export default function AdminUsersPage() {
   const [userToDelete, setUserToDelete] = useState<User | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
-  // Custom hook for user management logic
   const {
     users,
     loading,
@@ -44,7 +39,6 @@ export default function AdminUsersPage() {
     refreshUsers,
   } = useUserManagement();
 
-  // Filter users based on search term
   const filteredUsers = users.filter(
     (user) =>
       user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -52,20 +46,17 @@ export default function AdminUsersPage() {
       user.role.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Pagination logic
   const totalPages = Math.max(1, Math.ceil(filteredUsers.length / itemsPerPage));
   const paginatedUsers = filteredUsers.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
 
-  // Reset to first page when search term changes
   const handleSearchChange = (term: string) => {
     setSearchTerm(term);
     setCurrentPage(1);
   };
 
-  // Handlers for user actions
   const handleCreateUser = () => {
     setSelectedUser(null);
     setIsCreating(true);
@@ -115,7 +106,6 @@ export default function AdminUsersPage() {
     setSelectedUser(null);
   };
 
-  // Table columns configuration
   const columns = [
     {
       header: "Name",
@@ -214,7 +204,7 @@ export default function AdminUsersPage() {
     <AdminLayout>
       <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 mt-4 sm:mt-6 lg:mt-8">
         <div className="max-w-7xl mx-auto pt-1 sm:pt-2 px-3 sm:px-4 lg:px-6 space-y-4 sm:space-y-6 lg:space-y-8 pb-12 sm:pb-16 lg:pb-24">
-          {/* Header with stats */}
+          {}
           <UserManagementHeader
             searchTerm={searchTerm}
             filteredUsers={filteredUsers}
@@ -225,7 +215,7 @@ export default function AdminUsersPage() {
             onCreateUser={handleCreateUser}
           />
 
-          {/* Modern Users Grid */}
+          {}
           <DataTable
             columns={columns}
             data={paginatedUsers}
@@ -233,7 +223,7 @@ export default function AdminUsersPage() {
             onSearchChange={handleSearchChange}
           />
 
-          {/* Modern Pagination */}
+          {}
           {filteredUsers.length > 0 && (
             <div className="relative overflow-hidden rounded-xl sm:rounded-2xl bg-background/80 backdrop-blur-sm border border-border/50 shadow-lg">
               <div className="absolute inset-0 bg-gradient-to-r from-red-500/5 via-transparent to-blue-500/5"></div>
@@ -265,20 +255,18 @@ export default function AdminUsersPage() {
                     </button>
 
                     <div className="flex items-center space-x-0.5 sm:space-x-1">
-                      {/* Smart Pagination - Show only 3 pages on mobile, 4 on desktop */}
+                      {}
                       {(() => {
                         const maxVisiblePages = window.innerWidth < 640 ? 3 : 4;
                         let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
                         let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
-                        
-                        // Adjust start page if we're near the end
+
                         if (endPage - startPage + 1 < maxVisiblePages) {
                           startPage = Math.max(1, endPage - maxVisiblePages + 1);
                         }
 
                         const pages = [];
-                        
-                        // Show first page if not in range
+
                         if (startPage > 1) {
                           pages.push(
                             <button
@@ -300,7 +288,6 @@ export default function AdminUsersPage() {
                           }
                         }
 
-                        // Show visible page range
                         for (let page = startPage; page <= endPage; page++) {
                           pages.push(
                             <button
@@ -320,7 +307,6 @@ export default function AdminUsersPage() {
                           );
                         }
 
-                        // Show last page if not in range
                         if (endPage < totalPages) {
                           if (endPage < totalPages - 1) {
                             pages.push(
@@ -366,7 +352,7 @@ export default function AdminUsersPage() {
             </div>
           )}
 
-          {/* User Form Modal */}
+          {}
           <UserFormModal
             isOpen={isCreating || isEditing}
             onClose={() => {
@@ -379,7 +365,7 @@ export default function AdminUsersPage() {
             actionLoading={actionLoading}
           />
 
-          {/* Block User Modal */}
+          {}
           <BlockUserModal
             isOpen={showBlockModal}
             onClose={() => {
@@ -391,7 +377,7 @@ export default function AdminUsersPage() {
             isBlocked={userToBlock?.status === "blocked"}
           />
 
-          {/* Delete User Modal */}
+          {}
           <DeleteUserModal
             isOpen={showDeleteModal}
             onClose={() => {

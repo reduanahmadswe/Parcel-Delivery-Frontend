@@ -72,9 +72,9 @@ export default function PartnersSection() {
       id="partners"
       className="py-20 bg-gradient-to-br from-background via-background to-accent/10"
     >
-      {/* Main Content */}
+      {}
       <div className="max-w-7xl mx-auto px-6">
-        {/* Hero Section */}
+        {}
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 bg-accent/20 text-accent-foreground px-4 py-2 rounded-full text-sm font-medium mb-6">
             <Users className="w-4 h-4" />
@@ -93,7 +93,7 @@ export default function PartnersSection() {
           </p>
         </div>
 
-        {/* Partners Grid */}
+        {}
         <div className="grid md:grid-cols-4 gap-6 mb-20">
           {partners.map((partner, index) => (
             <div
@@ -113,7 +113,7 @@ export default function PartnersSection() {
           ))}
         </div>
 
-        {/* Benefits Section */}
+        {}
         <div className="text-center mb-16">
           <h2 className="text-3xl font-bold text-foreground mb-4">
             Why Partner with Us?
@@ -141,7 +141,7 @@ export default function PartnersSection() {
           </div>
         </div>
 
-        {/* CTA Section */}
+        {}
         <div className="text-center bg-gradient-to-r from-red-500/10 to-orange-500/10 border border-red-200/20 rounded-3xl p-12">
           <h2 className="text-3xl font-bold text-foreground mb-4">
             Ready to Partner with Us?
@@ -169,7 +169,7 @@ export default function PartnersSection() {
           </div>
         </div>
 
-        {/* Success Stories Preview */}
+        {}
         <div className="mt-20 text-center">
           <h2 className="text-2xl font-bold mb-8 text-foreground">
             What our partners say

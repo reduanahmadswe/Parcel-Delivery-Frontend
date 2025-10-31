@@ -57,7 +57,7 @@ export default function StatCards({ statCards }: Props) {
               <p className="text-xs sm:text-sm text-muted-foreground">{card.change}</p>
             </div>
 
-            {/* Progress indicator placeholder */}
+            {}
             <div className="mt-3 sm:mt-4 w-full bg-muted rounded-full h-1 sm:h-1.5">
               <div className={`bg-gradient-to-r from-${card.color}-500 to-${card.color}-600 h-1 sm:h-1.5 rounded-full`} style={{ width: "70%" }}></div>
             </div>

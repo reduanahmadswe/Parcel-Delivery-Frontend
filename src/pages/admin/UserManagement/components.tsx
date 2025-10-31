@@ -19,7 +19,6 @@ import {
 import React, { useEffect, useState } from "react";
 import { BlockUserReason, User } from "./types";
 
-// Enhanced Modal Component with modern animations
 export function Modal({
   isOpen,
   onClose,
@@ -36,10 +35,10 @@ export function Modal({
   useEffect(() => {
     if (isOpen) {
       setIsAnimating(true);
-      // Allow backdrop clicks after animation completes
+      
       const timer = setTimeout(() => {
         setIsAnimating(false);
-      }, 350); // Slightly longer than animation duration
+      }, 350); 
       return () => clearTimeout(timer);
     }
   }, [isOpen]);
@@ -53,7 +52,6 @@ export function Modal({
     xl: "max-w-4xl",
   };
 
-  // Handle outside click - but only after animation completes
   const handleBackdropClick = (e: React.MouseEvent) => {
     if (!isAnimating && e.target === e.currentTarget) {
       onClose();
@@ -70,7 +68,7 @@ export function Modal({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="relative">
-          {/* Modal glow effect */}
+          {}
           <div className="absolute -inset-1 bg-gradient-to-r from-red-500/20 via-blue-500/20 to-purple-500/20 rounded-xl sm:rounded-2xl blur opacity-30"></div>
           <div className="relative bg-background rounded-xl sm:rounded-2xl">
             {children}
@@ -81,7 +79,6 @@ export function Modal({
   );
 }
 
-// Enhanced Status Badge Component with animations
 export function StatusBadge({ status }: { status: string }) {
   const getStatusConfig = (status: string) => {
     switch (status.toLowerCase()) {
@@ -134,7 +131,6 @@ export function StatusBadge({ status }: { status: string }) {
   );
 }
 
-// Block User Modal Component
 export function BlockUserModal({
   isOpen,
   onClose,
@@ -161,7 +157,7 @@ export function BlockUserModal({
   ];
 
   const handleSubmit = () => {
-    // For unblocking, reason is optional
+    
     if (isBlocked) {
       onConfirm("User unblocked by admin");
       setReason("");
@@ -170,7 +166,6 @@ export function BlockUserModal({
       return;
     }
 
-    // For blocking, reason is required
     const finalReason = reason === "custom" ? customReason : reason;
     if (finalReason.trim()) {
       onConfirm(finalReason);
@@ -191,7 +186,7 @@ export function BlockUserModal({
   return (
     <Modal isOpen={isOpen} onClose={handleClose} size="md">
       <div className="bg-gradient-to-br from-background via-background to-muted/20">
-        {/* Header */}
+        {}
         <div className="bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 p-6 rounded-t-lg">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-white/20 rounded-lg">
@@ -214,11 +209,11 @@ export function BlockUserModal({
           </div>
         </div>
 
-        {/* Content */}
+        {}
         <div className="p-6 space-y-6">
           {!isBlocked && (
             <>
-              {/* Warning Message */}
+              {}
               <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4">
                 <div className="flex items-start gap-3">
                   <Shield className="w-5 h-5 text-amber-600 dark:text-amber-400 mt-0.5" />
@@ -234,7 +229,7 @@ export function BlockUserModal({
                 </div>
               </div>
 
-              {/* Reason Selection */}
+              {}
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-foreground mb-3">
@@ -265,7 +260,7 @@ export function BlockUserModal({
                   </div>
                 </div>
 
-                {/* Custom Reason Input */}
+                {}
                 {reason === "custom" && (
                   <div className="space-y-2">
                     <label className="block text-sm font-medium text-foreground">
@@ -302,7 +297,7 @@ export function BlockUserModal({
             </div>
           )}
 
-          {/* Action Buttons */}
+          {}
           <div className="flex justify-end space-x-3 pt-4 border-t border-border">
             <button
               onClick={handleClose}
@@ -313,7 +308,7 @@ export function BlockUserModal({
             <button
               onClick={handleSubmit}
               disabled={
-                !isBlocked && // Only check reason when blocking, not unblocking
+                !isBlocked && 
                 (!reason || (reason === "custom" && !customReason.trim()))
               }
               className={`px-6 py-2 rounded-lg font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${
@@ -331,7 +326,6 @@ export function BlockUserModal({
   );
 }
 
-// Delete User Modal Component
 export function DeleteUserModal({
   isOpen,
   onClose,
@@ -348,7 +342,7 @@ export function DeleteUserModal({
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="md">
       <div className="bg-gradient-to-br from-background via-background to-muted/20">
-        {/* Header */}
+        {}
         <div className="bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 p-6 rounded-t-lg">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-white/20 rounded-lg">
@@ -363,9 +357,9 @@ export function DeleteUserModal({
           </div>
         </div>
 
-        {/* Content */}
+        {}
         <div className="p-6 space-y-6">
-          {/* Warning Message */}
+          {}
           <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
             <div className="flex items-start gap-3">
               <AlertTriangle className="w-5 h-5 text-red-600 dark:text-red-400 mt-0.5" />
@@ -382,7 +376,7 @@ export function DeleteUserModal({
             </div>
           </div>
 
-          {/* User Info */}
+          {}
           <div className="bg-muted/50 rounded-lg p-4 border border-border">
             <h4 className="font-medium text-foreground mb-2">User Details:</h4>
             <div className="space-y-1 text-sm">
@@ -395,7 +389,7 @@ export function DeleteUserModal({
             </div>
           </div>
 
-          {/* Consequences */}
+          {}
           <div className="space-y-3">
             <h4 className="font-medium text-foreground">
               This will permanently:
@@ -416,7 +410,7 @@ export function DeleteUserModal({
             </ul>
           </div>
 
-          {/* Action Buttons */}
+          {}
           <div className="flex justify-end space-x-3 pt-4 border-t border-border">
             <button
               onClick={onClose}
@@ -441,8 +435,6 @@ export function DeleteUserModal({
   );
 }
 
-// User Details Modal Component
-// User Form Modal Component
 export function UserFormModal({
   isOpen,
   onClose,
@@ -514,7 +506,7 @@ export function UserFormModal({
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="lg">
       <div className="bg-gradient-to-br from-background via-background to-muted/20">
-        {/* Modern Header */}
+        {}
         <div className="bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 p-6 rounded-t-lg">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-white/20 rounded-lg">
@@ -537,9 +529,9 @@ export function UserFormModal({
           </div>
         </div>
 
-        {/* Form Content */}
+        {}
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
-          {/* Personal Information Section */}
+          {}
           <div className="space-y-4">
             <div className="flex items-center gap-2 mb-4">
               <div className="p-1 bg-blue-100 dark:bg-blue-900/30 rounded">
@@ -625,7 +617,7 @@ export function UserFormModal({
             </div>
           </div>
 
-          {/* Address Information Section */}
+          {}
           <div className="space-y-4">
             <div className="flex items-center gap-2 mb-4">
               <div className="p-1 bg-green-100 dark:bg-green-900/30 rounded">
@@ -731,7 +723,7 @@ export function UserFormModal({
             </div>
           </div>
 
-          {/* Action Buttons */}
+          {}
           <div className="flex justify-end space-x-3 pt-6 border-t border-border">
             <button
               type="button"
@@ -789,7 +781,6 @@ export function UserFormModal({
   );
 }
 
-// Modern Data Table Component with Cards Layout
 export function DataTable({
   columns,
   data,
@@ -803,7 +794,7 @@ export function DataTable({
 }) {
   return (
     <div className="space-y-4 sm:space-y-6">
-      {/* Modern Search Bar */}
+      {}
       <div className="relative group">
         <div className="absolute inset-0 bg-gradient-to-r from-red-500/20 to-blue-500/20 rounded-lg sm:rounded-xl blur opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
         <div className="relative">
@@ -818,7 +809,7 @@ export function DataTable({
         </div>
       </div>
 
-      {/* Users Grid Layout */}
+      {}
       <div className="grid grid-cols-1 gap-3 sm:gap-4">
         {data.map((user, index) => (
           <div
@@ -827,9 +818,9 @@ export function DataTable({
           >
             <div className="p-3 sm:p-4 lg:p-6">
               <div className="flex flex-col xs:flex-row items-start xs:items-center gap-3 sm:gap-4">
-                {/* User Info Section */}
+                {}
                 <div className="flex items-center gap-2.5 sm:gap-3 flex-1 w-full xs:w-auto">
-                  {/* Avatar with gradient background */}
+                  {}
                   <div className="relative flex-shrink-0">
                     <div className="w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 bg-gradient-to-br from-red-500 via-red-600 to-red-700 rounded-xl sm:rounded-2xl flex items-center justify-center text-white font-bold text-sm sm:text-base lg:text-lg shadow-lg group-hover:shadow-xl group-hover:scale-105 transition-all duration-300">
                       {user.name.charAt(0).toUpperCase()}
@@ -837,13 +828,13 @@ export function DataTable({
                     <div className="absolute -top-0.5 -right-0.5 sm:-top-1 sm:-right-1 w-3 h-3 sm:w-4 sm:h-4 lg:w-5 lg:h-5 bg-green-500 border-2 border-background rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   </div>
 
-                  {/* User Details */}
+                  {}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-1.5 sm:gap-2 lg:gap-3 mb-1 sm:mb-1.5 lg:mb-2 flex-wrap">
                       <h3 className="font-semibold text-sm sm:text-base lg:text-lg text-foreground group-hover:text-red-600 transition-colors duration-300 truncate">
                         {user.name}
                       </h3>
-                      {/* Role Badge */}
+                      {}
                       <span className="inline-flex items-center px-2 sm:px-2.5 lg:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800 dark:from-blue-900/30 dark:to-blue-800/30 dark:text-blue-400 shadow-sm whitespace-nowrap">
                         {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
                       </span>
@@ -861,9 +852,9 @@ export function DataTable({
                   </div>
                 </div>
 
-                {/* Status and Actions Section */}
+                {}
                 <div className="flex items-center justify-between xs:justify-end gap-2 sm:gap-3 lg:gap-4 w-full xs:w-auto">
-                  {/* Enhanced Status Badge */}
+                  {}
                   <div className="flex flex-col xs:items-end gap-1 sm:gap-1.5 lg:gap-2">
                     <StatusBadge status={user.status} />
                     <span className="text-[9px] sm:text-[10px] lg:text-xs text-muted-foreground whitespace-nowrap">
@@ -871,7 +862,7 @@ export function DataTable({
                     </span>
                   </div>
 
-                  {/* Action Buttons */}
+                  {}
                   <div className="flex items-center gap-1 sm:gap-1.5 lg:gap-2 transition-all duration-300">
                     {columns
                       .find((col) => col.accessorKey === "actions")
@@ -881,13 +872,13 @@ export function DataTable({
               </div>
             </div>
 
-            {/* Animated bottom border */}
+            {}
             <div className="h-0.5 sm:h-1 bg-gradient-to-r from-red-500 via-red-600 to-red-700 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
           </div>
         ))}
       </div>
 
-      {/* Enhanced Empty State */}
+      {}
       {data.length === 0 && (
         <div className="text-center py-8 sm:py-12 lg:py-16">
           <div className="relative inline-block">
@@ -916,7 +907,6 @@ export function DataTable({
   );
 }
 
-// Modern Page Header Component with enhanced animations
 export function UserManagementHeader({
   searchTerm,
   filteredUsers,
@@ -943,7 +933,7 @@ export function UserManagementHeader({
 
   return (
     <div className="space-y-4 sm:space-y-6">
-      {/* Modern Header with gradient background */}
+      {}
       <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-br from-red-500/10 via-red-600/5 to-transparent dark:from-red-900/20 dark:via-red-800/10 dark:to-transparent backdrop-blur-sm border border-red-500/20">
         <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
         <div className="relative p-4 sm:p-6">
@@ -986,9 +976,9 @@ export function UserManagementHeader({
         </div>
       </div>
 
-      {/* Enhanced Stats Cards with hover effects */}
+      {}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        {/* Total Users Card */}
+        {}
         <div className="group relative bg-background/80 backdrop-blur-sm border border-border/50 rounded-xl sm:rounded-2xl p-3 sm:p-4 hover:border-blue-500/30 transition-all duration-500 hover:shadow-2xl hover:shadow-blue-500/10 hover:-translate-y-1">
           <div className="absolute inset-0 bg-gradient-to-br from-blue-500/0 to-blue-600/0 group-hover:from-blue-500/5 group-hover:to-blue-600/5 rounded-xl sm:rounded-2xl transition-all duration-500"></div>
           <div className="relative flex items-center justify-between">
@@ -1013,7 +1003,7 @@ export function UserManagementHeader({
           </div>
         </div>
 
-        {/* Active Users Card */}
+        {}
         <div className="group relative bg-background/80 backdrop-blur-sm border border-border/50 rounded-xl sm:rounded-2xl p-3 sm:p-4 hover:border-green-500/30 transition-all duration-500 hover:shadow-2xl hover:shadow-green-500/10 hover:-translate-y-1">
           <div className="absolute inset-0 bg-gradient-to-br from-green-500/0 to-green-600/0 group-hover:from-green-500/5 group-hover:to-green-600/5 rounded-xl sm:rounded-2xl transition-all duration-500"></div>
           <div className="relative flex items-center justify-between">
@@ -1038,7 +1028,7 @@ export function UserManagementHeader({
           </div>
         </div>
 
-        {/* Blocked Users Card */}
+        {}
         <div className="group relative bg-background/80 backdrop-blur-sm border border-border/50 rounded-xl sm:rounded-2xl p-3 sm:p-4 hover:border-red-500/30 transition-all duration-500 hover:shadow-2xl hover:shadow-red-500/10 hover:-translate-y-1">
           <div className="absolute inset-0 bg-gradient-to-br from-red-500/0 to-red-600/0 group-hover:from-red-500/5 group-hover:to-red-600/5 rounded-xl sm:rounded-2xl transition-all duration-500"></div>
           <div className="relative flex items-center justify-between">
@@ -1063,7 +1053,7 @@ export function UserManagementHeader({
           </div>
         </div>
 
-        {/* Administrators Card */}
+        {}
         <div className="group relative bg-background/80 backdrop-blur-sm border border-border/50 rounded-xl sm:rounded-2xl p-3 sm:p-4 hover:border-purple-500/30 transition-all duration-500 hover:shadow-2xl hover:shadow-purple-500/10 hover:-translate-y-1">
           <div className="absolute inset-0 bg-gradient-to-br from-purple-500/0 to-purple-600/0 group-hover:from-purple-500/5 group-hover:to-purple-600/5 rounded-xl sm:rounded-2xl transition-all duration-500"></div>
           <div className="relative flex items-center justify-between">

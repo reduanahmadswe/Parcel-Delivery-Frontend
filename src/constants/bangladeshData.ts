@@ -1,4 +1,4 @@
-// Bangladesh Cities, Divisions, and Postal Codes Data
+
 export interface PostalCode {
     code: string;
     area: string;
@@ -940,7 +940,6 @@ export const bangladeshData: City[] = [
   }
 ];
 
-// Helper functions to get data based on selection
 export const getCitiesList = (): string[] => {
     return bangladeshData.map(city => city.name);
 };

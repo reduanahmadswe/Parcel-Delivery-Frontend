@@ -1,6 +1,5 @@
 import React from "react";
 
-// Types
 export type UserRole = "admin" | "sender" | "receiver";
 
 export interface RouteConfig {
@@ -11,44 +10,38 @@ export interface RouteConfig {
   layout?: boolean;
 }
 
-// Public Pages
 import ContactPage from "./pages/public/ContactPage";
 import HomePage from "./pages/public/HomePage";
-import PartnersPage from "./pages/public/PartnersPage";
 import TrackPage from "./pages/public/TrackPage";
+import PrivacyPolicyPage from "./pages/public/PrivacyPolicyPage";
+import TermsOfServicePage from "./pages/public/TermsOfServicePage";
+import CookiePolicyPage from "./pages/public/CookiePolicyPage";
 
-// Auth Pages
 import LoginPage from "./pages/auth/LoginPage";
 import RegisterPage from "./pages/auth/RegisterPage";
 import DebugAuthPage from "./pages/auth/DebugAuthPage";
 
-// Dashboard Pages
 import AdminDashboard from "./features/dashboard/AdminDashboard";
 import SenderDashboard from "./features/dashboard/SenderDashboard";
 import ReceiverDashboard from "./features/dashboard/ReceiverDashboard";
 import ProfilePage from "./features/dashboard/ProfilePage";
 
-// Admin Pages
 import NotificationsPage from "./pages/admin/NotificationsPage";
 import ParcelManagementPage from "./pages/admin/ParcelManagement";
 import SystemSettingsPage from "./pages/admin/SystemSettings";
 import UserManagementPage from "./pages/admin/UserManagement";
 
-// Sender Pages
 import CreateParcelPage from "./pages/sender/CreateParcelPage";
 import SenderParcelsPage from "./pages/sender/SenderParcelsPage";
 import SenderStatisticsPage from "./pages/sender/SenderStatisticsPage";
 
-// Error Pages
 import NotFoundPage from "./pages/error/NotFoundPage";
 import UnauthorizedPage from "./pages/error/UnauthorizedPage";
 
-// Test Pages
 import APITestPage from "./pages/APITestPage";
 
-// All Routes Configuration
 export const routes: RouteConfig[] = [
-  // Public Routes
+  
   {
     path: "/",
     element: <HomePage />,
@@ -65,17 +58,21 @@ export const routes: RouteConfig[] = [
     layout: true,
   },
   {
-    path: "/partners",
-    element: <PartnersPage />,
+    path: "/privacy-policy",
+    element: <PrivacyPolicyPage />,
     layout: true,
   },
   {
-    path: "/partners",
-    element: <PartnersPage />,
+    path: "/terms",
+    element: <TermsOfServicePage />,
+    layout: true,
+  },
+  {
+    path: "/cookie-policy",
+    element: <CookiePolicyPage />,
     layout: true,
   },
 
-  // Auth Routes
   {
     path: "/login",
     element: <LoginPage />,
@@ -92,7 +89,6 @@ export const routes: RouteConfig[] = [
     layout: true,
   },
 
-  // Role-based redirect routes
   {
     path: "/admin",
     element: <AdminDashboard />,
@@ -115,7 +111,6 @@ export const routes: RouteConfig[] = [
     layout: true,
   },
 
-  // Protected Dashboard Routes
   {
     path: "/dashboard",
     element: <SenderDashboard />,
@@ -151,7 +146,6 @@ export const routes: RouteConfig[] = [
     layout: true,
   },
 
-  // Admin Routes
   {
     path: "/admin/parcels",
     element: <ParcelManagementPage />,
@@ -181,7 +175,6 @@ export const routes: RouteConfig[] = [
     layout: true,
   },
 
-  // Sender Routes
   {
     path: "/sender/create-parcel",
     element: <CreateParcelPage />,
@@ -204,7 +197,6 @@ export const routes: RouteConfig[] = [
     layout: true,
   },
 
-  // Receiver Routes
   {
     path: "/receiver/track",
     element: <TrackPage />,
@@ -212,7 +204,7 @@ export const routes: RouteConfig[] = [
     allowedRoles: ["receiver"],
     layout: true,
   },
-  // Receiver convenience / deep links
+  
   {
     path: "/receiver/profile",
     element: <ProfilePage />,
@@ -228,14 +220,12 @@ export const routes: RouteConfig[] = [
     layout: true,
   },
 
-  // Test Routes (development only)
   {
     path: "/api-test",
     element: <APITestPage />,
     layout: true,
   },
 
-  // Error Routes
   {
     path: "/unauthorized",
     element: <UnauthorizedPage />,
@@ -248,9 +238,8 @@ export const routes: RouteConfig[] = [
   },
 ];
 
-// Route configuration utility
 export const shouldIncludeRoute = (path: string): boolean => {
-  // Remove development routes in production
+  
   if (process.env.NODE_ENV === 'production' && path === '/api-test') {
     return false;
   }

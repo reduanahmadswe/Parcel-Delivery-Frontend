@@ -72,7 +72,7 @@ const ReceiverNavigation: React.FC<ReceiverNavigationProps> = ({
       className={`bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 ${className}`}
     >
       <div className="p-6">
-        {/* Header */}
+        {}
         <div className="flex items-center gap-3 mb-6">
           <div className="p-3 bg-gradient-to-r from-orange-500 to-red-600 rounded-xl text-white">
             <FileText className="h-6 w-6" />
@@ -87,7 +87,7 @@ const ReceiverNavigation: React.FC<ReceiverNavigationProps> = ({
           </div>
         </div>
 
-        {/* Navigation Items */}
+        {}
         <div className="space-y-3">
           {navigationItems.map((item) => {
             const IconComponent = item.icon;
@@ -125,7 +125,7 @@ const ReceiverNavigation: React.FC<ReceiverNavigationProps> = ({
           })}
         </div>
 
-        {/* Additional Info */}
+        {}
         <div className="mt-6 p-4 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-600 rounded-xl border border-gray-200 dark:border-gray-600">
           <div className="flex items-center gap-2 mb-2">
             <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>

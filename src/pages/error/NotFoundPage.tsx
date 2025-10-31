@@ -13,7 +13,7 @@ import { Link } from "react-router-dom";
 const NotFoundPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Animated Background Elements */}
+      {}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/5 rounded-full animate-pulse"></div>
         <div
@@ -27,16 +27,16 @@ const NotFoundPage: React.FC = () => {
       </div>
 
       <div className="max-w-lg w-full relative z-10">
-        {/* Main 404 Content */}
+        {}
         <div className="text-center space-y-10 animate-fade-in">
-          {/* Modern Logo Design */}
+          {}
           <div className="relative">
             <div className="w-40 h-40 mx-auto relative">
-              {/* Main Logo Container using project colors */}
+              {}
               <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/30 rounded-3xl shadow-2xl transform rotate-6 animate-pulse"></div>
               <div className="absolute inset-0 bg-gradient-to-tr from-muted to-accent rounded-3xl shadow-xl transform -rotate-3"></div>
               <div className="relative w-full h-full bg-card border border-border rounded-3xl shadow-2xl flex items-center justify-center transform hover:scale-105 transition-transform duration-500">
-                {/* Logo Icon Stack */}
+                {}
                 <div className="relative">
                   <Package className="h-16 w-16 text-primary absolute transform -translate-x-2 -translate-y-2" />
                   <Truck className="h-12 w-12 text-muted-foreground absolute top-8 left-8 transform rotate-12" />
@@ -45,7 +45,7 @@ const NotFoundPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Floating Particles using project colors */}
+            {}
             <div className="absolute -top-6 -left-6 w-3 h-3 bg-primary rounded-full animate-ping"></div>
             <div
               className="absolute -top-4 right-8 w-2 h-2 bg-secondary rounded-full animate-ping"
@@ -61,7 +61,7 @@ const NotFoundPage: React.FC = () => {
             ></div>
           </div>
 
-          {/* Enhanced 404 Text using project colors */}
+          {}
           <div className="space-y-6">
             <div className="space-y-2">
               <h1 className="text-9xl font-black bg-gradient-to-r from-primary via-primary/80 to-primary/60 bg-clip-text text-transparent tracking-tighter">
@@ -79,7 +79,7 @@ const NotFoundPage: React.FC = () => {
             </p>
           </div>
 
-          {/* Enhanced Action Buttons using project colors */}
+          {}
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               to="/"
@@ -98,7 +98,7 @@ const NotFoundPage: React.FC = () => {
             </button>
           </div>
 
-          {/* Enhanced Search Section using project colors */}
+          {}
           <div className="pt-8 border-t border-border">
             <div className="flex items-center justify-center space-x-2 mb-6">
               <Clock className="h-5 w-5 text-primary" />
@@ -130,7 +130,7 @@ const NotFoundPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Enhanced Quick Links using project colors */}
+          {}
           <div className="pt-6">
             <p className="text-sm text-muted-foreground mb-6 font-medium">
               Popular Destinations:

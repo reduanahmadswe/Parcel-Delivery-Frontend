@@ -1,4 +1,4 @@
-// Filter Panel Component for Parcel Management
+
 import { Filter, RefreshCw, Search, Sparkles, TrendingUp } from "lucide-react";
 import { FilterParams, STATUS_OPTIONS } from "../../../services/parcelTypes";
 
@@ -17,40 +17,16 @@ export function FilterPanel({
 }: FilterPanelProps) {
   return (
     <div className="space-y-6">
-      {/* Modern Header with project's red/orange gradient theme */}
-      {/* <div className="relative overflow-hidden bg-gradient-to-br from-red-600 via-red-600 to-red-600 dark:from-red-600 dark:via-red-600 dark:to-red-700 rounded-2xl p-8 text-white">
-        <div className="absolute inset-0 bg-black/10"></div>
-        <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-white/5 -translate-y-32 translate-x-32"></div>
-        <div className="absolute bottom-0 left-0 w-48 h-48 rounded-full bg-white/5 translate-y-24 -translate-x-24"></div>
+      {}
+      {}
 
-        <div className="relative z-10 flex items-center justify-between">
-          <div className="space-y-2">
-            <div className="flex items-center space-x-3">
-              <div className="p-3 bg-white/20 rounded-xl backdrop-blur-sm">
-                <TrendingUp className="h-8 w-8 text-white" />
-              </div>
-              <div>
-                <h1 className="text-3xl font-bold tracking-tight">
-                  Parcel Management
-                </h1>
-                <p className="text-red-100 text-lg font-medium">
-                  Track and manage all parcels with advanced analytics
-                </p>
-              </div>
-            </div>
-          </div>
-
-         
-        </div>
-      </div> */}
-
-      {/* Modern Filter Panel with enhanced glassmorphism and hover effects */}
+      {}
       <div className="group relative bg-background/80 backdrop-blur-xl border border-border/50 rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 shadow-2xl hover:shadow-3xl hover:shadow-red-500/10 transition-all duration-500 hover:-translate-y-1">
         <div className="absolute inset-0 bg-gradient-to-r from-red-500/5 to-orange-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl sm:rounded-3xl"></div>
 
         <div className="relative z-10">
           <div className="flex flex-col gap-3 sm:gap-4 mb-4 sm:mb-6 lg:mb-8">
-            {/* Header Row */}
+            {}
             <div className="flex items-center gap-2.5 sm:gap-3 lg:gap-4">
               <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 rounded-2xl sm:rounded-3xl flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform duration-300 flex-shrink-0">
                 <Search className="h-6 w-6 sm:h-7 sm:w-7 lg:h-8 lg:w-8 text-white" />
@@ -61,7 +37,7 @@ export function FilterPanel({
               </div>
             </div>
             
-            {/* Buttons Row */}
+            {}
             <div className="flex flex-wrap items-center gap-2 sm:gap-3">
               <button
                 onClick={onClearFilters}
@@ -84,7 +60,7 @@ export function FilterPanel({
                 <span className="text-[10px] sm:text-xs lg:text-sm font-semibold text-orange-700 dark:text-orange-300 whitespace-nowrap">
                   Advanced Search
                 </span>
-                {/* Active Filter Badge */}
+                {}
                 {(filterParams.trackingNumber || filterParams.senderEmail || filterParams.receiverEmail || filterParams.status) && (
                   <div className="w-2 h-2 sm:w-3 sm:h-3 bg-green-500 rounded-full animate-pulse shadow-lg border-2 border-white dark:border-gray-800"></div>
                 )}
@@ -93,7 +69,7 @@ export function FilterPanel({
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
-            {/* Tracking Number Search - Primary Filter */}
+            {}
             <div className="space-y-1.5 sm:space-y-2">
               <label className="flex items-center space-x-1.5 sm:space-x-2 text-xs sm:text-sm font-semibold text-foreground">
                 <div className="w-2 h-2 sm:w-3 sm:h-3 bg-gradient-to-r from-purple-500 to-purple-600 rounded-full shadow-sm"></div>
@@ -112,7 +88,7 @@ export function FilterPanel({
                   }
                   onKeyPress={(e) => {
                     if (e.key === 'Enter' && filterParams.trackingNumber.trim()) {
-                      // Quick search on Enter
+                      
                       const event = new CustomEvent('quickFindParcel', { 
                         detail: { trackingNumber: filterParams.trackingNumber.trim() } 
                       });
@@ -126,7 +102,7 @@ export function FilterPanel({
                 </div>
               </div>
               
-              {/* Quick Find Button */}
+              {}
               {filterParams.trackingNumber && filterParams.trackingNumber.trim() && (
                 <div className="mt-1.5 sm:mt-2">
                   <button

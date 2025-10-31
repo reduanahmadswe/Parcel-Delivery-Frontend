@@ -1,17 +1,15 @@
-// API service functions for Parcel Management
+
 import api from "./ApiConfiguration";
 import { ApiParcel, StatusLogEntry } from "./parcelTypes";
 
 export class ParcelApiService {
-    /**
-     * Fetch all parcels with optional filtering
-     */
+    
     static async fetchParcels(filterParams: {
         senderEmail?: string;
         receiverEmail?: string;
         status?: string;
     } = {}): Promise<ApiParcel[]> {
-        // Build query params for filtering
+        
         const queryParams = new URLSearchParams();
         if (filterParams.senderEmail)
             queryParams.append("senderEmail", filterParams.senderEmail);
@@ -19,14 +17,12 @@ export class ParcelApiService {
             queryParams.append("receiverEmail", filterParams.receiverEmail);
         if (filterParams.status)
             queryParams.append("status", filterParams.status);
-        
-        // Add limit parameter to fetch more data
+
         queryParams.append("limit", "1000");
 
         const query = queryParams.toString();
         const endpoint = `/parcels?${query}`;
 
-        // Try admin-specific endpoint first, fallback to general parcels endpoint
         let response;
         try {
             response = await api.get(`/admin${endpoint}`);
@@ -34,7 +30,6 @@ export class ParcelApiService {
             response = await api.get(endpoint);
         }
 
-        // Try different possible data structures
         let parcelsData = null;
         if (response.data.data && Array.isArray(response.data.data)) {
             parcelsData = response.data.data;
@@ -52,24 +47,18 @@ export class ParcelApiService {
         return parcelsData || [];
     }
 
-    /**
-     * Update parcel status
-     */
     static async updateParcelStatus(
         parcelId: string | number,
         status: string
     ): Promise<void> {
         const requestBody = {
             status: status,
-            // Don't include deliveryInfo to avoid preferredDeliveryDate validation issues
+            
         };
 
         await api.patch(`/parcels/${parcelId}/status`, requestBody);
     }
 
-    /**
-     * Flag or unflag a parcel
-     */
     static async flagParcel(
         parcelId: string | number,
         isFlagged: boolean
@@ -82,9 +71,6 @@ export class ParcelApiService {
         });
     }
 
-    /**
-     * Put parcel on hold or release from hold
-     */
     static async holdParcel(
         parcelId: string | number,
         isOnHold: boolean
@@ -97,18 +83,12 @@ export class ParcelApiService {
         });
     }
 
-    /**
-     * Return parcel to sender
-     */
     static async returnParcel(parcelId: string | number): Promise<void> {
         await api.patch(`/parcels/${parcelId}/return`, {
             note: "Returned to sender by admin",
         });
     }
 
-    /**
-     * Assign delivery personnel to parcel
-     */
     static async assignPersonnel(
         parcelId: string | number,
         deliveryPersonnel: string
@@ -118,16 +98,10 @@ export class ParcelApiService {
         });
     }
 
-    /**
-     * Delete a parcel
-     */
     static async deleteParcel(parcelId: string | number): Promise<void> {
         await api.delete(`/parcels/${parcelId}`);
     }
 
-    /**
-     * Cancel a parcel (only before dispatch)
-     */
     static async cancelParcel(
         parcelId: string | number,
         reason: string
@@ -137,9 +111,6 @@ export class ParcelApiService {
         });
     }
 
-    /**
-     * Fetch status log for a parcel
-     */
     static async fetchStatusLog(parcelId: string | number): Promise<StatusLogEntry[]> {
         const response = await api.get(`/parcels/${parcelId}/status-log`);
         return response.data.data || response.data || [];

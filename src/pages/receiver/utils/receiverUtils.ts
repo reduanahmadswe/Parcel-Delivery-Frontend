@@ -2,13 +2,11 @@ import { Parcel } from "@/types/GlobalTypeDefinitions";
 import { ParcelStats, SearchFilters } from "../types";
 
 export const receiverUtils = {
-    // Calculate statistics from parcels array (using sender's exact approach but for receiver data)
+    
     calculateStats(parcels: Parcel[]): ParcelStats {
         const now = new Date();
         const thisMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
 
-        // Use sender's exact status mapping approach
-        // Note: Receiver Parcel interface uses 'status' field instead of 'currentStatus'
         const getStatusCount = (statusValues: string[]) => {
             const matches = parcels.filter(parcel => {
                 const status = parcel.currentStatus || '';
@@ -17,20 +15,17 @@ export const receiverUtils = {
             return matches.length;
         };
 
-        // Match sender's exact status categories
         const pending = getStatusCount(['requested', 'approved']);
         const inTransit = getStatusCount(['dispatched', 'in-transit']);
         const delivered = getStatusCount(['delivered']);
         const cancelled = getStatusCount(['cancelled', 'rejected']);
 
-        // Calculate this month's deliveries (same logic as sender)
         const thisMonthDelivered = parcels.filter(parcel => {
             const isDelivered = parcel.currentStatus === 'delivered';
             const parcelDate = new Date(parcel.createdAt || parcel.updatedAt);
             return isDelivered && parcelDate >= thisMonthStart;
         }).length;
 
-        // Calculate success rate (delivered / total non-cancelled)
         const nonCancelled = parcels.length - cancelled;
         const successRate = nonCancelled > 0 ? Math.round((delivered / nonCancelled) * 100) : 0;
 
@@ -49,7 +44,6 @@ export const receiverUtils = {
         };
     },
 
-    // Filter and sort parcels based on search criteria
     filterAndSortParcels(
         parcels: Parcel[],
         filters: SearchFilters
@@ -78,7 +72,6 @@ export const receiverUtils = {
         });
     },
 
-    // Add mock data for enhanced demo experience
     enhanceParcelsWithMockData(parcels: Parcel[]): Parcel[] {
         return parcels.map((parcel) => ({
             ...parcel,
@@ -87,7 +80,6 @@ export const receiverUtils = {
         }));
     },
 
-    // Format delivery date
     formatDeliveryDate(dateString: string): string {
         return new Date(dateString).toLocaleDateString("en-US", {
             weekday: "long",
@@ -97,14 +89,12 @@ export const receiverUtils = {
         });
     },
 
-    // Get priority level based on parcel attributes
     getParcelPriority(parcel: Parcel): "high" | "medium" | "low" {
         if ((parcel as any).isInsured && parcel.fee.totalFee > 100) return "high";
         if ((parcel as any).deliveryType === "express" || parcel.fee.totalFee > 50) return "medium";
         return "low";
     },
 
-    // Generate export data for parcels
     generateExportData(parcels: Parcel[]): string {
         const headers = [
             "Tracking Number",
@@ -134,7 +124,6 @@ export const receiverUtils = {
         return csvData;
     },
 
-    // Download CSV file
     downloadCSV(data: string, filename: string = "parcels.csv"): void {
         const blob = new Blob([data], { type: "text/csv;charset=utf-8;" });
         const link = document.createElement("a");

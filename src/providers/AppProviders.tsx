@@ -8,7 +8,6 @@ import { ThemeProvider } from "../components/ui/theme-provider";
 import { ReduxAuthProvider } from "../contexts/ReduxAuthContext";
 import { persistor, store } from "../store";
 
-// App configuration
 const appConfig = {
   toast: {
     position: "top-right" as const,
@@ -21,14 +20,12 @@ const appConfig = {
   },
 };
 
-// Loading component
 const AppLoader = () => (
   <div className="flex items-center justify-center min-h-screen">
     <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900 dark:border-white" />
   </div>
 );
 
-// Main App Providers
 export const AppProviders: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <ThemeProvider>
     <Provider store={store}>

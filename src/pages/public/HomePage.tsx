@@ -18,7 +18,6 @@ const HomePage: React.FC = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  // Redirect authenticated users to their dashboard
   useEffect(() => {
     if (user) {
       const dashboardPath = user.role === "admin" ? "/admin/dashboard"
@@ -29,7 +28,6 @@ const HomePage: React.FC = () => {
     }
   }, [user, navigate]);
 
-  // Don't render home page content if user is authenticated
   if (user) {
     return null;
   }

@@ -9,25 +9,38 @@ import {
   Users,
 } from "lucide-react";
 import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { LoginForm } from "../../components/forms/LoginForm";
+import { useAuth } from "../../hooks/useAuth";
 
 const LoginPage: React.FC = () => {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
   useEffect(() => {
-  }, []);
+    // If user is already logged in, redirect to their dashboard
+    if (user) {
+      const dashboardPath = 
+        user.role === "admin" ? "/admin/dashboard" :
+        user.role === "sender" ? "/sender/dashboard" :
+        user.role === "receiver" ? "/receiver/dashboard" :
+        "/";
+      navigate(dashboardPath, { replace: true });
+    }
+  }, [user, navigate]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-background dark:via-background dark:to-muted">
       <div className="min-h-screen grid lg:grid-cols-2">
-        {/* Left Panel - Hero Section */}
+        {}
         <div className="hidden lg:flex flex-col relative overflow-hidden">
-          {/* Enhanced Gradient Background */}
+          {}
           <div className="absolute inset-0 bg-gradient-to-br from-red-500 via-orange-500 to-pink-600">
             <div className="absolute inset-0 bg-black/20" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
           </div>
 
-          {/* Hero Image */}
+          {}
           <div className="absolute inset-0">
             <img
               src="/parcel.jpg"
@@ -36,7 +49,7 @@ const LoginPage: React.FC = () => {
             />
           </div>
 
-          {/* Floating Animation Elements */}
+          {}
           <div className="absolute top-20 left-16 animate-float">
             <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-6 shadow-2xl border border-white/20 transform hover:scale-105 transition-transform duration-300">
               <div className="flex items-center gap-4">
@@ -79,7 +92,7 @@ const LoginPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Hero Content */}
+          {}
           <div className="relative z-10 flex flex-col justify-center h-full px-16">
             <div className="max-w-lg">
               <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-2 rounded-full text-white/90 text-sm font-medium mb-8">
@@ -114,7 +127,7 @@ const LoginPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Brand Logo Bottom */}
+          {}
           <div className="absolute bottom-8 left-16">
             <div className="flex items-center gap-3 text-white/80">
               <div className="w-8 h-8 bg-gradient-to-r from-red-500 to-orange-500 rounded-lg flex items-center justify-center">
@@ -125,9 +138,9 @@ const LoginPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Right Panel - Login Form */}
+        {}
         <div className="flex flex-col relative bg-white dark:bg-background">
-          {/* Subtle Background Pattern */}
+          {}
           <div className="absolute inset-0 opacity-5">
             <div
               className="absolute inset-0"
@@ -137,7 +150,7 @@ const LoginPage: React.FC = () => {
             />
           </div>
 
-          {/* Header */}
+          {}
           <div className="relative z-10 p-6 lg:p-8">
             <Link
               to="/"
@@ -162,7 +175,7 @@ const LoginPage: React.FC = () => {
             </Link>
           </div>
 
-          {/* Form Container */}
+          {}
           <div className="relative z-10 flex-1 flex items-center justify-center p-6 lg:p-8">
             <div className="w-full max-w-md">
               <div className="text-center mb-8">
@@ -178,7 +191,7 @@ const LoginPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Enhanced Footer */}
+          {}
           <div className="relative z-10 p-6 lg:p-8 border-t border-border/40">
             <div className="grid grid-cols-3 gap-4 mb-6">
               <div className="text-center">
@@ -224,7 +237,7 @@ const LoginPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Custom Animations */}
+      {}
       <style>
         {`@keyframes float { 0%,100% { transform: translateY(0px); } 50% { transform: translateY(-20px); } } @keyframes float-delayed { 0%,100% { transform: translateY(-10px); } 50% { transform: translateY(-30px); } } .animate-float { animation: float 6s ease-in-out infinite; } .animate-float-delayed { animation: float-delayed 6s ease-in-out infinite 2s; }`}
       </style>

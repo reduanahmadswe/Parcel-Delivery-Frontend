@@ -1,18 +1,16 @@
 import apiSlice from './apiSlice';
 import { Parcel } from '@/types/GlobalTypeDefinitions';
 
-// Sender-specific endpoints with infinite caching
 const senderApi = apiSlice.injectEndpoints({
     endpoints: (build) => ({
-        // Get all sender's parcels
+        
         getSenderParcels: build.query<Parcel[], void>({
             async queryFn(_arg, _queryApi, _extraOptions, fetchWithBQ) {
                 try {
-                    // Try multiple endpoints to get all data (fallback strategy)
+                    
                     let response;
                     let allParcels: Parcel[] = [];
 
-                    // Method 1: Try with high limit parameter
                     try {
                         response = (await fetchWithBQ({ 
                             url: '/parcels/me?limit=10000', 
@@ -26,10 +24,9 @@ const senderApi = apiSlice.injectEndpoints({
                             }
                         }
                     } catch (err) {
-                        // Method 1 failed, continue to next method
+                        
                     }
 
-                    // Method 2: Try no-pagination with limit
                     if (allParcels.length <= 10) {
                         try {
                             response = (await fetchWithBQ({ 
@@ -44,11 +41,10 @@ const senderApi = apiSlice.injectEndpoints({
                                 }
                             }
                         } catch (err) {
-                            // Method 2 failed, continue
+                            
                         }
                     }
 
-                    // Method 3: Try pagination with multiple pages
                     if (allParcels.length <= 10) {
                         try {
                             const page1 = (await fetchWithBQ({ 
@@ -69,11 +65,10 @@ const senderApi = apiSlice.injectEndpoints({
                                 allParcels = combined;
                             }
                         } catch (err) {
-                            // Method 3 failed, continue
+                            
                         }
                     }
 
-                    // Method 4: Fallback to no-pagination
                     if (allParcels.length === 0) {
                         try {
                             response = (await fetchWithBQ({ 
@@ -85,11 +80,10 @@ const senderApi = apiSlice.injectEndpoints({
                                 allParcels = response.data.data || response.data || [];
                             }
                         } catch (err) {
-                            // All methods failed
+                            
                         }
                     }
 
-                    // Final fallback: simple /parcels/me
                     if (allParcels.length === 0) {
                         response = (await fetchWithBQ({ 
                             url: '/parcels/me', 
@@ -101,7 +95,6 @@ const senderApi = apiSlice.injectEndpoints({
                         }
                     }
 
-                    // Ensure array
                     const finalParcels = Array.isArray(allParcels) ? allParcels : [];
                     return { data: finalParcels };
                     
@@ -125,11 +118,10 @@ const senderApi = apiSlice.injectEndpoints({
                           'SenderDashboard',
                           'SenderStats',
                       ],
-            // Keep sender data cached until logout - no expiry
+            
             keepUnusedDataFor: Infinity,
         }),
 
-        // Cancel parcel mutation
         cancelParcel: build.mutation<any, string>({
             query: (id) => ({
                 url: `/parcels/${id}`,
@@ -141,7 +133,7 @@ const senderApi = apiSlice.injectEndpoints({
                 'SenderDashboard',
                 'SenderStats',
             ],
-            // Optimistic delete
+            
             async onQueryStarted(id, { dispatch, queryFulfilled }) {
                 const patchResult = dispatch(
                     senderApi.util.updateQueryData('getSenderParcels', undefined, (draft) => {

@@ -1,10 +1,9 @@
-// Utility to manually check and debug Redux Persist state
+
 export const debugPersist = () => {
     if (typeof window === 'undefined') return;
 
     console.group('🔍 Redux Persist Debug Info');
-    
-    // Check if persist keys exist
+
     const authPersist = localStorage.getItem('persist:auth');
     const apiPersist = localStorage.getItem('persist:api');
     
@@ -34,8 +33,7 @@ export const debugPersist = () => {
             console.error('Error parsing API persist:', e);
         }
     }
-    
-    // Check localStorage size
+
     let totalSize = 0;
     for (let key in localStorage) {
         if (localStorage.hasOwnProperty(key)) {
@@ -47,7 +45,6 @@ export const debugPersist = () => {
     console.groupEnd();
 };
 
-// Expose to window for easy debugging
 if (typeof window !== 'undefined') {
     (window as any).debugPersist = debugPersist;
 }

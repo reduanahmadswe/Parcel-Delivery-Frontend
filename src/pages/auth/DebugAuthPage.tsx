@@ -34,18 +34,14 @@ export function DebugAuthPage() {
         email: 'admin@parceldelivery.com',
         password: 'Admin123!'
       });
-      
-      
+
       if (response.data?.data?.accessToken) {
         const { accessToken, refreshToken, user } = response.data.data;
-        
-        // Store tokens
+
         TokenManager.setTokens(accessToken, refreshToken);
-        
-        // ✅ CRITICAL: Wait for storage to complete
+
         await new Promise(resolve => setTimeout(resolve, 300));
-        
-        // Verify storage
+
         const storedToken = TokenManager.getAccessToken();
         
         const result = storedToken ? '✅ Login Success & Token Stored!' : '❌ Login Success but Token NOT Stored!';

@@ -73,13 +73,11 @@ const StatusHistoryView: React.FC<StatusHistoryViewProps> = ({
     return status.toLowerCase() === currentStatus.toLowerCase();
   };
 
-  const sortedHistory: any[] = []; // For now, we'll create mock data since statusHistory is not in receiver type
+  const sortedHistory: any[] = []; 
 
-  // Create a mock status history based on current status for demonstration
   const createMockHistory = () => {
     const currentStatus = ((parcel as any).currentStatus || parcel.status || 'pending').toLowerCase();
-    
-    // Define all possible statuses in order
+
     const allStatuses = [
       "requested", 
       "approved", 
@@ -88,28 +86,25 @@ const StatusHistoryView: React.FC<StatusHistoryViewProps> = ({
       "out-for-delivery",
       "delivered"
     ];
-    
-    // Find current status index (with fuzzy matching)
+
     let currentIndex = allStatuses.findIndex(s => 
       currentStatus.includes(s) || s.includes(currentStatus)
     );
-    
-    // If not found, try to match common variations
+
     if (currentIndex === -1) {
       if (currentStatus.includes('transit') || currentStatus.includes('dispatch')) {
-        currentIndex = 3; // in-transit
+        currentIndex = 3; 
       } else if (currentStatus.includes('deliver')) {
-        currentIndex = 5; // delivered
+        currentIndex = 5; 
       } else if (currentStatus.includes('pending') || currentStatus.includes('request')) {
-        currentIndex = 0; // requested
+        currentIndex = 0; 
       } else if (currentStatus.includes('approved')) {
-        currentIndex = 1; // approved
+        currentIndex = 1; 
       } else {
-        currentIndex = 0; // default to first status
+        currentIndex = 0; 
       }
     }
 
-    // Create history up to current status
     const relevantStatuses = allStatuses.slice(0, currentIndex + 1);
     
     return relevantStatuses.map((status, index) => ({
@@ -126,7 +121,7 @@ const StatusHistoryView: React.FC<StatusHistoryViewProps> = ({
 
   return (
     <div className="bg-background rounded-lg sm:rounded-xl lg:rounded-2xl shadow-lg border border-border">
-      {/* Header */}
+      {}
       <div className="flex items-center justify-between p-4 sm:p-5 lg:p-6 border-b border-border">
         <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
           <div className="p-2 sm:p-2.5 lg:p-3 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg sm:rounded-xl text-white flex-shrink-0">
@@ -151,7 +146,7 @@ const StatusHistoryView: React.FC<StatusHistoryViewProps> = ({
         )}
       </div>
 
-      {/* Parcel Summary */}
+      {}
       <div className="p-4 sm:p-5 lg:p-6 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20 border-b border-border">
         <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 text-xs sm:text-sm">
           <div>
@@ -192,7 +187,7 @@ const StatusHistoryView: React.FC<StatusHistoryViewProps> = ({
         </div>
       </div>
 
-      {/* Timeline */}
+      {}
       <div className="p-4 sm:p-5 lg:p-6">
         <div className="space-y-3 sm:space-y-4 max-h-80 sm:max-h-96 overflow-y-auto">
           {displayHistory.length > 0 ? (
@@ -211,7 +206,7 @@ const StatusHistoryView: React.FC<StatusHistoryViewProps> = ({
                       : "hover:bg-muted/50"
                   }`}
                 >
-                  {/* Timeline line */}
+                  {}
                   {index < displayHistory.length - 1 && (
                     <div
                       className={`absolute left-5 sm:left-6 lg:left-7 top-12 sm:top-14 w-0.5 h-6 sm:h-8 ${
@@ -222,7 +217,7 @@ const StatusHistoryView: React.FC<StatusHistoryViewProps> = ({
                     />
                   )}
 
-                  {/* Status icon */}
+                  {}
                   <div
                     className={`flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center ${
                       isStepCurrent
@@ -235,7 +230,7 @@ const StatusHistoryView: React.FC<StatusHistoryViewProps> = ({
                     <StepIcon className="h-3 w-3 sm:h-4 sm:w-4" />
                   </div>
 
-                  {/* Content */}
+                  {}
                   <div className="flex-1 min-w-0">
                     <div className="flex flex-col xs:flex-row xs:items-center xs:justify-between gap-1 mb-1">
                       <h4
@@ -279,7 +274,7 @@ const StatusHistoryView: React.FC<StatusHistoryViewProps> = ({
         </div>
       </div>
 
-      {/* Footer with summary */}
+      {}
       <div className="px-4 sm:px-5 lg:px-6 py-3 sm:py-4 bg-muted/50 rounded-b-lg sm:rounded-b-xl lg:rounded-b-2xl border-t border-border">
         <div className="flex flex-col xs:flex-row xs:items-center xs:justify-between gap-2 text-xs sm:text-sm">
           <span className="text-muted-foreground">

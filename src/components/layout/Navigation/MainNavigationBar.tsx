@@ -1,7 +1,7 @@
-import ThemeToggle from "../ui/DarkLightThemeSwitcher";
-import { useAuth } from "../../hooks/useAuth";
-import { useAppSelector } from "../../store/hooks";
-import { selectCurrentUser } from "../../store/slices/authSlice";
+import ThemeToggle from "../../ui/DarkLightThemeSwitcher";
+import { useAuth } from "../../../hooks/useAuth";
+import { useAppSelector } from "../../../store/hooks";
+import { selectCurrentUser } from "../../../store/slices/authSlice";
 import {
   AlertTriangle,
   BarChart3,
@@ -31,14 +31,12 @@ interface NavigationItem {
 }
 
 export default function Navigation() {
-  // Use selector for immediate updates and useAuth for actions
+  
   const userFromStore = useAppSelector(selectCurrentUser);
   const { logout } = useAuth();
-  
-  // ✅ CRITICAL FIX: Use local state with multiple fallback sources
-  // This ensures navbar shows correct user data even on first login
+
   const [user, setUser] = useState<typeof userFromStore>(() => {
-    // Initial state: try Redux first, then localStorage
+    
     if (userFromStore) return userFromStore;
     try {
       const cachedUser = localStorage.getItem('userData');
@@ -47,13 +45,12 @@ export default function Navigation() {
       return null;
     }
   });
-  
-  // ✅ Update from Redux store when it changes
+
   useEffect(() => {
     if (userFromStore) {
       setUser(userFromStore);
     } else if (!userFromStore) {
-      // Redux user is null/undefined - check localStorage before clearing
+      
       console.warn("⚠️ [Navigation] Redux user is null, checking localStorage");
       try {
         const cachedUser = localStorage.getItem('userData');
@@ -63,7 +60,7 @@ export default function Navigation() {
           const parsed = JSON.parse(cachedUser);
           setUser(parsed);
         } else if (!hasToken) {
-          // No token means truly logged out
+          
           setUser(null);
         }
       } catch (error) {
@@ -71,8 +68,7 @@ export default function Navigation() {
       }
     }
   }, [userFromStore]);
-  
-  // ✅ Listen for custom login event for immediate updates
+
   useEffect(() => {
     const handleUserLogin = (event: CustomEvent) => {
       const userData = event.detail?.user;
@@ -86,8 +82,7 @@ export default function Navigation() {
       window.removeEventListener('userLoggedIn', handleUserLogin as EventListener);
     };
   }, []);
-  
-  // ✅ Fallback: Check localStorage periodically (every 500ms) if user is null
+
   useEffect(() => {
     if (!user) {
       const interval = setInterval(() => {
@@ -98,7 +93,7 @@ export default function Navigation() {
             setUser(parsed);
           }
         } catch (error) {
-          // Ignore parse errors
+          
         }
       }, 500);
       
@@ -112,12 +107,11 @@ export default function Navigation() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
-  const [notifications] = useState(3); // Example notification count
+  const [notifications] = useState(3); 
   const [currentHash, setCurrentHash] = useState(window.location.hash);
   const userMenuRef = useRef<HTMLDivElement>(null);
   const notificationsRef = useRef<HTMLDivElement>(null);
 
-  // Track hash changes for active state updates
   useEffect(() => {
     const handleHashChange = () => {
       setCurrentHash(window.location.hash);
@@ -127,7 +121,6 @@ export default function Navigation() {
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
 
-  // Sample notifications data
   const notificationsList = [
     {
       id: 1,
@@ -183,31 +176,26 @@ export default function Navigation() {
     }
   };
 
-  // Helper function to check if navigation item is active
   const isActive = (href: string) => {
-    // Hash links - check if we're on home page AND hash matches
+    
     if (href.startsWith("#")) {
       const isOnHomePage = location.pathname === "/";
       const currentHash = window.location.hash || location.hash;
       return isOnHomePage && currentHash === href;
     }
 
-    // Exact match for home - only when no hash present
     if (href === "/") {
       const currentHash = window.location.hash || location.hash;
       return location.pathname === "/" && !currentHash;
     }
 
-    // Track page - exact match
     if (href === "/track") {
       return location.pathname === "/track";
     }
 
-    // Avoid marking parent prefixes active for sender/receiver base routes
     const exactOnly = ["/admin", "/sender", "/receiver"];
     if (exactOnly.includes(href)) return location.pathname === href;
 
-    // Otherwise consider a startsWith match (so /sender/parcels and /sender/parcels/123 match)
     return location.pathname.startsWith(href + "/") || location.pathname === href;
   };
 
@@ -216,16 +204,15 @@ export default function Navigation() {
       await logout();
       setIsUserMenuOpen(false);
       setIsMobileMenuOpen(false);
-      // Navigate to home page after logout
+      
       navigate("/");
     } catch (error) {
       console.error("Logout error:", error);
-      // Navigate to home even if logout fails
+      
       navigate("/");
     }
   };
 
-  // Close user menu and notifications when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
@@ -250,37 +237,37 @@ export default function Navigation() {
 
   const handleNavClick = (href: string) => {
     if (href.startsWith("#")) {
-      // Navigate to home page first if not already there
+      
       if (location.pathname !== "/") {
         navigate("/");
-        // Wait for navigation then scroll and set hash
+        
         setTimeout(() => {
           const element = document.getElementById(href.slice(1));
           if (element) {
             element.scrollIntoView({ behavior: "smooth", block: "start" });
           }
-          // Set hash properly
+          
           window.location.hash = href;
           setCurrentHash(href);
         }, 100);
       } else {
-        // Already on home page, just scroll and set hash
+        
         const element = document.getElementById(href.slice(1));
         if (element) {
           element.scrollIntoView({ behavior: "smooth", block: "start" });
         }
-        // Set hash properly
+        
         window.location.hash = href;
         setCurrentHash(href);
       }
     }
-    // Close all menus after navigation
+    
     setIsMobileMenuOpen(false);
     setIsUserMenuOpen(false);
   };
 
   const handleLinkClick = () => {
-    // Close all menus when navigating via Link
+    
     setIsMobileMenuOpen(false);
     setIsUserMenuOpen(false);
   };
@@ -313,10 +300,11 @@ export default function Navigation() {
           { href: "/contact", label: "Contact", icon: MessageSquare },
         ]
       : [
-          { href: "/", label: "Home", icon: Home },
+          { href: "#hero", label: "Home", icon: Home },
+          { href: "#services", label: "Our Services", icon: Package },
           { href: "/track", label: "Track Parcel", icon: Search },
-          { href: "#partners", label: "Partners", icon: Users },
-          { href: "#contact", label: "Contact", icon: MessageSquare },
+          { href: "#pricing", label: "Pricing", icon: FileText },
+          { href: "/contact", label: "Contact", icon: MessageSquare },
         ];
 
   const userMenuItems: NavigationItem[] =
@@ -340,12 +328,11 @@ export default function Navigation() {
     <nav className="bg-background/95 backdrop-blur-xl shadow-lg border-b border-border sticky top-0 z-50 transition-all duration-300">
       <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 xl:px-8">
         <div className="flex justify-between h-14 sm:h-16">
-          {/* Logo and Brand */}
+          {}
           <div className="flex items-center min-w-0 flex-1">
-            <Link
-              to="/"
-              className="flex items-center space-x-2 sm:space-x-3 group min-w-0"
-              onClick={handleLinkClick}
+            <button
+              onClick={() => handleNavClick("#hero")}
+              className="flex items-center space-x-2 sm:space-x-3 group min-w-0 cursor-pointer"
             >
               <div className="relative flex-shrink-0">
                 <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
@@ -361,10 +348,10 @@ export default function Navigation() {
                   Professional Delivery
                 </span>
               </div>
-            </Link>
+            </button>
           </div>
 
-          {/* Desktop Navigation */}
+          {}
           <div className="hidden lg:flex items-center space-x-1">
             {navigationItems.map((item) => {
               const Icon = item.icon;
@@ -420,16 +407,26 @@ export default function Navigation() {
             })}
           </div>
 
-          {/* User Section */}
+          {}
           <div className="flex items-center space-x-1.5 sm:space-x-3 flex-shrink-0">
-            {/* Theme Toggle */}
+            {}
             <div className="hidden xs:block">
               <ThemeToggle />
             </div>
 
             {user ? (
               <>
-                {/* Notifications - Only for admin */}
+                {}
+                <button
+                  onClick={handleLogout}
+                  className="hidden lg:flex items-center space-x-2 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-red-600 hover:text-white hover:bg-gradient-to-r hover:from-red-500 hover:to-red-600 dark:hover:from-red-600 dark:hover:to-red-700 rounded-lg sm:rounded-xl transition-all duration-300 group border border-red-200 dark:border-red-800 hover:border-red-500"
+                  title="Logout"
+                >
+                  <LogOut className="h-4 w-4 group-hover:scale-110 transition-transform duration-200" />
+                  <span>Logout</span>
+                </button>
+
+                {}
                 {user.role === "admin" && (
                   <div className="relative hidden lg:block" ref={notificationsRef}>
                     <button
@@ -446,10 +443,10 @@ export default function Navigation() {
                       )}
                     </button>
 
-                    {/* Notifications Dropdown */}
+                    {}
                     {isNotificationsOpen && (
                       <div className="absolute right-0 mt-2 w-72 sm:w-80 bg-background rounded-lg shadow-xl border border-border z-50 max-h-96 overflow-y-auto">
-                        {/* Header */}
+                        {}
                         <div className="bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 p-3 sm:p-4 rounded-t-lg">
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
@@ -464,7 +461,7 @@ export default function Navigation() {
                           </div>
                         </div>
 
-                        {/* Notifications List */}
+                        {}
                         <div className="max-h-80 overflow-y-auto">
                           {notificationsList.map((notification) => (
                             <div
@@ -500,7 +497,7 @@ export default function Navigation() {
                           ))}
                         </div>
 
-                        {/* Footer */}
+                        {}
                         <div className="p-2.5 sm:p-3 border-t border-border bg-muted/30">
                           <button className="w-full text-center text-xs sm:text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-200 font-medium">
                             View All Notifications
@@ -511,7 +508,7 @@ export default function Navigation() {
                   </div>
                 )}
 
-                {/* User Menu */}
+                {}
                 <div className="relative hidden lg:block" ref={userMenuRef}>
                   <button
                     onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
@@ -534,7 +531,7 @@ export default function Navigation() {
                     />
                   </button>
 
-                  {/* User Dropdown */}
+                  {}
                   {isUserMenuOpen && (
                     <div className="absolute right-0 mt-3 w-56 sm:w-64 bg-background/95 backdrop-blur-xl rounded-xl sm:rounded-2xl shadow-2xl border border-border py-2 z-50 animate-in fade-in-0 zoom-in-95 slide-in-from-top-2 duration-200">
                       <div className="px-3 sm:px-4 py-3 sm:py-4 border-b border-border">
@@ -601,7 +598,7 @@ export default function Navigation() {
               </div>
             )}
 
-            {/* Mobile menu button */}
+            {}
             <div className="lg:hidden">
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -617,7 +614,7 @@ export default function Navigation() {
           </div>
         </div>
 
-        {/* Mobile Navigation */}
+        {}
         {isMobileMenuOpen && (
           <div className="lg:hidden border-t border-border bg-background/95 backdrop-blur-xl animate-in slide-in-from-top-2 duration-200">
             <div className="px-3 sm:px-4 py-3 sm:py-4 space-y-1">
@@ -691,7 +688,7 @@ export default function Navigation() {
                   </div>
 
                   <div className="space-y-1 mt-3 sm:mt-4">
-                    {/* Theme Toggle in Mobile Menu */}
+                    {}
                     <div className="xs:hidden flex items-center space-x-2.5 px-2.5 py-2.5 text-muted-foreground">
                       <Settings className="h-4 w-4 flex-shrink-0" />
                       <span className="text-xs font-medium flex-1">Theme</span>

@@ -5,7 +5,7 @@ import { generateParcelPdf } from "../../utils/parcelExport";
 import { useNavigate } from "react-router-dom";
 
 interface Props {
-  parcel: any; // parcel object returned from API
+  parcel: any; 
   onClose: () => void;
 }
 
@@ -15,19 +15,14 @@ export default function ParcelCreatedModal({ parcel, onClose }: Props) {
 
   if (!parcel) return null;
 
-  // Debug: Log parcel structure to console
-
   const trackingId = parcel.trackingId || parcel.id || "-";
-  
-  // Extract sender info (from user session or parcel data)
+
   const senderName = parcel.senderInfo?.name || parcel.senderName || parcel.sender?.name || "You";
-  
-  // Extract receiver info from backend response
+
   const receiverName = parcel.receiverInfo?.name || parcel.receiverName || "-";
   const receiverEmail = parcel.receiverInfo?.email || parcel.receiverEmail || "-";
   const receiverPhone = parcel.receiverInfo?.phone || parcel.receiverPhone || "-";
-  
-  // Extract address
+
   const address = parcel.receiverInfo?.address || parcel.receiverAddress || {};
   const fullAddress = [
     address.street,
@@ -36,8 +31,7 @@ export default function ParcelCreatedModal({ parcel, onClose }: Props) {
     address.zipCode,
     address.country
   ].filter(Boolean).join(", ") || "No address provided";
-  
-  // Extract parcel details
+
   const parcelType = parcel.parcelDetails?.type || parcel.type || "-";
   const weight = parcel.parcelDetails?.weight || parcel.weight || "-";
   const dimensions = parcel.parcelDetails?.dimensions || parcel.dimensions || {};
@@ -64,8 +58,7 @@ export default function ParcelCreatedModal({ parcel, onClose }: Props) {
     try {
       await navigator.clipboard.writeText(link);
       toast.success("Tracking link copied to clipboard");
-      // Optionally open in new tab
-      // window.open(link, '_blank');
+
     } catch (err) {
       toast.error("Failed to copy tracking link");
     }
@@ -73,7 +66,7 @@ export default function ParcelCreatedModal({ parcel, onClose }: Props) {
 
   const handleViewDetails = () => {
     onClose();
-    // Navigate to track page with tracking ID automatically filled and search
+    
     navigate(`/track?id=${encodeURIComponent(trackingId)}`);
   };
 
@@ -82,7 +75,7 @@ export default function ParcelCreatedModal({ parcel, onClose }: Props) {
       <div className="absolute inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-sm" onClick={onClose} />
       
       <div className="relative bg-white dark:bg-gray-900 rounded-xl sm:rounded-2xl shadow-2xl w-full max-w-4xl max-h-[95vh] overflow-y-auto">
-        {/* Header */}
+        {}
         <div className="sticky top-0 bg-gradient-to-r from-green-500 to-emerald-600 p-4 sm:p-6 rounded-t-xl sm:rounded-t-2xl z-10">
           <div className="flex items-start justify-between gap-3">
             <div className="flex items-center gap-2 sm:gap-3 flex-1">
@@ -104,10 +97,10 @@ export default function ParcelCreatedModal({ parcel, onClose }: Props) {
           </div>
         </div>
 
-        {/* Content */}
+        {}
         <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
           
-          {/* Tracking ID Card */}
+          {}
           <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 rounded-lg p-4 sm:p-6 border border-blue-200 dark:border-blue-800">
             <div className="flex items-center gap-2 mb-3">
               <Package className="w-5 h-5 text-blue-600 dark:text-blue-400" />
@@ -118,9 +111,9 @@ export default function ParcelCreatedModal({ parcel, onClose }: Props) {
             </div>
           </div>
 
-          {/* Sender & Receiver Grid */}
+          {}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            {/* Sender Info */}
+            {}
             <div className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950/30 dark:to-purple-900/30 rounded-lg p-4 border border-purple-200 dark:border-purple-800">
               <div className="flex items-center gap-2 mb-3">
                 <User className="w-5 h-5 text-purple-600 dark:text-purple-400" />
@@ -133,7 +126,7 @@ export default function ParcelCreatedModal({ parcel, onClose }: Props) {
               </div>
             </div>
 
-            {/* Receiver Info */}
+            {}
             <div className="bg-gradient-to-br from-pink-50 to-rose-100 dark:from-pink-950/30 dark:to-rose-900/30 rounded-lg p-4 border border-pink-200 dark:border-pink-800">
               <div className="flex items-center gap-2 mb-3">
                 <MapPin className="w-5 h-5 text-pink-600 dark:text-pink-400" />
@@ -156,7 +149,7 @@ export default function ParcelCreatedModal({ parcel, onClose }: Props) {
             </div>
           </div>
 
-          {/* Delivery Address */}
+          {}
           <div className="bg-gradient-to-br from-amber-50 to-orange-100 dark:from-amber-950/30 dark:to-orange-900/30 rounded-lg p-4 border border-amber-200 dark:border-amber-800">
             <div className="flex items-center gap-2 mb-3">
               <MapPin className="w-5 h-5 text-amber-600 dark:text-amber-400" />
@@ -167,7 +160,7 @@ export default function ParcelCreatedModal({ parcel, onClose }: Props) {
             </p>
           </div>
 
-          {/* Parcel Details */}
+          {}
           <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
             <div className="flex items-center gap-2 mb-4">
               <Box className="w-5 h-5 text-gray-600 dark:text-gray-400" />
@@ -193,7 +186,7 @@ export default function ParcelCreatedModal({ parcel, onClose }: Props) {
             </div>
           </div>
 
-          {/* Action Buttons */}
+          {}
           <div className="flex flex-col sm:flex-row gap-3 pt-2">
             <button 
               onClick={handleGeneratePdf} 

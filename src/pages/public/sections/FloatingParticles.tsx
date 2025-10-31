@@ -19,7 +19,6 @@ export default function FloatingParticles() {
     }
   }, []);
 
-  // Don't render on server side to avoid hydration issues
   if (!isClient) {
     return null;
   }

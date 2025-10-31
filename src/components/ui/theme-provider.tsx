@@ -16,22 +16,19 @@ const ThemeContext = React.createContext<ThemeContextValue | undefined>(
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setThemeState] = React.useState<Theme | null>(null);
 
-  // Apply theme immediately on mount (before React hydration)
   React.useEffect(() => {
     try {
       const stored = localStorage.getItem("theme");
       const initialTheme = (stored === "light" || stored === "dark" || stored === "system") ? stored : "system";
-      
-      // Set state
+
       setThemeState(initialTheme);
-      
-      // Apply theme to document immediately
+
       if (initialTheme === "dark") {
         document.documentElement.classList.add("dark");
       } else if (initialTheme === "light") {
         document.documentElement.classList.remove("dark");
       } else if (initialTheme === "system") {
-        // Check system preference
+        
         const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
         if (prefersDark) {
           document.documentElement.classList.add("dark");
@@ -49,15 +46,14 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     try {
       localStorage.setItem("theme", t);
     } catch {}
-    
-    // Apply class on document element for light/dark
+
     if (typeof document !== "undefined") {
       if (t === "dark") {
         document.documentElement.classList.add("dark");
       } else if (t === "light") {
         document.documentElement.classList.remove("dark");
       } else if (t === "system") {
-        // Check system preference
+        
         const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
         if (prefersDark) {
           document.documentElement.classList.add("dark");

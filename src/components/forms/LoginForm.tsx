@@ -10,11 +10,12 @@ import {
 import { Input } from "@/components/ui/input";
 import Password from "@/components/ui/Password";
 import { useAuth } from "../../hooks/useAuth";
+import { useAuthNavigation } from "../../hooks/useAuthNavigation";
 import { cn } from "../../utils/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Lock, Mail, Package, Shield, User } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { z } from "zod";
 
@@ -27,7 +28,6 @@ const loginSchema = z.object({
   }),
 });
 
-// Test credentials for easy testing
 const testCredentials = [
   { role: "Admin", email: "admin@parceldelivery.com", password: "Admin123!" },
   { role: "Sender", email: "sender@example.com", password: "password123" },
@@ -39,7 +39,7 @@ export function LoginForm({
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
   const { login, user } = useAuth();
-  const navigate = useNavigate();
+  const { navigateAfterLogin } = useAuthNavigation();
 
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
@@ -52,22 +52,16 @@ export function LoginForm({
   const onSubmit = async (data: z.infer<typeof loginSchema>) => {
     try {
       const result = await login(data.email, data.password);
-      
-      
+
       if (result.success && result.user) {
         toast.success(`Welcome back, ${result.user.name}!`);
-        
-        // ✅ CRITICAL FIX: Wait longer to ensure all state updates propagate
-        // This gives time for: localStorage save, Redux update, persist, and event dispatch
-        await new Promise(resolve => setTimeout(resolve, 200));
-        
-        // Navigate using the returned user data
-        const dashboardPath = result.user.role === "admin" ? "/admin/dashboard"
-                            : result.user.role === "sender" ? "/sender/dashboard"
-                            : result.user.role === "receiver" ? "/receiver/dashboard"
-                            : "/";
-        
-        navigate(dashboardPath, { replace: true });
+
+        // Wait for state to properly update before navigation
+        // This ensures all state updates are complete
+        await new Promise(resolve => setTimeout(resolve, 400));
+
+        // Use the custom navigation hook for reliable navigation
+        navigateAfterLogin(result.user);
       } else {
         console.error("❌ [LoginForm] Login failed:", result);
         toast.error("Invalid email or password");
@@ -86,7 +80,7 @@ export function LoginForm({
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      {/* Enhanced Test Credentials Section */}
+      {}
       <div className="relative overflow-hidden rounded-2xl border border-border/40 bg-gradient-to-br from-blue-50/50 via-indigo-50/50 to-purple-50/50 dark:from-blue-950/20 dark:via-indigo-950/20 dark:to-purple-950/20 p-6 backdrop-blur-sm shadow-lg">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 via-indigo-500/5 to-purple-500/5"></div>
         <div className="relative">
@@ -144,7 +138,7 @@ export function LoginForm({
         </div>
       </div>
 
-      {/* Enhanced Login Form Section */}
+      {}
       <div className="bg-white/70 dark:bg-background/70 backdrop-blur-sm rounded-3xl border border-border/30 p-8 shadow-2xl">
         <div className="text-center mb-8">
           <div className="w-16 h-16 bg-gradient-to-r from-red-500 to-orange-600 dark:from-red-600 dark:to-red-700 rounded-3xl flex items-center justify-center mx-auto mb-4 shadow-xl">
@@ -248,7 +242,7 @@ export function LoginForm({
         </Form>
       </div>
 
-      {/* Footer */}
+      {}
       <div className="text-center">
         <p className="text-sm text-muted-foreground">
           Don&apos;t have an account?{" "}

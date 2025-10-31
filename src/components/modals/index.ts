@@ -1,4 +1,4 @@
-// Modal components index
+
 export { default as ParcelDetailsModal } from './ParcelDetailsModal';
 export { default as ConfirmationDialog } from './ConfirmationDialog';
 export { default as ConfirmDialog } from './ConfirmDialog';

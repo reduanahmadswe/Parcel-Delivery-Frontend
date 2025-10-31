@@ -85,7 +85,6 @@ const ProfilePage: React.FC = () => {
       }));
     }
 
-    // Clear error when user starts typing
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
     }
@@ -95,7 +94,6 @@ const ProfilePage: React.FC = () => {
     const { name, value } = e.target;
     setPasswordData((prev) => ({ ...prev, [name]: value }));
 
-    // Clear error when user starts typing
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
     }
@@ -219,7 +217,7 @@ const ProfilePage: React.FC = () => {
     <ProtectedRoute>
       <div className="min-h-screen bg-background mt-8 sm:mt-10">
         <div className="max-w-4xl mx-auto pt-2 sm:pt-3 px-3 xs:px-4 sm:px-5 lg:px-6 space-y-4 sm:space-y-5 lg:space-y-6 pb-20 sm:pb-24">
-          {/* Header */}
+          {}
           <div className="bg-gradient-to-r from-red-50/50 via-purple-50/30 to-pink-50/50 dark:from-red-950/20 dark:via-purple-950/10 dark:to-pink-950/20 border border-border rounded-lg sm:rounded-xl lg:rounded-2xl p-4 sm:p-5 lg:p-6 hover:shadow-xl hover:border-red-200 dark:hover:border-red-800 hover:bg-gradient-to-r hover:from-red-50/70 hover:via-purple-50/50 hover:to-pink-50/70 dark:hover:from-red-950/30 dark:hover:via-purple-950/20 dark:hover:to-pink-950/30 transition-all duration-300 backdrop-blur-sm">
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 sm:gap-4">
               <div className="space-y-2 sm:space-y-3">
@@ -249,7 +247,7 @@ const ProfilePage: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-5 lg:gap-6">
-            {/* Profile Information */}
+            {}
             <div className="lg:col-span-2">
               <div className="bg-gradient-to-br from-background via-red-50/10 to-purple-50/10 dark:from-background dark:via-red-950/5 dark:to-purple-950/5 rounded-lg sm:rounded-xl shadow-sm border border-border hover:shadow-xl hover:border-red-200 dark:hover:border-red-800 transition-all duration-300 backdrop-blur-sm">
                 <div className="p-4 sm:p-5 lg:p-6 border-b border-border">
@@ -354,7 +352,7 @@ const ProfilePage: React.FC = () => {
                         </div>
                       </div>
 
-                      {/* Address Section */}
+                      {}
                       <div>
                         <h3 className="text-sm xs:text-base sm:text-lg font-medium text-foreground mb-3 sm:mb-4">
                           Address Information
@@ -498,7 +496,7 @@ const ProfilePage: React.FC = () => {
                         </div>
                       </div>
 
-                      {/* Address Display */}
+                      {}
                       <div className="border-t border-border pt-4 sm:pt-5 lg:pt-6">
                         <h3 className="text-sm xs:text-base sm:text-lg font-medium text-foreground mb-3 sm:mb-4">
                           Address Information
@@ -527,9 +525,9 @@ const ProfilePage: React.FC = () => {
               </div>
             </div>
 
-            {/* Sidebar */}
+            {}
             <div className="space-y-4 sm:space-y-5 lg:space-y-6">
-              {/* Account Security */}
+              {}
               <div className="bg-gradient-to-br from-background via-red-50/10 to-purple-50/10 dark:from-background dark:via-red-950/5 dark:to-purple-950/5 rounded-xl shadow-sm border border-border hover:shadow-xl hover:border-red-200 dark:hover:border-red-800 transition-all duration-300 backdrop-blur-sm">
                 <div className="p-3 xs:p-4 sm:p-5 lg:p-6 border-b border-border">
                   <div className="flex flex-col xs:flex-row items-start xs:items-center justify-between gap-3 xs:gap-0">
@@ -695,7 +693,7 @@ const ProfilePage: React.FC = () => {
                 </div>
               </div>
 
-              {/* Quick Stats for Senders */}
+              {}
               {user?.role === "sender" && (
                 <div className="bg-gradient-to-br from-background via-red-50/10 to-purple-50/10 dark:from-background dark:via-red-950/5 dark:to-purple-950/5 rounded-xl shadow-sm border border-border hover:shadow-xl hover:border-red-200 dark:hover:border-red-800 transition-all duration-300 backdrop-blur-sm">
                   <div className="p-3 xs:p-4 sm:p-5 lg:p-6">

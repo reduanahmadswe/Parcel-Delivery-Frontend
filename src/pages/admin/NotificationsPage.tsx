@@ -91,7 +91,7 @@ export default function AdminNotificationsPage() {
             </button>
           </div>
 
-          {/* Notifications List */}
+          {}
           <div className="bg-background rounded-lg shadow border border-border">
             <div className="divide-y divide-border">
               {notifications.map((notification) => (
@@ -139,7 +139,7 @@ export default function AdminNotificationsPage() {
             </div>
           </div>
 
-          {/* Empty state if no notifications */}
+          {}
           {notifications.length === 0 && (
             <div className="text-center py-12">
               <Bell className="mx-auto h-12 w-12 text-muted-foreground" />

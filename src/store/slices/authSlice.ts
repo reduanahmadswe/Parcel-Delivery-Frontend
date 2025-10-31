@@ -10,7 +10,6 @@ export interface AuthState {
     loading: boolean;
 }
 
-// Initial state
 const initialState: AuthState = {
     user: null,
     token: null,
@@ -23,34 +22,28 @@ const authSlice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
-        // Set loading state
+        
         setLoading: (state, action: PayloadAction<boolean>) => {
             state.loading = action.payload;
         },
 
-        // Login success
         loginSuccess: (state, action: PayloadAction<{ user: User; token: string; refreshToken?: string }>) => {
             const { user, token, refreshToken } = action.payload;
-            
-            // ✅ Update Redux state immediately
+
             state.user = user;
             state.token = token;
             state.refreshToken = refreshToken || null;
             state.isAuthenticated = true;
             state.loading = false;
-            
-            // Debug log to trace when loginSuccess is dispatched
+
             try {
                 if (typeof window !== 'undefined') {
                     console.debug('[authSlice] loginSuccess dispatched for user:', user?.email, 'role:', user?.role);
                 }
             } catch (err) {}
-            
-            // Note: TokenManager and localStorage updates are now handled in ReduxAuthContext
-            // to avoid duplication and ensure proper timing
+
         },
 
-        // Login failure
         loginFailure: (state) => {
             state.user = null;
             state.token = null;
@@ -58,30 +51,26 @@ const authSlice = createSlice({
             state.isAuthenticated = false;
             state.loading = false;
 
-            // Clear tokens from storage
             TokenManager.clearTokens();
         },
 
-        // Update user profile
         updateUser: (state, action: PayloadAction<User>) => {
             state.user = action.payload;
         },
 
-        // Refresh token success
         refreshTokenSuccess: (state, action: PayloadAction<string>) => {
             state.token = action.payload;
-            // Update token in storage
+            
             TokenManager.setTokens(action.payload, state.refreshToken || undefined);
         },
 
-        // Logout
         logout: (state) => {
             state.user = null;
             state.token = null;
             state.refreshToken = null;
             state.isAuthenticated = false;
             state.loading = false;
-            // Debug log to trace logout reducer
+            
             try {
                 if (typeof window !== 'undefined') {
                     console.debug('[authSlice] logout reducer executed');
@@ -94,11 +83,9 @@ const authSlice = createSlice({
             }
         },
 
-        // Restore from storage (used by redux-persist)
         restoreAuth: (state, action: PayloadAction<{ user: User; token: string; refreshToken?: string }>) => {
             const { user, token, refreshToken } = action.payload;
 
-            // Validate token exists in storage
             const storedToken = TokenManager.getAccessToken();
             if (storedToken && storedToken === token) {
                 state.user = user;
@@ -106,7 +93,7 @@ const authSlice = createSlice({
                 state.refreshToken = refreshToken || null;
                 state.isAuthenticated = true;
             } else {
-                // Token mismatch or doesn't exist, clear state
+                
                 state.user = null;
                 state.token = null;
                 state.refreshToken = null;
@@ -130,13 +117,11 @@ export const {
 
 export default authSlice.reducer;
 
-// Selectors
 export const selectCurrentUser = (state: { auth: AuthState }) => state.auth.user;
 export const selectToken = (state: { auth: AuthState }) => state.auth.token;
 export const selectIsAuthenticated = (state: { auth: AuthState }) => state.auth.isAuthenticated;
 export const selectAuthLoading = (state: { auth: AuthState }) => state.auth.loading;
 
-// Type-safe selectors for persisted state
 export const selectCurrentUserSafe = (state: unknown) => {
     if (typeof state === 'object' && state !== null && 'auth' in state) {
         const authState = (state as { auth: unknown }).auth;

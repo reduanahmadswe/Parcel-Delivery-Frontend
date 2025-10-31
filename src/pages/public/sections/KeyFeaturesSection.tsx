@@ -32,7 +32,7 @@ export default function KeyFeaturesSection() {
   return (
     <section className="py-20 bg-background relative overflow-hidden">
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
+        {}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -56,10 +56,10 @@ export default function KeyFeaturesSection() {
           </p>
         </motion.div>
 
-        {/* Features Grid */}
+        {}
         <HoverEffect items={features} className="grid md:grid-cols-3 gap-8" />
 
-        {/* Bottom CTA */}
+        {}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}

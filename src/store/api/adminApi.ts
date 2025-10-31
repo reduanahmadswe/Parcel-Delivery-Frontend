@@ -1,11 +1,10 @@
 import apiSlice from './apiSlice';
 
-// Admin endpoints: users and parcels with fallback paths and advanced caching
 const injectedApi = apiSlice.injectEndpoints({
     endpoints: (build) => ({
         getAllUsers: build.query<any[], void>({
             async queryFn(_arg, _queryApi, _extraOptions, fetchWithBQ) {
-                // Try /users first (backend standard route)
+                
                 const res = (await fetchWithBQ({ url: '/users?limit=1000', method: 'GET' } as any)) as any;
                 if (!res.error && res.data) {
                     return { data: Array.isArray(res.data) ? res.data : res.data?.data || [] };
@@ -19,13 +18,13 @@ const injectedApi = apiSlice.injectEndpoints({
                           { type: 'User', id: 'LIST' },
                       ]
                     : [{ type: 'User', id: 'LIST' }],
-            // Keep user data cached until logout - no expiry
+            
             keepUnusedDataFor: Infinity,
         }),
 
         getAllParcels: build.query<any[], void>({
             async queryFn(_arg, _queryApi, _extraOptions, fetchWithBQ) {
-                // Try /parcels first (backend standard route)
+                
                 const res = (await fetchWithBQ({ url: '/parcels?limit=1000', method: 'GET' } as any)) as any;
                 if (!res.error && res.data) {
                     return { data: Array.isArray(res.data) ? res.data : res.data?.data || [] };
@@ -41,11 +40,10 @@ const injectedApi = apiSlice.injectEndpoints({
                           'Stats',
                       ]
                     : [{ type: 'Parcel', id: 'ADMIN_LIST' }, 'Dashboard', 'Stats'],
-            // Keep parcel data cached until logout - no expiry
+            
             keepUnusedDataFor: Infinity,
         }),
 
-        // Update user mutation with optimistic updates
         updateUser: build.mutation<any, { id: string; data: any }>({
             query: ({ id, data }) => ({
                 url: `/users/${id}`,
@@ -56,7 +54,7 @@ const injectedApi = apiSlice.injectEndpoints({
                 { type: 'User', id },
                 { type: 'User', id: 'LIST' },
             ],
-            // Optimistic update
+            
             async onQueryStarted({ id, data }, { dispatch, queryFulfilled }) {
                 const patchResult = dispatch(
                     injectedApi.util.updateQueryData('getAllUsers', undefined, (draft) => {
@@ -75,7 +73,6 @@ const injectedApi = apiSlice.injectEndpoints({
             },
         }),
 
-        // Delete user mutation with optimistic updates
         deleteUser: build.mutation<any, string>({
             query: (id) => ({
                 url: `/users/${id}`,
@@ -85,7 +82,7 @@ const injectedApi = apiSlice.injectEndpoints({
                 { type: 'User', id },
                 { type: 'User', id: 'LIST' },
             ],
-            // Optimistic delete
+            
             async onQueryStarted(id, { dispatch, queryFulfilled }) {
                 const patchResult = dispatch(
                     injectedApi.util.updateQueryData('getAllUsers', undefined, (draft) => {

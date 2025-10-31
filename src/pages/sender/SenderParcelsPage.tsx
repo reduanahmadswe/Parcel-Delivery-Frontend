@@ -52,21 +52,17 @@ export default function SenderParcelsPage() {
   const fetchingRef = useRef(false);
   const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Modal states
   const [selectedParcel, setSelectedParcel] = useState<Parcel | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Cancel dialog states
   const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
   const [parcelToCancel, setParcelToCancel] = useState<Parcel | null>(null);
   const [cancelReason, setCancelReason] = useState("");
   const [isCancelling, setIsCancelling] = useState(false);
 
-  // Search enhancement states
   const [showSearchSuggestions, setShowSearchSuggestions] = useState(false);
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
 
-  // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
   const [pagination, setPagination] = useState<PaginationInfo>({
     currentPage: 1,
@@ -76,37 +72,31 @@ export default function SenderParcelsPage() {
     hasNextPage: false,
     hasPrevPage: false,
   });
-  const [itemsPerPage] = useState(5); // You can make this configurable
+  const [itemsPerPage] = useState(5); 
 
-  // Listen for cache invalidation events
   useEffect(() => {
     const handleCacheInvalidation = (event: Event) => {
       const customEvent = event as CustomEvent<{ key: string; timestamp: number }>;
       const { key } = customEvent.detail;
-      
-      // If sender parcels cache is invalidated, refetch current page silently
+
       if (key.includes('sender:parcels:') || key === 'SENDER_DASHBOARD') {
-        fetchParcels(currentPage, true, true); // Silent background refresh
+        fetchParcels(currentPage, true, true); 
       }
     };
 
-    // Add event listener
     window.addEventListener('cache-invalidated', handleCacheInvalidation);
 
-    // Cleanup
     return () => {
       window.removeEventListener('cache-invalidated', handleCacheInvalidation);
     };
   }, [currentPage]);
 
-  // Auto-refresh data every 30 seconds for live updates (silent)
   useEffect(() => {
-    // Start polling for live updates
+    
     pollingIntervalRef.current = setInterval(() => {
-      fetchParcels(currentPage, true, true); // Force refresh silently in background
-    }, 30000); // 30 seconds
+      fetchParcels(currentPage, true, true); 
+    }, 30000); 
 
-    // Cleanup interval on unmount
     return () => {
       if (pollingIntervalRef.current) {
         clearInterval(pollingIntervalRef.current);
@@ -114,11 +104,10 @@ export default function SenderParcelsPage() {
     };
   }, [currentPage]);
 
-  // Refresh data when user returns to the tab (Page Visibility API) - silent
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (!document.hidden) {
-        // User returned to the tab, refresh data silently
+        
         fetchParcels(currentPage, true, true);
       }
     };
@@ -134,48 +123,43 @@ export default function SenderParcelsPage() {
     fetchParcels(currentPage);
   }, [currentPage]);
 
-  // Load recent searches from localStorage
   useEffect(() => {
     const saved = localStorage.getItem("recentParcelSearches");
     if (saved) {
       try {
         setRecentSearches(JSON.parse(saved));
       } catch (error) {
-        // Error loading recent searches
+        
       }
     }
   }, []);
 
-  // Debounce search term
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearchTerm(searchTerm);
-    }, 300); // 300ms delay
+    }, 300); 
 
     return () => clearTimeout(timer);
   }, [searchTerm]);
 
-  // Refetch when filters change
   useEffect(() => {
     if (currentPage === 1) {
       fetchParcels(1);
     } else {
-      setCurrentPage(1); // This will trigger the above useEffect
+      setCurrentPage(1); 
     }
   }, [filterStatus, debouncedSearchTerm]);
 
   const fetchParcels = async (page: number = 1, force: boolean = false, silent: boolean = false) => {
-    // Prevent concurrent fetches
+    
     if (fetchingRef.current) return;
 
     try {
       fetchingRef.current = true;
 
-      // Create cache key based on page and filters
       const filterKey = `${filterStatus || 'all'}-${debouncedSearchTerm || 'all'}`;
       const cacheKey = CACHE_KEYS.SENDER_PARCELS(page, filterKey);
 
-      // Check cache first (unless force refresh)
       if (!force) {
         const cachedData = adminCache.get<{ parcels: Parcel[]; pagination: PaginationInfo }>(cacheKey);
         if (cachedData) {
@@ -188,20 +172,17 @@ export default function SenderParcelsPage() {
         }
       }
 
-      // Only show loading for initial load or manual refresh
       if (!silent) {
         setLoading(true);
       } else {
         setIsBackgroundRefresh(true);
       }
 
-      // Build query parameters
       const params = new URLSearchParams({
         page: page.toString(),
         limit: itemsPerPage.toString(),
       });
 
-      // Add filters if they exist
       if (filterStatus) {
         params.append("status", filterStatus);
       }
@@ -211,7 +192,6 @@ export default function SenderParcelsPage() {
 
       const response = await api.get(`/parcels/me?${params.toString()}`);
 
-      // Handle different response structures
       const data = response.data.data || response.data.parcels || response.data;
       const paginationData =
         response.data.pagination || response.data.meta || {};
@@ -219,7 +199,6 @@ export default function SenderParcelsPage() {
       const parcelsData = Array.isArray(data) ? data : [];
       setParcels(parcelsData);
 
-      // Update pagination info
       const paginationInfo = {
         currentPage: paginationData.currentPage || paginationData.page || page,
         totalPages:
@@ -236,10 +215,9 @@ export default function SenderParcelsPage() {
       };
       setPagination(paginationInfo);
 
-      // Cache the results
       adminCache.set(cacheKey, { parcels: parcelsData, pagination: paginationInfo });
     } catch (error) {
-      // Only show error toast for non-silent refresh
+      
       if (!silent) {
         toast.error("Failed to fetch parcels");
       }
@@ -269,7 +247,6 @@ export default function SenderParcelsPage() {
     }
   };
 
-  // Modal handlers
   const handleViewParcel = (parcel: Parcel) => {
     setSelectedParcel(parcel);
     setIsModalOpen(true);
@@ -280,7 +257,6 @@ export default function SenderParcelsPage() {
     setSelectedParcel(null);
   };
 
-  // Cancel handlers
   const handleCancelClick = (parcel: Parcel) => {
     setParcelToCancel(parcel);
     setCancelReason("");
@@ -303,12 +279,10 @@ export default function SenderParcelsPage() {
       setIsCancelDialogOpen(false);
       setParcelToCancel(null);
       setCancelReason("");
-      
-      // Invalidate sender caches
+
       invalidateRelatedCaches('sender-parcel');
-      
-      // Refresh the parcels list
-      fetchParcels(currentPage, true); // Force refresh
+
+      fetchParcels(currentPage, true); 
     } catch (error: unknown) {
       const apiError = error as ApiError;
       const errorMessage = 
@@ -328,20 +302,18 @@ export default function SenderParcelsPage() {
     }
   };
 
-  // Check if parcel can be cancelled (only before dispatch)
   const canCancelParcel = (parcel: Parcel) => {
     const cancellableStatuses = ["requested", "approved"];
     return cancellableStatuses.includes(parcel.currentStatus.toLowerCase());
   };
 
-  // Save search term to recent searches
   const addToRecentSearches = (term: string) => {
     if (!term.trim()) return;
 
     const newRecentSearches = [
       term,
       ...recentSearches.filter((search) => search !== term),
-    ].slice(0, 5); // Keep only 5 recent searches
+    ].slice(0, 5); 
 
     setRecentSearches(newRecentSearches);
     localStorage.setItem(
@@ -350,11 +322,9 @@ export default function SenderParcelsPage() {
     );
   };
 
-  // Handle search input change
   const handleSearchChange = (value: string) => {
     setSearchTerm(value);
 
-    // Show suggestions when typing or when there are recent searches
     if (value.length > 0 || recentSearches.length > 0) {
       setShowSearchSuggestions(true);
     } else {
@@ -362,21 +332,18 @@ export default function SenderParcelsPage() {
     }
   };
 
-  // Handle search suggestion click
   const handleSuggestionClick = (suggestion: string) => {
     setSearchTerm(suggestion);
     setShowSearchSuggestions(false);
     addToRecentSearches(suggestion);
   };
 
-  // Handle search input blur with delay to allow suggestion clicks
   const handleSearchBlur = () => {
     setTimeout(() => {
       setShowSearchSuggestions(false);
     }, 200);
   };
 
-  // Handle search submit (Enter key)
   const handleSearchSubmit = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && searchTerm.trim()) {
       addToRecentSearches(searchTerm.trim());
@@ -384,16 +351,13 @@ export default function SenderParcelsPage() {
     }
   };
 
-  // Get search suggestions
   const getSearchSuggestions = () => {
     if (!searchTerm) return recentSearches;
 
-    // Filter recent searches that match current input
     const filteredRecent = recentSearches.filter((search) =>
       search.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    // Generate suggestions from current parcels data
     const parcelSuggestions = parcels.reduce((acc: string[], parcel) => {
       const suggestions = [
         parcel.trackingId,
@@ -401,7 +365,7 @@ export default function SenderParcelsPage() {
         parcel.receiverInfo?.address?.city,
         parcel.currentStatus,
         parcel.parcelDetails?.type,
-      ].filter(Boolean); // Remove null/undefined values
+      ].filter(Boolean); 
 
       suggestions.forEach((suggestion) => {
         if (
@@ -419,15 +383,12 @@ export default function SenderParcelsPage() {
     return [...filteredRecent, ...parcelSuggestions].slice(0, 5);
   };
 
-  // Use parcels directly since filtering is now server-side, but add client-side enhancement
   const displayParcels = parcels.filter((parcel) => {
-    // If no search term, show all parcels (server-side filtering already applied)
+    
     if (!searchTerm) return true;
 
-    // Enhanced client-side search for comprehensive filtering
     const searchLower = searchTerm.toLowerCase();
 
-    // Search in multiple fields
     const searchFields = [
       parcel.trackingId,
       parcel.receiverInfo.name,
@@ -444,9 +405,8 @@ export default function SenderParcelsPage() {
       parcel.parcelDetails.type,
       parcel.parcelDetails.description,
       parcel.fee?.totalFee?.toString(),
-    ].filter(Boolean); // Remove null/undefined values
+    ].filter(Boolean); 
 
-    // Check if search term matches any field
     return searchFields.some((field) =>
       field?.toLowerCase().includes(searchLower)
     );
@@ -466,7 +426,7 @@ export default function SenderParcelsPage() {
     <ProtectedRoute allowedRoles={["sender"]}>
       <div className="min-h-screen bg-background mt-10">
         <div className="max-w-7xl mx-auto pt-2 px-3 sm:px-4 lg:px-6 space-y-3 sm:space-y-4 lg:space-y-6 pb-24">
-          {/* Header */}
+          {}
           <div className="bg-gradient-to-r from-blue-50/50 via-transparent to-green-50/50 dark:from-blue-950/20 dark:to-green-950/20 border border-border rounded-xl p-3 sm:p-4 lg:p-6">
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 sm:gap-4">
               <div>
@@ -480,7 +440,7 @@ export default function SenderParcelsPage() {
             </div>
           </div>
 
-          {/* Search and Filter Section */}
+          {}
           <div className="bg-background rounded-lg shadow-sm border border-border p-3 sm:p-4 lg:p-6">
             <div className="flex flex-col md:flex-row gap-3 sm:gap-4">
               <div className="flex-1">
@@ -500,13 +460,13 @@ export default function SenderParcelsPage() {
                     onKeyDown={handleSearchSubmit}
                     className="w-full pl-8 sm:pl-10 pr-8 sm:pr-10 py-1.5 sm:py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-background text-foreground placeholder:text-muted-foreground text-xs sm:text-sm"
                   />
-                  {/* Loading indicator */}
+                  {}
                   {searchTerm !== debouncedSearchTerm && (
                     <div className="absolute right-7 sm:right-8 top-1/2 transform -translate-y-1/2">
                       <div className="animate-spin rounded-full h-3 w-3 sm:h-4 sm:w-4 border-b-2 border-blue-600"></div>
                     </div>
                   )}
-                  {/* Clear button */}
+                  {}
                   {searchTerm && (
                     <button
                       onClick={() => {
@@ -520,7 +480,7 @@ export default function SenderParcelsPage() {
                     </button>
                   )}
 
-                  {/* Search Suggestions Dropdown */}
+                  {}
                   {showSearchSuggestions && (
                     <div className="absolute top-full left-0 right-0 mt-1 bg-background border border-border rounded-lg shadow-lg z-50 max-h-60 overflow-y-auto">
                       {getSearchSuggestions().length > 0 ? (
@@ -586,7 +546,7 @@ export default function SenderParcelsPage() {
             </div>
           </div>
 
-          {/* Parcels Table */}
+          {}
           <div className="bg-background rounded-lg shadow-sm border border-border">
             <div className="p-3 sm:p-4 lg:p-6 border-b border-border">
               <div className="flex flex-col xs:flex-row items-start xs:items-center justify-between gap-2 xs:gap-3">
@@ -638,7 +598,7 @@ export default function SenderParcelsPage() {
                 </div>
               ) : (
                 <>
-                  {/* Loading indicator */}
+                  {}
                   {loading && (
                     <div className="px-3 sm:px-6 py-2 border-b border-border">
                       <div className="flex items-center space-x-2 text-xs sm:text-sm text-muted-foreground">
@@ -648,7 +608,7 @@ export default function SenderParcelsPage() {
                     </div>
                   )}
 
-                  {/* Desktop Table View - Hidden on mobile */}
+                  {}
                   <table
                     className="w-full hidden md:table"
                     style={{
@@ -764,7 +724,7 @@ export default function SenderParcelsPage() {
                     </tbody>
                   </table>
 
-                  {/* Mobile Card View - Visible only on mobile */}
+                  {}
                   <div className="md:hidden divide-y divide-border"
                     style={{
                       opacity: loading ? 0.6 : 1,
@@ -864,7 +824,7 @@ export default function SenderParcelsPage() {
               )}
             </div>
 
-            {/* Pagination */}
+            {}
             {displayParcels.length > 0 && pagination.totalPages > 1 && (
               <div className="px-3 sm:px-6 py-3 sm:py-4 border-t border-border">
                 <div className="flex flex-col xs:flex-row items-center justify-between gap-3">
@@ -881,7 +841,7 @@ export default function SenderParcelsPage() {
                   </div>
 
                   <div className="flex items-center space-x-1.5 sm:space-x-2 order-1 xs:order-2">
-                    {/* Previous Button */}
+                    {}
                     <button
                       onClick={handlePrevPage}
                       disabled={!pagination.hasPrevPage || loading}
@@ -895,9 +855,9 @@ export default function SenderParcelsPage() {
                       <span className="hidden xs:inline">Previous</span>
                     </button>
 
-                    {/* Page Numbers */}
+                    {}
                     <div className="flex items-center space-x-1">
-                      {/* First page */}
+                      {}
                       {currentPage > 3 && (
                         <>
                           <button
@@ -914,7 +874,7 @@ export default function SenderParcelsPage() {
                         </>
                       )}
 
-                      {/* Current page and surrounding pages */}
+                      {}
                       {Array.from(
                         { length: pagination.totalPages },
                         (_, i) => i + 1
@@ -942,7 +902,7 @@ export default function SenderParcelsPage() {
                           </button>
                         ))}
 
-                      {/* Last page */}
+                      {}
                       {currentPage < pagination.totalPages - 2 && (
                         <>
                           {currentPage < pagination.totalPages - 3 && (
@@ -962,7 +922,7 @@ export default function SenderParcelsPage() {
                       )}
                     </div>
 
-                    {/* Next Button */}
+                    {}
                     <button
                       onClick={handleNextPage}
                       disabled={!pagination.hasNextPage || loading}
@@ -984,14 +944,14 @@ export default function SenderParcelsPage() {
       </div>
       <FooterSection />
 
-      {/* Parcel Details Modal */}
+      {}
       <ParcelDetailsModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         parcel={selectedParcel}
       />
 
-      {/* Cancel Confirmation Dialog */}
+      {}
       {isCancelDialogOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
           <div className="bg-background rounded-lg shadow-xl max-w-md w-full p-6">

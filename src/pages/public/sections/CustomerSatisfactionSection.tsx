@@ -52,11 +52,11 @@ export default function CustomerSatisfactionSection() {
 
   return (
     <section className="py-20 bg-background relative overflow-hidden">
-      {/* Background decoration */}
+      {}
       <div className="absolute inset-0 bg-gradient-to-br from-red-50/20 via-transparent to-green-50/20 dark:from-red-950/10 dark:to-green-950/10"></div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-        {/* Section Header */}
+        {}
         <motion.div
           className="text-center mb-16"
           initial={{ opacity: 0, y: 20 }}
@@ -81,7 +81,7 @@ export default function CustomerSatisfactionSection() {
           </p>
         </motion.div>
         <div className="grid lg:grid-cols-2 gap-16 items-center">
-          {/* Left Column - Features */}
+          {}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -115,7 +115,7 @@ export default function CustomerSatisfactionSection() {
               ))}
             </div>
 
-            {/* Enhanced Trust Indicators */}
+            {}
             <motion.div
               className="mt-10"
               initial={{ opacity: 0, y: 20 }}
@@ -124,7 +124,7 @@ export default function CustomerSatisfactionSection() {
               transition={{ duration: 0.6, delay: 0.5 }}
             >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Rating Card */}
+                {}
                 <motion.div
                   className="bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-950/20 dark:to-orange-950/20 border border-yellow-200 dark:border-yellow-800 rounded-2xl p-6 group hover:shadow-lg transition-all duration-300"
                   whileHover={{ scale: 1.02, y: -2 }}
@@ -169,7 +169,7 @@ export default function CustomerSatisfactionSection() {
                   </p>
                 </motion.div>
 
-                {/* Customers Card */}
+                {}
                 <motion.div
                   className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 border border-green-200 dark:border-green-800 rounded-2xl p-6 group hover:shadow-lg transition-all duration-300"
                   whileHover={{ scale: 1.02, y: -2 }}
@@ -220,7 +220,7 @@ export default function CustomerSatisfactionSection() {
                 </motion.div>
               </div>
 
-              {/* Additional Trust Badge */}
+              {}
               <motion.div
                 className="mt-6 inline-flex items-center bg-card border border-border rounded-full px-4 py-2 shadow-sm"
                 initial={{ opacity: 0, scale: 0.8 }}
@@ -240,7 +240,7 @@ export default function CustomerSatisfactionSection() {
             </motion.div>
           </motion.div>
 
-          {/* Right Column - Image and Stats */}
+          {}
           <motion.div
             className="relative"
             initial={{ opacity: 0, x: 20 }}
@@ -248,7 +248,7 @@ export default function CustomerSatisfactionSection() {
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.3 }}
           >
-            {/* Courier Merchant Image */}
+            {}
             <div className="relative mb-8 group">
               <div className="rounded-3xl overflow-hidden shadow-2xl relative">
                 <img
@@ -258,7 +258,7 @@ export default function CustomerSatisfactionSection() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
 
-                {/* Floating badge */}
+                {}
                 <motion.div
                   className="absolute top-6 right-6 bg-white/20 backdrop-blur-sm border border-white/30 rounded-full px-4 py-2"
                   initial={{ opacity: 0, scale: 0.8 }}
@@ -289,7 +289,7 @@ export default function CustomerSatisfactionSection() {
               </div>
             </div>
 
-            {/* Enhanced Stats Card */}
+            {}
             <motion.div
               className="bg-gradient-to-br from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 rounded-3xl p-8 text-white shadow-2xl relative overflow-hidden"
               initial={{ opacity: 0, y: 20 }}
@@ -297,7 +297,7 @@ export default function CustomerSatisfactionSection() {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.4 }}
             >
-              {/* Background pattern */}
+              {}
               <div className="absolute top-0 right-0 w-32 h-32 opacity-10">
                 <svg viewBox="0 0 100 100" className="w-full h-full">
                   <defs>

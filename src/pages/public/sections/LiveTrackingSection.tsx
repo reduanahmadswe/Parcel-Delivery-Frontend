@@ -14,7 +14,7 @@ export default function LiveTrackingSection() {
   return (
     <section className="py-20 bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
+        {}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -48,7 +48,7 @@ export default function LiveTrackingSection() {
           </p>
         </motion.div>
 
-        {/* Live Tracking Demo */}
+        {}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -71,9 +71,9 @@ export default function LiveTrackingSection() {
             </div>
           </div>
 
-          {/* Tracking Timeline */}
+          {}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {/* Package Picked Up */}
+            {}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -101,7 +101,7 @@ export default function LiveTrackingSection() {
               </div>
             </motion.div>
 
-            {/* In Transit */}
+            {}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -127,7 +127,7 @@ export default function LiveTrackingSection() {
               </div>
             </motion.div>
 
-            {/* Out for Delivery */}
+            {}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -159,7 +159,7 @@ export default function LiveTrackingSection() {
               </div>
             </motion.div>
 
-            {/* Delivered */}
+            {}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -186,7 +186,7 @@ export default function LiveTrackingSection() {
             </motion.div>
           </div>
 
-          {/* Current Location */}
+          {}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -209,7 +209,7 @@ export default function LiveTrackingSection() {
           </motion.div>
         </motion.div>
 
-        {/* Features Grid */}
+        {}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <motion.div
             initial={{ opacity: 0, y: 30 }}

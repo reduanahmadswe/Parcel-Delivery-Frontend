@@ -32,12 +32,11 @@ export default function TrackPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // 🚀 Auto-track when URL has tracking ID parameter
   useEffect(() => {
     const trackingIdFromUrl = searchParams.get("id");
     if (trackingIdFromUrl) {
       setTrackingId(trackingIdFromUrl);
-      // Automatically search for the parcel
+      
       handleTrackFromUrl(trackingIdFromUrl);
     }
   }, [searchParams]);
@@ -102,7 +101,7 @@ export default function TrackPage() {
     <>
       <div className="min-h-screen bg-background mt-10">
         <div className="max-w-7xl mx-auto pt-2 px-3 sm:px-4 lg:px-6 space-y-4 sm:space-y-6 pb-16 sm:pb-24">
-          {/* Enhanced Modern Header */}
+          {}
           <div className="relative overflow-hidden bg-gradient-to-br from-blue-600/10 via-purple-600/5 to-green-600/10 dark:from-blue-900/20 dark:via-purple-900/10 dark:to-green-900/20 rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 border border-border/50 shadow-lg">
             <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-purple-500/5 dark:from-blue-400/10 dark:to-purple-400/10"></div>
             <div className="relative text-center">
@@ -124,7 +123,7 @@ export default function TrackPage() {
             </div>
           </div>
 
-          {/* Enhanced Search Form */}
+          {}
           <div className="bg-gradient-to-br from-card/80 via-card to-card/60 backdrop-blur-sm rounded-xl sm:rounded-2xl shadow-xl shadow-blue-500/10 dark:shadow-blue-400/20 border border-border/50 p-4 sm:p-6 lg:p-8 hover:shadow-2xl hover:shadow-blue-500/20 dark:hover:shadow-blue-400/30 transition-all duration-500">
             <form
               onSubmit={handleTrack}
@@ -168,7 +167,7 @@ export default function TrackPage() {
             </form>
           </div>
 
-          {/* Enhanced Error State */}
+          {}
           {error && (
             <div className="bg-gradient-to-br from-red-50/90 via-red-50/70 to-pink-50/80 dark:from-red-950/30 dark:via-red-900/20 dark:to-pink-950/25 backdrop-blur-sm border border-red-200/50 dark:border-red-800/30 rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8 shadow-xl shadow-red-500/10 dark:shadow-red-400/20">
               <div className="flex items-center justify-center text-red-600 dark:text-red-400 mb-3 sm:mb-4">
@@ -180,10 +179,10 @@ export default function TrackPage() {
             </div>
           )}
 
-          {/* Enhanced Parcel Information */}
+          {}
           {parcel && (
             <div className="space-y-4 sm:space-y-6 lg:space-y-8">
-              {/* Enhanced Parcel Details Card */}
+              {}
               <div className="bg-gradient-to-br from-card/90 via-card to-card/80 backdrop-blur-sm rounded-xl sm:rounded-2xl shadow-xl shadow-blue-500/10 dark:shadow-blue-400/20 border border-border/50 p-4 sm:p-6 lg:p-8 hover:shadow-2xl hover:shadow-blue-500/20 dark:hover:shadow-blue-400/30 transition-all duration-500">
                 <div className="flex flex-col xs:flex-row items-start xs:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-6 lg:mb-8">
                   <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground flex items-center gap-2 sm:gap-3">
@@ -278,7 +277,7 @@ export default function TrackPage() {
                   </div>
                 </div>
 
-                {/* Enhanced Status History Link */}
+                {}
                 <div className="mt-4 sm:mt-6 lg:mt-8 text-center">
                   <button
                     onClick={() => {
@@ -299,14 +298,14 @@ export default function TrackPage() {
                 </div>
               </div>
 
-              {/* Enhanced Status Timeline */}
+              {}
               <div className="bg-gradient-to-br from-card/90 via-card to-card/80 backdrop-blur-sm rounded-xl sm:rounded-2xl shadow-xl shadow-green-500/10 dark:shadow-green-400/20 border border-border/50 p-4 sm:p-6 lg:p-8 hover:shadow-2xl hover:shadow-green-500/20 dark:hover:shadow-green-400/30 transition-all duration-500">
                 <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground mb-4 sm:mb-6 lg:mb-8 flex items-center gap-2 sm:gap-3">
                   <Clock className="h-5 w-5 sm:h-6 sm:w-6 lg:h-7 lg:w-7 text-green-500" />
                   Delivery Timeline
                 </h2>
 
-                {/* Enhanced Progress Bar */}
+                {}
                 <div className="mb-6 sm:mb-8 lg:mb-10">
                   <div className="flex items-center justify-between mb-3 sm:mb-4 overflow-x-auto pb-2">
                     {[
@@ -352,7 +351,7 @@ export default function TrackPage() {
                   </div>
                 </div>
 
-                {/* Compact Status History Cards */}
+                {}
                 <div id="status-history" className="space-y-4 sm:space-y-6">
                   <div className="bg-gradient-to-r from-blue-50/50 via-indigo-50/30 to-purple-50/50 dark:from-blue-950/20 dark:via-indigo-950/10 dark:to-purple-950/20 rounded-lg sm:rounded-xl p-3 sm:p-4 border border-border/20">
                     <h3 className="font-bold text-foreground text-base sm:text-lg flex items-center gap-2">
@@ -361,7 +360,7 @@ export default function TrackPage() {
                     </h3>
                   </div>
 
-                  {/* Status Cards Grid */}
+                  {}
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                     {parcel.statusHistory
                       .slice()
@@ -442,7 +441,7 @@ export default function TrackPage() {
                       ))}
                   </div>
 
-                  {/* Timeline Summary */}
+                  {}
                   <div className="bg-gradient-to-r from-card/50 via-card/30 to-card/50 backdrop-blur-sm rounded-lg border border-border/30 p-3 sm:p-4">
                     <div className="flex items-center justify-between text-xs sm:text-sm">
                       <span className="text-muted-foreground">
@@ -473,7 +472,7 @@ export default function TrackPage() {
                 </div>
               </div>
 
-              {/* Enhanced Parcel Description */}
+              {}
               {parcel.parcelDetails.description && (
                 <div className="bg-gradient-to-br from-card/90 via-card to-card/80 backdrop-blur-sm rounded-xl sm:rounded-2xl shadow-xl shadow-red-500/10 dark:shadow-red-400/20 border border-border/50 p-4 sm:p-6 lg:p-8 hover:shadow-2xl hover:shadow-red-500/20 dark:hover:shadow-red-400/30 transition-all duration-500">
                   <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground mb-4 sm:mb-6 flex items-center gap-2 sm:gap-3">
@@ -490,7 +489,7 @@ export default function TrackPage() {
             </div>
           )}
 
-          {/* Enhanced Empty State for No Tracking ID */}
+          {}
           {!error && !loading && !parcel && !trackingId && (
             <div className="bg-gradient-to-br from-muted/50 via-muted/30 to-muted/40 backdrop-blur-sm rounded-xl sm:rounded-2xl p-8 sm:p-10 lg:p-12 text-center shadow-xl shadow-gray-500/5 dark:shadow-gray-400/10 border border-border/30">
               <div className="flex items-center justify-center text-muted-foreground mb-4 sm:mb-6">

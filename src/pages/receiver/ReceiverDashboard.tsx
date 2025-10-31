@@ -39,7 +39,6 @@ export default function ReceiverDashboard() {
   const [isConfirming, setIsConfirming] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
-  // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
   const [pagination, setPagination] = useState({
     currentPage: 1,
@@ -51,10 +50,8 @@ export default function ReceiverDashboard() {
   });
   const [itemsPerPage] = useState(5);
 
-  // Debounced search term
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
 
-  // Debounce search term
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearchTerm(filters.searchTerm);
@@ -63,7 +60,6 @@ export default function ReceiverDashboard() {
     return () => clearTimeout(timer);
   }, [filters.searchTerm]);
 
-  // Refetch when filters change
   useEffect(() => {
     if (currentPage === 1) {
       fetchParcels(1);
@@ -79,15 +75,12 @@ export default function ReceiverDashboard() {
       try {
         setIsLoading(true);
 
-        // Get all parcels for statistics
         const allParcels = await receiverApiService.fetchAllParcels(user.email);
 
-        // Calculate statistics from ALL parcels
         const enhancedAllParcels =
           receiverUtils.enhanceParcelsWithMockData(allParcels);
         setStats(receiverUtils.calculateStats(enhancedAllParcels));
 
-        // Then get paginated data for display
         const filterStatus =
           filters.filter === "all" ? undefined : filters.filter;
         const searchTerm = debouncedSearchTerm || undefined;
@@ -100,7 +93,6 @@ export default function ReceiverDashboard() {
           searchTerm
         );
 
-        // Enhance with mock data for demo
         const enhancedParcels = receiverUtils.enhanceParcelsWithMockData(
           result.parcels
         );
@@ -142,15 +134,13 @@ export default function ReceiverDashboard() {
       await receiverApiService.confirmDelivery(parcelId, note);
       toast.success("Delivery confirmed successfully! 🎉");
 
-      // Only refresh data and close modal on success
       await fetchParcels(currentPage);
       setSelectedParcel(null);
     } catch (error: any) {
-      // Show specific error message if available
+      
       const errorMessage = error.message || "Failed to confirm delivery";
       toast.error(errorMessage);
 
-      // Keep the modal open and don't refresh data on error so user can retry
     } finally {
       setIsConfirming(false);
     }
@@ -171,7 +161,6 @@ export default function ReceiverDashboard() {
     }
   }, [user, loading, fetchParcels]);
 
-  // Since we're using server-side pagination, we don't need client-side filtering
   const displayParcels = parcels;
 
   if (loading || isLoading) {
@@ -190,7 +179,7 @@ export default function ReceiverDashboard() {
   return (
     <div className="min-h-screen bg-background mt-8 sm:mt-10 lg:mt-11">
       <div className="max-w-7xl mx-auto pt-2 sm:pt-3 px-3 xs:px-4 sm:px-5 lg:px-6 xl:px-8 space-y-4 sm:space-y-5 lg:space-y-6 pb-20 sm:pb-24">
-        {/* Header */}
+        {}
         <div className="bg-gradient-to-r from-red-50/50 via-transparent to-pink-50/50 dark:from-red-950/20 dark:to-pink-950/20 border border-border rounded-lg sm:rounded-xl lg:rounded-2xl p-4 sm:p-5 lg:p-6 xl:p-8">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 sm:gap-4">
             <div className="space-y-2 sm:space-y-3">
@@ -239,10 +228,10 @@ export default function ReceiverDashboard() {
           </div>
         </div>
 
-        {/* Statistics */}
+        {}
         <StatsCards stats={stats} />
 
-        {/* Search and Filters */}
+        {}
         <SearchAndFilters
           filters={filters}
           stats={stats}
@@ -258,7 +247,7 @@ export default function ReceiverDashboard() {
           }
         />
 
-        {/* Parcels List */}
+        {}
         <ParcelList
           parcels={displayParcels}
           onViewDetails={(parcel) => {
@@ -272,7 +261,7 @@ export default function ReceiverDashboard() {
           searchTerm={filters.searchTerm}
         />
 
-        {/* Empty State */}
+        {}
         {stats.total === 0 && (
           <div className="bg-background rounded-lg sm:rounded-xl lg:rounded-2xl shadow-lg border border-border p-6 sm:p-8 text-center hover:shadow-xl hover:border-blue-200 dark:hover:border-blue-800 transition-all duration-300 hover:scale-[1.02] cursor-pointer group mb-6">
             <BarChart3 className="mx-auto h-10 w-10 sm:h-12 sm:w-12 text-muted-foreground mb-4 group-hover:text-blue-600 group-hover:scale-110 transition-all duration-300" />
@@ -286,7 +275,7 @@ export default function ReceiverDashboard() {
           </div>
         )}
 
-        {/* Parcel Details Modal */}
+        {}
         <ParcelDetailsModal
           parcel={selectedParcel}
           onClose={() => {
@@ -296,7 +285,7 @@ export default function ReceiverDashboard() {
           isConfirming={isConfirming}
         />
       </div>
-      {/* Footer */}
+      {}
       <FooterSection />
     </div>
   );

@@ -21,10 +21,10 @@ interface EnhancedDeliveryConfirmationProps {
 const EnhancedDeliveryConfirmation: React.FC<
   EnhancedDeliveryConfirmationProps
 > = ({ parcel, onClose, onConfirm, isConfirming }) => {
-  const [step, setStep] = useState(1); // 1: Verification, 2: Confirmation, 3: Rating
+  const [step, setStep] = useState(1); 
   const [confirmationData, setConfirmationData] = useState({
     receivedAt: new Date().toISOString(),
-    condition: "good", // good, damaged, incomplete
+    condition: "good", 
     notes: "",
     rating: 0,
     photoTaken: false,
@@ -225,7 +225,7 @@ const EnhancedDeliveryConfirmation: React.FC<
               )}
             </div>
 
-            {/* Mock verification options */}
+            {}
             <div className="grid grid-cols-2 gap-4">
               <button
                 onClick={() =>
@@ -341,7 +341,7 @@ const EnhancedDeliveryConfirmation: React.FC<
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
       <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        {/* Header */}
+        {}
         <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
           <div className="flex items-center gap-3">
             <div className="text-2xl">📦</div>
@@ -362,7 +362,7 @@ const EnhancedDeliveryConfirmation: React.FC<
           </button>
         </div>
 
-        {/* Progress Bar */}
+        {}
         <div className="px-6 pt-4">
           <div className="flex items-center gap-2 mb-6">
             {[1, 2, 3].map((stepNum) => (
@@ -396,10 +396,10 @@ const EnhancedDeliveryConfirmation: React.FC<
           </div>
         </div>
 
-        {/* Content */}
+        {}
         <div className="px-6 pb-6">{renderStepContent()}</div>
 
-        {/* Footer */}
+        {}
         <div className="flex justify-between items-center p-6 border-t border-gray-200 dark:border-gray-700">
           <button
             onClick={step === 1 ? onClose : () => setStep(step - 1)}

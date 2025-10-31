@@ -1,7 +1,6 @@
-// Import from GlobalTypeDefinitions for extended types
+
 export * from './GlobalTypeDefinitions'
 
-// User types
 export interface User {
     _id: string
     name: string
@@ -21,7 +20,6 @@ export interface Address {
     country: string
 }
 
-// Auth types
 export interface LoginCredentials {
     email: string
     password: string
@@ -45,7 +43,6 @@ export interface AuthResponse {
     message: string
 }
 
-// Parcel types
 export interface Parcel {
     _id: string
     trackingId: string
@@ -105,7 +102,6 @@ export interface CreateParcelData {
     deliveryInfo: Parcel['deliveryInfo']
 }
 
-// API Response types
 export interface ApiResponse<T = unknown> {
     success: boolean
     data: T
@@ -124,7 +120,6 @@ export interface PaginatedResponse<T> {
     message: string
 }
 
-// Error types
 export interface ApiError {
     success: false
     message: string
@@ -134,7 +129,6 @@ export interface ApiError {
     }>
 }
 
-// Filter and sorting types
 export interface ParcelFilters {
     status?: Parcel['status']
     search?: string
@@ -147,7 +141,6 @@ export interface SortOptions {
     order: 'asc' | 'desc'
 }
 
-// Dashboard stats
 export interface DashboardStats {
     totalParcels: number
     pendingParcels: number
@@ -167,17 +160,14 @@ export interface SystemAlert {
     priority: 'low' | 'medium' | 'high' | 'critical'
 }
 
-// Chart data
 export interface ChartData {
     name: string
     value: number
     [key: string]: string | number
 }
 
-// Theme types
 export type Theme = 'light' | 'dark' | 'system'
 
-// Route types
 export interface RouteConfig {
     path: string
     element: React.ComponentType<Record<string, never>>

@@ -32,7 +32,7 @@ interface StatusHistoryItem {
 
 interface ParcelDetails {
   trackingId: string;
-  trackingNumber?: string; // For backward compatibility
+  trackingNumber?: string; 
   description?: string;
   currentStatus: string;
   senderInfo?: {
@@ -45,8 +45,8 @@ interface ParcelDetails {
     email?: string;
     phone?: string;
   };
-  senderName?: string; // For backward compatibility
-  recipientName?: string; // For backward compatibility
+  senderName?: string; 
+  recipientName?: string; 
   statusHistory: StatusHistoryItem[];
   parcelDetails?: {
     type: string;
@@ -78,7 +78,6 @@ function ParcelStatusHistoryContent() {
   const [isLoading, setIsLoading] = useState(true);
   const [missingId, setMissingId] = useState(false);
 
-  // Helper function to extract date from MongoDB date format or regular string
   const extractDate = (dateInput: string | { $date: string }): Date => {
     if (typeof dateInput === "string") {
       return new Date(dateInput);
@@ -86,7 +85,6 @@ function ParcelStatusHistoryContent() {
     return new Date(dateInput.$date);
   };
 
-  // Helper function to format date with detailed information
   const formatDetailedDate = (dateInput: string | { $date: string }) => {
     const date = extractDate(dateInput);
     const now = new Date();
@@ -131,7 +129,7 @@ function ParcelStatusHistoryContent() {
     const fetchParcelStatusHistory = async () => {
       if (!parcelId) {
           if ((import.meta as any).env?.DEV) console.debug("No parcel ID provided");
-        // show friendly UI instead of silently returning
+        
         setMissingId(true);
         setIsLoading(false);
         toast.error("No parcel ID provided. Please provide a tracking id in the URL (e.g. ?id=TRACKING_ID)");
@@ -142,11 +140,9 @@ function ParcelStatusHistoryContent() {
         setIsLoading(true);
           if ((import.meta as any).env?.DEV) console.debug("Fetching status history for parcel ID:", parcelId);
 
-        // Try multiple API endpoints to get parcel data
         let response;
         let parcelData = null;
 
-        // 1) Common: try getting parcel by trackingId directly
         try {
           if ((import.meta as any).env?.DEV) console.debug(`Trying endpoint: /parcels/track/${parcelId}`);
           response = await api.get(`/parcels/track/${parcelId}`);
@@ -156,7 +152,6 @@ function ParcelStatusHistoryContent() {
           if ((import.meta as any).env?.DEV) console.debug("Track endpoint failed:", err);
         }
 
-        // 2) Only try internal status-log endpoint when parcelId looks like an internal DB id (e.g., Mongo ObjectId)
         if (!parcelData) {
           const looksLikeObjectId = typeof parcelId === 'string' && /^[0-9a-fA-F]{24}$/.test(parcelId);
           if (looksLikeObjectId) {
@@ -171,7 +166,6 @@ function ParcelStatusHistoryContent() {
           }
         }
 
-        // Method 3: Try getting from sender's parcels list
         if (!parcelData) {
           try {
               if ((import.meta as any).env?.DEV) console.debug("Trying to find parcel in sender list");
@@ -191,7 +185,6 @@ function ParcelStatusHistoryContent() {
         if (parcelData) {
             if ((import.meta as any).env?.DEV) console.debug("Successfully found parcel data:", parcelData);
 
-          // Ensure statusHistory exists and is an array
           if (
             !parcelData.statusHistory ||
             !Array.isArray(parcelData.statusHistory)
@@ -330,7 +323,7 @@ function ParcelStatusHistoryContent() {
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Enhanced Header */}
+        {}
         <div className="mb-8">
           <Link
             to="/track"
@@ -433,7 +426,7 @@ function ParcelStatusHistoryContent() {
             </div>
           </div>
 
-          {/* Modern Enhanced Parcel Summary */}
+          {}
           <div className="bg-background rounded-2xl shadow-lg border border-border mb-8 overflow-hidden">
             <div className="bg-gradient-to-r from-muted/50 to-blue-50/50 dark:from-muted/20 dark:to-blue-950/20 px-6 py-4 border-b border-border">
               <h2 className="text-xl font-bold text-foreground flex items-center">
@@ -444,7 +437,7 @@ function ParcelStatusHistoryContent() {
 
             <div className="p-6">
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* Basic Information */}
+                {}
                 <div className="space-y-4">
                   <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center">
                     <Package className="h-5 w-5 mr-2 text-blue-600 dark:text-blue-400" />
@@ -515,7 +508,7 @@ function ParcelStatusHistoryContent() {
                   </div>
                 </div>
 
-                {/* Sender & Receiver Information */}
+                {}
                 <div className="space-y-4">
                   <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center">
                     <User className="h-5 w-5 mr-2 text-green-600 dark:text-green-400" />
@@ -581,7 +574,7 @@ function ParcelStatusHistoryContent() {
                   </div>
                 </div>
 
-                {/* Timeline Summary & Payment */}
+                {}
                 <div className="space-y-4">
                   <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center">
                     <Clock className="h-5 w-5 mr-2 text-purple-600 dark:text-purple-400" />
@@ -690,7 +683,7 @@ function ParcelStatusHistoryContent() {
             </div>
           </div>
 
-          {/* Modern Enhanced Status Timeline */}
+          {}
           <div className="bg-background rounded-2xl shadow-lg border border-border overflow-hidden">
             <div className="bg-gradient-to-r from-blue-50/50 to-purple-50/50 dark:from-blue-950/20 dark:to-purple-950/20 px-6 py-4 border-b border-border">
               <h2 className="text-xl font-bold text-foreground flex items-center">
@@ -723,7 +716,7 @@ function ParcelStatusHistoryContent() {
                       .sort((a, b) => {
                         const dateA = extractDate(a.timestamp);
                         const dateB = extractDate(b.timestamp);
-                        return dateB.getTime() - dateA.getTime(); // Latest first
+                        return dateB.getTime() - dateA.getTime(); 
                       })
                       .map((item, index) => (
                         <li key={index}>
@@ -735,14 +728,14 @@ function ParcelStatusHistoryContent() {
                               />
                             )}
                             <div className="relative flex space-x-6">
-                              {/* Enhanced Status Icon */}
+                              {}
                               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-background border-3 border-blue-300 dark:border-blue-600 shadow-lg ring-4 ring-blue-50 dark:ring-blue-950/30">
                                 <div className="text-blue-600 dark:text-blue-400">
                                   {getStatusIcon(item.status)}
                                 </div>
                               </div>
 
-                              {/* Status Content Card */}
+                              {}
                               <div className="flex min-w-0 flex-1 justify-between space-x-4 pt-1">
                                 <div className="flex-1">
                                   <div className="bg-background rounded-xl p-4 shadow-md border border-border hover:shadow-lg transition-shadow duration-200">
@@ -816,7 +809,7 @@ function ParcelStatusHistoryContent() {
                                   </div>
                                 </div>
 
-                                {/* Enhanced Timestamp Card */}
+                                {}
                                 <div className="whitespace-nowrap text-right">
                                   {(() => {
                                     const dateInfo = formatDetailedDate(
@@ -853,7 +846,7 @@ function ParcelStatusHistoryContent() {
             </div>
           </div>
 
-          {/* Modern Actions */}
+          {}
           <div className="mt-8 flex justify-center">
             <Link
               to="/track"

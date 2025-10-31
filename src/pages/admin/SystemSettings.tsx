@@ -31,7 +31,7 @@ export default function AdminSettingsPage() {
   const handleSaveSettings = async () => {
     try {
       setSaving(true);
-      // Simulate API call
+      
       await new Promise((resolve) => setTimeout(resolve, 1000));
     } catch (error) {
       console.error("Error saving settings:", error);
@@ -71,7 +71,7 @@ export default function AdminSettingsPage() {
           </div>
 
           <div className="bg-background rounded-lg shadow border border-border hover:shadow-lg transition-all duration-300">
-            {/* Tab Navigation */}
+            {}
             <div className="border-b border-border overflow-x-auto">
               <nav className="flex space-x-2 sm:space-x-4 lg:space-x-8 px-3 sm:px-4 lg:px-6 min-w-max">
                 {tabs.map((tab) => {
@@ -94,9 +94,9 @@ export default function AdminSettingsPage() {
               </nav>
             </div>
 
-            {/* Tab Content */}
+            {}
             <div className="p-4 sm:p-6 lg:p-8">
-              {/* General Settings */}
+              {}
               {activeTab === "general" && (
                 <div className="space-y-6 sm:space-y-8">
                   <div>
@@ -139,7 +139,7 @@ export default function AdminSettingsPage() {
                     </div>
                   </div>
 
-                  {/* System Status Section with better spacing */}
+                  {}
                   <div className="pt-4 border-t border-border">
                     <h4 className="text-sm sm:text-base font-medium text-foreground mb-4 sm:mb-5">
                       System Status
@@ -174,7 +174,7 @@ export default function AdminSettingsPage() {
                 </div>
               )}
 
-              {/* User Management */}
+              {}
               {activeTab === "users" && (
                 <div className="space-y-6 sm:space-y-8">
                   <div>
@@ -211,7 +211,7 @@ export default function AdminSettingsPage() {
                 </div>
               )}
 
-              {/* Notifications */}
+              {}
               {activeTab === "notifications" && (
                 <div className="space-y-6 sm:space-y-8">
                   <div>
@@ -279,7 +279,7 @@ export default function AdminSettingsPage() {
                 </div>
               )}
 
-              {/* Security */}
+              {}
               {activeTab === "security" && (
                 <div className="space-y-6 sm:space-y-8">
                   <div>
@@ -308,7 +308,7 @@ export default function AdminSettingsPage() {
                 </div>
               )}
 
-              {/* System */}
+              {}
               {activeTab === "system" && (
                 <div className="space-y-6 sm:space-y-8">
                   <div>

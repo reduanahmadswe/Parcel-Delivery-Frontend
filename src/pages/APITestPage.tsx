@@ -10,7 +10,6 @@ export default function APITestPage() {
     
     try {
 
-      
       const response = await fetch('https://parcel-delivery-api.onrender.com/api/auth/login', {
         method: 'POST',
         headers: {
@@ -44,7 +43,7 @@ export default function APITestPage() {
   };
 
   useEffect(() => {
-    // Auto-run test on component mount
+    
     testAPI();
   }, []);
 

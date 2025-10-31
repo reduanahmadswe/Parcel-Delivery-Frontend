@@ -5,7 +5,6 @@ import path from 'path'
 import tailwindcss from 'tailwindcss'
 import { defineConfig } from 'vite'
 
-// https://vitejs.dev/config/
 export default defineConfig({
     plugins: [
         react(),
@@ -21,7 +20,7 @@ export default defineConfig({
             }
         }
     ],
-    // Explicitly set public directory (default is 'public')
+    
     publicDir: 'public',
     resolve: {
         alias: {
@@ -36,12 +35,11 @@ export default defineConfig({
             '@/services': path.resolve(__dirname, './src/services'),
             '@/store': path.resolve(__dirname, './src/store'),
             '@/contexts': path.resolve(__dirname, './src/contexts'),
-            
-            // some components import motion/react (a small alternative); map it to framer-motion
+
             'motion/react': 'framer-motion',
         },
     },
-    // Provide PostCSS plugins inline so Vite doesn't try to load the project's PostCSS config
+    
     css: {
         postcss: {
             plugins: [tailwindcss(), autoprefixer()],

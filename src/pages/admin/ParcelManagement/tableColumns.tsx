@@ -1,4 +1,4 @@
-// Table columns configuration for Parcel Management
+
 import { Column } from "../../../components/common/ReusableDataTable";
 import StatusBadge from "../../../components/common/StatusIndicatorBadge";
 import {
@@ -283,7 +283,7 @@ export function createParcelColumns(actions: {
         </div>
       ),
     },
-    // Sender, Recipient, and Created columns removed from main table
+    
     {
       key: "actions",
       header: "Actions",

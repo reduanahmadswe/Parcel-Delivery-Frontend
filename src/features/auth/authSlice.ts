@@ -46,8 +46,7 @@ const authSlice = createSlice({
             state.isAuthenticated = false
             state.loading = false
             state.error = null
-            
-            // Clear all cached data on logout
+
             clearAllCache();
         },
         clearError: (state) => {

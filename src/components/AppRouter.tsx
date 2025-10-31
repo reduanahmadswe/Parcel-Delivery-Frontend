@@ -6,26 +6,21 @@ import Layout from "../components/layout/Layout";
 
 export const AppRouter: React.FC = () => {
   const location = useLocation();
-  
-  // 🔍 Debug: Log route changes
+
   useEffect(() => {
   }, [location]);
 
-  // Filter routes based on feature flags
   const filteredRoutes = routes.filter((route: RouteConfig) => shouldIncludeRoute(route.path));
-  
 
   return (
     <Routes>
       {filteredRoutes.map((route: RouteConfig) => {
         let element = route.element;
 
-        // Wrap with layout if needed
         if (route.layout) {
           element = <Layout>{element}</Layout>;
         }
 
-        // Wrap with protection if needed
         if (route.protected) {
           element = (
             <ProtectedRoute allowedRoles={route.allowedRoles}>

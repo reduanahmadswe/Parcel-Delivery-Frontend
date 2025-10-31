@@ -1,7 +1,7 @@
 "use client";
 
 import api from "../../services/ApiConfiguration";
-// AdminLayout removed - using route-level layout instead
+
 import { CheckCircle, Package, Users } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useGetAllUsersQuery, useGetAllParcelsQuery } from "../../store/api/adminApi";
@@ -30,66 +30,58 @@ export default function AdminDashboard() {
   const [recentParcels, setRecentParcels] = useState<RecentParcel[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // RTK Query hooks with optimized caching - don't auto-refetch, use cached data
   const { data: usersData, refetch: refetchUsers, isLoading: usersLoading } = useGetAllUsersQuery(undefined, {
-    // Don't refetch when window regains focus - use cached data
+    
     refetchOnFocus: false,
-    // Don't refetch on mount if data exists - use cached data
+    
     refetchOnMountOrArgChange: false,
-    // Refetch when network reconnects
+    
     refetchOnReconnect: true,
   });
   
   const { data: parcelsData, refetch: refetchParcels, isLoading: parcelsLoading } = useGetAllParcelsQuery(undefined, {
-    // Don't refetch when window regains focus - use cached data
+    
     refetchOnFocus: false,
-    // Don't refetch on mount if data exists - use cached data
+    
     refetchOnMountOrArgChange: false,
-    // Refetch when network reconnects
+    
     refetchOnReconnect: true,
   });
 
-  // Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
   const totalPages = Math.max(1, Math.ceil(recentParcels.length / itemsPerPage));
   const paginatedRecentParcels = recentParcels.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
-  // Listen for cache invalidation events from Parcel Management page
   useEffect(() => {
     const handleCacheInvalidation = (event: Event) => {
       const customEvent = event as CustomEvent<{ key: string; timestamp: number }>;
       const { key } = customEvent.detail;
-      
-      // If parcels cache is invalidated, silently refetch data in background
+
       if (key === 'PARCELS' || key.includes('PARCEL')) {
-        // Silent background refetch - no loading state shown
+        
         refetchParcels();
       }
-      
-      // If users cache is invalidated, silently refetch data in background
+
       if (key === 'USERS' || key.includes('USER')) {
         refetchUsers();
       }
     };
 
-    // Add event listener
     window.addEventListener('cache-invalidated', handleCacheInvalidation);
 
-    // Cleanup
     return () => {
       window.removeEventListener('cache-invalidated', handleCacheInvalidation);
     };
   }, [refetchParcels, refetchUsers]);
 
   useEffect(() => {
-    // Only show loading if we're actually loading data and don't have cached data
+    
     if ((usersLoading || parcelsLoading) && !usersData && !parcelsData) {
       setLoading(true);
       return;
     }
 
-    // When parcelsData or usersData change, compute stats and recent parcels
     setLoading(true);
 
     try {
@@ -187,21 +179,19 @@ export default function AdminDashboard() {
                     <span className="sm:hidden">Prev</span>
                   </button>
 
-                  {/* Smart Pagination - Show only 4 pages at a time on desktop, 3 on mobile */}
+                  {}
                   <div className="flex items-center space-x-1">
                     {(() => {
                       const maxVisiblePages = window.innerWidth < 640 ? 3 : 4;
                       let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
                       let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
-                      
-                      // Adjust start page if we're near the end
+
                       if (endPage - startPage + 1 < maxVisiblePages) {
                         startPage = Math.max(1, endPage - maxVisiblePages + 1);
                       }
 
                       const pages = [];
-                      
-                      // Show first page if not in range
+
                       if (startPage > 1) {
                         pages.push(
                           <button
@@ -222,7 +212,6 @@ export default function AdminDashboard() {
                         }
                       }
 
-                      // Show visible page range
                       for (let page = startPage; page <= endPage; page++) {
                         pages.push(
                           <button
@@ -239,7 +228,6 @@ export default function AdminDashboard() {
                         );
                       }
 
-                      // Show last page if not in range
                       if (endPage < totalPages) {
                         if (endPage < totalPages - 1) {
                           pages.push(

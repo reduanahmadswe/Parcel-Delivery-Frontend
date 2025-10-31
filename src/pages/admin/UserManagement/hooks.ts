@@ -1,5 +1,4 @@
-// User Management Hooks
-// This file contains custom hooks for user management operations
+
 
 import api from "../../../services/ApiConfiguration";
 import { AxiosError } from "axios";
@@ -7,7 +6,6 @@ import { useCallback, useEffect, useState, useRef } from "react";
 import { ApiUser, User, UserForm, UserStats, UserUpdateForm } from "./types";
 import { adminCache, CACHE_KEYS, invalidateRelatedCaches } from "../../../utils/adminCache";
 
-// Hook for managing user data and operations
 export function useUserManagement() {
     const [users, setUsers] = useState<User[]>([]);
     const [loading, setLoading] = useState(false);
@@ -15,11 +13,9 @@ export function useUserManagement() {
     const isMountedRef = useRef(false);
     const fetchingRef = useRef(false);
 
-    // Transform API user to internal User format
     const transformApiUser = (apiUser: ApiUser): User => {
         const userId = apiUser.id || apiUser._id || Date.now();
-        
-        // Smart status mapping
+
         let userStatus: User["status"] = "pending";
         if (apiUser.status) {
             userStatus = apiUser.status as User["status"];
@@ -45,15 +41,13 @@ export function useUserManagement() {
         };
     };
 
-    // Fetch users from API with caching
     const fetchUsers = useCallback(async (force: boolean = false) => {
-        // Prevent concurrent fetches
+        
         if (fetchingRef.current) return;
 
         try {
             fetchingRef.current = true;
 
-            // Check cache first (unless force refresh)
             if (!force) {
                 const cachedUsers = adminCache.get<User[]>(CACHE_KEYS.USERS);
                 if (cachedUsers) {
@@ -76,7 +70,6 @@ export function useUserManagement() {
                 .filter((user: ApiUser) => user && user.email)
                 .map(transformApiUser);
 
-            // Cache the results
             adminCache.set(CACHE_KEYS.USERS, transformedUsers);
 
             setUsers(transformedUsers);
@@ -88,20 +81,17 @@ export function useUserManagement() {
         }
     }, []);
 
-    // Only fetch on mount, not on every render
     useEffect(() => {
         if (!isMountedRef.current) {
             isMountedRef.current = true;
-            fetchUsers(false); // Use cache if available
+            fetchUsers(false); 
         }
     }, [fetchUsers]);
 
-    // Create new user
     const createUser = useCallback(async (formData: Partial<User>) => {
         try {
             setActionLoading(true);
 
-            // Convert Partial<User> to UserForm with required fields
             const userFormData: UserForm = {
                 name: formData.name || "",
                 email: formData.email || "",
@@ -118,7 +108,6 @@ export function useUserManagement() {
 
             const response = await api.post("/users", userFormData);
 
-            // Invalidate cache and refresh
             adminCache.invalidate(CACHE_KEYS.USERS);
             await fetchUsers(true);
             return { success: true, data: response.data };
@@ -129,12 +118,10 @@ export function useUserManagement() {
         }
     }, [fetchUsers]);
 
-    // Update existing user
     const updateUser = useCallback(async (userId: string | number, formData: Partial<User>) => {
         try {
             setActionLoading(true);
 
-            // Convert Partial<User> to UserUpdateForm
             const updateData: UserUpdateForm = {
                 name: formData.name || "",
                 email: formData.email || "",
@@ -150,7 +137,6 @@ export function useUserManagement() {
 
             await api.put(`/users/${userId}`, updateData);
 
-            // Invalidate cache and refresh
             invalidateRelatedCaches('user', String(userId));
             await fetchUsers(true);
             return { success: true };
@@ -161,14 +147,12 @@ export function useUserManagement() {
         }
     }, [fetchUsers]);
 
-    // Delete user
     const deleteUser = useCallback(async (userId: string | number) => {
         try {
             setActionLoading(true);
 
             await api.delete(`/users/${userId}`);
 
-            // Invalidate cache and refresh
             invalidateRelatedCaches('user', String(userId));
             await fetchUsers(true);
             return { success: true };
@@ -179,7 +163,6 @@ export function useUserManagement() {
         }
     }, [fetchUsers]);
 
-    // Toggle user block status
     const toggleUserStatus = useCallback(async (userId: string | number, reason?: string) => {
         try {
             setActionLoading(true);
@@ -199,7 +182,6 @@ export function useUserManagement() {
 
             await api.patch(`/users/${userId}/block-status`, payload);
 
-            // Invalidate cache and refresh
             invalidateRelatedCaches('user', String(userId));
             await fetchUsers(true);
             return { success: true };
@@ -210,9 +192,8 @@ export function useUserManagement() {
         }
     }, [users, fetchUsers]);
 
-    // Refresh users
     const refreshUsers = useCallback(async () => {
-        await fetchUsers(true); // Force refresh
+        await fetchUsers(true); 
     }, [fetchUsers]);
 
     return {

@@ -17,7 +17,7 @@ export default function FooterSection() {
     <footer className="bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {/* Company Info */}
+          {}
           <div className="lg:col-span-1">
             <div className="flex items-center space-x-2 mb-6">
               <Package className="h-8 w-8 text-red-500" />
@@ -57,56 +57,56 @@ export default function FooterSection() {
             </div>
           </div>
 
-          {/* Services */}
+          {}
           <div>
             <h3 className="text-lg font-semibold text-foreground mb-6">
               Our Services
             </h3>
             <ul className="space-y-4">
               <li>
-                <a
-                  href="#express-delivery-service"
+                <Link
+                  to="/#services"
                   className="text-muted-foreground hover:text-red-500 transition-colors"
                 >
                   Express Delivery
-                </a>
+                </Link>
               </li>
               <li>
-                <a
-                  href="#standard-delivery-service"
+                <Link
+                  to="/#services"
                   className="text-muted-foreground hover:text-red-500 transition-colors"
                 >
                   Standard Delivery
-                </a>
+                </Link>
               </li>
               <li>
-                <a
-                  href="#same-day-delivery-service"
+                <Link
+                  to="/#services"
                   className="text-muted-foreground hover:text-red-500 transition-colors"
                 >
                   Same Day Delivery
-                </a>
+                </Link>
               </li>
               <li>
-                <a
-                  href="#corporate-solutions-service"
+                <Link
+                  to="/#services"
                   className="text-muted-foreground hover:text-red-500 transition-colors"
                 >
                   Corporate Solutions
-                </a>
+                </Link>
               </li>
               <li>
-                <a
-                  href="#international-shipping-service"
+                <Link
+                  to="/#services"
                   className="text-muted-foreground hover:text-red-500 transition-colors"
                 >
                   International Shipping
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
 
-          {/* Support */}
+          {}
           <div>
             <h3 className="text-lg font-semibold text-foreground mb-6">
               Support
@@ -121,41 +121,41 @@ export default function FooterSection() {
                 </Link>
               </li>
               <li>
-                <a
-                  href="#help-center"
+                <Link
+                  to="/contact"
                   className="text-muted-foreground hover:text-red-500 transition-colors"
                 >
                   Help Center
-                </a>
+                </Link>
               </li>
               <li>
-                <a
-                  href="#contact-us"
+                <Link
+                  to="/contact"
                   className="text-muted-foreground hover:text-red-500 transition-colors"
                 >
                   Contact Us
-                </a>
+                </Link>
               </li>
               <li>
-                <a
-                  href="#faq"
+                <Link
+                  to="/contact"
                   className="text-muted-foreground hover:text-red-500 transition-colors"
                 >
                   FAQ
-                </a>
+                </Link>
               </li>
               <li>
-                <a
-                  href="#report-issue"
+                <Link
+                  to="/contact"
                   className="text-muted-foreground hover:text-red-500 transition-colors"
                 >
                   Report Issue
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
 
-          {/* Contact Info */}
+          {}
           <div>
             <h3 className="text-lg font-semibold text-foreground mb-6">
               Contact Info
@@ -179,7 +179,7 @@ export default function FooterSection() {
               </div>
             </div>
 
-            {/* Newsletter */}
+            {}
             <div className="mt-8">
               <h4 className="text-sm font-semibold text-foreground mb-3">
                 Newsletter
@@ -198,31 +198,31 @@ export default function FooterSection() {
           </div>
         </div>
 
-        {/* Bottom Section */}
+        {}
         <div className="border-t border-border mt-12 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-muted-foreground text-sm">
-              © 2024 Parcel Delivery. All rights reserved.
+              © 2025 Parcel Delivery. All rights reserved.
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
-              <a
-                href="#privacy-policy"
+              <Link
+                to="/privacy-policy"
                 className="text-muted-foreground hover:text-red-500 text-sm transition-colors"
               >
                 Privacy Policy
-              </a>
-              <a
-                href="#terms-of-service"
+              </Link>
+              <Link
+                to="/terms"
                 className="text-muted-foreground hover:text-red-500 text-sm transition-colors"
               >
                 Terms of Service
-              </a>
-              <a
-                href="#cookie-policy"
+              </Link>
+              <Link
+                to="/cookie-policy"
                 className="text-muted-foreground hover:text-red-500 text-sm transition-colors"
               >
                 Cookie Policy
-              </a>
+              </Link>
             </div>
           </div>
         </div>

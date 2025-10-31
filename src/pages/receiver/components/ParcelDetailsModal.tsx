@@ -46,7 +46,7 @@ const ParcelDetailsModal: React.FC<ParcelDetailsModalProps> = ({
 
   const handleRateParcel = (rating: number) => {
     toast.success(`Thank you for rating ${rating} stars!`);
-    // Here you would typically update the parcel rating via API
+    
   };
 
   const isPreferredDateInPast = () => {
@@ -62,14 +62,14 @@ const ParcelDetailsModal: React.FC<ParcelDetailsModalProps> = ({
   };
 
   const handleConfirmDeliverySubmit = () => {
-    // Check if there might be validation issues
+    
     if (parcel.deliveryInfo?.preferredDeliveryDate) {
       const preferredDate = new Date(parcel.deliveryInfo.preferredDeliveryDate);
       const today = new Date();
-      today.setHours(0, 0, 0, 0); // Set to start of day for comparison
+      today.setHours(0, 0, 0, 0); 
 
       if (preferredDate < today) {
-        // Show warning but still allow confirmation
+        
         toast(
           "⚠️ Note: This parcel has a past preferred delivery date. Proceeding with confirmation...",
           {
@@ -94,7 +94,7 @@ const ParcelDetailsModal: React.FC<ParcelDetailsModalProps> = ({
     <div
       className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 z-50"
       onClick={(e) => {
-        // Close modal when clicking backdrop
+        
         if (e.target === e.currentTarget) {
           onClose();
         }
@@ -124,7 +124,7 @@ const ParcelDetailsModal: React.FC<ParcelDetailsModalProps> = ({
         </div>
 
         <div className="p-4 sm:p-5 lg:p-6 space-y-4 sm:space-y-6 lg:space-y-8">
-          {/* Status and Tracking */}
+          {}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 lg:gap-6">
             <div>
               <h3 className="text-base sm:text-lg font-semibold text-foreground mb-2 sm:mb-3 flex items-center gap-2">
@@ -191,9 +191,9 @@ const ParcelDetailsModal: React.FC<ParcelDetailsModalProps> = ({
             </div>
           </div>
 
-          {/* Sender and Receiver Information */}
+          {}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 lg:gap-6">
-            {/* Sender Information */}
+            {}
             <div className="bg-blue-50/50 dark:bg-blue-950/20 rounded-lg p-4 sm:p-5 lg:p-6 border border-blue-200 dark:border-blue-800/30">
               <h3 className="text-base sm:text-lg font-semibold text-foreground mb-3 sm:mb-4 flex items-center">
                 <User className="h-4 w-4 sm:h-5 sm:w-5 mr-2 text-blue-600" />
@@ -239,7 +239,7 @@ const ParcelDetailsModal: React.FC<ParcelDetailsModalProps> = ({
               </div>
             </div>
 
-            {/* Receiver Information */}
+            {}
             <div className="bg-green-50/50 dark:bg-green-950/20 rounded-lg p-4 sm:p-5 lg:p-6 border border-green-200 dark:border-green-800/30">
               <h3 className="text-base sm:text-lg font-semibold text-foreground mb-3 sm:mb-4 flex items-center">
                 <User className="h-4 w-4 sm:h-5 sm:w-5 mr-2 text-green-600" />
@@ -286,7 +286,7 @@ const ParcelDetailsModal: React.FC<ParcelDetailsModalProps> = ({
             </div>
           </div>
 
-          {/* Package Details */}
+          {}
           <div>
             <h3 className="text-base sm:text-lg font-semibold text-foreground mb-3 sm:mb-4 flex items-center gap-2">
               <Package className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600" />
@@ -359,7 +359,7 @@ const ParcelDetailsModal: React.FC<ParcelDetailsModalProps> = ({
             </div>
           </div>
 
-          {/* Delivery Information */}
+          {}
           <div className="bg-orange-50/50 dark:bg-orange-950/20 rounded-lg p-4 sm:p-5 lg:p-6 border border-orange-200 dark:border-orange-800/30">
             <h3 className="text-base sm:text-lg font-semibold text-foreground mb-3 sm:mb-4 flex items-center">
               <Truck className="h-4 w-4 sm:h-5 sm:w-5 mr-2 text-orange-600" />
@@ -388,7 +388,7 @@ const ParcelDetailsModal: React.FC<ParcelDetailsModalProps> = ({
             </div>
           </div>
 
-          {/* Important Dates */}
+          {}
           <div className="bg-muted/50 rounded-lg p-4 sm:p-5 lg:p-6 border border-border">
             <h3 className="text-base sm:text-lg font-semibold text-foreground mb-3 sm:mb-4 flex items-center">
               <Calendar className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
@@ -416,7 +416,7 @@ const ParcelDetailsModal: React.FC<ParcelDetailsModalProps> = ({
             </div>
           </div>
 
-          {/* Sender and Delivery Info */}
+          {}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 lg:gap-6">
             <div>
               <h3 className="text-base sm:text-lg font-semibold text-foreground mb-3 sm:mb-4 flex items-center gap-2">
@@ -479,7 +479,7 @@ const ParcelDetailsModal: React.FC<ParcelDetailsModalProps> = ({
             </div>
           </div>
 
-          {/* Rating Section for Delivered Packages */}
+          {}
           {parcel.currentStatus === "delivered" && (
             <div>
               <h3 className="text-base sm:text-lg font-semibold text-foreground mb-3 sm:mb-4 flex items-center gap-2">
@@ -511,7 +511,7 @@ const ParcelDetailsModal: React.FC<ParcelDetailsModalProps> = ({
             </div>
           )}
 
-          {/* Status History Section */}
+          {}
           <div className="border-t border-border pt-4 sm:pt-6">
             <button
               onClick={() => setShowStatusHistory(!showStatusHistory)}
@@ -537,7 +537,7 @@ const ParcelDetailsModal: React.FC<ParcelDetailsModalProps> = ({
             )}
           </div>
 
-          {/* Action Buttons */}
+          {}
           <div className="flex flex-col-reverse xs:flex-row justify-end gap-2 sm:gap-3 pt-4 sm:pt-6 border-t border-border">
             <button
               onClick={onClose}
@@ -558,7 +558,7 @@ const ParcelDetailsModal: React.FC<ParcelDetailsModalProps> = ({
         </div>
       </div>
 
-      {/* Confirmation Dialog */}
+      {}
       {showConfirmDialog && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 z-[60]">
           <div className="bg-background rounded-lg sm:rounded-xl lg:rounded-2xl max-w-md w-full shadow-2xl border border-border">

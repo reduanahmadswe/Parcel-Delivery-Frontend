@@ -43,7 +43,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { z } from "zod";
 
-// Step 1 Schema - Basic Information
 const step1Schema = z
   .object({
     name: z
@@ -74,7 +73,6 @@ const step1Schema = z
     path: ["role"],
   });
 
-// Step 2 Schema - Address Information
 const step2Schema = z.object({
   address: z
     .string()
@@ -84,7 +82,6 @@ const step2Schema = z.object({
   postalCode: z.string().min(4, { message: "Please select a postal code" }),
 });
 
-// Combined Schema
 type Step1Data = z.infer<typeof step1Schema>;
 type Step2Data = z.infer<typeof step2Schema>;
 type FullRegisterData = Step1Data & Step2Data;
@@ -98,12 +95,10 @@ export function MultiStepRegisterForm({
   const [currentStep, setCurrentStep] = useState(1);
   const [step1Data, setStep1Data] = useState<Step1Data | null>(null);
 
-  // Location data state
   const [cities] = useState(getCitiesList());
   const [divisions, setDivisions] = useState<string[]>([]);
   const [postalCodes, setPostalCodes] = useState<string[]>([]);
 
-  // Step 1 Form
   const step1Form = useForm<Step1Data>({
     resolver: zodResolver(step1Schema),
     defaultValues: {
@@ -116,7 +111,6 @@ export function MultiStepRegisterForm({
     },
   });
 
-  // Step 2 Form
   const step2Form = useForm<Step2Data>({
     resolver: zodResolver(step2Schema),
     defaultValues: {
@@ -127,11 +121,9 @@ export function MultiStepRegisterForm({
     },
   });
 
-  // Watch city changes in step 2
   const selectedCity = step2Form.watch("city");
   const selectedDivision = step2Form.watch("division");
 
-  // Update divisions when city changes
   useEffect(() => {
     if (selectedCity) {
       const cityDivisions = getDivisionsByCity(selectedCity);
@@ -142,14 +134,13 @@ export function MultiStepRegisterForm({
     }
   }, [selectedCity, step2Form]);
 
-  // Update postal codes when division changes
   useEffect(() => {
     if (selectedCity && selectedDivision) {
       const divisionPostalCodes = getPostalCodesByDivision(
         selectedCity,
         selectedDivision
       );
-      // Handle PostalCode objects with code and area properties
+      
       setPostalCodes(
         divisionPostalCodes.map((item: any) => {
           if (typeof item === "string") {
@@ -165,14 +156,12 @@ export function MultiStepRegisterForm({
     }
   }, [selectedCity, selectedDivision, step2Form]);
 
-  // Handle Step 1 submission
   const handleStep1Submit = async (data: Step1Data) => {
     setStep1Data(data);
     setCurrentStep(2);
     toast.success("Basic information saved! Please provide address details.");
   };
 
-  // Handle Step 2 submission (Final registration)
   const handleStep2Submit = async (data: Step2Data) => {
     if (!step1Data) {
       toast.error("Please complete step 1 first");
@@ -210,14 +199,13 @@ export function MultiStepRegisterForm({
     }
   };
 
-  // Go back to Step 1
   const goBackToStep1 = () => {
     setCurrentStep(1);
   };
 
   return (
     <div className={cn("flex flex-col gap-4 sm:gap-5", className)} {...props}>
-      {/* Step Progress Indicator */}
+      {}
       <div className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-xl sm:rounded-2xl border border-border/30 p-3 sm:p-4 shadow-lg">
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
@@ -271,7 +259,7 @@ export function MultiStepRegisterForm({
         </div>
       </div>
 
-      {/* Step 1 - Basic Information */}
+      {}
       {currentStep === 1 && (
         <div className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-2xl sm:rounded-3xl border border-border/30 p-4 sm:p-6 lg:p-7 shadow-2xl">
           <div className="text-center mb-4 sm:mb-6">
@@ -485,7 +473,7 @@ export function MultiStepRegisterForm({
         </div>
       )}
 
-      {/* Step 2 - Address Information */}
+      {}
       {currentStep === 2 && (
         <div className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-2xl sm:rounded-3xl border border-border/30 p-4 sm:p-6 lg:p-7 shadow-2xl">
           <div className="text-center mb-4 sm:mb-6">
@@ -668,7 +656,7 @@ export function MultiStepRegisterForm({
         </div>
       )}
 
-      {/* Additional Info */}
+      {}
       <div className="text-center space-y-3 sm:space-y-4">
         <p className="text-xs sm:text-sm text-muted-foreground">
           Already have an account?{" "}

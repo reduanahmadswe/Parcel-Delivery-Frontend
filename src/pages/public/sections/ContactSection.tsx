@@ -23,7 +23,7 @@ export default function ContactSection() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Form submitted
+    
   };
 
   const contactInfo = [
@@ -58,9 +58,9 @@ export default function ContactSection() {
       id="contact"
       className="py-20 bg-gradient-to-br from-background via-background to-accent/10"
     >
-      {/* Main Content */}
+      {}
       <div className="max-w-7xl mx-auto px-6">
-        {/* Hero Section */}
+        {}
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 bg-accent/20 text-accent-foreground px-4 py-2 rounded-full text-sm font-medium mb-6">
             <MessageSquare className="w-4 h-4" />
@@ -79,7 +79,7 @@ export default function ContactSection() {
           </p>
         </div>
 
-        {/* Contact Info Grid */}
+        {}
         <div className="grid md:grid-cols-4 gap-6 mb-16">
           {contactInfo.map((info, index) => (
             <div
@@ -102,9 +102,9 @@ export default function ContactSection() {
           ))}
         </div>
 
-        {/* Contact Form Section */}
+        {}
         <div className="grid lg:grid-cols-2 gap-12">
-          {/* Contact Form */}
+          {}
           <div className="bg-card/40 backdrop-blur-sm border border-border/40 rounded-3xl p-8">
             <div className="mb-8">
               <h2 className="text-3xl font-bold text-foreground mb-4">
@@ -210,9 +210,9 @@ export default function ContactSection() {
             </form>
           </div>
 
-          {/* Additional Info */}
+          {}
           <div className="space-y-8">
-            {/* FAQ Section */}
+            {}
             <div className="bg-card/40 backdrop-blur-sm border border-border/40 rounded-3xl p-8">
               <h3 className="text-2xl font-bold text-foreground mb-6">
                 Frequently Asked Questions
@@ -247,7 +247,7 @@ export default function ContactSection() {
               </div>
             </div>
 
-            {/* Emergency Contact */}
+            {}
             <div className="bg-gradient-to-r from-red-500/10 to-orange-500/10 border border-red-200/20 rounded-3xl p-8">
               <h3 className="text-xl font-bold text-foreground mb-4">
                 Emergency Support

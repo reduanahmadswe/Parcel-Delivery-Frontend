@@ -22,7 +22,7 @@ export const parcelsApi = baseApi.injectEndpoints({
                         { type: 'Parcel', id: 'LIST' },
                     ]
                     : [{ type: 'Parcel', id: 'LIST' }],
-            // Keep cache for 5 minutes
+            
             keepUnusedDataFor: 300,
         }),
         getParcelById: builder.query<ApiResponse<Parcel>, string>({
@@ -69,14 +69,14 @@ export const parcelsApi = baseApi.injectEndpoints({
                 method: 'POST',
                 body: parcelData,
             }),
-            // Invalidate all parcel lists to refetch
+            
             invalidatesTags: [
                 { type: 'Parcel', id: 'LIST' },
                 { type: 'Parcel', id: 'MY_LIST' },
                 'Dashboard',
                 'Stats',
             ],
-            // Optimistic update - instantly show the new parcel
+            
             async onQueryStarted(parcelData, { dispatch, queryFulfilled }) {
                 const tempId = `temp-${Date.now()}`;
                 const optimisticParcel: Parcel = {
@@ -107,7 +107,6 @@ export const parcelsApi = baseApi.injectEndpoints({
                     updatedAt: new Date().toISOString(),
                 };
 
-                // Optimistically add to "My Parcels" list
                 const patchResult = dispatch(
                     parcelsApi.util.updateQueryData('getMyParcels', {}, (draft) => {
                         if (draft.data) {
@@ -118,8 +117,7 @@ export const parcelsApi = baseApi.injectEndpoints({
 
                 try {
                     await queryFulfilled;
-                    
-                    // Also emit legacy cache invalidation events for adminCache-based components
+
                     const timestamp = Date.now();
                     try {
                         window.dispatchEvent(new CustomEvent('cache-invalidated', { 
@@ -135,7 +133,7 @@ export const parcelsApi = baseApi.injectEndpoints({
                         console.warn('Failed to emit cache invalidation:', err);
                     }
                 } catch {
-                    // Revert optimistic update on error
+                    
                     patchResult.undo();
                 }
             },
@@ -153,9 +151,9 @@ export const parcelsApi = baseApi.injectEndpoints({
                 'Dashboard',
                 'Stats',
             ],
-            // Optimistic update
+            
             async onQueryStarted({ id, data }, { dispatch, queryFulfilled }) {
-                // Update individual parcel cache
+                
                 const patchResult = dispatch(
                     parcelsApi.util.updateQueryData('getParcelById', id, (draft) => {
                         Object.assign(draft.data, data);
@@ -164,14 +162,13 @@ export const parcelsApi = baseApi.injectEndpoints({
 
                 try {
                     const { data: result } = await queryFulfilled;
-                    // Update with actual server data
+                    
                     dispatch(
                         parcelsApi.util.updateQueryData('getParcelById', id, (draft) => {
                             Object.assign(draft, result);
                         })
                     );
-                    
-                    // Emit cache invalidation events
+
                     const timestamp = Date.now();
                     try {
                         window.dispatchEvent(new CustomEvent('cache-invalidated', { 
@@ -204,7 +201,7 @@ export const parcelsApi = baseApi.injectEndpoints({
                 'Dashboard',
                 'Stats',
             ],
-            // Optimistic update
+            
             async onQueryStarted({ id, status, note }, { dispatch, queryFulfilled }) {
                 const patchResult = dispatch(
                     parcelsApi.util.updateQueryData('getParcelById', id, (draft) => {
@@ -223,8 +220,7 @@ export const parcelsApi = baseApi.injectEndpoints({
 
                 try {
                     await queryFulfilled;
-                    
-                    // Emit cache invalidation events
+
                     const timestamp = Date.now();
                     try {
                         window.dispatchEvent(new CustomEvent('cache-invalidated', { 
@@ -256,7 +252,7 @@ export const parcelsApi = baseApi.injectEndpoints({
                 'Dashboard',
                 'Stats',
             ],
-            // Optimistic delete
+            
             async onQueryStarted(id, { dispatch, queryFulfilled }) {
                 const patchResults = [
                     dispatch(
@@ -277,8 +273,7 @@ export const parcelsApi = baseApi.injectEndpoints({
 
                 try {
                     await queryFulfilled;
-                    
-                    // Emit cache invalidation events
+
                     const timestamp = Date.now();
                     try {
                         window.dispatchEvent(new CustomEvent('cache-invalidated', { 
@@ -311,12 +306,11 @@ export const parcelsApi = baseApi.injectEndpoints({
                 'Dashboard',
                 'Stats',
             ],
-            // Emit cache invalidation events after successful cancellation
+            
             async onQueryStarted({ id }, { queryFulfilled }) {
                 try {
                     await queryFulfilled;
-                    
-                    // Emit cache invalidation events
+
                     const timestamp = Date.now();
                     try {
                         window.dispatchEvent(new CustomEvent('cache-invalidated', { 
@@ -332,14 +326,14 @@ export const parcelsApi = baseApi.injectEndpoints({
                         console.warn('Failed to emit cache invalidation:', err);
                     }
                 } catch {
-                    // Error already handled by RTK Query
+                    
                 }
             },
         }),
         getDashboardStats: builder.query<ApiResponse<DashboardStats>, void>({
             query: () => '/parcels/stats/dashboard',
             providesTags: ['Dashboard', 'Stats'],
-            keepUnusedDataFor: 60, // Stats stay cached for 1 minute only
+            keepUnusedDataFor: 60, 
         }),
     }),
 })

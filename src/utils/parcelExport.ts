@@ -1,5 +1,5 @@
-// Professional PDF generation using jsPDF with modern design and QR code
-// Install: npm install jspdf qrcode
+
+
 import { jsPDF } from "jspdf";
 import QRCode from "qrcode";
 
@@ -9,34 +9,29 @@ export async function generateParcelPdf(parcel: any) {
     const pageWidth = doc.internal.pageSize.getWidth();
     const pageHeight = doc.internal.pageSize.getHeight();
 
-    // Project Theme Colors (Red/White combination from project)
-    const primaryRed: [number, number, number] = [239, 68, 68]; // Red-500 (Primary brand color)
-    const darkRed: [number, number, number] = [220, 38, 38]; // Red-600
-    const lightRed: [number, number, number] = [254, 226, 226]; // Red-100
-    const blue: [number, number, number] = [59, 130, 246]; // Blue-500
-    const purple: [number, number, number] = [147, 51, 234]; // Purple-600
-    const pink: [number, number, number] = [236, 72, 153]; // Pink-500
-    const amber: [number, number, number] = [245, 158, 11]; // Amber-500
-    const gray900: [number, number, number] = [17, 24, 39]; // Gray-900 (dark text)
-    const gray700: [number, number, number] = [55, 65, 81]; // Gray-700
-    const gray500: [number, number, number] = [107, 114, 128]; // Gray-500
-    const gray100: [number, number, number] = [243, 244, 246]; // Gray-100 (light bg)
+    const primaryRed: [number, number, number] = [239, 68, 68]; 
+    const darkRed: [number, number, number] = [220, 38, 38]; 
+    const lightRed: [number, number, number] = [254, 226, 226]; 
+    const blue: [number, number, number] = [59, 130, 246]; 
+    const purple: [number, number, number] = [147, 51, 234]; 
+    const pink: [number, number, number] = [236, 72, 153]; 
+    const amber: [number, number, number] = [245, 158, 11]; 
+    const gray900: [number, number, number] = [17, 24, 39]; 
+    const gray700: [number, number, number] = [55, 65, 81]; 
+    const gray500: [number, number, number] = [107, 114, 128]; 
+    const gray100: [number, number, number] = [243, 244, 246]; 
     const white: [number, number, number] = [255, 255, 255];
 
-    // Extract all data from parcel
     const trackingId = parcel.trackingId || parcel.id || parcel._id || "N/A";
-    
-    // Sender info
+
     const senderName = parcel.senderInfo?.name || parcel.senderName || parcel.sender?.name || "You";
     const senderEmail = parcel.senderInfo?.email || parcel.senderEmail || parcel.sender?.email || "N/A";
     const senderPhone = parcel.senderInfo?.phone || parcel.senderPhone || parcel.sender?.phone || "N/A";
-    
-    // Receiver info
+
     const receiverName = parcel.receiverInfo?.name || parcel.receiverName || parcel.receiver?.name || "N/A";
     const receiverEmail = parcel.receiverInfo?.email || parcel.receiverEmail || parcel.receiver?.email || "N/A";
     const receiverPhone = parcel.receiverInfo?.phone || parcel.receiverPhone || parcel.receiver?.phone || "N/A";
-    
-    // Address
+
     const address = parcel.receiverInfo?.address || parcel.receiverAddress || parcel.receiver?.address || {};
     const fullAddress = [
       address.street,
@@ -45,8 +40,7 @@ export async function generateParcelPdf(parcel: any) {
       address.zipCode,
       address.country
     ].filter(Boolean).join(", ") || "No address provided";
-    
-    // Parcel details
+
     const parcelDetails = parcel.parcelDetails || {};
     const parcelType = (parcelDetails.type || parcel.type || "Package").toUpperCase();
     const weight = parcelDetails.weight || parcel.weight || "N/A";
@@ -56,20 +50,15 @@ export async function generateParcelPdf(parcel: any) {
       : "N/A";
     const description = parcelDetails.description || parcel.description || "No description provided";
 
-    // ==================== MODERN HEADER ====================
-    // Main red gradient background
     doc.setFillColor(...primaryRed);
     doc.rect(0, 0, pageWidth, 100, "F");
-    
-    // Darker red accent stripe at bottom
+
     doc.setFillColor(...darkRed);
     doc.rect(0, 90, pageWidth, 10, "F");
-    
-    // Decorative white accent line
+
     doc.setFillColor(...white);
     doc.rect(0, 85, pageWidth, 2, "F");
 
-    // Logo/Title with shadow effect
     doc.setTextColor(...white);
     doc.setFontSize(40);
     doc.setFont("helvetica", "bold");
@@ -78,16 +67,14 @@ export async function generateParcelPdf(parcel: any) {
     doc.setFontSize(12);
     doc.setFont("helvetica", "normal");
     doc.text("Professional Delivery Service", 40, 70);
-    
-    // Date badge on right side with white background
+
     doc.setFontSize(9);
     const dateStr = new Date().toLocaleDateString('en-US', { 
       year: 'numeric', 
       month: 'long', 
       day: 'numeric' 
     });
-    
-    // White date box
+
     const dateWidth = doc.getTextWidth(dateStr) + 20;
     doc.setFillColor(...white);
     doc.roundedRect(pageWidth - dateWidth - 40, 35, dateWidth, 25, 3, 3, "F");
@@ -96,40 +83,34 @@ export async function generateParcelPdf(parcel: any) {
     doc.setFont("helvetica", "bold");
     doc.text(dateStr, pageWidth - 40 - dateWidth / 2, 50, { align: "center" });
 
-    // ==================== TRACKING ID SECTION ====================
     let yPos = 130;
-    
-    // Light blue background for tracking ID
-    doc.setFillColor(219, 234, 254); // Blue-100
+
+    doc.setFillColor(219, 234, 254); 
     doc.roundedRect(40, yPos, pageWidth - 80, 65, 10, 10, "F");
-    
-    // Blue border
+
     doc.setDrawColor(...blue);
     doc.setLineWidth(2);
     doc.roundedRect(40, yPos, pageWidth - 80, 65, 10, 10, "S");
     
     yPos += 22;
-    doc.setTextColor(37, 99, 235); // Blue-600
+    doc.setTextColor(37, 99, 235); 
     doc.setFontSize(10);
     doc.setFont("helvetica", "bold");
     doc.text("TRACKING ID", 55, yPos);
     
     yPos += 23;
-    doc.setTextColor(30, 58, 138); // Blue-900
+    doc.setTextColor(30, 58, 138); 
     doc.setFontSize(20);
     doc.setFont("helvetica", "bold");
     doc.text(trackingId, 55, yPos);
 
-    // ==================== SENDER & RECEIVER SECTION ====================
     yPos += 40;
-    
-    // Two-column layout
+
     const leftCol = 40;
     const rightCol = pageWidth / 2 + 20;
     const colWidth = (pageWidth / 2) - 60;
 
-    // SENDER BOX (Purple theme)
-    doc.setFillColor(245, 243, 255); // Purple-50
+    doc.setFillColor(245, 243, 255); 
     doc.roundedRect(leftCol, yPos, colWidth, 110, 8, 8, "F");
     doc.setDrawColor(...purple);
     doc.setLineWidth(1.5);
@@ -163,8 +144,7 @@ export async function generateParcelPdf(parcel: any) {
     doc.setFont("helvetica", "normal");
     doc.text(senderPhone, leftCol + 50, senderY);
 
-    // RECEIVER BOX (Pink theme)
-    doc.setFillColor(253, 242, 248); // Pink-50
+    doc.setFillColor(253, 242, 248); 
     doc.roundedRect(rightCol, yPos, colWidth, 110, 8, 8, "F");
     doc.setDrawColor(...pink);
     doc.setLineWidth(1.5);
@@ -198,18 +178,16 @@ export async function generateParcelPdf(parcel: any) {
     doc.setFont("helvetica", "normal");
     doc.text(receiverPhone, rightCol + 50, receiverY);
 
-    // ==================== DELIVERY ADDRESS SECTION ====================
     yPos += 130;
-    
-    // Amber theme box
-    doc.setFillColor(254, 243, 199); // Amber-100
+
+    doc.setFillColor(254, 243, 199); 
     doc.roundedRect(40, yPos, pageWidth - 80, 65, 8, 8, "F");
     doc.setDrawColor(...amber);
     doc.setLineWidth(1.5);
     doc.roundedRect(40, yPos, pageWidth - 80, 65, 8, 8, "S");
     
     yPos += 22;
-    doc.setTextColor(180, 83, 9); // Amber-700
+    doc.setTextColor(180, 83, 9); 
     doc.setFontSize(12);
     doc.setFont("helvetica", "bold");
     doc.text("Delivery Address", 55, yPos);
@@ -221,26 +199,21 @@ export async function generateParcelPdf(parcel: any) {
     const addressLines = doc.splitTextToSize(fullAddress, pageWidth - 110);
     doc.text(addressLines, 55, yPos);
 
-    // ==================== PARCEL DETAILS SECTION ====================
     yPos += 55;
     
-    const parcelDetailsStartY = yPos; // Store start position for box
-    
-    // Calculate description lines first to know total height
+    const parcelDetailsStartY = yPos; 
+
     const descLines = doc.splitTextToSize(description, pageWidth - 110);
     const descHeight = descLines.length * 13;
-    
-    // Calculate total box height needed
-    const parcelDetailsHeight = 22 + 22 + 18 + 18 + 22 + 13 + descHeight + 15; // Header + Type/Weight + Dimensions + Desc label + Desc content + padding
-    
-    // Draw the box FIRST with correct height
-    doc.setFillColor(255, 255, 255); // White background
+
+    const parcelDetailsHeight = 22 + 22 + 18 + 18 + 22 + 13 + descHeight + 15; 
+
+    doc.setFillColor(255, 255, 255); 
     doc.roundedRect(40, parcelDetailsStartY, pageWidth - 80, parcelDetailsHeight, 8, 8, "F");
     doc.setDrawColor(...gray500);
     doc.setLineWidth(1.5);
     doc.roundedRect(40, parcelDetailsStartY, pageWidth - 80, parcelDetailsHeight, 8, 8, "S");
-    
-    // NOW add content on top of the box
+
     yPos += 22;
     doc.setTextColor(...gray900);
     doc.setFontSize(12);
@@ -250,8 +223,7 @@ export async function generateParcelPdf(parcel: any) {
     yPos += 22;
     doc.setFontSize(10);
     doc.setTextColor(...gray900);
-    
-    // Grid layout for details with better spacing
+
     doc.setFont("helvetica", "bold");
     doc.text("Type:", 55, yPos);
     doc.setFont("helvetica", "normal");
@@ -274,88 +246,72 @@ export async function generateParcelPdf(parcel: any) {
     yPos += 13;
     doc.setFont("helvetica", "normal");
     doc.text(descLines, 55, yPos);
-    
-    // Move yPos to end of box
+
     yPos = parcelDetailsStartY + parcelDetailsHeight;
 
-    // ==================== QR CODE SECTION ====================
-    yPos += 30; // Space after Parcel Details box
-    
-    // Generate QR Code for tracking link
+    yPos += 30; 
+
     const trackLink = `${window.location.origin}/track?id=${trackingId}`;
     const qrCodeDataUrl = await QRCode.toDataURL(trackLink, {
       width: 150,
       margin: 2,
       color: {
-        dark: '#DC2626', // Red-600
+        dark: '#DC2626', 
         light: '#FFFFFF'
       }
     });
-    
-    // QR Code section (centered with modern design)
+
     const qrSize = 110;
     const qrBoxWidth = qrSize + 40;
     const qrBoxHeight = qrSize + 50;
-    const qrX = (pageWidth - qrSize) / 2; // Center QR code
-    const qrBoxX = (pageWidth - qrBoxWidth) / 2; // Center container
+    const qrX = (pageWidth - qrSize) / 2; 
+    const qrBoxX = (pageWidth - qrBoxWidth) / 2; 
     const qrY = yPos + 15;
-    
-    // Modern gradient background box
-    doc.setFillColor(254, 242, 242); // Red-50
+
+    doc.setFillColor(254, 242, 242); 
     doc.roundedRect(qrBoxX, yPos, qrBoxWidth, qrBoxHeight, 10, 10, "F");
-    
-    // Border with shadow effect
+
     doc.setDrawColor(...primaryRed);
     doc.setLineWidth(2);
     doc.roundedRect(qrBoxX, yPos, qrBoxWidth, qrBoxHeight, 10, 10, "S");
-    
-    // White background for QR code itself
+
     doc.setFillColor(255, 255, 255);
     doc.roundedRect(qrX - 8, qrY - 8, qrSize + 16, qrSize + 16, 6, 6, "F");
     doc.setDrawColor(220, 220, 220);
     doc.setLineWidth(1);
     doc.roundedRect(qrX - 8, qrY - 8, qrSize + 16, qrSize + 16, 6, 6, "S");
-    
-    // Add QR code image
+
     doc.addImage(qrCodeDataUrl, 'PNG', qrX, qrY, qrSize, qrSize);
-    
-    // Modern label below QR code
+
     doc.setFontSize(11);
     doc.setTextColor(...primaryRed);
     doc.setFont("helvetica", "bold");
     doc.text("Scan to Track", pageWidth / 2, qrY + qrSize + 20, { align: "center" });
 
-    // ==================== MODERN FOOTER ====================
     const footerY = pageHeight - 30;
-    
-    // Subtle divider line
-    doc.setDrawColor(229, 231, 235); // Gray-200
+
+    doc.setDrawColor(229, 231, 235); 
     doc.setLineWidth(0.5);
     doc.line(40, footerY - 15, pageWidth - 40, footerY - 15);
-    
-    // Footer content
+
     doc.setFontSize(8);
     doc.setTextColor(...gray500);
     doc.setFont("helvetica", "normal");
-    
-    // Left: Generated timestamp
+
     const timestamp = new Date().toLocaleString('en-US', { 
       dateStyle: 'medium', 
       timeStyle: 'short' 
     });
     doc.text(`Generated: ${timestamp}`, 40, footerY);
-    
-    // Center: Document info
+
     doc.setFont("helvetica", "bold");
     doc.setTextColor(...primaryRed);
     doc.text("ParcelTrack", pageWidth / 2, footerY, { align: "center" });
-    
-    // Right: Copyright
+
     doc.setFont("helvetica", "normal");
     doc.setTextColor(...gray500);
     doc.text("© 2025", pageWidth - 40, footerY, { align: "right" });
 
-    // Save PDF with descriptive filename
     const fileTimestamp = new Date().toISOString().split('T')[0];
     doc.save(`ParcelTrack_${trackingId}_${fileTimestamp}.pdf`);
   } catch (error) {

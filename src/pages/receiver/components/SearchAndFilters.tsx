@@ -31,7 +31,7 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
     <div className="bg-background rounded-lg sm:rounded-xl lg:rounded-2xl shadow-lg border border-border">
       <div className="p-4 sm:p-5 lg:p-6">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 sm:gap-4">
-          {/* Search */}
+          {}
           <div className="flex-1 max-w-full lg:max-w-md">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4 sm:w-5 sm:h-5" />
@@ -45,7 +45,7 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
             </div>
           </div>
 
-          {/* Sort Controls */}
+          {}
           <div className="flex items-center gap-2 sm:gap-3">
             <select
               value={filters.sortBy}
@@ -68,7 +68,7 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
           </div>
         </div>
 
-        {/* Filter Tabs */}
+        {}
         <div className="flex flex-wrap gap-2 mt-3 sm:mt-4">
           {filterOptions.map((status) => (
             <button

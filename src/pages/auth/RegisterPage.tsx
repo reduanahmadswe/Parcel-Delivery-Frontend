@@ -14,9 +14,9 @@ const RegisterPage: React.FC = () => {
   return (
     <div className="h-screen overflow-hidden bg-gradient-to-br from-background via-background to-red-50/20 dark:to-red-950/10">
       <div className="h-screen grid lg:grid-cols-5">
-        {/* Left Panel - Form (2 columns) */}
+        {}
         <div className="lg:col-span-2 flex flex-col relative overflow-y-auto">
-          {/* Animated Background Elements */}
+          {}
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
             <div className="absolute top-20 left-10 w-32 h-32 bg-red-500/5 dark:bg-red-400/10 rounded-full blur-2xl animate-pulse" />
             <div
@@ -25,7 +25,7 @@ const RegisterPage: React.FC = () => {
             />
           </div>
 
-          {/* Header */}
+          {}
           <div className="relative z-10 p-3 sm:p-4 lg:p-6 flex-shrink-0">
             <Link
               to="/"
@@ -50,7 +50,7 @@ const RegisterPage: React.FC = () => {
             </Link>
           </div>
 
-          {/* Form Container - Scrollable */}
+          {}
           <div className="relative z-10 flex-1 flex items-start lg:items-center justify-center px-3 py-4 sm:px-4 sm:py-6 lg:px-6 lg:py-8 overflow-y-auto">
             <div className="w-full max-w-md my-auto">
               <div className="space-y-3 sm:space-y-4">
@@ -67,7 +67,7 @@ const RegisterPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Footer */}
+          {}
           <div className="relative z-10 p-3 sm:p-4 lg:p-6 text-center space-y-2 flex-shrink-0 border-t border-border/30 dark:border-border/20 bg-background/50 dark:bg-background/30">
             <div className="flex items-center justify-center gap-3 sm:gap-4 text-xs text-muted-foreground flex-wrap">
               <div className="flex items-center gap-1">
@@ -89,9 +89,9 @@ const RegisterPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Right Panel - Hero Image (2 columns) */}
+        {}
         <div className="hidden lg:block lg:col-span-3 relative overflow-hidden bg-gradient-to-br from-red-50 via-orange-50 to-red-100 dark:from-red-950/30 dark:via-orange-950/20 dark:to-red-900/30">
-          {/* Enhanced Hero Image with Better Fit */}
+          {}
           <div className="absolute inset-0">
             <img
               src="/signup.png"
@@ -102,13 +102,13 @@ const RegisterPage: React.FC = () => {
               }}
             />
 
-            {/* Enhanced Gradient Overlays for Dark Mode */}
+            {}
             <div className="absolute inset-0 bg-gradient-to-r from-red-600/10 via-transparent to-orange-600/5 dark:from-red-900/40 dark:via-transparent dark:to-orange-900/20" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-black/10 dark:from-black/50 dark:via-transparent dark:to-black/30" />
             <div className="absolute inset-0 bg-gradient-to-br from-transparent via-red-500/5 to-orange-500/10 dark:from-transparent dark:via-red-800/10 dark:to-orange-800/15" />
           </div>
 
-          {/* Floating Elements */}
+          {}
           <div className="absolute top-10 right-10 animate-bounce">
             <div className="bg-white/10 dark:bg-white/5 backdrop-blur-md rounded-2xl p-4 shadow-xl border border-white/20 dark:border-white/10">
               <div className="flex items-center gap-3">
@@ -144,7 +144,7 @@ const RegisterPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Enhanced Brand Watermark */}
+          {}
           <div className="absolute bottom-8 right-8">
             <div className="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl px-6 py-4 border border-white/10 dark:border-white/5 shadow-2xl">
               <div className="flex items-center gap-3">

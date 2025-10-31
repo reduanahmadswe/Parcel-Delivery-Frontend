@@ -2,27 +2,26 @@ import type { Config } from "tailwindcss";
 
 const config: Config = {
     content: [
-        "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
-        "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
-        "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+        "./index.html",
+        "./src/**/*.{js,ts,jsx,tsx,mdx}",
     ],
     darkMode: "class",
     theme: {
         extend: {
             screens: {
-                'xs': '475px',      // Large phones (iPhone XR, Galaxy S20)
-                'sm': '640px',      // Small tablets (iPad Mini)
-                'md': '768px',      // Standard tablets (iPad Air)
-                'lg': '1024px',     // Laptops (Surface Pro)
-                'xl': '1280px',     // Desktops
-                '2xl': '1536px',    // Ultra-wide monitors
-                // Custom device-specific breakpoints
-                'fold': '653px',    // Galaxy Z Fold unfolded
-                'surface': '912px', // Surface Duo unfolded
-                'nest': '1024px',   // Nest Hub Max
+                'xs': '475px',      
+                'sm': '640px',      
+                'md': '768px',      
+                'lg': '1024px',     
+                'xl': '1280px',     
+                '2xl': '1536px',    
+                
+                'fold': '653px',    
+                'surface': '912px', 
+                'nest': '1024px',   
             },
             colors: {
-                // Shadcn/UI CSS variables
+                
                 background: "hsl(var(--background))",
                 foreground: "hsl(var(--foreground))",
                 card: {
@@ -74,7 +73,6 @@ const config: Config = {
                     ring: "hsl(var(--sidebar-ring))",
                 },
 
-                // Legacy colors for backwards compatibility
                 brand: {
                     darkest: "hsl(var(--brand-darkest))",
                     dark: "hsl(var(--brand-dark))",
@@ -95,6 +93,37 @@ const config: Config = {
                 "gradient-brand": "var(--gradient-brand)",
                 "gradient-brand-reverse": "var(--gradient-brand-reverse)",
                 "gradient-brand-light": "var(--gradient-brand-light)",
+                "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
+            },
+            animation: {
+                "fade-in": "fadeIn 0.5s ease-in-out",
+                "slide-in": "slideIn 0.5s ease-out",
+                "zoom-in-95": "zoomIn95 0.3s ease-out",
+                "slide-in-from-bottom": "slideInFromBottom 0.4s ease-out",
+                "float": "float 6s ease-in-out infinite",
+                "float-delayed": "float 6s ease-in-out infinite 3s",
+            },
+            keyframes: {
+                fadeIn: {
+                    "0%": { opacity: "0" },
+                    "100%": { opacity: "1" },
+                },
+                slideIn: {
+                    "0%": { transform: "translateX(-100%)", opacity: "0" },
+                    "100%": { transform: "translateX(0)", opacity: "1" },
+                },
+                zoomIn95: {
+                    "0%": { transform: "scale(0.95)", opacity: "0" },
+                    "100%": { transform: "scale(1)", opacity: "1" },
+                },
+                slideInFromBottom: {
+                    "0%": { transform: "translateY(100%)", opacity: "0" },
+                    "100%": { transform: "translateY(0)", opacity: "1" },
+                },
+                float: {
+                    "0%, 100%": { transform: "translateY(0px)" },
+                    "50%": { transform: "translateY(-20px)" },
+                },
             },
         },
     },

@@ -7,7 +7,7 @@ import apiSlice from './api/apiSlice'
 const persistConfig = {
     key: 'root',
     storage,
-    whitelist: ['auth'], // Only persist auth state
+    whitelist: ['auth'], 
 }
 
 const rootReducer = combineReducers({

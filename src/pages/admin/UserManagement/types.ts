@@ -1,5 +1,4 @@
-// User Management Types
-// This file contains all TypeScript interfaces and types used in the User Management module
+
 
 export interface BlockUserReason {
     value: string;
@@ -32,12 +31,12 @@ export interface UserParcel {
 
 export interface ApiUser {
     id?: number;
-    _id?: string | number; // MongoDB ObjectId
+    _id?: string | number; 
     name?: string;
     email?: string;
     role?: "admin" | "sender" | "receiver" | "user";
     status?: "active" | "blocked" | "pending";
-    isBlocked?: boolean; // API might return this instead of status
+    isBlocked?: boolean; 
     phone?: string;
     phoneNumber?: string;
     address?: {
@@ -48,12 +47,12 @@ export interface ApiUser {
     };
     createdAt?: string;
     updatedAt?: string;
-    [key: string]: unknown; // For any additional fields
+    [key: string]: unknown; 
 }
 
 export interface User extends Record<string, unknown> {
     id: string | number;
-    _id?: string | number; // MongoDB style ID
+    _id?: string | number; 
     name: string;
     email: string;
     role: "admin" | "sender" | "receiver" | "user";
@@ -109,12 +108,9 @@ export interface UserStats {
     newUsersThisMonth: number;
 }
 
-// Role type for better type safety
 export type UserRole = "admin" | "sender" | "receiver";
 
-// Status type for better type safety  
 export type UserStatus = "active" | "blocked" | "pending";
 
-// Action types for user operations
 export type UserAction = "create" | "update" | "delete" | "toggleStatus" | "view";
 

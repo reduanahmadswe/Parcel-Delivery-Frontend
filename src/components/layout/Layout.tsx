@@ -1,4 +1,4 @@
-import ConditionalNavigation from "./ConditionalNavigation";
+import ConditionalNavigation from "./Navigation/ConditionalNavigation";
 import React from "react";
 
 interface LayoutProps {
