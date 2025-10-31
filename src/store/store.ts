@@ -31,17 +31,33 @@ const authPersistConfig = {
 };
 
 // Persist configuration for API slice to cache data between page navigations
+// Note: We only persist the 'queries' state which contains cached API responses
 const apiPersistConfig = {
     key: 'api',
     storage: storageToUse,
-    // Persist all API cache data
-    whitelist: ['queries', 'mutations', 'provided', 'subscriptions'],
-    // Set a version in case we need to migrate later
+    // Only persist queries (API cache responses) - this is what we need for caching
+    whitelist: ['queries'],
     version: 1,
+    // Increase throttle to reduce write frequency
+    throttle: 1000,
+    // Add debug in development
+    debug: !IS_PROD,
 };
 
 const persistedAuthReducer = persistReducer(authPersistConfig, authSlice);
 const persistedApiReducer = persistReducer(apiPersistConfig, apiSlice.reducer);
+
+// Debug: Log when persist rehydrates (only in development)
+if (!IS_PROD && typeof window !== 'undefined') {
+    window.addEventListener('storage', (e) => {
+        if (e.key === 'persist:api' || e.key === 'persist:auth') {
+            console.log('🔄 [Redux Persist] Storage changed:', e.key, {
+                oldValue: e.oldValue ? 'exists' : 'null',
+                newValue: e.newValue ? 'exists' : 'null',
+            });
+        }
+    });
+}
 
 // Middleware to clear API cache on logout
 const logoutCacheResetMiddleware: Middleware = (storeAPI) => (next) => (action) => {
@@ -74,7 +90,22 @@ export const store = configureStore({
     // Use centralized config
     devTools: !IS_PROD,
 });
-export const persistor = persistStore(store);
+
+export const persistor = persistStore(store, null, () => {
+    // Callback when rehydration is complete
+    if (!IS_PROD && typeof window !== 'undefined') {
+        console.log('✅ [Redux Persist] Rehydration complete!');
+        console.log('📦 [Redux Persist] Auth state:', localStorage.getItem('persist:auth') ? 'exists' : 'missing');
+        console.log('📦 [Redux Persist] API cache:', localStorage.getItem('persist:api') ? 'exists' : 'missing');
+        
+        // Check API cache size
+        const apiCache = localStorage.getItem('persist:api');
+        if (apiCache) {
+            const sizeInKB = (apiCache.length / 1024).toFixed(2);
+            console.log(`📦 [Redux Persist] API cache size: ${sizeInKB} KB`);
+        }
+    }
+});
 
 // Types
 export type RootState = ReturnType<typeof store.getState>;

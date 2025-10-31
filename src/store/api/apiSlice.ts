@@ -112,7 +112,20 @@ const baseQueryWithReauth: BaseQueryFn<
 export const apiSlice = createApi({
     reducerPath: 'api',
     baseQuery: baseQueryWithReauth,
-    tagTypes: ['Auth', 'User', 'Parcel', 'Admin', 'Dashboard', 'Stats'],
+    tagTypes: [
+        'Auth', 
+        'User', 
+        'Parcel', 
+        'Admin', 
+        'Dashboard', 
+        'Stats',
+        'SenderParcel',
+        'SenderDashboard',
+        'SenderStats',
+        'ReceiverParcel',
+        'ReceiverDashboard',
+        'ReceiverStats',
+    ],
     // Advanced caching configuration - keep data until logout
     keepUnusedDataFor: Infinity, // Cache indefinitely until logout
     refetchOnMountOrArgChange: false, // Don't auto-refetch on mount - use cached data
