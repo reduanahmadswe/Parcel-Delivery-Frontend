@@ -19,8 +19,8 @@ const injectedApi = apiSlice.injectEndpoints({
                           { type: 'User', id: 'LIST' },
                       ]
                     : [{ type: 'User', id: 'LIST' }],
-            // Keep user data cached for 5 minutes
-            keepUnusedDataFor: 300,
+            // Keep user data cached until logout - no expiry
+            keepUnusedDataFor: Infinity,
         }),
 
         getAllParcels: build.query<any[], void>({
@@ -41,8 +41,8 @@ const injectedApi = apiSlice.injectEndpoints({
                           'Stats',
                       ]
                     : [{ type: 'Parcel', id: 'ADMIN_LIST' }, 'Dashboard', 'Stats'],
-            // Keep parcel data cached for 5 minutes
-            keepUnusedDataFor: 300,
+            // Keep parcel data cached until logout - no expiry
+            keepUnusedDataFor: Infinity,
         }),
 
         // Update user mutation with optimistic updates

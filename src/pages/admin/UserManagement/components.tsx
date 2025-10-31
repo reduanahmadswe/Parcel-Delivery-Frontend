@@ -2,7 +2,6 @@ import {
   AlertTriangle,
   Calendar,
   Edit,
-  Eye,
   Mail,
   MapIcon,
   MapPin,
@@ -18,7 +17,6 @@ import {
   Users,
 } from "lucide-react";
 import React, { useEffect, useState } from "react";
-import { useGetUserParcelsQuery } from "../../../features/parcels/parcelsApi";
 import { BlockUserReason, User } from "./types";
 
 // Enhanced Modal Component with modern animations
@@ -33,6 +31,19 @@ export function Modal({
   children: React.ReactNode;
   size?: "sm" | "md" | "lg" | "xl";
 }) {
+  const [isAnimating, setIsAnimating] = useState(true);
+
+  useEffect(() => {
+    if (isOpen) {
+      setIsAnimating(true);
+      // Allow backdrop clicks after animation completes
+      const timer = setTimeout(() => {
+        setIsAnimating(false);
+      }, 350); // Slightly longer than animation duration
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   const sizeClasses = {
@@ -42,9 +53,9 @@ export function Modal({
     xl: "max-w-4xl",
   };
 
-  // Handle outside click
+  // Handle outside click - but only after animation completes
   const handleBackdropClick = (e: React.MouseEvent) => {
-    if (e.target === e.currentTarget) {
+    if (!isAnimating && e.target === e.currentTarget) {
       onClose();
     }
   };
@@ -431,173 +442,6 @@ export function DeleteUserModal({
 }
 
 // User Details Modal Component
-export function UserDetailsModal({
-  isOpen,
-  onClose,
-  user,
-}: {
-  isOpen: boolean;
-  onClose: () => void;
-  user: User | null;
-}) {
-  // Use RTK Query to fetch user parcels
-  const {
-    data: parcelsResponse,
-    isLoading: loading,
-    error,
-  } = useGetUserParcelsQuery(
-    { userId: user?.id?.toString() || user?._id?.toString() || "" },
-    { skip: !isOpen || !user }
-  );
-
-  const userParcels = parcelsResponse?.data || [];
-
-  if (!user) return null;
-
-  return (
-    <Modal isOpen={isOpen} onClose={onClose} size="xl">
-      <div className="bg-gradient-to-br from-background via-background to-muted/20">
-        {/* Header */}
-        <div className="bg-gradient-to-r from-red-600 to-red-600 dark:from-red-600 dark:to-red-700 p-6 rounded-t-lg">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-white/20 rounded-lg">
-              <Eye className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <h2 className="text-xl font-bold text-white">User Details</h2>
-              <p className="text-white/80 text-sm">
-                Complete information for {user.name}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Content */}
-        <div className="p-6 space-y-6 max-h-[75vh] overflow-y-auto">
-          {/* User Information Section */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Personal Information */}
-            <div className="space-y-4">
-              <div className="flex items-center gap-2 mb-4">
-                <div className="p-1 bg-blue-100 dark:bg-blue-900/30 rounded">
-                  <Users className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                </div>
-                <h3 className="text-lg font-semibold text-foreground">
-                  Personal Information
-                </h3>
-              </div>
-
-              <div className="space-y-3">
-                <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
-                  <Users className="w-5 h-5 text-muted-foreground" />
-                  <div>
-                    <p className="text-sm text-muted-foreground">Full Name</p>
-                    <p className="font-medium text-foreground">{user.name}</p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
-                  <Mail className="w-5 h-5 text-muted-foreground" />
-                  <div>
-                    <p className="text-sm text-muted-foreground">
-                      Email Address
-                    </p>
-                    <p className="font-medium text-foreground">{user.email}</p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
-                  <Phone className="w-5 h-5 text-muted-foreground" />
-                  <div>
-                    <p className="text-sm text-muted-foreground">
-                      Phone Number
-                    </p>
-                    <p className="font-medium text-foreground">
-                      {user.phoneNumber || "N/A"}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
-                  <Shield className="w-5 h-5 text-muted-foreground" />
-                  <div>
-                    <p className="text-sm text-muted-foreground">Role</p>
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">
-                      {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
-                  <Calendar className="w-5 h-5 text-muted-foreground" />
-                  <div>
-                    <p className="text-sm text-muted-foreground">Status</p>
-                    <StatusBadge status={user.status} />
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
-                  <Calendar className="w-5 h-5 text-muted-foreground" />
-                  <div>
-                    <p className="text-sm text-muted-foreground">Joined Date</p>
-                    <p className="font-medium text-foreground">
-                      {new Date(user.createdAt).toLocaleDateString()}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Address Information */}
-            <div className="space-y-4">
-              <div className="flex items-center gap-2 mb-4">
-                <div className="p-1 bg-green-100 dark:bg-green-900/30 rounded">
-                  <MapIcon className="w-4 h-4 text-green-600 dark:text-green-400" />
-                </div>
-                <h3 className="text-lg font-semibold text-foreground">
-                  Address Information
-                </h3>
-              </div>
-
-              <div className="p-4 bg-muted/50 rounded-lg space-y-2">
-                <div className="flex items-start gap-3">
-                  <MapPin className="w-5 h-5 text-muted-foreground mt-0.5" />
-                  <div className="space-y-1">
-                    <p className="text-sm text-muted-foreground">Address</p>
-                    <div className="space-y-1">
-                      <p className="font-medium text-foreground">
-                        {user.address?.street || "N/A"}
-                      </p>
-                      <p className="text-foreground">
-                        {user.address?.city || "N/A"},{" "}
-                        {user.address?.state || "N/A"}
-                      </p>
-                      <p className="text-foreground">
-                        {user.address?.zipCode || "N/A"}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-        
-          {/* Action Buttons */}
-          <div className="flex justify-end pt-4 border-t border-border">
-            <button
-              onClick={onClose}
-              className="px-6 py-2 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-lg hover:shadow-lg transition-all duration-300"
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      </div>
-    </Modal>
-  );
-}
-
 // User Form Modal Component
 export function UserFormModal({
   isOpen,

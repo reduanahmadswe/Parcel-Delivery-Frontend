@@ -51,7 +51,10 @@ export function useParcels(filterParams: FilterParams) {
                 }
             }
 
-            setLoading(true);
+            // Only show loading for initial fetch, not background refreshes
+            if (!force || parcels.length === 0) {
+                setLoading(true);
+            }
 
             const apiParcels = await ParcelApiService.fetchParcels(filterParams);
            
@@ -73,7 +76,7 @@ export function useParcels(filterParams: FilterParams) {
             setLoading(false);
             fetchingRef.current = false;
         }
-    }, [filterParams]);
+    }, [filterParams, parcels.length]);
 
     // Only fetch on mount, not on every render
     useEffect(() => {

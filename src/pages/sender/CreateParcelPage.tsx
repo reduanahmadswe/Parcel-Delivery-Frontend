@@ -12,6 +12,7 @@ import {
   getPostalCodesByDivision,
 } from "../../constants/bangladeshData";
 import FooterSection from "../public/sections/FooterSection";
+import { invalidateAllSenderCaches } from "../../utils/realtimeSync";
 
 export default function CreateParcelPage() {
   const navigate = useNavigate();
@@ -450,13 +451,8 @@ export default function CreateParcelPage() {
       // Show success modal with all details
       setCreatedParcel(parcel);
 
-      // Dispatch a legacy cache invalidation event for any components using adminCache
-      try {
-        const ev = new CustomEvent('cache-invalidated', { detail: { key: 'MY_LIST', timestamp: Date.now() } });
-        window.dispatchEvent(ev);
-      } catch (err) {
-        // ignore
-      }
+      // Invalidate all sender-related caches for instant update across all pages
+      invalidateAllSenderCaches();
     } catch (error: unknown) {
       const apiError = error as {
         response?: {

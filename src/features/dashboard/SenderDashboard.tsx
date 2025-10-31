@@ -1,6 +1,6 @@
 "use client";
 
-import { BarChart3, Calendar, Eye, Package, Plus, Truck, XCircle } from "lucide-react";
+import { BarChart3, Calendar, Eye, Package, Plus, RefreshCw, Truck, XCircle } from "lucide-react";
 import { useEffect, useState, useRef } from "react";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
@@ -12,6 +12,7 @@ import { Parcel } from "../../types/GlobalTypeDefinitions";
 import FooterSection from "../../pages/public/sections/FooterSection";
 import ParcelDetailsModal from "../../components/modals/ParcelDetailsModal";
 import { adminCache, CACHE_KEYS } from "../../utils/adminCache";
+import { useRealtimeSync, SENDER_CACHE_KEYS } from "../../utils/realtimeSync";
 
 interface ApiError {
   response?: {
@@ -25,37 +26,28 @@ export default function SenderDashboard() {
   const { user } = useAuth();
   const [parcels, setParcels] = useState<Parcel[]>([]);
   const [loading, setLoading] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
+  const [isBackgroundRefresh, setIsBackgroundRefresh] = useState(false);
   const [selectedParcel, setSelectedParcel] = useState<Parcel | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const isMountedRef = useRef(false);
   const fetchingRef = useRef(false);
 
-  // Listen for cache invalidation events
-  useEffect(() => {
-    const handleCacheInvalidation = (event: Event) => {
-      const customEvent = event as CustomEvent<{ key: string; timestamp: number }>;
-      const { key } = customEvent.detail;
-      
-      
-      // If sender parcels cache is invalidated, refetch data
-      if (key === 'SENDER_DASHBOARD' || key === 'SENDER_PARCELS' || key.includes('sender:parcels:')) {
-        fetchParcels(true);
-      }
-    };
-
-    // Add event listener
-    window.addEventListener('cache-invalidated', handleCacheInvalidation);
-
-    // Cleanup
-    return () => {
-      window.removeEventListener('cache-invalidated', handleCacheInvalidation);
-    };
-  }, []);
+  // Real-time sync - automatically refresh data silently in background
+  useRealtimeSync({
+    onRefresh: (force) => fetchParcels(force || false, true), // true = silent background refresh
+    pollingInterval: 30000, // 30 seconds
+    cacheKeys: [
+      SENDER_CACHE_KEYS.DASHBOARD,
+      SENDER_CACHE_KEYS.PARCELS,
+      SENDER_CACHE_KEYS.MY_LIST,
+    ],
+  });
 
   useEffect(() => {
     if (!isMountedRef.current) {
       isMountedRef.current = true;
-      fetchParcels(false); // Use cache if available
+      fetchParcels(false, false); // false = show initial loading
     }
   }, []);
 
@@ -69,7 +61,7 @@ export default function SenderDashboard() {
     setSelectedParcel(null);
   };
 
-  const fetchParcels = async (force: boolean = false) => {
+  const fetchParcels = async (force: boolean = false, silent: boolean = false) => {
     // Prevent concurrent fetches
     if (fetchingRef.current) return;
 
@@ -82,12 +74,18 @@ export default function SenderDashboard() {
         if (cachedData) {
           setParcels(cachedData);
           setLoading(false);
+          setInitialLoading(false);
           fetchingRef.current = false;
           return;
         }
       }
 
-      setLoading(true);
+      // Only show loading for initial load or manual refresh
+      if (!silent) {
+        setLoading(true);
+      } else {
+        setIsBackgroundRefresh(true);
+      }
 
       // Try multiple endpoints to see which one gives all data
       let response;
@@ -147,9 +145,14 @@ export default function SenderDashboard() {
       setParcels(allParcels);
     } catch (error) {
       console.error("❌ Error fetching parcels:", error);
-      toast.error("Failed to fetch parcels");
+      // Only show error toast for non-silent refresh
+      if (!silent) {
+        toast.error("Failed to fetch parcels");
+      }
     } finally {
       setLoading(false);
+      setInitialLoading(false);
+      setIsBackgroundRefresh(false);
       fetchingRef.current = false;
     }
   };
@@ -166,7 +169,7 @@ export default function SenderDashboard() {
     cancelled: parcels.filter((p) => p.currentStatus === "cancelled").length,
   };
 
-  if (loading) {
+  if (loading && initialLoading) {
     return (
       <ProtectedRoute allowedRoles={["sender"]}>
         <div className="min-h-screen bg-background flex items-center justify-center">
@@ -191,6 +194,15 @@ export default function SenderDashboard() {
                   Welcome back, <span className="font-semibold text-foreground">{user?.name}</span>! Here's your delivery overview.
                 </p>
               </div>
+              <button
+                onClick={() => fetchParcels(true, false)}
+                disabled={loading && !isBackgroundRefresh}
+                className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white rounded-lg transition-all duration-200 disabled:cursor-not-allowed"
+                title="Refresh data"
+              >
+                <RefreshCw className={`h-4 w-4 ${(loading && !isBackgroundRefresh) ? 'animate-spin' : ''}`} />
+                <span className="text-sm font-medium">Refresh</span>
+              </button>
             </div>
           </div>
 

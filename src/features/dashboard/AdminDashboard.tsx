@@ -30,9 +30,24 @@ export default function AdminDashboard() {
   const [recentParcels, setRecentParcels] = useState<RecentParcel[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // RTK Query hooks
-  const { data: usersData, refetch: refetchUsers } = useGetAllUsersQuery();
-  const { data: parcelsData, refetch: refetchParcels } = useGetAllParcelsQuery();
+  // RTK Query hooks with optimized caching - don't auto-refetch, use cached data
+  const { data: usersData, refetch: refetchUsers, isLoading: usersLoading } = useGetAllUsersQuery(undefined, {
+    // Don't refetch when window regains focus - use cached data
+    refetchOnFocus: false,
+    // Don't refetch on mount if data exists - use cached data
+    refetchOnMountOrArgChange: false,
+    // Refetch when network reconnects
+    refetchOnReconnect: true,
+  });
+  
+  const { data: parcelsData, refetch: refetchParcels, isLoading: parcelsLoading } = useGetAllParcelsQuery(undefined, {
+    // Don't refetch when window regains focus - use cached data
+    refetchOnFocus: false,
+    // Don't refetch on mount if data exists - use cached data
+    refetchOnMountOrArgChange: false,
+    // Refetch when network reconnects
+    refetchOnReconnect: true,
+  });
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -40,19 +55,19 @@ export default function AdminDashboard() {
   const totalPages = Math.max(1, Math.ceil(recentParcels.length / itemsPerPage));
   const paginatedRecentParcels = recentParcels.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
-  // Listen for cache invalidation events
+  // Listen for cache invalidation events from Parcel Management page
   useEffect(() => {
     const handleCacheInvalidation = (event: Event) => {
       const customEvent = event as CustomEvent<{ key: string; timestamp: number }>;
       const { key } = customEvent.detail;
       
-      
-      // If parcels cache is invalidated, refetch data
+      // If parcels cache is invalidated, silently refetch data in background
       if (key === 'PARCELS' || key.includes('PARCEL')) {
+        // Silent background refetch - no loading state shown
         refetchParcels();
       }
       
-      // If users cache is invalidated, refetch data
+      // If users cache is invalidated, silently refetch data in background
       if (key === 'USERS' || key.includes('USER')) {
         refetchUsers();
       }
@@ -68,6 +83,12 @@ export default function AdminDashboard() {
   }, [refetchParcels, refetchUsers]);
 
   useEffect(() => {
+    // Only show loading if we're actually loading data and don't have cached data
+    if ((usersLoading || parcelsLoading) && !usersData && !parcelsData) {
+      setLoading(true);
+      return;
+    }
+
     // When parcelsData or usersData change, compute stats and recent parcels
     setLoading(true);
 
@@ -111,7 +132,7 @@ export default function AdminDashboard() {
     } finally {
       setLoading(false);
     }
-  }, [usersData, parcelsData]);
+  }, [usersData, parcelsData, usersLoading, parcelsLoading]);
 
   const statCards = [
     { title: "Total Users", value: stats.users.total || 0, change: "+5%", trend: 'up' as const, icon: Users, iconBg: "bg-blue-50", iconColor: "text-blue-500", color: "blue", gradient: "from-blue-50 to-blue-100" },

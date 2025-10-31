@@ -113,9 +113,9 @@ export const apiSlice = createApi({
     reducerPath: 'api',
     baseQuery: baseQueryWithReauth,
     tagTypes: ['Auth', 'User', 'Parcel', 'Admin', 'Dashboard', 'Stats'],
-    // Advanced caching configuration
-    keepUnusedDataFor: 300, // Keep unused cache for 5 minutes (300 seconds)
-    refetchOnMountOrArgChange: 30, // Refetch if data is older than 30 seconds
+    // Advanced caching configuration - keep data until logout
+    keepUnusedDataFor: Infinity, // Cache indefinitely until logout
+    refetchOnMountOrArgChange: false, // Don't auto-refetch on mount - use cached data
     refetchOnReconnect: true, // Refetch when reconnecting to internet
     refetchOnFocus: false, // Don't refetch on window focus to avoid constant reloading
     endpoints: () => ({}),
