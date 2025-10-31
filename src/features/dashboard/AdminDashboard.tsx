@@ -40,6 +40,33 @@ export default function AdminDashboard() {
   const totalPages = Math.max(1, Math.ceil(recentParcels.length / itemsPerPage));
   const paginatedRecentParcels = recentParcels.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
+  // Listen for cache invalidation events
+  useEffect(() => {
+    const handleCacheInvalidation = (event: Event) => {
+      const customEvent = event as CustomEvent<{ key: string; timestamp: number }>;
+      const { key } = customEvent.detail;
+      
+      
+      // If parcels cache is invalidated, refetch data
+      if (key === 'PARCELS' || key.includes('PARCEL')) {
+        refetchParcels();
+      }
+      
+      // If users cache is invalidated, refetch data
+      if (key === 'USERS' || key.includes('USER')) {
+        refetchUsers();
+      }
+    };
+
+    // Add event listener
+    window.addEventListener('cache-invalidated', handleCacheInvalidation);
+
+    // Cleanup
+    return () => {
+      window.removeEventListener('cache-invalidated', handleCacheInvalidation);
+    };
+  }, [refetchParcels, refetchUsers]);
+
   useEffect(() => {
     // When parcelsData or usersData change, compute stats and recent parcels
     setLoading(true);

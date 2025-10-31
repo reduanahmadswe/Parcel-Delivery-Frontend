@@ -1,7 +1,7 @@
 "use client";
 
-import { BarChart3, Calendar, Eye, Package, Plus, Truck } from "lucide-react";
-import { useEffect, useState } from "react";
+import { BarChart3, Calendar, Eye, Package, Plus, Truck, XCircle } from "lucide-react";
+import { useEffect, useState, useRef } from "react";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import ProtectedRoute from "../../components/common/ProtectedRoute";
@@ -11,6 +11,7 @@ import { getStatusColor } from "../../utils/HelperUtilities";
 import { Parcel } from "../../types/GlobalTypeDefinitions";
 import FooterSection from "../../pages/public/sections/FooterSection";
 import ParcelDetailsModal from "../../components/modals/ParcelDetailsModal";
+import { adminCache, CACHE_KEYS } from "../../utils/adminCache";
 
 interface ApiError {
   response?: {
@@ -23,12 +24,39 @@ interface ApiError {
 export default function SenderDashboard() {
   const { user } = useAuth();
   const [parcels, setParcels] = useState<Parcel[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [selectedParcel, setSelectedParcel] = useState<Parcel | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const isMountedRef = useRef(false);
+  const fetchingRef = useRef(false);
+
+  // Listen for cache invalidation events
+  useEffect(() => {
+    const handleCacheInvalidation = (event: Event) => {
+      const customEvent = event as CustomEvent<{ key: string; timestamp: number }>;
+      const { key } = customEvent.detail;
+      
+      
+      // If sender parcels cache is invalidated, refetch data
+      if (key === 'SENDER_DASHBOARD' || key === 'SENDER_PARCELS' || key.includes('sender:parcels:')) {
+        fetchParcels(true);
+      }
+    };
+
+    // Add event listener
+    window.addEventListener('cache-invalidated', handleCacheInvalidation);
+
+    // Cleanup
+    return () => {
+      window.removeEventListener('cache-invalidated', handleCacheInvalidation);
+    };
+  }, []);
 
   useEffect(() => {
-    fetchParcels();
+    if (!isMountedRef.current) {
+      isMountedRef.current = true;
+      fetchParcels(false); // Use cache if available
+    }
   }, []);
 
   const handleViewParcel = (parcel: Parcel) => {
@@ -41,9 +69,25 @@ export default function SenderDashboard() {
     setSelectedParcel(null);
   };
 
-  const fetchParcels = async () => {
+  const fetchParcels = async (force: boolean = false) => {
+    // Prevent concurrent fetches
+    if (fetchingRef.current) return;
+
     try {
-      console.log("🔍 Debugging parcel fetch...");
+      fetchingRef.current = true;
+
+      // Check cache first (unless force refresh)
+      if (!force) {
+        const cachedData = adminCache.get<Parcel[]>(CACHE_KEYS.SENDER_DASHBOARD);
+        if (cachedData) {
+          setParcels(cachedData);
+          setLoading(false);
+          fetchingRef.current = false;
+          return;
+        }
+      }
+
+      setLoading(true);
 
       // Try multiple endpoints to see which one gives all data
       let response;
@@ -52,32 +96,20 @@ export default function SenderDashboard() {
       // Method 1: Try with high limit parameter
       try {
         response = await api.get("/parcels/me?limit=10000");
-        console.log("✅ Method 1 (/parcels/me?limit=10000):", {
-          count: response.data.data?.length,
-          total: response.data.total,
-          pagination: response.data.pagination,
-        });
         if (response.data.data?.length > 10) {
           allParcels = response.data.data;
-          console.log("🎉 Found more than 10 parcels with limit=10000!");
         }
       } catch (err) {
-        console.log("❌ Method 1 failed:", err);
       }
 
       // Method 2: Try no-pagination with limit
       if (allParcels.length <= 10) {
         try {
           response = await api.get("/parcels/me/no-pagination?limit=10000");
-          console.log("✅ Method 2 (/parcels/me/no-pagination?limit=10000):", {
-            count: response.data.data?.length,
-            total: response.data.total,
-          });
           if (response.data.data?.length > allParcels.length) {
             allParcels = response.data.data;
           }
         } catch (err) {
-          console.log("❌ Method 2 failed:", err);
         }
       }
 
@@ -90,18 +122,10 @@ export default function SenderDashboard() {
             ...(page1.data.data || []),
             ...(page2.data.data || []),
           ];
-          console.log("✅ Method 3 (pagination):", {
-            page1Count: page1.data.data?.length || 0,
-            page2Count: page2.data.data?.length || 0,
-            totalCombined: combinedData.length,
-            page1Total: page1.data.total,
-            page2Total: page2.data.total,
-          });
           if (combinedData.length > allParcels.length) {
             allParcels = combinedData;
           }
         } catch (err) {
-          console.log("❌ Method 3 failed:", err);
         }
       }
 
@@ -110,25 +134,23 @@ export default function SenderDashboard() {
         try {
           response = await api.get("/parcels/me/no-pagination");
           allParcels = response.data.data || [];
-          console.log("⚠️ Fallback to original endpoint:", allParcels.length);
         } catch (err) {
-          console.log("❌ Fallback failed:", err);
         }
       }
 
-      console.log("📊 Final result:", {
-        parcelsCount: allParcels.length,
-        expectedCount: 23,
-        isComplete: allParcels.length >= 23,
-      });
+      
 
-      console.log("📦 All parcels:", allParcels);
+      
+      // Cache the results
+      adminCache.set(CACHE_KEYS.SENDER_DASHBOARD, allParcels);
+      
       setParcels(allParcels);
     } catch (error) {
       console.error("❌ Error fetching parcels:", error);
       toast.error("Failed to fetch parcels");
     } finally {
       setLoading(false);
+      fetchingRef.current = false;
     }
   };
 
@@ -141,6 +163,7 @@ export default function SenderDashboard() {
       ["dispatched", "in-transit"].includes(p.currentStatus)
     ).length,
     delivered: parcels.filter((p) => p.currentStatus === "delivered").length,
+    cancelled: parcels.filter((p) => p.currentStatus === "cancelled").length,
   };
 
   if (loading) {
@@ -171,9 +194,9 @@ export default function SenderDashboard() {
             </div>
           </div>
 
-          {/* Stats Cards - 2x2 Grid Layout */}
-          <div className="grid grid-cols-1 xs:grid-cols-2 gap-3 xs:gap-4 sm:gap-5 lg:gap-6">
-            {/* Row 1: Total Parcels */}
+          {/* Stats Cards - Responsive Grid Layout */}
+          <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-3 gap-3 xs:gap-4 sm:gap-5 lg:gap-6">
+            {/* Total Parcels */}
             <div className="bg-background rounded-lg sm:rounded-xl shadow-sm border border-border p-4 sm:p-5 lg:p-6 hover:shadow-xl hover:border-blue-300 dark:hover:border-blue-700 hover:scale-[1.03] transition-all duration-300 cursor-pointer group">
               <div className="flex items-center gap-3 sm:gap-4">
                 <div className="p-2 sm:p-2.5 lg:p-3 bg-blue-50 dark:bg-blue-950/20 rounded-lg sm:rounded-xl group-hover:bg-blue-100 dark:group-hover:bg-blue-900/30 transition-colors duration-300 flex-shrink-0">
@@ -193,7 +216,7 @@ export default function SenderDashboard() {
               </div>
             </div>
 
-            {/* Row 1: Pending */}
+            {/* Pending */}
             <div className="bg-background rounded-lg sm:rounded-xl shadow-sm border border-border p-4 sm:p-5 lg:p-6 hover:shadow-xl hover:border-yellow-300 dark:hover:border-yellow-700 hover:scale-[1.03] transition-all duration-300 cursor-pointer group">
               <div className="flex items-center gap-3 sm:gap-4">
                 <div className="p-2 sm:p-2.5 lg:p-3 bg-yellow-50 dark:bg-yellow-950/20 rounded-lg sm:rounded-xl group-hover:bg-yellow-100 dark:group-hover:bg-yellow-900/30 transition-colors duration-300 flex-shrink-0">
@@ -213,7 +236,7 @@ export default function SenderDashboard() {
               </div>
             </div>
 
-            {/* Row 2: In Transit */}
+            {/* In Transit */}
             <div className="bg-background rounded-lg sm:rounded-xl shadow-sm border border-border p-4 sm:p-5 lg:p-6 hover:shadow-xl hover:border-purple-300 dark:hover:border-purple-700 hover:scale-[1.03] transition-all duration-300 cursor-pointer group">
               <div className="flex items-center gap-3 sm:gap-4">
                 <div className="p-2 sm:p-2.5 lg:p-3 bg-purple-50 dark:bg-purple-950/20 rounded-lg sm:rounded-xl group-hover:bg-purple-100 dark:group-hover:bg-purple-900/30 transition-colors duration-300 flex-shrink-0">
@@ -233,7 +256,7 @@ export default function SenderDashboard() {
               </div>
             </div>
 
-            {/* Row 2: Delivered */}
+            {/* Delivered */}
             <div className="bg-background rounded-lg sm:rounded-xl shadow-sm border border-border p-4 sm:p-5 lg:p-6 hover:shadow-xl hover:border-green-300 dark:hover:border-green-700 hover:scale-[1.03] transition-all duration-300 cursor-pointer group">
               <div className="flex items-center gap-3 sm:gap-4">
                 <div className="p-2 sm:p-2.5 lg:p-3 bg-green-50 dark:bg-green-950/20 rounded-lg sm:rounded-xl group-hover:bg-green-100 dark:group-hover:bg-green-900/30 transition-colors duration-300 flex-shrink-0">
@@ -248,6 +271,26 @@ export default function SenderDashboard() {
                   </p>
                   <p className="text-[10px] xs:text-xs sm:text-sm text-green-600 dark:text-green-400 font-medium mt-1">
                     {stats.total > 0 ? Math.round((stats.delivered / stats.total) * 100) : 0}% success rate
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Cancelled */}
+            <div className="bg-background rounded-lg sm:rounded-xl shadow-sm border border-border p-4 sm:p-5 lg:p-6 hover:shadow-xl hover:border-red-300 dark:hover:border-red-700 hover:scale-[1.03] transition-all duration-300 cursor-pointer group">
+              <div className="flex items-center gap-3 sm:gap-4">
+                <div className="p-2 sm:p-2.5 lg:p-3 bg-red-50 dark:bg-red-950/20 rounded-lg sm:rounded-xl group-hover:bg-red-100 dark:group-hover:bg-red-900/30 transition-colors duration-300 flex-shrink-0">
+                  <XCircle className="h-5 w-5 sm:h-6 sm:w-6 lg:h-7 lg:w-7 text-red-600 group-hover:scale-110 transition-transform duration-300" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs xs:text-sm sm:text-base font-medium text-muted-foreground group-hover:text-red-600 transition-colors duration-300 mb-0.5 sm:mb-1">
+                    Cancelled
+                  </p>
+                  <p className="text-xl xs:text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground group-hover:text-red-600 transition-colors duration-300">
+                    {stats.cancelled}
+                  </p>
+                  <p className="text-[10px] xs:text-xs sm:text-sm text-red-600 dark:text-red-400 font-medium mt-1">
+                    {stats.cancelled} parcel{stats.cancelled !== 1 ? 's' : ''} cancelled
                   </p>
                 </div>
               </div>

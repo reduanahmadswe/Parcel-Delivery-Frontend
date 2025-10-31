@@ -49,21 +49,16 @@ export function LoginForm({
     },
   });
 
-
   const onSubmit = async (data: z.infer<typeof loginSchema>) => {
     try {
-      console.log("🚀 [LoginForm] Starting login process...");
       const result = await login(data.email, data.password);
       
-      console.log("🔍 [LoginForm] Login result:", result);
       
       if (result.success && result.user) {
-        console.log("✅ [LoginForm] Login successful for user:", result.user.email, "role:", result.user.role);
         toast.success(`Welcome back, ${result.user.name}!`);
         
         // ✅ CRITICAL FIX: Wait longer to ensure all state updates propagate
         // This gives time for: localStorage save, Redux update, persist, and event dispatch
-        console.log("⏳ [LoginForm] Waiting for state propagation...");
         await new Promise(resolve => setTimeout(resolve, 200));
         
         // Navigate using the returned user data
@@ -72,7 +67,6 @@ export function LoginForm({
                             : result.user.role === "receiver" ? "/receiver/dashboard"
                             : "/";
         
-        console.log("🧭 [LoginForm] Navigating to:", dashboardPath);
         navigate(dashboardPath, { replace: true });
       } else {
         console.error("❌ [LoginForm] Login failed:", result);
@@ -151,9 +145,9 @@ export function LoginForm({
       </div>
 
       {/* Enhanced Login Form Section */}
-      <div className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-3xl border border-border/30 p-8 shadow-2xl">
+      <div className="bg-white/70 dark:bg-background/70 backdrop-blur-sm rounded-3xl border border-border/30 p-8 shadow-2xl">
         <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-gradient-to-r from-red-500 to-orange-600 rounded-3xl flex items-center justify-center mx-auto mb-4 shadow-xl">
+          <div className="w-16 h-16 bg-gradient-to-r from-red-500 to-orange-600 dark:from-red-600 dark:to-red-700 rounded-3xl flex items-center justify-center mx-auto mb-4 shadow-xl">
             <Package className="w-8 h-8 text-white" />
           </div>
           <h2 className="text-2xl font-bold text-foreground mb-2">Sign In</h2>

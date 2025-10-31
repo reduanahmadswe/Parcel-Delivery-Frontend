@@ -6,11 +6,6 @@ export class ParcelDataTransformer {
    * Transform API parcel data to frontend Parcel format
    */
   static transformApiParcelToParcel(parcel: ApiParcel, index: number): Parcel {
-    console.log(
-      `Processing parcel ${index}:`,
-      JSON.stringify(parcel, null, 2)
-    );
-
     // Handle MongoDB _id field
     const parcelId = parcel.id || parcel._id || 0;
 
@@ -167,13 +162,7 @@ export class ParcelDataTransformer {
           : parcel.updatedAt?.$date || new Date().toISOString(),
     };
 
-    console.log(`📦 Processed parcel ${index}:`, {
-      originalTrackingId: parcel.trackingId,
-      finalTrackingNumber: processedParcel.trackingNumber,
-      senderName: processedParcel.senderName,
-      recipientName: processedParcel.recipientName,
-      status: processedParcel.status,
-    });
+    
 
     return processedParcel;
   }
@@ -259,5 +248,4 @@ export class ParcelDataTransformer {
     });
   }
 }
-
 

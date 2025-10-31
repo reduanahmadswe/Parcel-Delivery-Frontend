@@ -35,23 +35,57 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
+    // Avoid attempting to refresh if the failed request was the refresh endpoint itself
+    if (originalRequest?.url?.includes('/auth/refresh-token')) {
+      TokenManager.clearTokens();
+      if (typeof window !== 'undefined') {
+        window.location.href = '/login';
+      }
+      return Promise.reject(error);
+    }
+
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
       try {
-          const refreshResponse = await api.post('/auth/refresh-token');
+          const refreshToken = TokenManager.getRefreshToken();
 
-          // Update the access token if provided
+          // If we don't have a refresh token, clear and redirect
+          if (!refreshToken) {
+            TokenManager.clearTokens();
+            if (typeof window !== 'undefined') {
+              window.location.href = '/login';
+            }
+            return Promise.reject(error);
+          }
+
+          // Use the plain axios (not our instance) to call refresh so we don't trigger
+          // the same interceptors and create a loop. Send the refresh token in the body.
+          const refreshResponse = await axios.post(`${API_BASE_URL}/auth/refresh-token`, {
+            refreshToken,
+          });
+
+          // Update the access token (and refresh token if returned)
           if (refreshResponse.data?.accessToken) {
             TokenManager.setTokens(
               refreshResponse.data.accessToken,
-              TokenManager.getRefreshToken() || undefined
+              refreshResponse.data?.refreshToken || refreshToken
             );
+          } else {
+            // No access token returned: treat as failure
+            TokenManager.clearTokens();
+            if (typeof window !== 'undefined') {
+              window.location.href = '/login';
+            }
+            return Promise.reject(refreshResponse);
           }
 
+          // Set the Authorization header for the original request and retry
+          originalRequest.headers = originalRequest.headers || {};
+          originalRequest.headers.Authorization = `Bearer ${TokenManager.getAccessToken()}`;
           return api(originalRequest);
       } catch (refreshError: any) {
-        // Refresh failed, redirect to login
+        // Refresh failed, clear tokens and redirect to login
         TokenManager.clearTokens();
         if (typeof window !== 'undefined') {
           window.location.href = '/login';

@@ -150,6 +150,16 @@ export function BlockUserModal({
   ];
 
   const handleSubmit = () => {
+    // For unblocking, reason is optional
+    if (isBlocked) {
+      onConfirm("User unblocked by admin");
+      setReason("");
+      setCustomReason("");
+      onClose();
+      return;
+    }
+
+    // For blocking, reason is required
     const finalReason = reason === "custom" ? customReason : reason;
     if (finalReason.trim()) {
       onConfirm(finalReason);
@@ -292,7 +302,7 @@ export function BlockUserModal({
             <button
               onClick={handleSubmit}
               disabled={
-                !isBlocked &&
+                !isBlocked && // Only check reason when blocking, not unblocking
                 (!reason || (reason === "custom" && !customReason.trim()))
               }
               className={`px-6 py-2 rounded-lg font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${
@@ -1237,5 +1247,4 @@ export function UserManagementHeader({
     </div>
   );
 }
-
 

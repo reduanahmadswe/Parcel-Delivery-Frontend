@@ -1,5 +1,6 @@
 import ProtectedRoute from "@/components/common/ProtectedRoute";
 import api from "../../services/ApiConfiguration";
+import { useCreateParcelMutation } from "../../features/parcels/parcelsApi";
 import { ArrowLeft, Calculator, Package } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
@@ -55,6 +56,9 @@ export default function CreateParcelPage() {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [createdParcel, setCreatedParcel] = useState<any | null>(null);
+
+  // RTK Query mutation for creating parcels (ensures cache invalidation)
+  const [createParcel, { isLoading: isCreating }] = useCreateParcelMutation();
 
   // Bangladesh data states for cascading dropdowns
   const [availableCities] = useState(getCitiesList());
@@ -238,16 +242,14 @@ export default function CreateParcelPage() {
     try {
       const response = await api.get(`/auth/check-email?email=${encodeURIComponent(email)}`);
       
-      console.log('Email verification response:', response.data); // Debug log
       
-      // Check different possible response formats
-      const emailExists = response.data?.exists || 
-                         response.data?.data?.exists || 
-                         response.data?.success;
+      // Check different possible response formats - fixed to check data.exists first
+      const emailExists = response.data?.data?.exists ?? response.data?.exists ?? false;
+      
       
       if (!emailExists) {
-        toast.error("⚠️ Email not exist in database", {
-          duration: 4000,
+        toast.error("⚠️ Email not exist in database. Receiver must register first!", {
+          duration: 5000,
           position: "top-center",
           style: {
             background: '#FEE2E2',
@@ -257,10 +259,11 @@ export default function CreateParcelPage() {
         });
         setErrors(prev => ({
           ...prev,
-          "receiverInfo.email": "Email not exist"
+          "receiverInfo.email": "Email not exist - Receiver must register first"
         }));
         return false;
       } else {
+        // Email exists, clear any previous errors
         setErrors(prev => {
           const newErrors = { ...prev };
           delete newErrors["receiverInfo.email"];
@@ -405,16 +408,15 @@ export default function CreateParcelPage() {
     try {
       // Convert string values to numbers and format according to backend API
       const payload = {
+        receiverName: formData.receiverInfo.name,
         receiverEmail: formData.receiverInfo.email,
-        receiverInfo: {
-          phone: formData.receiverInfo.phone,
-          address: {
-            street: formData.receiverInfo.address.street,
-            city: formData.receiverInfo.address.city,
-            state: formData.receiverInfo.address.state,
-            zipCode: formData.receiverInfo.address.zipCode,
-            country: formData.receiverInfo.address.country || "Bangladesh",
-          },
+        receiverPhone: formData.receiverInfo.phone,
+        receiverAddress: {
+          street: formData.receiverInfo.address.street,
+          city: formData.receiverInfo.address.city,
+          state: formData.receiverInfo.address.state,
+          zipCode: formData.receiverInfo.address.zipCode,
+          country: formData.receiverInfo.address.country || "Bangladesh",
         },
         parcelDetails: {
           type: formData.parcelDetails.type,
@@ -437,15 +439,24 @@ export default function CreateParcelPage() {
             formData.deliveryInfo.deliveryInstructions || "",
           isUrgent: formData.deliveryInfo.isUrgent || false,
         },
-      };
+      } as any;
 
-      const response = await api.post("/parcels", payload);
-      const parcel = response.data.data;
+  // Use RTK Query mutation so cache invalidation & optimistic updates happen
+  const response = await createParcel(payload).unwrap();
+      const parcel = response.data;
 
       toast.success("📦 Parcel created successfully!");
-      
+
       // Show success modal with all details
       setCreatedParcel(parcel);
+
+      // Dispatch a legacy cache invalidation event for any components using adminCache
+      try {
+        const ev = new CustomEvent('cache-invalidated', { detail: { key: 'MY_LIST', timestamp: Date.now() } });
+        window.dispatchEvent(ev);
+      } catch (err) {
+        // ignore
+      }
     } catch (error: unknown) {
       const apiError = error as {
         response?: {
@@ -463,6 +474,9 @@ export default function CreateParcelPage() {
           status?: number;
         };
       };
+
+      console.error("❌ API Error Response:", apiError.response?.data);
+      console.error("❌ Full Error:", error);
 
       let errorMessage = "Failed to create parcel";
 
@@ -590,6 +604,18 @@ export default function CreateParcelPage() {
                     <label className="block text-xs sm:text-sm font-semibold text-muted-foreground">
                       Email Address *
                     </label>
+                    
+                    {/* Info Alert */}
+                    <div className="mb-3 p-3 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 rounded-lg">
+                      <p className="text-xs text-blue-700 dark:text-blue-300 flex items-start gap-2">
+                        <span className="text-sm">ℹ️</span>
+                        <span>
+                          <strong>Important:</strong> The receiver must be registered in the system. 
+                          If email doesn't exist, ask the receiver to create an account first.
+                        </span>
+                      </p>
+                    </div>
+                    
                     <input
                       type="email"
                       name="receiverInfo.email"

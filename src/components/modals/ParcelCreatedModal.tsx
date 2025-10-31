@@ -16,7 +16,6 @@ export default function ParcelCreatedModal({ parcel, onClose }: Props) {
   if (!parcel) return null;
 
   // Debug: Log parcel structure to console
-  console.log("📦 Parcel data in modal:", parcel);
 
   const trackingId = parcel.trackingId || parcel.id || "-";
   

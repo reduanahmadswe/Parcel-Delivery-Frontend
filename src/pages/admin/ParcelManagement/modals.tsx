@@ -458,5 +458,3 @@ export function StatusUpdateModal({
   );
 }
 
-
-

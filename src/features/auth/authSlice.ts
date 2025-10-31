@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { User } from '../../types'
+import { clearAllCache } from '../../utils/adminCache'
 
 export interface AuthState {
     user: User | null
@@ -45,6 +46,9 @@ const authSlice = createSlice({
             state.isAuthenticated = false
             state.loading = false
             state.error = null
+            
+            // Clear all cached data on logout
+            clearAllCache();
         },
         clearError: (state) => {
             state.error = null

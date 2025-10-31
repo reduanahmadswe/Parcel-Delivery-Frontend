@@ -64,8 +64,6 @@ export class ParcelApiService {
             // Don't include deliveryInfo to avoid preferredDeliveryDate validation issues
         };
 
-
-
         await api.patch(`/parcels/${parcelId}/status`, requestBody);
     }
 
@@ -125,6 +123,18 @@ export class ParcelApiService {
      */
     static async deleteParcel(parcelId: string | number): Promise<void> {
         await api.delete(`/parcels/${parcelId}`);
+    }
+
+    /**
+     * Cancel a parcel (only before dispatch)
+     */
+    static async cancelParcel(
+        parcelId: string | number,
+        reason: string
+    ): Promise<void> {
+        await api.patch(`/parcels/cancel/${parcelId}`, {
+            reason: reason,
+        });
     }
 
     /**

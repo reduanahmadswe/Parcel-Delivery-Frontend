@@ -3,14 +3,17 @@
 
 import api from "../../../services/ApiConfiguration";
 import { AxiosError } from "axios";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import { ApiUser, User, UserForm, UserStats, UserUpdateForm } from "./types";
+import { adminCache, CACHE_KEYS, invalidateRelatedCaches } from "../../../utils/adminCache";
 
 // Hook for managing user data and operations
 export function useUserManagement() {
     const [users, setUsers] = useState<User[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [actionLoading, setActionLoading] = useState(false);
+    const isMountedRef = useRef(false);
+    const fetchingRef = useRef(false);
 
     // Transform API user to internal User format
     const transformApiUser = (apiUser: ApiUser): User => {
@@ -42,9 +45,25 @@ export function useUserManagement() {
         };
     };
 
-    // Fetch users from API
-    const fetchUsers = useCallback(async () => {
+    // Fetch users from API with caching
+    const fetchUsers = useCallback(async (force: boolean = false) => {
+        // Prevent concurrent fetches
+        if (fetchingRef.current) return;
+
         try {
+            fetchingRef.current = true;
+
+            // Check cache first (unless force refresh)
+            if (!force) {
+                const cachedUsers = adminCache.get<User[]>(CACHE_KEYS.USERS);
+                if (cachedUsers) {
+                    setUsers(cachedUsers);
+                    setLoading(false);
+                    fetchingRef.current = false;
+                    return;
+                }
+            }
+
             setLoading(true);
 
             const response = await api.get("/users");
@@ -57,13 +76,25 @@ export function useUserManagement() {
                 .filter((user: ApiUser) => user && user.email)
                 .map(transformApiUser);
 
+            // Cache the results
+            adminCache.set(CACHE_KEYS.USERS, transformedUsers);
+
             setUsers(transformedUsers);
         } catch (error) {
             setUsers([]);
         } finally {
             setLoading(false);
+            fetchingRef.current = false;
         }
     }, []);
+
+    // Only fetch on mount, not on every render
+    useEffect(() => {
+        if (!isMountedRef.current) {
+            isMountedRef.current = true;
+            fetchUsers(false); // Use cache if available
+        }
+    }, [fetchUsers]);
 
     // Create new user
     const createUser = useCallback(async (formData: Partial<User>) => {
@@ -87,7 +118,9 @@ export function useUserManagement() {
 
             const response = await api.post("/users", userFormData);
 
-            await fetchUsers();
+            // Invalidate cache and refresh
+            adminCache.invalidate(CACHE_KEYS.USERS);
+            await fetchUsers(true);
             return { success: true, data: response.data };
         } catch (error) {
             return { success: false, error: error as Error };
@@ -117,7 +150,9 @@ export function useUserManagement() {
 
             await api.put(`/users/${userId}`, updateData);
 
-            await fetchUsers();
+            // Invalidate cache and refresh
+            invalidateRelatedCaches('user', String(userId));
+            await fetchUsers(true);
             return { success: true };
         } catch (error) {
             return { success: false, error: error as Error };
@@ -133,7 +168,9 @@ export function useUserManagement() {
 
             await api.delete(`/users/${userId}`);
 
-            await fetchUsers();
+            // Invalidate cache and refresh
+            invalidateRelatedCaches('user', String(userId));
+            await fetchUsers(true);
             return { success: true };
         } catch (error) {
             return { success: false, error: error as Error };
@@ -162,7 +199,9 @@ export function useUserManagement() {
 
             await api.patch(`/users/${userId}/block-status`, payload);
 
-            await fetchUsers();
+            // Invalidate cache and refresh
+            invalidateRelatedCaches('user', String(userId));
+            await fetchUsers(true);
             return { success: true };
         } catch (error) {
             return { success: false, error: error as Error };
@@ -173,12 +212,7 @@ export function useUserManagement() {
 
     // Refresh users
     const refreshUsers = useCallback(async () => {
-        await fetchUsers();
-    }, [fetchUsers]);
-
-    // Initial fetch
-    useEffect(() => {
-        fetchUsers();
+        await fetchUsers(true); // Force refresh
     }, [fetchUsers]);
 
     return {
@@ -192,5 +226,4 @@ export function useUserManagement() {
         refreshUsers,
     };
 }
-
 

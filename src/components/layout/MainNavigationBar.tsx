@@ -51,7 +51,6 @@ export default function Navigation() {
   // ✅ Update from Redux store when it changes
   useEffect(() => {
     if (userFromStore) {
-      console.log("📊 [Navigation] Redux user updated:", userFromStore.email, "role:", userFromStore.role);
       setUser(userFromStore);
     } else if (!userFromStore) {
       // Redux user is null/undefined - check localStorage before clearing
@@ -62,11 +61,9 @@ export default function Navigation() {
         
         if (cachedUser && hasToken) {
           const parsed = JSON.parse(cachedUser);
-          console.log("🔄 [Navigation] Restoring user from localStorage:", parsed.email, "role:", parsed.role);
           setUser(parsed);
         } else if (!hasToken) {
           // No token means truly logged out
-          console.log("🚪 [Navigation] No token, clearing user");
           setUser(null);
         }
       } catch (error) {
@@ -80,7 +77,6 @@ export default function Navigation() {
     const handleUserLogin = (event: CustomEvent) => {
       const userData = event.detail?.user;
       if (userData) {
-        console.log("📢 [Navigation] Received userLoggedIn event, role:", userData.role);
         setUser(userData);
       }
     };
@@ -99,7 +95,6 @@ export default function Navigation() {
           const cachedUser = localStorage.getItem('userData');
           if (cachedUser) {
             const parsed = JSON.parse(cachedUser);
-            console.log("🔄 [Navigation] Loaded user from localStorage:", parsed.email, "role:", parsed.role);
             setUser(parsed);
           }
         } catch (error) {
@@ -114,13 +109,23 @@ export default function Navigation() {
   const location = useLocation();
   const navigate = useNavigate();
 
-
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [notifications] = useState(3); // Example notification count
+  const [currentHash, setCurrentHash] = useState(window.location.hash);
   const userMenuRef = useRef<HTMLDivElement>(null);
   const notificationsRef = useRef<HTMLDivElement>(null);
+
+  // Track hash changes for active state updates
+  useEffect(() => {
+    const handleHashChange = () => {
+      setCurrentHash(window.location.hash);
+    };
+    
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
 
   // Sample notifications data
   const notificationsList = [
@@ -180,14 +185,26 @@ export default function Navigation() {
 
   // Helper function to check if navigation item is active
   const isActive = (href: string) => {
-    // Hash links shouldn't be considered active by pathname
-    if (href.startsWith("#")) return false;
+    // Hash links - check if we're on home page AND hash matches
+    if (href.startsWith("#")) {
+      const isOnHomePage = location.pathname === "/";
+      const currentHash = window.location.hash || location.hash;
+      return isOnHomePage && currentHash === href;
+    }
 
-    // Exact match
-    if (location.pathname === href) return true;
+    // Exact match for home - only when no hash present
+    if (href === "/") {
+      const currentHash = window.location.hash || location.hash;
+      return location.pathname === "/" && !currentHash;
+    }
+
+    // Track page - exact match
+    if (href === "/track") {
+      return location.pathname === "/track";
+    }
 
     // Avoid marking parent prefixes active for sender/receiver base routes
-    const exactOnly = ["/", "/admin", "/sender", "/receiver"];
+    const exactOnly = ["/admin", "/sender", "/receiver"];
     if (exactOnly.includes(href)) return location.pathname === href;
 
     // Otherwise consider a startsWith match (so /sender/parcels and /sender/parcels/123 match)
@@ -233,9 +250,28 @@ export default function Navigation() {
 
   const handleNavClick = (href: string) => {
     if (href.startsWith("#")) {
-      const element = document.getElementById(href.slice(1));
-      if (element) {
-        element.scrollIntoView({ behavior: "smooth" });
+      // Navigate to home page first if not already there
+      if (location.pathname !== "/") {
+        navigate("/");
+        // Wait for navigation then scroll and set hash
+        setTimeout(() => {
+          const element = document.getElementById(href.slice(1));
+          if (element) {
+            element.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+          // Set hash properly
+          window.location.hash = href;
+          setCurrentHash(href);
+        }, 100);
+      } else {
+        // Already on home page, just scroll and set hash
+        const element = document.getElementById(href.slice(1));
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+        // Set hash properly
+        window.location.hash = href;
+        setCurrentHash(href);
       }
     }
     // Close all menus after navigation

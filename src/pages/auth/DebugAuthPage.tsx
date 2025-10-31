@@ -25,7 +25,6 @@ export function DebugAuthPage() {
     };
     
     setDebugInfo(info);
-    console.log('🔍 Auth Debug Info:', info);
   };
 
   const testLogin = async () => {
@@ -36,12 +35,10 @@ export function DebugAuthPage() {
         password: 'Admin123!'
       });
       
-      console.log('📥 Login Response:', response.data);
       
       if (response.data?.data?.accessToken) {
         const { accessToken, refreshToken, user } = response.data.data;
         
-        console.log('💾 Storing tokens...');
         // Store tokens
         TokenManager.setTokens(accessToken, refreshToken);
         
@@ -50,15 +47,10 @@ export function DebugAuthPage() {
         
         // Verify storage
         const storedToken = TokenManager.getAccessToken();
-        console.log('🔍 Verification - Token retrieved:', storedToken ? `${storedToken.substring(0, 30)}...` : '❌ NOT FOUND');
         
         const result = storedToken ? '✅ Login Success & Token Stored!' : '❌ Login Success but Token NOT Stored!';
         setTestResult(result);
         checkAuthStatus();
-        
-        if (storedToken) {
-          console.log('✅ You can now click "📡 Test Auth Request" to verify token is sent');
-        }
       } else {
         setTestResult('❌ No token in response');
         console.error('❌ Response structure:', response.data);
@@ -73,7 +65,6 @@ export function DebugAuthPage() {
     try {
       setTestResult('Testing authenticated request...');
       const response = await api.get('/auth/me');
-      console.log('📥 /auth/me Response:', response.data);
       setTestResult(`✅ Authenticated request successful: ${response.data.data?.email}`);
     } catch (error: any) {
       console.error('❌ Auth Request Error:', error);

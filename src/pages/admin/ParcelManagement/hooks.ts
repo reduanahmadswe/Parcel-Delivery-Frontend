@@ -1,8 +1,9 @@
 // Custom hooks for Parcel Management
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import { ParcelApiService } from "../../../services/parcelApiService";
 import { ParcelDataTransformer } from "./dataTransformer";
 import { FilterParams, NotificationState, Parcel, StatusLogEntry } from "../../../services/parcelTypes";
+import { adminCache, CACHE_KEYS, invalidateRelatedCaches } from "../../../utils/adminCache";
 
 export function useNotification() {
     const [notification, setNotification] = useState<NotificationState | null>(null);
@@ -28,44 +29,58 @@ export function useNotification() {
 
 export function useParcels(filterParams: FilterParams) {
     const [parcels, setParcels] = useState<Parcel[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
+    const isMountedRef = useRef(false);
+    const fetchingRef = useRef(false);
 
-    const fetchParcels = useCallback(async () => {
+    const fetchParcels = useCallback(async (force: boolean = false) => {
+        // Prevent concurrent fetches
+        if (fetchingRef.current) return;
+
         try {
+            fetchingRef.current = true;
+
+            // Check cache first (unless force refresh)
+            if (!force) {
+                const cachedParcels = adminCache.get<Parcel[]>(CACHE_KEYS.PARCELS);
+                if (cachedParcels) {
+                    setParcels(cachedParcels);
+                    setLoading(false);
+                    fetchingRef.current = false;
+                    return;
+                }
+            }
+
             setLoading(true);
-            console.log("Fetching parcels from API...");
 
             const apiParcels = await ParcelApiService.fetchParcels(filterParams);
            
-            // Debug: Show first parcel raw structure
-            if (apiParcels && apiParcels.length > 0) {
-                console.log(
-                    "🔍 First raw parcel from API:",
-                    JSON.stringify(apiParcels[0], null, 2)
-                );
-                
-            }
-
             // Transform API data to frontend format
             const validParcels = ParcelDataTransformer.transformApiParcelsToFrontend(apiParcels);
 
-        
+            // Cache the results
+            adminCache.set(CACHE_KEYS.PARCELS, validParcels);
+
             setParcels(validParcels);
         } catch (error) {
-          
             if (error instanceof Error) {
                 console.error("Error message:", error.message);
             }
             // Set empty array on error
             setParcels([]);
-            throw error; // Re-throw to allow caller to handle the error
+            throw error;
         } finally {
             setLoading(false);
+            fetchingRef.current = false;
         }
     }, [filterParams]);
 
+    // Only fetch on mount, not on every render
     useEffect(() => {
-        fetchParcels();
+        if (!isMountedRef.current) {
+            isMountedRef.current = true;
+            fetchParcels(false); // Use cache if available
+        }
     }, [fetchParcels]);
 
     return {
@@ -86,6 +101,8 @@ export function useParcelActions() {
         setActionLoading(true);
         try {
             await ParcelApiService.updateParcelStatus(parcelId, status);
+            // Invalidate cache after status update
+            invalidateRelatedCaches('parcel', String(parcelId));
         } finally {
             setActionLoading(false);
         }
@@ -98,6 +115,8 @@ export function useParcelActions() {
         setActionLoading(true);
         try {
             await ParcelApiService.flagParcel(parcelId, isFlagged);
+            // Invalidate cache after flagging
+            invalidateRelatedCaches('parcel', String(parcelId));
         } finally {
             setActionLoading(false);
         }
@@ -110,6 +129,8 @@ export function useParcelActions() {
         setActionLoading(true);
         try {
             await ParcelApiService.holdParcel(parcelId, isOnHold);
+            // Invalidate cache after hold status change
+            invalidateRelatedCaches('parcel', String(parcelId));
         } finally {
             setActionLoading(false);
         }
@@ -119,6 +140,8 @@ export function useParcelActions() {
         setActionLoading(true);
         try {
             await ParcelApiService.returnParcel(parcelId);
+            // Invalidate cache after return
+            invalidateRelatedCaches('parcel', String(parcelId));
         } finally {
             setActionLoading(false);
         }
@@ -131,6 +154,8 @@ export function useParcelActions() {
         setActionLoading(true);
         try {
             await ParcelApiService.assignPersonnel(parcelId, deliveryPersonnel);
+            // Invalidate cache after assignment
+            invalidateRelatedCaches('parcel', String(parcelId));
         } finally {
             setActionLoading(false);
         }
@@ -140,6 +165,8 @@ export function useParcelActions() {
         setActionLoading(true);
         try {
             await ParcelApiService.deleteParcel(parcelId);
+            // Invalidate cache after deletion
+            invalidateRelatedCaches('parcel', String(parcelId));
         } finally {
             setActionLoading(false);
         }
@@ -174,5 +201,4 @@ export function useStatusLog() {
         fetchStatusLog,
     };
 }
-
 

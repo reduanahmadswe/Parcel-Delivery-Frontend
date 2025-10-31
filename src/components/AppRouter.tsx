@@ -9,17 +9,11 @@ export const AppRouter: React.FC = () => {
   
   // 🔍 Debug: Log route changes
   useEffect(() => {
-    console.log("🛣️ [AppRouter] Route changed to:", location.pathname);
-    console.log("📦 [AppRouter] Location state:", location.state);
-    console.log("🔗 [AppRouter] Search params:", location.search);
-    console.log("# [AppRouter] Hash:", location.hash);
   }, [location]);
 
   // Filter routes based on feature flags
   const filteredRoutes = routes.filter((route: RouteConfig) => shouldIncludeRoute(route.path));
   
-  console.log("📋 [AppRouter] Total routes:", filteredRoutes.length);
-  console.log("🎯 [AppRouter] Current pathname:", location.pathname);
 
   return (
     <Routes>

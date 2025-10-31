@@ -15,29 +15,53 @@ export const parcelsApi = baseApi.injectEndpoints({
                 url: '/parcels',
                 params,
             }),
-            providesTags: ['Parcel'],
+            providesTags: (result) => 
+                result?.data
+                    ? [
+                        ...result.data.map(({ _id }) => ({ type: 'Parcel' as const, id: _id })),
+                        { type: 'Parcel', id: 'LIST' },
+                    ]
+                    : [{ type: 'Parcel', id: 'LIST' }],
+            // Keep cache for 5 minutes
+            keepUnusedDataFor: 300,
         }),
         getParcelById: builder.query<ApiResponse<Parcel>, string>({
             query: (id) => `/parcels/${id}`,
             providesTags: (result, error, id) => [{ type: 'Parcel', id }],
+            keepUnusedDataFor: 300,
         }),
         getParcelByTrackingId: builder.query<ApiResponse<Parcel>, string>({
             query: (trackingId) => `/parcels/track/${trackingId}`,
             providesTags: (result, error, trackingId) => [{ type: 'Parcel', id: trackingId }],
+            keepUnusedDataFor: 300,
         }),
         getMyParcels: builder.query<PaginatedResponse<Parcel>, ParcelFilters & { page?: number; limit?: number }>({
             query: (params = {}) => ({
                 url: '/parcels/me',
                 params,
             }),
-            providesTags: ['Parcel'],
+            providesTags: (result) => 
+                result?.data
+                    ? [
+                        ...result.data.map(({ _id }) => ({ type: 'Parcel' as const, id: _id })),
+                        { type: 'Parcel', id: 'MY_LIST' },
+                    ]
+                    : [{ type: 'Parcel', id: 'MY_LIST' }],
+            keepUnusedDataFor: 300,
         }),
         getUserParcels: builder.query<PaginatedResponse<Parcel>, { userId: string; page?: number; limit?: number }>({
             query: ({ userId, ...params }) => ({
                 url: `/parcels/user/${userId}`,
                 params,
             }),
-            providesTags: (result, error, { userId }) => [{ type: 'Parcel', id: `user-${userId}` }],
+            providesTags: (result, error, { userId }) => 
+                result?.data
+                    ? [
+                        ...result.data.map(({ _id }) => ({ type: 'Parcel' as const, id: _id })),
+                        { type: 'Parcel', id: `USER_${userId}` },
+                    ]
+                    : [{ type: 'Parcel', id: `USER_${userId}` }],
+            keepUnusedDataFor: 300,
         }),
         createParcel: builder.mutation<ApiResponse<Parcel>, CreateParcelData>({
             query: (parcelData) => ({
@@ -45,7 +69,60 @@ export const parcelsApi = baseApi.injectEndpoints({
                 method: 'POST',
                 body: parcelData,
             }),
-            invalidatesTags: ['Parcel'],
+            // Invalidate all parcel lists to refetch
+            invalidatesTags: [
+                { type: 'Parcel', id: 'LIST' },
+                { type: 'Parcel', id: 'MY_LIST' },
+                'Dashboard',
+                'Stats',
+            ],
+            // Optimistic update - instantly show the new parcel
+            async onQueryStarted(parcelData, { dispatch, queryFulfilled }) {
+                const tempId = `temp-${Date.now()}`;
+                const optimisticParcel: Parcel = {
+                    _id: tempId,
+                    trackingId: `PENDING-${Date.now()}`,
+                    senderId: 'current-user',
+                    senderInfo: {
+                        name: '',
+                        email: '',
+                        phone: '',
+                        address: parcelData.receiverAddress,
+                    },
+                    receiverInfo: {
+                        name: parcelData.receiverName,
+                        email: parcelData.receiverEmail,
+                        phone: parcelData.receiverPhone,
+                        address: parcelData.receiverAddress,
+                    },
+                    parcelDetails: parcelData.parcelDetails,
+                    deliveryInfo: parcelData.deliveryInfo,
+                    status: 'pending',
+                    statusHistory: [],
+                    paymentInfo: {
+                        amount: 0,
+                        status: 'pending',
+                    },
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString(),
+                };
+
+                // Optimistically add to "My Parcels" list
+                const patchResult = dispatch(
+                    parcelsApi.util.updateQueryData('getMyParcels', {}, (draft) => {
+                        if (draft.data) {
+                            draft.data.unshift(optimisticParcel);
+                        }
+                    })
+                );
+
+                try {
+                    await queryFulfilled;
+                } catch {
+                    // Revert optimistic update on error
+                    patchResult.undo();
+                }
+            },
         }),
         updateParcel: builder.mutation<ApiResponse<Parcel>, { id: string; data: Partial<Parcel> }>({
             query: ({ id, data }) => ({
@@ -53,7 +130,34 @@ export const parcelsApi = baseApi.injectEndpoints({
                 method: 'PATCH',
                 body: data,
             }),
-            invalidatesTags: (result, error, { id }) => [{ type: 'Parcel', id }],
+            invalidatesTags: (result, error, { id }) => [
+                { type: 'Parcel', id },
+                { type: 'Parcel', id: 'LIST' },
+                { type: 'Parcel', id: 'MY_LIST' },
+                'Dashboard',
+                'Stats',
+            ],
+            // Optimistic update
+            async onQueryStarted({ id, data }, { dispatch, queryFulfilled }) {
+                // Update individual parcel cache
+                const patchResult = dispatch(
+                    parcelsApi.util.updateQueryData('getParcelById', id, (draft) => {
+                        Object.assign(draft.data, data);
+                    })
+                );
+
+                try {
+                    const { data: result } = await queryFulfilled;
+                    // Update with actual server data
+                    dispatch(
+                        parcelsApi.util.updateQueryData('getParcelById', id, (draft) => {
+                            Object.assign(draft, result);
+                        })
+                    );
+                } catch {
+                    patchResult.undo();
+                }
+            },
         }),
         updateParcelStatus: builder.mutation<ApiResponse<Parcel>, { id: string; status: Parcel['status']; note?: string }>({
             query: ({ id, status, note }) => ({
@@ -61,18 +165,93 @@ export const parcelsApi = baseApi.injectEndpoints({
                 method: 'PATCH',
                 body: { status, note },
             }),
-            invalidatesTags: (result, error, { id }) => [{ type: 'Parcel', id }],
+            invalidatesTags: (result, error, { id }) => [
+                { type: 'Parcel', id },
+                { type: 'Parcel', id: 'LIST' },
+                { type: 'Parcel', id: 'MY_LIST' },
+                'Dashboard',
+                'Stats',
+            ],
+            // Optimistic update
+            async onQueryStarted({ id, status, note }, { dispatch, queryFulfilled }) {
+                const patchResult = dispatch(
+                    parcelsApi.util.updateQueryData('getParcelById', id, (draft) => {
+                        if (draft.data) {
+                            (draft.data as any).status = status;
+                            if (note && draft.data.statusHistory) {
+                                (draft.data.statusHistory as any[]).push({
+                                    status,
+                                    timestamp: new Date().toISOString(),
+                                    note,
+                                });
+                            }
+                        }
+                    })
+                );
+
+                try {
+                    await queryFulfilled;
+                } catch {
+                    patchResult.undo();
+                }
+            },
         }),
         deleteParcel: builder.mutation<ApiResponse<void>, string>({
             query: (id) => ({
                 url: `/parcels/${id}`,
                 method: 'DELETE',
             }),
-            invalidatesTags: (result, error, id) => [{ type: 'Parcel', id }],
+            invalidatesTags: (result, error, id) => [
+                { type: 'Parcel', id },
+                { type: 'Parcel', id: 'LIST' },
+                { type: 'Parcel', id: 'MY_LIST' },
+                'Dashboard',
+                'Stats',
+            ],
+            // Optimistic delete
+            async onQueryStarted(id, { dispatch, queryFulfilled }) {
+                const patchResults = [
+                    dispatch(
+                        parcelsApi.util.updateQueryData('getMyParcels', {}, (draft) => {
+                            if (draft.data) {
+                                draft.data = draft.data.filter(p => p._id !== id);
+                            }
+                        })
+                    ),
+                    dispatch(
+                        parcelsApi.util.updateQueryData('getParcels', {}, (draft) => {
+                            if (draft.data) {
+                                draft.data = draft.data.filter(p => p._id !== id);
+                            }
+                        })
+                    ),
+                ];
+
+                try {
+                    await queryFulfilled;
+                } catch {
+                    patchResults.forEach(patch => patch.undo());
+                }
+            },
+        }),
+        cancelParcel: builder.mutation<ApiResponse<Parcel>, { id: string; reason: string }>({
+            query: ({ id, reason }) => ({
+                url: `/parcels/cancel/${id}`,
+                method: 'PATCH',
+                body: { reason },
+            }),
+            invalidatesTags: (result, error, { id }) => [
+                { type: 'Parcel', id },
+                { type: 'Parcel', id: 'LIST' },
+                { type: 'Parcel', id: 'MY_LIST' },
+                'Dashboard',
+                'Stats',
+            ],
         }),
         getDashboardStats: builder.query<ApiResponse<DashboardStats>, void>({
             query: () => '/parcels/stats/dashboard',
-            providesTags: ['Parcel'],
+            providesTags: ['Dashboard', 'Stats'],
+            keepUnusedDataFor: 60, // Stats stay cached for 1 minute only
         }),
     }),
 })
@@ -87,6 +266,7 @@ export const {
     useUpdateParcelMutation,
     useUpdateParcelStatusMutation,
     useDeleteParcelMutation,
+    useCancelParcelMutation,
     useGetDashboardStatsQuery,
 } = parcelsApi
 

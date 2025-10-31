@@ -108,11 +108,16 @@ const baseQueryWithReauth: BaseQueryFn<
     return result;
 };
 
-// Create API slice
+// Create API slice with advanced caching
 export const apiSlice = createApi({
     reducerPath: 'api',
     baseQuery: baseQueryWithReauth,
-    tagTypes: ['Auth', 'User', 'Parcel', 'Admin'],
+    tagTypes: ['Auth', 'User', 'Parcel', 'Admin', 'Dashboard', 'Stats'],
+    // Advanced caching configuration
+    keepUnusedDataFor: 300, // Keep unused cache for 5 minutes (300 seconds)
+    refetchOnMountOrArgChange: 30, // Refetch if data is older than 30 seconds
+    refetchOnReconnect: true, // Refetch when reconnecting to internet
+    refetchOnFocus: false, // Don't refetch on window focus to avoid constant reloading
     endpoints: () => ({}),
 });
 

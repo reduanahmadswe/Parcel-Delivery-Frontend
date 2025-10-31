@@ -14,12 +14,10 @@ import { LoginForm } from "../../components/forms/LoginForm";
 
 const LoginPage: React.FC = () => {
   useEffect(() => {
-    console.log("🔐 [LoginPage] Login page mounted");
-    console.log("📍 [LoginPage] Current URL:", window.location.href);
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-blue-950 dark:to-indigo-950">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-background dark:via-background dark:to-muted">
       <div className="min-h-screen grid lg:grid-cols-2">
         {/* Left Panel - Hero Section */}
         <div className="hidden lg:flex flex-col relative overflow-hidden">
@@ -128,7 +126,7 @@ const LoginPage: React.FC = () => {
         </div>
 
         {/* Right Panel - Login Form */}
-        <div className="flex flex-col relative bg-white dark:bg-slate-900">
+        <div className="flex flex-col relative bg-white dark:bg-background">
           {/* Subtle Background Pattern */}
           <div className="absolute inset-0 opacity-5">
             <div
@@ -145,11 +143,11 @@ const LoginPage: React.FC = () => {
               to="/"
               className="inline-flex items-center gap-3 text-muted-foreground hover:text-foreground transition-all duration-300 group"
             >
-              <div className="p-3 rounded-2xl bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-950/50 dark:to-orange-950/50 group-hover:from-red-100 group-hover:to-orange-100 dark:group-hover:from-red-900/70 dark:group-hover:to-orange-900/70 transition-colors duration-300">
-                <ArrowLeft className="w-5 h-5 text-red-600 group-hover:-translate-x-1 transition-transform duration-300" />
+              <div className="p-3 rounded-2xl bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-950/30 dark:to-orange-950/30 group-hover:from-red-100 group-hover:to-orange-100 dark:group-hover:from-red-900/50 dark:group-hover:to-orange-900/50 transition-colors duration-300">
+                <ArrowLeft className="w-5 h-5 text-red-600 dark:text-red-400 group-hover:-translate-x-1 transition-transform duration-300" />
               </div>
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-gradient-to-r from-red-500 to-orange-600 rounded-2xl flex items-center justify-center shadow-xl">
+                <div className="w-12 h-12 bg-gradient-to-r from-red-500 to-orange-600 dark:from-red-600 dark:to-red-700 rounded-2xl flex items-center justify-center shadow-xl">
                   <Package className="w-7 h-7 text-white" />
                 </div>
                 <div>
@@ -184,8 +182,8 @@ const LoginPage: React.FC = () => {
           <div className="relative z-10 p-6 lg:p-8 border-t border-border/40">
             <div className="grid grid-cols-3 gap-4 mb-6">
               <div className="text-center">
-                <div className="w-12 h-12 bg-gradient-to-r from-green-100 to-emerald-100 dark:from-green-950/50 dark:to-emerald-950/50 rounded-2xl flex items-center justify-center mx-auto mb-2">
-                  <Shield className="w-6 h-6 text-green-600" />
+                <div className="w-12 h-12 bg-gradient-to-r from-green-100 to-emerald-100 dark:from-green-950/30 dark:to-emerald-950/30 rounded-2xl flex items-center justify-center mx-auto mb-2">
+                  <Shield className="w-6 h-6 text-green-600 dark:text-green-400" />
                 </div>
                 <p className="text-xs font-semibold text-foreground">
                   SSL Secured
@@ -195,8 +193,8 @@ const LoginPage: React.FC = () => {
                 </p>
               </div>
               <div className="text-center">
-                <div className="w-12 h-12 bg-gradient-to-r from-blue-100 to-cyan-100 dark:from-blue-950/50 dark:to-cyan-950/50 rounded-2xl flex items-center justify-center mx-auto mb-2">
-                  <Clock className="w-6 h-6 text-blue-600" />
+                <div className="w-12 h-12 bg-gradient-to-r from-blue-100 to-cyan-100 dark:from-blue-950/30 dark:to-cyan-950/30 rounded-2xl flex items-center justify-center mx-auto mb-2">
+                  <Clock className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                 </div>
                 <p className="text-xs font-semibold text-foreground">
                   24/7 Support
@@ -206,8 +204,8 @@ const LoginPage: React.FC = () => {
                 </p>
               </div>
               <div className="text-center">
-                <div className="w-12 h-12 bg-gradient-to-r from-yellow-100 to-orange-100 dark:from-yellow-950/50 dark:to-orange-950/50 rounded-2xl flex items-center justify-center mx-auto mb-2">
-                  <Star className="w-6 h-6 text-yellow-600" />
+                <div className="w-12 h-12 bg-gradient-to-r from-yellow-100 to-orange-100 dark:from-yellow-950/30 dark:to-orange-950/30 rounded-2xl flex items-center justify-center mx-auto mb-2">
+                  <Star className="w-6 h-6 text-yellow-600 dark:text-yellow-400" />
                 </div>
                 <p className="text-xs font-semibold text-foreground">
                   Trusted Platform

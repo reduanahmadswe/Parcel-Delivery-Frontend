@@ -76,11 +76,9 @@ export function ReduxAuthProvider({ children }: { children: ReactNode }) {
   // ✅ Update local state when Redux state changes
   useEffect(() => {
     if (userFromRedux) {
-      console.log("📊 [ReduxAuthContext] Redux user changed:", userFromRedux.email, "role:", userFromRedux.role);
       setUser(userFromRedux);
     } else if (!userFromRedux && !TokenManager.getAccessToken()) {
       // No Redux user and no token means logged out
-      console.log("🚪 [ReduxAuthContext] No user and no token, clearing local state");
       setUser(null);
     } else if (!userFromRedux && TokenManager.getAccessToken()) {
       // We have token but no Redux user - try localStorage fallback
@@ -89,7 +87,6 @@ export function ReduxAuthProvider({ children }: { children: ReactNode }) {
         const cached = localStorage.getItem('userData');
         if (cached) {
           const cachedUser = JSON.parse(cached);
-          console.log("🔄 [ReduxAuthContext] Restoring user from localStorage:", cachedUser.email);
           setUser(cachedUser);
           // Also update Redux to prevent this from happening again
           const token = TokenManager.getAccessToken();
@@ -127,7 +124,6 @@ export function ReduxAuthProvider({ children }: { children: ReactNode }) {
   // Initialize auth state on mount - only run once on app startup
   useEffect(() => {
     const initializeAuth = () => {
-      console.log("🔧 [ReduxAuthContext] Initializing auth...");
       
       // Try to restore authentication from stored tokens and cached user
       const token = TokenManager.getAccessToken();
@@ -137,7 +133,6 @@ export function ReduxAuthProvider({ children }: { children: ReactNode }) {
       if (token && cachedUserStr) {
         try {
           const cachedUser = JSON.parse(cachedUserStr);
-          console.log("🔑 [ReduxAuthContext] Found stored auth, restoring user:", cachedUser.email, "role:", cachedUser.role);
           
           // Restore auth state immediately for better UX
           dispatch(
@@ -151,7 +146,6 @@ export function ReduxAuthProvider({ children }: { children: ReactNode }) {
           // Also set local state
           setUser(cachedUser);
           
-          console.log("✅ [ReduxAuthContext] Auth restored from storage");
         } catch (error) {
           console.error("❌ [ReduxAuthContext] Failed to parse cached user, clearing auth");
           // If cached user is invalid, clear it
@@ -161,7 +155,6 @@ export function ReduxAuthProvider({ children }: { children: ReactNode }) {
           setUser(null);
         }
       } else {
-        console.log("ℹ️ [ReduxAuthContext] No stored auth found, ensuring clean state");
         // Only clear if we truly have nothing
         if (!token && !cachedUserStr) {
           dispatch(logoutAction());
@@ -177,7 +170,6 @@ export function ReduxAuthProvider({ children }: { children: ReactNode }) {
     if (!AuthStateManager.isInitialized()) {
       initializeAuth();
     } else {
-      console.log("⏭️ [ReduxAuthContext] Already initialized, skipping");
     }
   }, [dispatch]); // Keep minimal dependencies
 
@@ -241,13 +233,11 @@ export function ReduxAuthProvider({ children }: { children: ReactNode }) {
       if (result && result.success && result.data) {
         const { user: userData, accessToken, refreshToken } = result.data;
         
-        console.log("🔐 [ReduxAuthContext] Login successful, saving data for user:", userData.email, "role:", userData.role);
         
         // ✅ STEP 1: Save everything to storage FIRST
         TokenManager.setTokens(accessToken, refreshToken);
         localStorage.setItem("userData", JSON.stringify(userData));
         
-        console.log("💾 [ReduxAuthContext] Saved to localStorage:", userData.role);
 
         // ✅ STEP 2: Dispatch to Redux with flushSync for immediate update
         try {
@@ -260,7 +250,6 @@ export function ReduxAuthProvider({ children }: { children: ReactNode }) {
               })
             );
           });
-          console.log("✅ [ReduxAuthContext] Redux state updated with flushSync");
         } catch (err) {
           dispatch(
             loginSuccess({
@@ -269,7 +258,6 @@ export function ReduxAuthProvider({ children }: { children: ReactNode }) {
               refreshToken: refreshToken,
             })
           );
-          console.log("✅ [ReduxAuthContext] Redux state updated (fallback)");
         }
 
         // ✅ STEP 3: Dispatch custom event to notify all components immediately
@@ -278,7 +266,6 @@ export function ReduxAuthProvider({ children }: { children: ReactNode }) {
             detail: { user: userData, token: accessToken } 
           });
           window.dispatchEvent(loginEvent);
-          console.log("📢 [ReduxAuthContext] Dispatched userLoggedIn event");
         }
 
         // ✅ STEP 4: Wait for Redux persist to complete
@@ -288,7 +275,6 @@ export function ReduxAuthProvider({ children }: { children: ReactNode }) {
         AuthStateManager.markSessionActive();
 
         toast.success("Login successful");
-        console.log("🎉 [ReduxAuthContext] Login process complete");
         return { success: true, user: userData };
       }
 
@@ -341,7 +327,6 @@ export function ReduxAuthProvider({ children }: { children: ReactNode }) {
     } catch (error) {
       // Logout error - ignore
     } finally {
-      console.log("🚪 [ReduxAuthContext] Logging out...");
       
       // Clear local state first
       setUser(null);

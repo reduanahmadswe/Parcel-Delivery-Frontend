@@ -21,19 +21,16 @@ export default function ProtectedRoute({
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log("🛡️ ProtectedRoute - Auth state:", { user: user?.email, role: user?.role, loading, allowedRoles });
     
     // Only perform access checks after auth persistence initialization to avoid
     // redirecting while other auth persistence logic is still restoring state.
     if (!loading && AuthStateManager.isInitialized()) {
       if (!user) {
-        console.log("🚫 No user, redirecting to:", redirectTo);
         navigate(redirectTo, { replace: true });
         return;
       }
 
       if (allowedRoles.length > 0 && !allowedRoles.includes(user.role)) {
-        console.log("🔄 Role mismatch. User role:", user.role, "Allowed:", allowedRoles);
         // Redirect based on user role
         let roleDashboard = "/";
         switch (user.role) {
@@ -49,12 +46,10 @@ export default function ProtectedRoute({
           default:
             roleDashboard = "/";
         }
-        console.log("🎯 Redirecting to role dashboard:", roleDashboard);
         navigate(roleDashboard, { replace: true });
         return;
       }
       
-      console.log("✅ Access granted for user:", user.email, "Role:", user.role);
     }
   }, [user, loading, allowedRoles, redirectTo, navigate]);
 

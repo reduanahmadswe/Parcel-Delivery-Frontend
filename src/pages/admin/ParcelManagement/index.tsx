@@ -87,24 +87,33 @@ export default function ParcelManagement() {
   const handleUpdateStatus = async () => {
     if (!selectedParcel || !newStatus) return;
 
+    // 1️⃣ INSTANT UI Update (Optimistic)
+    const updatedParcels = parcels.map((parcel) =>
+      parcel.id === selectedParcel.id
+        ? { ...parcel, status: newStatus as Parcel["status"] }
+        : parcel
+    );
+    setParcels(updatedParcels);
+    
+    // Close modal immediately for better UX
+    setShowStatusModal(false);
+    const previousParcel = selectedParcel;
+    setSelectedParcel(null);
+    setNewStatus("");
+
     try {
-      await updateStatus(selectedParcel.id, newStatus);
+      // 2️⃣ API Call in background
+      await updateStatus(previousParcel.id, newStatus);
 
-      // Update local state optimistically
-      const updatedParcels = parcels.map((parcel) =>
-        parcel.id === selectedParcel.id
-          ? { ...parcel, status: newStatus as Parcel["status"] }
-          : parcel
-      );
-      setParcels(updatedParcels);
-
-      await fetchParcels();
-      setShowStatusModal(false);
-      setSelectedParcel(null);
-      setNewStatus("");
-
+      // 3️⃣ Fetch fresh data and invalidate all related caches
+      await fetchParcels(true);
+      
+      // 4️⃣ Success notification
       showNotification("success", "Parcel status updated successfully!");
     } catch (error: any) {
+      // 5️⃣ Rollback on error
+      setParcels(parcels);
+      
       let errorMessage = "Failed to update parcel status. Please try again.";
       if (error.response?.status === 400) {
         errorMessage =
@@ -123,24 +132,48 @@ export default function ParcelManagement() {
   };
 
   const handleFlagParcel = async (parcel: Parcel) => {
+    const newFlaggedState = !parcel.isFlagged;
+    
+    // 1️⃣ Instant UI update
+    const updatedParcels = parcels.map((p) =>
+      p.id === parcel.id ? { ...p, isFlagged: newFlaggedState } : p
+    );
+    setParcels(updatedParcels);
+    
     try {
-      const newFlaggedState = !parcel.isFlagged;
+      // 2️⃣ API call
       await flagParcel(parcel.id, newFlaggedState);
-      await fetchParcels();
+      
+      // 3️⃣ Refresh and invalidate cache
+      await fetchParcels(true);
+      
       showNotification(
         "success",
         `Parcel ${newFlaggedState ? "flagged" : "unflagged"} successfully!`
       );
     } catch (error) {
+      // Rollback on error
+      setParcels(parcels);
       showNotification("error", "Failed to flag parcel. Please try again.");
     }
   };
 
   const handleHoldParcel = async (parcel: Parcel) => {
+    const newHoldState = !parcel.isOnHold;
+    
+    // 1️⃣ Instant UI update
+    const updatedParcels = parcels.map((p) =>
+      p.id === parcel.id ? { ...p, isOnHold: newHoldState } : p
+    );
+    setParcels(updatedParcels);
+    
     try {
-      const newHoldState = !parcel.isOnHold;
+      // 2️⃣ API call
       await holdParcel(parcel.id, newHoldState);
-      await fetchParcels();
+      
+      // 3️⃣ Refresh and invalidate cache
+      await fetchParcels(true);
+      
       showNotification(
         "success",
         `Parcel ${
@@ -148,6 +181,8 @@ export default function ParcelManagement() {
         } successfully!`
       );
     } catch (error) {
+      // Rollback on error
+      setParcels(parcels);
       showNotification(
         "error",
         "Failed to update parcel hold status. Please try again."
@@ -156,11 +191,23 @@ export default function ParcelManagement() {
   };
 
   const handleReturnParcel = async (parcel: Parcel) => {
+    // 1️⃣ Instant UI update - change status to 'returned'
+    const updatedParcels = parcels.map((p) =>
+      p.id === parcel.id ? { ...p, status: 'returned' as Parcel["status"] } : p
+    );
+    setParcels(updatedParcels);
+    
     try {
+      // 2️⃣ API call
       await returnParcel(parcel.id);
-      await fetchParcels();
+      
+      // 3️⃣ Refresh and invalidate cache
+      await fetchParcels(true);
+      
       showNotification("success", "Parcel returned successfully!");
     } catch (error) {
+      // Rollback on error
+      setParcels(parcels);
       showNotification("error", "Failed to return parcel. Please try again.");
     }
   };
@@ -168,18 +215,27 @@ export default function ParcelManagement() {
   const handleDeleteParcel = async () => {
     if (!selectedParcel) return;
 
+    // 1️⃣ Instant UI update - remove from list
+    const updatedParcels = parcels.filter((p) => p.id !== selectedParcel.id);
+    setParcels(updatedParcels);
+    setShowConfirmDialog(false);
+    const deletedParcelId = selectedParcel.id;
+    setSelectedParcel(null);
+    
     try {
-      await deleteParcel(selectedParcel.id);
-      await fetchParcels();
-      setShowConfirmDialog(false);
-      setSelectedParcel(null);
+      // 2️⃣ API call
+      await deleteParcel(deletedParcelId);
+      
+      // 3️⃣ Refresh and invalidate cache
+      await fetchParcels(true);
+      
       showNotification("success", "Parcel deleted successfully!");
     } catch (error) {
+      // Rollback on error - re-add the parcel
+      await fetchParcels(true);
       showNotification("error", "Failed to delete parcel. Please try again.");
     }
   };
-
-
 
   const openDetailsModal = (parcel: Parcel) => {
     setSelectedParcel(parcel);
@@ -729,5 +785,4 @@ export default function ParcelManagement() {
     </AdminLayout>
   );
 }
-
 

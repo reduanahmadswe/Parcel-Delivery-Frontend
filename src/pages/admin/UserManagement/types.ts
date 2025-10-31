@@ -117,4 +117,3 @@ export type UserStatus = "active" | "blocked" | "pending";
 // Action types for user operations
 export type UserAction = "create" | "update" | "delete" | "toggleStatus" | "view";
 
-

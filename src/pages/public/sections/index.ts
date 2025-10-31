@@ -9,4 +9,3 @@ export { default as PartnersSection } from "./PartnersSection";
 export { default as ContactSection } from "./ContactSection";
 export { default as PricingPlansSection } from "./PricingPlansSection";
 
-

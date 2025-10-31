@@ -8,17 +8,20 @@ import {
   Plus,
   Search,
   X,
+  XCircle,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import ProtectedRoute from "../../components/common/ProtectedRoute";
+import ConfirmDialog from "../../components/modals/ConfirmDialog";
 import { useAuth } from "../../hooks/useAuth";
 import api from "../../services/ApiConfiguration";
 import { formatDate, getStatusColor } from "../../utils/HelperUtilities";
 import { Parcel } from "../../types/GlobalTypeDefinitions";
 import FooterSection from "../public/sections/FooterSection";
 import ParcelDetailsModal from "../../components/modals/ParcelDetailsModal";
+import { adminCache, CACHE_KEYS, invalidateRelatedCaches } from "../../utils/adminCache";
 
 interface ApiError {
   response?: {
@@ -40,14 +43,21 @@ interface PaginationInfo {
 export default function SenderParcelsPage() {
   const { user } = useAuth();
   const [parcels, setParcels] = useState<Parcel[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [filterStatus, setFilterStatus] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
+  const fetchingRef = useRef(false);
 
   // Modal states
   const [selectedParcel, setSelectedParcel] = useState<Parcel | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // Cancel dialog states
+  const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
+  const [parcelToCancel, setParcelToCancel] = useState<Parcel | null>(null);
+  const [cancelReason, setCancelReason] = useState("");
+  const [isCancelling, setIsCancelling] = useState(false);
 
   // Search enhancement states
   const [showSearchSuggestions, setShowSearchSuggestions] = useState(false);
@@ -64,6 +74,28 @@ export default function SenderParcelsPage() {
     hasPrevPage: false,
   });
   const [itemsPerPage] = useState(5); // You can make this configurable
+
+  // Listen for cache invalidation events
+  useEffect(() => {
+    const handleCacheInvalidation = (event: Event) => {
+      const customEvent = event as CustomEvent<{ key: string; timestamp: number }>;
+      const { key } = customEvent.detail;
+      
+      
+      // If sender parcels cache is invalidated, refetch current page
+      if (key.includes('sender:parcels:') || key === 'SENDER_DASHBOARD') {
+        fetchParcels(currentPage, true);
+      }
+    };
+
+    // Add event listener
+    window.addEventListener('cache-invalidated', handleCacheInvalidation);
+
+    // Cleanup
+    return () => {
+      window.removeEventListener('cache-invalidated', handleCacheInvalidation);
+    };
+  }, [currentPage]);
 
   useEffect(() => {
     fetchParcels(currentPage);
@@ -99,8 +131,29 @@ export default function SenderParcelsPage() {
     }
   }, [filterStatus, debouncedSearchTerm]);
 
-  const fetchParcels = async (page: number = 1) => {
+  const fetchParcels = async (page: number = 1, force: boolean = false) => {
+    // Prevent concurrent fetches
+    if (fetchingRef.current) return;
+
     try {
+      fetchingRef.current = true;
+
+      // Create cache key based on page and filters
+      const filterKey = `${filterStatus || 'all'}-${debouncedSearchTerm || 'all'}`;
+      const cacheKey = CACHE_KEYS.SENDER_PARCELS(page, filterKey);
+
+      // Check cache first (unless force refresh)
+      if (!force) {
+        const cachedData = adminCache.get<{ parcels: Parcel[]; pagination: PaginationInfo }>(cacheKey);
+        if (cachedData) {
+          setParcels(cachedData.parcels);
+          setPagination(cachedData.pagination);
+          setLoading(false);
+          fetchingRef.current = false;
+          return;
+        }
+      }
+
       setLoading(true);
 
       // Build query parameters
@@ -124,10 +177,11 @@ export default function SenderParcelsPage() {
       const paginationData =
         response.data.pagination || response.data.meta || {};
 
-      setParcels(Array.isArray(data) ? data : []);
+      const parcelsData = Array.isArray(data) ? data : [];
+      setParcels(parcelsData);
 
       // Update pagination info
-      setPagination({
+      const paginationInfo = {
         currentPage: paginationData.currentPage || paginationData.page || page,
         totalPages:
           paginationData.totalPages ||
@@ -140,11 +194,16 @@ export default function SenderParcelsPage() {
         hasNextPage:
           paginationData.hasNextPage || page < (paginationData.totalPages || 1),
         hasPrevPage: paginationData.hasPrevPage || page > 1,
-      });
+      };
+      setPagination(paginationInfo);
+
+      // Cache the results
+      adminCache.set(cacheKey, { parcels: parcelsData, pagination: paginationInfo });
     } catch (error) {
       toast.error("Failed to fetch parcels");
     } finally {
       setLoading(false);
+      fetchingRef.current = false;
     }
   };
 
@@ -175,6 +234,60 @@ export default function SenderParcelsPage() {
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setSelectedParcel(null);
+  };
+
+  // Cancel handlers
+  const handleCancelClick = (parcel: Parcel) => {
+    setParcelToCancel(parcel);
+    setCancelReason("");
+    setIsCancelDialogOpen(true);
+  };
+
+  const handleCancelConfirm = async () => {
+    if (!parcelToCancel || !cancelReason.trim()) {
+      toast.error("Please provide a reason for cancellation");
+      return;
+    }
+
+    try {
+      setIsCancelling(true);
+      await api.patch(`/parcels/cancel/${parcelToCancel._id}`, {
+        reason: cancelReason.trim(),
+      });
+      
+      toast.success("Parcel cancelled successfully");
+      setIsCancelDialogOpen(false);
+      setParcelToCancel(null);
+      setCancelReason("");
+      
+      // Invalidate sender caches
+      invalidateRelatedCaches('sender-parcel');
+      
+      // Refresh the parcels list
+      fetchParcels(currentPage, true); // Force refresh
+    } catch (error: unknown) {
+      const apiError = error as ApiError;
+      const errorMessage = 
+        apiError.response?.data?.message || 
+        "Failed to cancel parcel. It may have already been dispatched.";
+      toast.error(errorMessage);
+    } finally {
+      setIsCancelling(false);
+    }
+  };
+
+  const handleCancelDialogClose = () => {
+    if (!isCancelling) {
+      setIsCancelDialogOpen(false);
+      setParcelToCancel(null);
+      setCancelReason("");
+    }
+  };
+
+  // Check if parcel can be cancelled (only before dispatch)
+  const canCancelParcel = (parcel: Parcel) => {
+    const cancellableStatuses = ["requested", "approved"];
+    return cancellableStatuses.includes(parcel.currentStatus.toLowerCase());
   };
 
   // Save search term to recent searches
@@ -591,6 +704,15 @@ export default function SenderParcelsPage() {
                               >
                                 <Calendar className="h-3 w-3 lg:h-4 lg:w-4" />
                               </Link>
+                              {canCancelParcel(parcel) && (
+                                <button
+                                  onClick={() => handleCancelClick(parcel)}
+                                  className="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 transition-colors duration-200 p-1 rounded hover:bg-red-50 dark:hover:bg-red-900/20"
+                                  title="Cancel parcel"
+                                >
+                                  <XCircle className="h-3 w-3 lg:h-4 lg:w-4" />
+                                </button>
+                              )}
                             </div>
                           </td>
                         </tr>
@@ -648,6 +770,15 @@ export default function SenderParcelsPage() {
                             >
                               <Calendar className="h-4 w-4" />
                             </Link>
+                            {canCancelParcel(parcel) && (
+                              <button
+                                onClick={() => handleCancelClick(parcel)}
+                                className="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 transition-colors duration-200 p-1.5 rounded hover:bg-red-50 dark:hover:bg-red-900/20"
+                                title="Cancel parcel"
+                              >
+                                <XCircle className="h-4 w-4" />
+                              </button>
+                            )}
                           </div>
                         </div>
                         <div className="space-y-2">
@@ -815,8 +946,70 @@ export default function SenderParcelsPage() {
         onClose={handleCloseModal}
         parcel={selectedParcel}
       />
+
+      {/* Cancel Confirmation Dialog */}
+      {isCancelDialogOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
+          <div className="bg-background rounded-lg shadow-xl max-w-md w-full p-6">
+            <h3 className="text-lg font-semibold text-foreground mb-2">
+              Cancel Parcel
+            </h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              Are you sure you want to cancel this parcel? This action cannot be undone.
+            </p>
+            
+            {parcelToCancel && (
+              <div className="bg-muted/30 rounded-lg p-3 mb-4">
+                <p className="text-xs text-muted-foreground mb-1">Tracking ID</p>
+                <p className="text-sm font-medium text-foreground">{parcelToCancel.trackingId}</p>
+                <p className="text-xs text-muted-foreground mt-2 mb-1">Receiver</p>
+                <p className="text-sm text-foreground">{parcelToCancel.receiverInfo.name}</p>
+              </div>
+            )}
+
+            <div className="mb-4">
+              <label htmlFor="cancelReason" className="block text-sm font-medium text-foreground mb-2">
+                Reason for cancellation <span className="text-red-500">*</span>
+              </label>
+              <textarea
+                id="cancelReason"
+                value={cancelReason}
+                onChange={(e) => setCancelReason(e.target.value)}
+                placeholder="Please provide a reason for cancelling this parcel..."
+                disabled={isCancelling}
+                className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent bg-background text-foreground placeholder:text-muted-foreground text-sm resize-none disabled:opacity-50 disabled:cursor-not-allowed"
+                rows={3}
+                required
+              />
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={handleCancelDialogClose}
+                disabled={isCancelling}
+                className="flex-1 px-4 py-2 border border-border rounded-lg text-sm font-medium text-foreground hover:bg-muted/50 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                No, Keep It
+              </button>
+              <button
+                onClick={handleCancelConfirm}
+                disabled={isCancelling || !cancelReason.trim()}
+                className="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+              >
+                {isCancelling ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                    Cancelling...
+                  </>
+                ) : (
+                  "Yes, Cancel Parcel"
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </ProtectedRoute>
   );
 }
-
 

@@ -37,4 +37,3 @@ export default function AdminHeader({ onRefresh }: Props) {
   );
 }
 
-
