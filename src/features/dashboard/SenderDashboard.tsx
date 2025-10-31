@@ -1,18 +1,16 @@
 "use client";
 
 import { BarChart3, Calendar, Eye, Package, Plus, RefreshCw, Truck, XCircle } from "lucide-react";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import ProtectedRoute from "../../components/common/ProtectedRoute";
 import { useAuth } from "../../hooks/useAuth";
-import api from "../../services/ApiConfiguration";
 import { getStatusColor } from "../../utils/HelperUtilities";
 import { Parcel } from "../../types/GlobalTypeDefinitions";
 import FooterSection from "../../pages/public/sections/FooterSection";
 import ParcelDetailsModal from "../../components/modals/ParcelDetailsModal";
-import { adminCache, CACHE_KEYS } from "../../utils/adminCache";
-import { useRealtimeSync, SENDER_CACHE_KEYS } from "../../utils/realtimeSync";
+import { useGetSenderParcelsQuery } from "../../store/api/senderApi";
 
 interface ApiError {
   response?: {
@@ -24,32 +22,23 @@ interface ApiError {
 
 export default function SenderDashboard() {
   const { user } = useAuth();
-  const [parcels, setParcels] = useState<Parcel[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [initialLoading, setInitialLoading] = useState(true);
-  const [isBackgroundRefresh, setIsBackgroundRefresh] = useState(false);
   const [selectedParcel, setSelectedParcel] = useState<Parcel | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const isMountedRef = useRef(false);
-  const fetchingRef = useRef(false);
 
-  // Real-time sync - automatically refresh data silently in background
-  useRealtimeSync({
-    onRefresh: (force) => fetchParcels(force || false, true), // true = silent background refresh
-    pollingInterval: 30000, // 30 seconds
-    cacheKeys: [
-      SENDER_CACHE_KEYS.DASHBOARD,
-      SENDER_CACHE_KEYS.PARCELS,
-      SENDER_CACHE_KEYS.MY_LIST,
-    ],
+  // RTK Query hook with optimized caching - don't auto-refetch, use cached data
+  const { 
+    data: parcels = [], 
+    isLoading, 
+    isFetching,
+    refetch 
+  } = useGetSenderParcelsQuery(undefined, {
+    // Don't refetch when window regains focus - use cached data
+    refetchOnFocus: false,
+    // Don't refetch on mount if data exists - use cached data
+    refetchOnMountOrArgChange: false,
+    // Refetch when network reconnects
+    refetchOnReconnect: true,
   });
-
-  useEffect(() => {
-    if (!isMountedRef.current) {
-      isMountedRef.current = true;
-      fetchParcels(false, false); // false = show initial loading
-    }
-  }, []);
 
   const handleViewParcel = (parcel: Parcel) => {
     setSelectedParcel(parcel);
@@ -61,102 +50,7 @@ export default function SenderDashboard() {
     setSelectedParcel(null);
   };
 
-  const fetchParcels = async (force: boolean = false, silent: boolean = false) => {
-    // Prevent concurrent fetches
-    if (fetchingRef.current) return;
-
-    try {
-      fetchingRef.current = true;
-
-      // Check cache first (unless force refresh)
-      if (!force) {
-        const cachedData = adminCache.get<Parcel[]>(CACHE_KEYS.SENDER_DASHBOARD);
-        if (cachedData) {
-          setParcels(cachedData);
-          setLoading(false);
-          setInitialLoading(false);
-          fetchingRef.current = false;
-          return;
-        }
-      }
-
-      // Only show loading for initial load or manual refresh
-      if (!silent) {
-        setLoading(true);
-      } else {
-        setIsBackgroundRefresh(true);
-      }
-
-      // Try multiple endpoints to see which one gives all data
-      let response;
-      let allParcels = [];
-
-      // Method 1: Try with high limit parameter
-      try {
-        response = await api.get("/parcels/me?limit=10000");
-        if (response.data.data?.length > 10) {
-          allParcels = response.data.data;
-        }
-      } catch (err) {
-      }
-
-      // Method 2: Try no-pagination with limit
-      if (allParcels.length <= 10) {
-        try {
-          response = await api.get("/parcels/me/no-pagination?limit=10000");
-          if (response.data.data?.length > allParcels.length) {
-            allParcels = response.data.data;
-          }
-        } catch (err) {
-        }
-      }
-
-      // Method 3: Try pagination with multiple pages
-      if (allParcels.length <= 10) {
-        try {
-          const page1 = await api.get("/parcels/me?page=1&limit=10000");
-          const page2 = await api.get("/parcels/me?page=2&limit=10000");
-          const combinedData = [
-            ...(page1.data.data || []),
-            ...(page2.data.data || []),
-          ];
-          if (combinedData.length > allParcels.length) {
-            allParcels = combinedData;
-          }
-        } catch (err) {
-        }
-      }
-
-      // Method 4: Fallback to original endpoint
-      if (allParcels.length === 0) {
-        try {
-          response = await api.get("/parcels/me/no-pagination");
-          allParcels = response.data.data || [];
-        } catch (err) {
-        }
-      }
-
-      
-
-      
-      // Cache the results
-      adminCache.set(CACHE_KEYS.SENDER_DASHBOARD, allParcels);
-      
-      setParcels(allParcels);
-    } catch (error) {
-      console.error("❌ Error fetching parcels:", error);
-      // Only show error toast for non-silent refresh
-      if (!silent) {
-        toast.error("Failed to fetch parcels");
-      }
-    } finally {
-      setLoading(false);
-      setInitialLoading(false);
-      setIsBackgroundRefresh(false);
-      fetchingRef.current = false;
-    }
-  };
-
+  // Calculate statistics from cached parcels data
   const stats = {
     total: parcels.length,
     pending: parcels.filter((p) =>
@@ -169,7 +63,8 @@ export default function SenderDashboard() {
     cancelled: parcels.filter((p) => p.currentStatus === "cancelled").length,
   };
 
-  if (loading && initialLoading) {
+  // Show loading only on initial load when no cached data
+  if (isLoading && parcels.length === 0) {
     return (
       <ProtectedRoute allowedRoles={["sender"]}>
         <div className="min-h-screen bg-background flex items-center justify-center">
@@ -195,12 +90,12 @@ export default function SenderDashboard() {
                 </p>
               </div>
               <button
-                onClick={() => fetchParcels(true, false)}
-                disabled={loading && !isBackgroundRefresh}
+                onClick={() => refetch()}
+                disabled={isFetching}
                 className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white rounded-lg transition-all duration-200 disabled:cursor-not-allowed"
                 title="Refresh data"
               >
-                <RefreshCw className={`h-4 w-4 ${(loading && !isBackgroundRefresh) ? 'animate-spin' : ''}`} />
+                <RefreshCw className={`h-4 w-4 ${isFetching ? 'animate-spin' : ''}`} />
                 <span className="text-sm font-medium">Refresh</span>
               </button>
             </div>
