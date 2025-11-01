@@ -11,17 +11,12 @@ export default function DarkLightThemeSwitcher() {
     setMounted(true);
   }, []);
 
-  if (!mounted) {
-    return (
-      <div className="p-2 w-9 h-9 rounded-xl bg-accent/30 border border-border/50">
-        <div className="w-5 h-5 bg-muted-foreground/20 rounded animate-pulse" />
-      </div>
-    );
-  }
-
   const toggleTheme = () => {
     setTheme(theme === "light" ? "dark" : "light");
   };
+
+  // Determine current theme state (including when not mounted or theme is null)
+  const isDark = theme === "dark" || (!mounted && typeof document !== "undefined" && document.documentElement.classList.contains("dark"));
 
   return (
     <button
@@ -32,14 +27,14 @@ export default function DarkLightThemeSwitcher() {
       <div className="relative w-5 h-5">
         <Sun
           className={`absolute inset-0 w-5 h-5 text-muted-foreground group-hover:text-foreground transition-all duration-300 group-hover:scale-110 ${
-            theme === "light"
+            !isDark
               ? "rotate-0 scale-100 opacity-100"
               : "rotate-90 scale-0 opacity-0"
           }`}
         />
         <Moon
           className={`absolute inset-0 w-5 h-5 text-muted-foreground group-hover:text-foreground transition-all duration-300 group-hover:scale-110 ${
-            theme === "dark"
+            isDark
               ? "rotate-0 scale-100 opacity-100"
               : "-rotate-90 scale-0 opacity-0"
           }`}
