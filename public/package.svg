@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <!-- Background Circle -->
+  <circle cx="100" cy="100" r="95" fill="#DC2626" opacity="0.95"/>
+  
+  <!-- Package Box Base -->
+  <g transform="translate(100, 100)">
+    <!-- Back face -->
+    <path d="M -35 -15 L -35 35 L 0 50 L 0 0 Z" fill="#B91C1C" opacity="0.9"/>
+    
+    <!-- Right face -->
+    <path d="M 0 0 L 0 50 L 35 35 L 35 -15 Z" fill="#991B1B" opacity="0.95"/>
+    
+    <!-- Top face -->
+    <path d="M -35 -15 L 0 -30 L 35 -15 L 0 0 Z" fill="#EF4444"/>
+    
+    <!-- Tape horizontal -->
+    <rect x="-35" y="5" width="70" height="8" fill="#FEF3C7" opacity="0.9"/>
+    
+    <!-- Tape vertical on front -->
+    <path d="M -10 -15 L -6 -13 L -6 35 L -10 37 Z" fill="#FEF3C7" opacity="0.85"/>
+    
+    <!-- Tape vertical on side -->
+    <path d="M 6 -13 L 10 -15 L 10 37 L 6 35 Z" fill="#FDE68A" opacity="0.9"/>
+    
+    <!-- Delivery symbol on top -->
+    <g transform="translate(0, -22)">
+      <!-- Speed lines -->
+      <path d="M -8 0 L 8 0" stroke="#FFF" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M -6 -5 L 6 -5" stroke="#FFF" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M -4 5 L 4 5" stroke="#FFF" stroke-width="2.5" stroke-linecap="round"/>
+    </g>
+    
+    <!-- Shadow -->
+    <ellipse cx="0" cy="55" rx="40" ry="8" fill="#000" opacity="0.2"/>
+  </g>
+  
+  <!-- Shine effect -->
+  <circle cx="70" cy="70" r="15" fill="#FFF" opacity="0.15"/>
+  <circle cx="75" cy="75" r="8" fill="#FFF" opacity="0.1"/>
+</svg>

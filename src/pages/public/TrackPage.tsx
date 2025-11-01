@@ -102,8 +102,8 @@ export default function TrackPage() {
       <div className="min-h-screen bg-background mt-10">
         <div className="max-w-7xl mx-auto pt-2 px-3 sm:px-4 lg:px-6 space-y-4 sm:space-y-6 pb-16 sm:pb-24">
           {}
-          <div className="relative overflow-hidden bg-gradient-to-br from-blue-600/10 via-purple-600/5 to-green-600/10 dark:from-blue-900/20 dark:via-purple-900/10 dark:to-green-900/20 rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 border border-border/50 shadow-lg">
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-purple-500/5 dark:from-blue-400/10 dark:to-purple-400/10"></div>
+          <div className="relative overflow-hidden bg-gradient-to-br from-red-50/20 via-transparent to-green-50/20 dark:from-gray-900/80 dark:via-gray-950/90 dark:to-black/95 rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 border border-border/50 dark:border-gray-800/50 shadow-lg dark:shadow-2xl dark:shadow-black/50">
+            <div className="absolute inset-0 bg-gradient-to-r from-red-500/5 to-green-500/5 dark:from-red-900/10 dark:to-green-900/10"></div>
             <div className="relative text-center">
               <div className="flex flex-col xs:flex-row items-center justify-center gap-2 xs:gap-4 mb-4 sm:mb-6">
                 <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-r from-red-600 to-red-600 dark:from-red-700 dark:to-red-700 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg">
