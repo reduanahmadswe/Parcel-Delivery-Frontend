@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 
@@ -17,6 +17,9 @@ interface ReceiverParcelPieChartProps {
 
 export default function ReceiverParcelPieChart({ parcels }: ReceiverParcelPieChartProps) {
   const chartComponentRef = useRef<HighchartsReact.RefObject>(null);
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => 
+    typeof document !== 'undefined' && document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+  );
 
   // Calculate stats from parcels array
   const stats = {
@@ -33,6 +36,25 @@ export default function ReceiverParcelPieChart({ parcels }: ReceiverParcelPieCha
     returned: parcels.filter((p) => p.currentStatus === 'returned').length,
     urgent: parcels.filter((p) => p.deliveryInfo?.isUrgent).length,
   };
+
+  // Check if dark mode
+  const isDark = theme === 'dark';
+
+  // Theme-aware colors
+  const colors = {
+    requested: isDark ? '#A855F7' : '#9333EA',
+    approved: isDark ? '#22D3EE' : '#06B6D4',
+    dispatched: isDark ? '#A78BFA' : '#8B5CF6',
+    pending: isDark ? '#FBBF24' : '#F59E0B',
+    inTransit: isDark ? '#60A5FA' : '#3B82F6',
+    delivered: isDark ? '#34D399' : '#10B981',
+    cancelled: isDark ? '#F87171' : '#EF4444',
+    returned: isDark ? '#FBBF24' : '#F59E0B',
+  };
+
+  const textColor = isDark ? '#E5E7EB' : '#1F2937';
+  const subtitleColor = isDark ? '#9CA3AF' : '#6B7280';
+  const borderColor = isDark ? '#374151' : '#ffffff';
 
   // Responsive chart height based on screen size
   const getChartHeight = () => {
@@ -57,14 +79,14 @@ export default function ReceiverParcelPieChart({ parcels }: ReceiverParcelPieCha
       style: {
         fontSize: typeof window !== 'undefined' && window.innerWidth < 640 ? '16px' : '20px',
         fontWeight: 'bold',
-        color: 'var(--foreground)',
+        color: textColor,
       },
     },
     subtitle: {
       text: `Total: ${stats.total} Parcels | Urgent: ${stats.urgent}`,
       style: {
         fontSize: typeof window !== 'undefined' && window.innerWidth < 640 ? '12px' : '14px',
-        color: 'var(--muted-foreground)',
+        color: subtitleColor,
       },
     },
     tooltip: {
@@ -83,7 +105,7 @@ export default function ReceiverParcelPieChart({ parcels }: ReceiverParcelPieCha
         allowPointSelect: true,
         cursor: 'pointer',
         borderWidth: 2,
-        borderColor: '#ffffff',
+        borderColor: borderColor,
         size: typeof window !== 'undefined' && window.innerWidth < 640 ? '85%' : '75%',
         dataLabels: [
           {
@@ -93,7 +115,7 @@ export default function ReceiverParcelPieChart({ parcels }: ReceiverParcelPieCha
             style: {
               fontSize: typeof window !== 'undefined' && window.innerWidth < 640 ? '10px' : '13px',
               fontWeight: 'bold',
-              color: 'var(--foreground)',
+              color: textColor,
               textOutline: 'none',
             },
           },
@@ -122,12 +144,12 @@ export default function ReceiverParcelPieChart({ parcels }: ReceiverParcelPieCha
       verticalAlign: typeof window !== 'undefined' && window.innerWidth < 768 ? 'bottom' : 'middle',
       layout: typeof window !== 'undefined' && window.innerWidth < 768 ? 'horizontal' : 'vertical',
       itemStyle: {
-        color: 'var(--foreground)',
+        color: textColor,
         fontSize: typeof window !== 'undefined' && window.innerWidth < 640 ? '11px' : '13px',
         fontWeight: '500',
       },
       itemHoverStyle: {
-        color: 'var(--primary)',
+        color: isDark ? '#60A5FA' : '#3B82F6',
       },
       itemMarginBottom: 5,
       maxHeight: typeof window !== 'undefined' && window.innerWidth < 768 ? 80 : undefined,
@@ -145,56 +167,56 @@ export default function ReceiverParcelPieChart({ parcels }: ReceiverParcelPieCha
             y: stats.requested,
             sliced: false,
             selected: false,
-            color: '#9333EA', // Purple
+            color: colors.requested,
           },
           {
             name: 'Approved',
             y: stats.approved,
             sliced: false,
             selected: false,
-            color: '#06B6D4', // Cyan
+            color: colors.approved,
           },
           {
             name: 'Dispatched',
             y: stats.dispatched,
             sliced: false,
             selected: false,
-            color: '#8B5CF6', // Violet
+            color: colors.dispatched,
           },
           {
             name: 'Pending',
             y: stats.pending,
             sliced: false,
             selected: false,
-            color: '#FFA500', // Orange
+            color: colors.pending,
           },
           {
             name: 'In Transit',
             y: stats.inTransit,
             sliced: false,
             selected: false,
-            color: '#3B82F6', // Blue
+            color: colors.inTransit,
           },
           {
             name: 'Delivered',
             y: stats.delivered,
             sliced: true,
             selected: true,
-            color: '#10B981', // Green
+            color: colors.delivered,
           },
           {
             name: 'Cancelled',
             y: stats.cancelled,
             sliced: false,
             selected: false,
-            color: '#EF4444', // Red
+            color: colors.cancelled,
           },
           {
             name: 'Returned',
             y: stats.returned,
             sliced: false,
             selected: false,
-            color: '#F59E0B', // Amber
+            color: colors.returned,
           },
         ].filter((item) => item.y > 0), // Only show non-zero values
       } as any,
@@ -206,7 +228,26 @@ export default function ReceiverParcelPieChart({ parcels }: ReceiverParcelPieCha
     if (chartComponentRef.current) {
       chartComponentRef.current.chart.update(options, true, true);
     }
-  }, [parcels]);
+  }, [parcels, theme]);
+
+  // Listen for theme changes
+  useEffect(() => {
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.attributeName === 'class') {
+          const isDarkMode = document.documentElement.classList.contains('dark');
+          setTheme(isDarkMode ? 'dark' : 'light');
+        }
+      });
+    });
+
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class'],
+    });
+
+    return () => observer.disconnect();
+  }, []);
 
   // Handle window resize for responsive chart
   useEffect(() => {
@@ -223,8 +264,7 @@ export default function ReceiverParcelPieChart({ parcels }: ReceiverParcelPieCha
   // Show empty state if no parcels
   if (parcels.length === 0) {
     return (
-      <div className="relative overflow-hidden bg-card/60 backdrop-blur-sm border border-border/50 rounded-xl sm:rounded-2xl lg:rounded-3xl p-6 sm:p-8 md:p-10 lg:p-12 shadow-lg">
-        <div className="absolute inset-0 bg-gradient-to-r from-green-500/5 to-teal-500/5 dark:from-green-400/10 dark:to-teal-400/10"></div>
+      <div className="relative overflow-hidden bg-gradient-to-br from-red-50/20 via-transparent to-green-50/20 dark:from-red-950/10 dark:to-green-950/10 border border-border/50 rounded-xl sm:rounded-2xl lg:rounded-3xl p-6 sm:p-8 md:p-10 lg:p-12 shadow-lg">
         <div className="relative text-center">
           <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 mx-auto mb-4 sm:mb-6 bg-gradient-to-r from-green-500 to-teal-600 rounded-full flex items-center justify-center opacity-20">
             <svg className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -241,8 +281,7 @@ export default function ReceiverParcelPieChart({ parcels }: ReceiverParcelPieCha
   }
 
   return (
-    <div className="relative overflow-hidden bg-card/60 backdrop-blur-sm border border-border/50 rounded-xl sm:rounded-2xl lg:rounded-3xl p-3 sm:p-4 md:p-6 lg:p-8 shadow-lg hover:shadow-xl transition-all duration-300">
-      <div className="absolute inset-0 bg-gradient-to-r from-green-500/5 to-teal-500/5 dark:from-green-400/10 dark:to-teal-400/10"></div>
+    <div className="relative overflow-hidden bg-gradient-to-br from-red-50/20 via-transparent to-green-50/20 dark:from-red-950/10 dark:to-green-950/10 border border-border/50 rounded-xl sm:rounded-2xl lg:rounded-3xl p-3 sm:p-4 md:p-6 lg:p-8 shadow-lg hover:shadow-xl transition-all duration-300">
       <div className="relative">
         <HighchartsReact
           highcharts={Highcharts}
