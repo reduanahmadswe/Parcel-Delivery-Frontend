@@ -11,6 +11,7 @@ import { Parcel } from "../../types/GlobalTypeDefinitions";
 import FooterSection from "../../pages/public/sections/FooterSection";
 import ParcelDetailsModal from "../../components/modals/ParcelDetailsModal";
 import { useGetSenderParcelsQuery } from "../../store/api/senderApi";
+import SenderParcelPieChart from "../../pages/sender/components/SenderParcelPieChart";
 
 interface ApiError {
   response?: {
@@ -200,6 +201,10 @@ export default function SenderDashboard() {
               </div>
             </div>
           </div>
+          
+          {/* Pie Chart Section */}
+          <SenderParcelPieChart parcels={parcels} />
+
           {}
           <div className="bg-background rounded-lg sm:rounded-xl lg:rounded-2xl shadow-sm border border-border p-4 sm:p-5 lg:p-6 xl:p-8 hover:shadow-lg hover:border-gray-300 dark:hover:border-gray-600 transition-all duration-300">
             <h2 className="text-base xs:text-lg sm:text-xl lg:text-2xl font-semibold text-foreground mb-4 sm:mb-5 lg:mb-6">

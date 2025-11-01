@@ -9,10 +9,23 @@ import { useGetAllUsersQuery, useGetAllParcelsQuery } from "../../store/api/admi
 import AdminHeader from "../../pages/admin/components/AdminHeader";
 import StatCards from "../../pages/admin/components/StatCards";
 import RecentParcelsTable from "../../pages/admin/components/RecentParcelsTable";
+import ParcelStatusPieChart from "../../pages/admin/components/ParcelStatusPieChart";
 
 interface DashboardStats {
   users: { total: number; active: number; blocked: number; newThisMonth: number };
-  parcels: { total: number; pending: number; inTransit: number; delivered: number; flagged: number; urgent: number };
+  parcels: { 
+    total: number; 
+    requested: number;
+    approved: number;
+    dispatched: number;
+    pending: number; 
+    inTransit: number; 
+    delivered: number; 
+    cancelled: number;
+    returned: number;
+    flagged: number; 
+    urgent: number;
+  };
 }
 
 interface RecentParcel {
@@ -26,7 +39,22 @@ interface RecentParcel {
 }
 
 export default function AdminDashboard() {
-  const [stats, setStats] = useState<DashboardStats>({ users: { total: 0, active: 0, blocked: 0, newThisMonth: 0 }, parcels: { total: 0, pending: 0, inTransit: 0, delivered: 0, flagged: 0, urgent: 0 } });
+  const [stats, setStats] = useState<DashboardStats>({ 
+    users: { total: 0, active: 0, blocked: 0, newThisMonth: 0 }, 
+    parcels: { 
+      total: 0, 
+      requested: 0,
+      approved: 0,
+      dispatched: 0,
+      pending: 0, 
+      inTransit: 0, 
+      delivered: 0, 
+      cancelled: 0,
+      returned: 0,
+      flagged: 0, 
+      urgent: 0 
+    } 
+  });
   const [recentParcels, setRecentParcels] = useState<RecentParcel[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -101,17 +129,37 @@ export default function AdminDashboard() {
 
       const processedParcelStats = {
         total: parcels.length,
+        requested: parcels.filter((p: any) => {
+          const s = (p.currentStatus || p.status)?.toString()?.toLowerCase();
+          return s === "requested";
+        }).length,
+        approved: parcels.filter((p: any) => {
+          const s = (p.currentStatus || p.status)?.toString()?.toLowerCase();
+          return s === "approved";
+        }).length,
+        dispatched: parcels.filter((p: any) => {
+          const s = (p.currentStatus || p.status)?.toString()?.toLowerCase();
+          return s === "dispatched";
+        }).length,
         pending: parcels.filter((p: any) => {
           const s = (p.currentStatus || p.status)?.toString()?.toLowerCase();
-          return s === "pending" || s === "requested";
+          return s === "pending";
         }).length,
         inTransit: parcels.filter((p: any) => { 
           const s = (p.currentStatus || p.status)?.toString()?.toLowerCase(); 
-          return s === "in_transit" || s === "intransit" || s === "in-transit" || s === "transit" || s === "dispatched"; 
+          return s === "in_transit" || s === "intransit" || s === "in-transit" || s === "transit"; 
         }).length,
         delivered: parcels.filter((p: any) => {
           const s = (p.currentStatus || p.status)?.toString()?.toLowerCase();
           return s === "delivered";
+        }).length,
+        cancelled: parcels.filter((p: any) => {
+          const s = (p.currentStatus || p.status)?.toString()?.toLowerCase();
+          return s === "cancelled" || s === "canceled";
+        }).length,
+        returned: parcels.filter((p: any) => {
+          const s = (p.currentStatus || p.status)?.toString()?.toLowerCase();
+          return s === "returned";
         }).length,
         flagged: parcels.filter((p: any) => p.isFlagged || p.isHeld || p.isBlocked).length,
         urgent: parcels.filter((p: any) => !!(p.deliveryInfo?.isUrgent || p.isFlagged)).length,
@@ -157,6 +205,9 @@ export default function AdminDashboard() {
           <AdminHeader onRefresh={() => { refetchUsers(); refetchParcels(); }} />
 
           <StatCards statCards={statCards} />
+
+          {/* Pie Chart Section */}
+          <ParcelStatusPieChart stats={stats.parcels} />
 
           <RecentParcelsTable parcels={paginatedRecentParcels} />
 

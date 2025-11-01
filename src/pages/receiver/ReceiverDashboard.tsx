@@ -13,6 +13,7 @@ import ParcelList from "./components/ParcelList";
 import SearchAndFilters from "./components/SearchAndFilters";
 import StatsCards from "./components/StatsCards";
 import FooterSection from "../public/sections/FooterSection";
+import ReceiverParcelPieChart from "./components/ReceiverParcelPieChart";
 
 export default function ReceiverDashboard() {
   const { user, loading } = useAuth();
@@ -230,6 +231,9 @@ export default function ReceiverDashboard() {
 
         {}
         <StatsCards stats={stats} />
+
+        {/* Pie Chart Section */}
+        <ReceiverParcelPieChart parcels={parcels} />
 
         {}
         <SearchAndFilters
