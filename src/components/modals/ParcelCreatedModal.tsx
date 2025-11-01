@@ -13,7 +13,14 @@ export default function ParcelCreatedModal({ parcel, onClose }: Props) {
   const navigate = useNavigate();
   const [generatingPdf, setGeneratingPdf] = useState(false);
 
-  if (!parcel) return null;
+  console.log('🎭 ParcelCreatedModal Render:', { parcel, hasParcel: !!parcel });
+
+  if (!parcel) {
+    console.log('❌ Modal: No parcel data, returning null');
+    return null;
+  }
+
+  console.log('✅ Modal: Rendering with parcel:', parcel);
 
   const trackingId = parcel.trackingId || parcel.id || "-";
 

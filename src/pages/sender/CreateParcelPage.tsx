@@ -423,11 +423,14 @@ export default function CreateParcelPage() {
       } as any;
 
   const response = await createParcel(payload).unwrap();
+      console.log('🔍 API Response:', response);
       const parcel = response.data;
+      console.log('📦 Parcel Data:', parcel);
 
       toast.success("📦 Parcel created successfully!");
 
       setCreatedParcel(parcel);
+      console.log('✅ Created Parcel State Set:', parcel);
 
       invalidateAllSenderCaches();
     } catch (error: unknown) {
@@ -1071,7 +1074,7 @@ export default function CreateParcelPage() {
                         .toISOString()
                         .split("T")[0]
                     }
-                    className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-background/80 backdrop-blur-sm border border-border/50 rounded-lg sm:rounded-xl text-foreground focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 hover:border-blue-400/50 transition-all duration-300 shadow-sm hover:shadow-md font-medium text-xs sm:text-sm"
+                    className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-background/80 backdrop-blur-sm border border-border/50 rounded-lg sm:rounded-xl text-foreground focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 hover:border-blue-400/50 transition-all duration-300 shadow-sm hover:shadow-md font-medium text-xs sm:text-sm [color-scheme:light] dark:[color-scheme:dark]"
                   />
                 </div>
 
@@ -1259,6 +1262,7 @@ export default function CreateParcelPage() {
               </button>
             </div>
           </form>
+          {console.log('🔍 Render Check:', { createdParcel, shouldShowModal: !!createdParcel })}
           {createdParcel && (
             <ParcelCreatedModal
               parcel={createdParcel}
