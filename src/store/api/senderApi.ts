@@ -122,19 +122,21 @@ const senderApi = apiSlice.injectEndpoints({
             keepUnusedDataFor: Infinity,
         }),
 
-        cancelParcel: build.mutation<any, string>({
-            query: (id) => ({
-                url: `/parcels/${id}`,
-                method: 'DELETE',
+        // Sender cancel mutation: use PATCH /parcels/cancel/:id and include a reason
+        cancelParcel: build.mutation<any, { id: string; reason?: string }>({
+            query: ({ id, reason }) => ({
+                url: `/parcels/cancel/${id}`,
+                method: 'PATCH',
+                body: { reason },
             }),
-            invalidatesTags: (result, error, id) => [
-                { type: 'SenderParcel', id },
+            invalidatesTags: (result, error, arg) => [
+                { type: 'SenderParcel', id: arg.id },
                 { type: 'SenderParcel', id: 'LIST' },
                 'SenderDashboard',
                 'SenderStats',
             ],
             
-            async onQueryStarted(id, { dispatch, queryFulfilled }) {
+            async onQueryStarted({ id }, { dispatch, queryFulfilled }) {
                 const patchResult = dispatch(
                     senderApi.util.updateQueryData('getSenderParcels', undefined, (draft) => {
                         return draft.filter((parcel) => parcel._id !== id);

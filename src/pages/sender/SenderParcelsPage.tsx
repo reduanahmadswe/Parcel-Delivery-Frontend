@@ -227,8 +227,8 @@ export default function SenderParcelsPage() {
     if (!parcelToCancel) return;
 
     try {
-      setIsCancelling(true);
-      await cancelParcel(parcelToCancel._id).unwrap();
+  setIsCancelling(true);
+  await cancelParcel({ id: parcelToCancel._id, reason: cancelReason }).unwrap();
       toast.success("Parcel cancelled successfully");
       setIsCancelDialogOpen(false);
       setParcelToCancel(null);
