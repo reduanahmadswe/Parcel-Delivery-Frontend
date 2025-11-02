@@ -13,6 +13,7 @@ export interface RouteConfig {
 import ContactPage from "./pages/public/ContactPage";
 import HomePage from "./pages/public/HomePage";
 import TrackPage from "./pages/public/TrackPage";
+import StatusHistoryPage from "./features/tracking/StatusHistoryPage";
 import PrivacyPolicyPage from "./pages/public/PrivacyPolicyPage";
 import TermsOfServicePage from "./pages/public/TermsOfServicePage";
 import CookiePolicyPage from "./pages/public/CookiePolicyPage";
@@ -42,6 +43,11 @@ import APITestPage from "./pages/APITestPage";
 
 export const routes: RouteConfig[] = [
   
+  {
+    path: "/status-history",
+    element: <StatusHistoryPage />,
+    layout: true,
+  },
   {
     path: "/",
     element: <HomePage />,
