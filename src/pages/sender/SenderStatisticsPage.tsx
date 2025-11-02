@@ -1,12 +1,12 @@
 import { BarChart3, Calendar, Package, Truck, XCircle } from "lucide-react";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import toast from "react-hot-toast";
 import ProtectedRoute from "../../components/common/ProtectedRoute";
 import { useAuth } from "../../hooks/useAuth";
-import api from "../../services/ApiConfiguration";
+import { useGetSenderParcelsQuery } from "../../store/api/senderApi";
 import { Parcel } from "../../types/GlobalTypeDefinitions";
 import FooterSection from "../public/sections/FooterSection";
-import { adminCache, CACHE_KEYS } from "../../utils/adminCache";
+import { invalidateRelatedCaches } from "../../utils/adminCache";
 
 interface ApiError {
   response?: {
@@ -18,12 +18,17 @@ interface ApiError {
 
 export default function SenderStatisticsPage() {
   const { user } = useAuth();
+  const { data: parcelsData, refetch: refetchParcels, isLoading: parcelsLoading } = useGetSenderParcelsQuery(undefined, {
+    refetchOnFocus: false,
+    refetchOnMountOrArgChange: false,
+    refetchOnReconnect: true,
+  });
+
   const [parcels, setParcels] = useState<Parcel[]>([]);
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
   const [isBackgroundRefresh, setIsBackgroundRefresh] = useState(false);
   const isMountedRef = useRef(false);
-  const fetchingRef = useRef(false);
   const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
@@ -32,7 +37,7 @@ export default function SenderStatisticsPage() {
       const { key } = customEvent.detail;
 
       if (key === 'SENDER_STATISTICS' || key === 'SENDER_DASHBOARD' || key === 'MY_LIST' || key.includes('sender:parcels:')) {
-        fetchParcels(true, true); 
+        refetchParcels();
       }
     };
 
@@ -41,26 +46,24 @@ export default function SenderStatisticsPage() {
     return () => {
       window.removeEventListener('cache-invalidated', handleCacheInvalidation);
     };
-  }, []);
+  }, [refetchParcels]);
 
   useEffect(() => {
-    
     pollingIntervalRef.current = setInterval(() => {
-      fetchParcels(true, true); 
-    }, 30000); 
+      refetchParcels();
+    }, 30000);
 
     return () => {
       if (pollingIntervalRef.current) {
         clearInterval(pollingIntervalRef.current);
       }
     };
-  }, []);
+  }, [refetchParcels]);
 
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (!document.hidden) {
-        
-        fetchParcels(true, true);
+        refetchParcels();
       }
     };
 
@@ -69,101 +72,30 @@ export default function SenderStatisticsPage() {
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
-  }, []);
+  }, [refetchParcels]);
 
   useEffect(() => {
     if (!isMountedRef.current) {
       isMountedRef.current = true;
-      fetchParcels(false, false); 
+      refetchParcels();
     }
-  }, []);
+  }, [refetchParcels]);
 
-  const fetchParcels = async (force: boolean = false, silent: boolean = false) => {
-    
-    if (fetchingRef.current) return;
+  useEffect(() => {
+    if (parcelsLoading && !parcelsData) {
+      setLoading(true);
+      return;
+    }
 
     try {
-      fetchingRef.current = true;
-
-      if (!force) {
-        const cachedData = adminCache.get<Parcel[]>(CACHE_KEYS.SENDER_STATISTICS);
-        if (cachedData) {
-          setParcels(cachedData);
-          setLoading(false);
-          setInitialLoading(false);
-          fetchingRef.current = false;
-          return;
-        }
-      }
-
-      if (!silent) {
-        setLoading(true);
-      } else {
-        setIsBackgroundRefresh(true);
-      }
-
-      let response;
-      let allParcels = [];
-
-      try {
-        response = await api.get("/parcels/me?limit=10000");
-        if (response.data.data?.length > 10) {
-          allParcels = response.data.data;
-        }
-      } catch (err) {
-      }
-
-      if (allParcels.length <= 10) {
-        try {
-          response = await api.get("/parcels/me/no-pagination?limit=10000");
-          if (response.data.data?.length > allParcels.length) {
-            allParcels = response.data.data;
-          }
-        } catch (err) {
-          
-        }
-      }
-
-      if (allParcels.length <= 10) {
-        try {
-          const page1 = await api.get("/parcels/me?page=1&limit=10000");
-          const page2 = await api.get("/parcels/me?page=2&limit=10000");
-          const combinedData = [
-            ...(page1.data.data || []),
-            ...(page2.data.data || []),
-          ];
-          if (combinedData.length > allParcels.length) {
-            allParcels = combinedData;
-          }
-        } catch (err) {
-          
-        }
-      }
-
-      if (allParcels.length === 0) {
-        try {
-          response = await api.get("/parcels/me/no-pagination");
-          allParcels = response.data.data || [];
-        } catch (err) {
-          
-        }
-      }
-
-      adminCache.set(CACHE_KEYS.SENDER_STATISTICS, allParcels);
-
-      setParcels(allParcels);
-    } catch (error) {
-      
-      if (!silent) {
-        toast.error("Failed to fetch parcels");
-      }
+      const list = Array.isArray(parcelsData) ? parcelsData : [];
+      setParcels(list);
     } finally {
       setLoading(false);
       setInitialLoading(false);
       setIsBackgroundRefresh(false);
-      fetchingRef.current = false;
     }
-  };
+  }, [parcelsData, parcelsLoading]);
 
   const stats = {
     total: parcels.length,

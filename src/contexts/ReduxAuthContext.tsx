@@ -1,6 +1,7 @@
 "use client";
 
 import { AuthStateManager } from "../services/AuthStateManager";
+import { clearReceiverLocalCache } from "../utils/realtimeSync";
 import { TokenManager } from "../services/TokenManager";
 import {
   useGetCurrentUserQuery,
@@ -320,6 +321,11 @@ export function ReduxAuthProvider({ children }: { children: ReactNode }) {
       dispatch(logoutAction());
 
       localStorage.removeItem("userData");
+      try {
+        clearReceiverLocalCache();
+      } catch (err) {
+        // ignore
+      }
 
       AuthStateManager.clearSession();
 

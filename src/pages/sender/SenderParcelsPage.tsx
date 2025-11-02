@@ -10,18 +10,19 @@ import {
   X,
   XCircle,
 } from "lucide-react";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import ProtectedRoute from "../../components/common/ProtectedRoute";
 import ConfirmDialog from "../../components/modals/ConfirmDialog";
 import { useAuth } from "../../hooks/useAuth";
-import api from "../../services/ApiConfiguration";
+// use RTK Query for server state
+import { useGetSenderParcelsQuery, useCancelParcelMutation } from "../../store/api/senderApi";
 import { formatDate, getStatusColor } from "../../utils/HelperUtilities";
 import { Parcel } from "../../types/GlobalTypeDefinitions";
 import FooterSection from "../public/sections/FooterSection";
 import ParcelDetailsModal from "../../components/modals/ParcelDetailsModal";
-import { adminCache, CACHE_KEYS, invalidateRelatedCaches } from "../../utils/adminCache";
+import { invalidateRelatedCaches } from "../../utils/adminCache";
 
 interface ApiError {
   response?: {
@@ -42,6 +43,15 @@ interface PaginationInfo {
 
 export default function SenderParcelsPage() {
   const { user } = useAuth();
+
+  // RTK Query hooks for sender parcels
+  const { data: parcelsData, refetch: refetchParcels, isLoading: parcelsLoading } = useGetSenderParcelsQuery(undefined, {
+    refetchOnFocus: false,
+    refetchOnMountOrArgChange: false,
+    refetchOnReconnect: true,
+  });
+  const [cancelParcel] = useCancelParcelMutation();
+
   const [parcels, setParcels] = useState<Parcel[]>([]);
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
@@ -49,7 +59,6 @@ export default function SenderParcelsPage() {
   const [filterStatus, setFilterStatus] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
-  const fetchingRef = useRef(false);
   const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const [selectedParcel, setSelectedParcel] = useState<Parcel | null>(null);
@@ -72,7 +81,7 @@ export default function SenderParcelsPage() {
     hasNextPage: false,
     hasPrevPage: false,
   });
-  const [itemsPerPage] = useState(5); 
+  const [itemsPerPage] = useState(5);
 
   useEffect(() => {
     const handleCacheInvalidation = (event: Event) => {
@@ -80,7 +89,7 @@ export default function SenderParcelsPage() {
       const { key } = customEvent.detail;
 
       if (key.includes('sender:parcels:') || key === 'SENDER_DASHBOARD') {
-        fetchParcels(currentPage, true, true); 
+        refetchParcels();
       }
     };
 
@@ -94,8 +103,8 @@ export default function SenderParcelsPage() {
   useEffect(() => {
     
     pollingIntervalRef.current = setInterval(() => {
-      fetchParcels(currentPage, true, true); 
-    }, 30000); 
+      refetchParcels();
+    }, 30000);
 
     return () => {
       if (pollingIntervalRef.current) {
@@ -107,8 +116,7 @@ export default function SenderParcelsPage() {
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (!document.hidden) {
-        
-        fetchParcels(currentPage, true, true);
+        refetchParcels();
       }
     };
 
@@ -120,8 +128,9 @@ export default function SenderParcelsPage() {
   }, [currentPage]);
 
   useEffect(() => {
-    fetchParcels(currentPage);
-  }, [currentPage]);
+    // initial fetch on mount or when page changes (we always refetch to keep data fresh)
+    refetchParcels();
+  }, [currentPage, refetchParcels]);
 
   useEffect(() => {
     const saved = localStorage.getItem("recentParcelSearches");
@@ -144,90 +153,41 @@ export default function SenderParcelsPage() {
 
   useEffect(() => {
     if (currentPage === 1) {
-      fetchParcels(1);
+      refetchParcels();
     } else {
       setCurrentPage(1); 
     }
   }, [filterStatus, debouncedSearchTerm]);
 
-  const fetchParcels = async (page: number = 1, force: boolean = false, silent: boolean = false) => {
-    
-    if (fetchingRef.current) return;
+  // Map RTK Query data to local state and compute pagination client-side.
+  useEffect(() => {
+    if (parcelsLoading && !parcelsData) {
+      setLoading(true);
+      return;
+    }
 
     try {
-      fetchingRef.current = true;
+      const list = Array.isArray(parcelsData) ? parcelsData : [];
+      setParcels(list);
 
-      const filterKey = `${filterStatus || 'all'}-${debouncedSearchTerm || 'all'}`;
-      const cacheKey = CACHE_KEYS.SENDER_PARCELS(page, filterKey);
-
-      if (!force) {
-        const cachedData = adminCache.get<{ parcels: Parcel[]; pagination: PaginationInfo }>(cacheKey);
-        if (cachedData) {
-          setParcels(cachedData.parcels);
-          setPagination(cachedData.pagination);
-          setLoading(false);
-          setInitialLoading(false);
-          fetchingRef.current = false;
-          return;
-        }
-      }
-
-      if (!silent) {
-        setLoading(true);
-      } else {
-        setIsBackgroundRefresh(true);
-      }
-
-      const params = new URLSearchParams({
-        page: page.toString(),
-        limit: itemsPerPage.toString(),
-      });
-
-      if (filterStatus) {
-        params.append("status", filterStatus);
-      }
-      if (debouncedSearchTerm) {
-        params.append("search", debouncedSearchTerm);
-      }
-
-      const response = await api.get(`/parcels/me?${params.toString()}`);
-
-      const data = response.data.data || response.data.parcels || response.data;
-      const paginationData =
-        response.data.pagination || response.data.meta || {};
-
-      const parcelsData = Array.isArray(data) ? data : [];
-      setParcels(parcelsData);
-
-      const paginationInfo = {
-        currentPage: paginationData.currentPage || paginationData.page || page,
-        totalPages:
-          paginationData.totalPages ||
-          paginationData.pages ||
-          Math.ceil((paginationData.total || data.length) / itemsPerPage),
-        totalItems:
-          paginationData.total || paginationData.totalItems || data.length,
-        itemsPerPage:
-          paginationData.limit || paginationData.perPage || itemsPerPage,
-        hasNextPage:
-          paginationData.hasNextPage || page < (paginationData.totalPages || 1),
-        hasPrevPage: paginationData.hasPrevPage || page > 1,
+      const totalItems = list.length;
+      const totalPages = Math.max(1, Math.ceil(totalItems / itemsPerPage));
+      const paginationInfo: PaginationInfo = {
+        currentPage: Math.min(currentPage, totalPages),
+        totalPages,
+        totalItems,
+        itemsPerPage,
+        hasNextPage: currentPage < totalPages,
+        hasPrevPage: currentPage > 1,
       };
-      setPagination(paginationInfo);
 
-      adminCache.set(cacheKey, { parcels: parcelsData, pagination: paginationInfo });
-    } catch (error) {
-      
-      if (!silent) {
-        toast.error("Failed to fetch parcels");
-      }
+      setPagination(paginationInfo);
     } finally {
       setLoading(false);
       setInitialLoading(false);
       setIsBackgroundRefresh(false);
-      fetchingRef.current = false;
     }
-  };
+  }, [parcelsData, parcelsLoading, itemsPerPage, currentPage]);
 
   const handlePageChange = (newPage: number) => {
     if (newPage >= 1 && newPage <= pagination.totalPages) {
@@ -264,17 +224,11 @@ export default function SenderParcelsPage() {
   };
 
   const handleCancelConfirm = async () => {
-    if (!parcelToCancel || !cancelReason.trim()) {
-      toast.error("Please provide a reason for cancellation");
-      return;
-    }
+    if (!parcelToCancel) return;
 
     try {
       setIsCancelling(true);
-      await api.patch(`/parcels/cancel/${parcelToCancel._id}`, {
-        reason: cancelReason.trim(),
-      });
-      
+      await cancelParcel(parcelToCancel._id).unwrap();
       toast.success("Parcel cancelled successfully");
       setIsCancelDialogOpen(false);
       setParcelToCancel(null);
@@ -282,13 +236,10 @@ export default function SenderParcelsPage() {
 
       invalidateRelatedCaches('sender-parcel');
 
-      fetchParcels(currentPage, true); 
-    } catch (error: unknown) {
-      const apiError = error as ApiError;
-      const errorMessage = 
-        apiError.response?.data?.message || 
-        "Failed to cancel parcel. It may have already been dispatched.";
-      toast.error(errorMessage);
+      await refetchParcels();
+    } catch (err: any) {
+      const msg = err?.data?.message || err?.message || "Failed to cancel parcel. It may have already been dispatched.";
+      toast.error(msg);
     } finally {
       setIsCancelling(false);
     }
@@ -383,34 +334,41 @@ export default function SenderParcelsPage() {
     return [...filteredRecent, ...parcelSuggestions].slice(0, 5);
   };
 
-  const displayParcels = parcels.filter((parcel) => {
-    
-    if (!searchTerm) return true;
+  const filteredParcels = useMemo(() => {
+    const list = parcels ?? [];
+    const searchLower = (debouncedSearchTerm || "").toLowerCase().trim();
 
-    const searchLower = searchTerm.toLowerCase();
+    return list.filter((parcel) => {
+      if (filterStatus && parcel.currentStatus?.toLowerCase() !== filterStatus.toLowerCase()) return false;
 
-    const searchFields = [
-      parcel.trackingId,
-      parcel.receiverInfo.name,
-      parcel.receiverInfo.phone,
-      parcel.receiverInfo.email,
-      parcel.receiverInfo.address.city,
-      parcel.receiverInfo.address.state,
-      parcel.receiverInfo.address.street,
-      parcel.receiverInfo.address.zipCode,
-      parcel.senderInfo.name,
-      parcel.senderInfo.phone,
-      parcel.senderInfo.email,
-      parcel.currentStatus,
-      parcel.parcelDetails.type,
-      parcel.parcelDetails.description,
-      parcel.fee?.totalFee?.toString(),
-    ].filter(Boolean); 
+      if (!searchLower) return true;
 
-    return searchFields.some((field) =>
-      field?.toLowerCase().includes(searchLower)
-    );
-  });
+      const searchFields = [
+        parcel.trackingId,
+        parcel.receiverInfo?.name,
+        parcel.receiverInfo?.phone,
+        parcel.receiverInfo?.email,
+        parcel.receiverInfo?.address?.city,
+        parcel.receiverInfo?.address?.state,
+        parcel.receiverInfo?.address?.street,
+        parcel.receiverInfo?.address?.zipCode,
+        parcel.senderInfo?.name,
+        parcel.senderInfo?.phone,
+        parcel.senderInfo?.email,
+        parcel.currentStatus,
+        parcel.parcelDetails?.type,
+        parcel.parcelDetails?.description,
+        parcel.fee?.totalFee?.toString(),
+      ].filter(Boolean);
+
+      return searchFields.some((field) => field?.toString().toLowerCase().includes(searchLower));
+    });
+  }, [parcels, debouncedSearchTerm, filterStatus]);
+
+  const displayParcels = useMemo(() => {
+    const start = (currentPage - 1) * itemsPerPage;
+    return filteredParcels.slice(start, start + itemsPerPage);
+  }, [filteredParcels, currentPage, itemsPerPage]);
 
   if (loading && initialLoading) {
     return (

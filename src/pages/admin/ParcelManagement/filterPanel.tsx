@@ -72,14 +72,14 @@ export function FilterPanel({
             {}
             <div className="space-y-1.5 sm:space-y-2">
               <label className="flex items-center space-x-1.5 sm:space-x-2 text-xs sm:text-sm font-semibold text-foreground">
-                <div className="w-2 h-2 sm:w-3 sm:h-3 bg-gradient-to-r from-purple-500 to-purple-600 rounded-full shadow-sm"></div>
+                <div className="w-2 h-2 sm:w-3 sm:h-3 bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 rounded-full shadow-sm ring-1 ring-white/10 dark:ring-white/5 flex-shrink-0"></div>
                 <span>Tracking Number</span>
               </label>
               <div className="relative group">
                 <input
                   type="text"
                   placeholder="Enter tracking number... (e.g., TRK-202)"
-                  value={filterParams.trackingNumber || "TRK-202"}
+                    value={filterParams.trackingNumber || ""}
                   onChange={(e) =>
                     setFilterParams({
                       ...filterParams,
@@ -95,10 +95,10 @@ export function FilterPanel({
                       window.dispatchEvent(event);
                     }
                   }}
-                  className="w-full px-3 sm:px-4 lg:px-6 py-2.5 sm:py-3 lg:py-4 bg-gradient-to-r from-purple-50/50 to-purple-100/50 dark:from-purple-950/20 dark:to-purple-900/20 backdrop-blur-sm border border-purple-200/50 dark:border-purple-600/50 rounded-xl sm:rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500/50 text-foreground text-xs sm:text-sm placeholder-muted-foreground transition-all duration-300 hover:border-purple-500/30 hover:shadow-lg hover:shadow-purple-500/10 group-hover:-translate-y-0.5"
+                  className="w-full px-3 sm:px-4 lg:px-6 py-2.5 sm:py-3 lg:py-4 bg-background/80 backdrop-blur-sm border border-border/50 rounded-xl sm:rounded-2xl focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500/50 text-foreground text-xs sm:text-sm placeholder-muted-foreground dark:placeholder-red-300 transition-all duration-300 hover:border-red-500/30 hover:shadow-lg hover:shadow-red-500/10 group-hover:-translate-y-0.5"
                 />
                 <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:pr-3">
-                  <Search className="h-3 w-3 sm:h-4 sm:w-4 text-purple-500" />
+                    <Search className="h-3 w-3 sm:h-4 sm:w-4 text-red-500 dark:text-red-300" />
                 </div>
               </div>
               
@@ -112,7 +112,7 @@ export function FilterPanel({
                       });
                       window.dispatchEvent(event);
                     }}
-                    className="group relative w-full flex items-center justify-center space-x-1.5 sm:space-x-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white rounded-lg sm:rounded-xl transition-all duration-300 font-medium text-xs sm:text-sm shadow-lg hover:shadow-xl hover:shadow-purple-500/25 hover:-translate-y-0.5 overflow-hidden"
+                    className="group relative w-full flex items-center justify-center space-x-1.5 sm:space-x-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 hover:from-red-600 hover:to-red-700 dark:hover:from-red-700 dark:hover:to-red-800 text-white rounded-lg sm:rounded-xl transition-all duration-300 font-medium text-xs sm:text-sm shadow-lg hover:shadow-xl hover:shadow-red-500/25 dark:shadow-red-900/40 hover:-translate-y-0.5 overflow-hidden"
                   >
                     <div className="absolute inset-0 bg-gradient-to-r from-white/0 to-white/0 group-hover:from-white/10 group-hover:to-white/5 transition-all duration-300"></div>
                     <Search className="h-3 w-3 sm:h-4 sm:w-4 group-hover:scale-110 transition-transform duration-300 relative z-10" />

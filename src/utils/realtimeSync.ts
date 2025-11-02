@@ -114,3 +114,36 @@ export function invalidateAllSenderCaches() {
     SENDER_CACHE_KEYS.PARCELS,
   ]);
 }
+
+export const RECEIVER_CACHE_KEYS = {
+  DASHBOARD: 'RECEIVER_DASHBOARD',
+  PARCELS: 'receiver:parcels:',
+  STATISTICS: 'RECEIVER_STATISTICS',
+} as const;
+
+export function invalidateAllReceiverCaches() {
+  emitCacheInvalidation([
+    RECEIVER_CACHE_KEYS.DASHBOARD,
+    RECEIVER_CACHE_KEYS.STATISTICS,
+    RECEIVER_CACHE_KEYS.PARCELS,
+  ]);
+}
+
+export function clearReceiverLocalCache() {
+  try {
+    if (typeof window === 'undefined' || !window.localStorage) return;
+
+    const keysToRemove: string[] = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (!key) continue;
+      if (key.startsWith('receiver:') || key.includes('RECEIVER')) {
+        keysToRemove.push(key);
+      }
+    }
+
+    keysToRemove.forEach((k) => localStorage.removeItem(k));
+  } catch (err) {
+    console.warn('Failed to clear receiver local cache', err);
+  }
+}

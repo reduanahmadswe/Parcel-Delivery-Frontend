@@ -1,6 +1,8 @@
 import useAuth from "../../hooks/useAuth";
 import { BarChart3, Download, Package, RefreshCw, Truck } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useRealtimeSync, invalidateAllReceiverCaches, RECEIVER_CACHE_KEYS } from "@/utils/realtimeSync";
+import { useGetReceiverParcelsQuery, useConfirmDeliveryMutation } from "@/store/api/receiverApi";
 import { toast } from "react-hot-toast";
 
 import { Parcel } from "@/types/GlobalTypeDefinitions";
@@ -17,8 +19,21 @@ import ReceiverParcelPieChart from "./components/ReceiverParcelPieChart";
 
 export default function ReceiverDashboard() {
   const { user, loading } = useAuth();
-  const [parcels, setParcels] = useState<Parcel[]>([]);
-  const [stats, setStats] = useState({
+  // Use RTK Query hooks similar to the admin dashboard pattern.
+  const { data: parcelsData, refetch: refetchParcels, isLoading: parcelsLoading } = useGetReceiverParcelsQuery(undefined, {
+    refetchOnFocus: false,
+    refetchOnMountOrArgChange: false,
+    refetchOnReconnect: true,
+  });
+
+  const [confirmDelivery] = useConfirmDeliveryMutation();
+
+  const parcels = parcelsData ?? [];
+  const paginationFromStore = null; // we keep component pagination
+  const statsFromStore = null;
+  const receiverLoading = parcelsLoading;
+
+  const [stats, setStats] = useState(() => ({
     total: 0,
     pending: 0,
     inTransit: 0,
@@ -28,27 +43,27 @@ export default function ReceiverDashboard() {
     averagePerWeek: 0,
     successRate: 0,
     totalValue: 0,
-  });
+  }));
   const [filters, setFilters] = useState<SearchFilters>({
     filter: "all",
     searchTerm: "",
     sortBy: "createdAt",
     sortOrder: "desc",
   });
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [selectedParcel, setSelectedParcel] = useState<Parcel | null>(null);
   const [isConfirming, setIsConfirming] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [pagination, setPagination] = useState({
+  const pagination = paginationFromStore || {
     currentPage: 1,
     totalPages: 1,
     totalItems: 0,
     itemsPerPage: 5,
     hasNextPage: false,
     hasPrevPage: false,
-  });
+  };
   const [itemsPerPage] = useState(5);
 
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
@@ -63,57 +78,65 @@ export default function ReceiverDashboard() {
 
   useEffect(() => {
     if (currentPage === 1) {
-      fetchParcels(1);
+      // page reset handled by component state; we'll refetch when necessary
     } else {
       setCurrentPage(1);
     }
   }, [filters.filter, debouncedSearchTerm]);
 
-  const fetchParcels = useCallback(
-    async (page: number = 1) => {
+  // We rely on RTK Query for fetching; derive a fetch function that respects
+  // current filters and page. RTK Query endpoint currently returns all parcels
+  // for the receiver. For UI paging/filters we apply client-side filters.
+  const fetchParcels = useCallback(async (page: number = 1) => {
+    // For compatibility with realtime sync and manual refresh, call refetch
+    try {
+      setIsLoading(true);
+      await refetchParcels();
+    } catch (err) {
+      // noop - RTK Query surfaces errors via `parcelsLoading` and returned data
+    } finally {
+      setIsLoading(false);
+    }
+  }, [refetchParcels]);
+
+  // Let RTK Query/rehydration happen. Mimic admin dashboard: show loading only
+  // when there is no data yet and the query is loading.
+  useEffect(() => {
+    if (!user?.email) return;
+    // If there is no data and query is loading, show initial loading.
+    if (parcelsLoading && !parcelsData) {
+      setIsLoading(true);
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      // compute stats from parcelsData if available
+      const all = Array.isArray(parcelsData) ? parcelsData : [];
+      const enhanced = receiverUtils.enhanceParcelsWithMockData(all as any[]);
+      setStats(receiverUtils.calculateStats(enhanced));
+    } finally {
+      setIsLoading(false);
+    }
+  }, [user?.email, parcelsData, parcelsLoading]);
+
+  // Realtime sync: refresh when invalidation is emitted, on visibility change and polling
+  useRealtimeSync({
+    onRefresh: async (force?: boolean) => {
       if (!user?.email) return;
-
-      try {
-        setIsLoading(true);
-
-        const allParcels = await receiverApiService.fetchAllParcels(user.email);
-
-        const enhancedAllParcels =
-          receiverUtils.enhanceParcelsWithMockData(allParcels);
-        setStats(receiverUtils.calculateStats(enhancedAllParcels));
-
-        const filterStatus =
-          filters.filter === "all" ? undefined : filters.filter;
-        const searchTerm = debouncedSearchTerm || undefined;
-
-        const result = await receiverApiService.fetchParcels(
-          user.email,
-          page,
-          itemsPerPage,
-          filterStatus,
-          searchTerm
-        );
-
-        const enhancedParcels = receiverUtils.enhanceParcelsWithMockData(
-          result.parcels
-        );
-
-        setParcels(enhancedParcels);
-        setPagination(result.pagination);
-      } catch (error) {
-        const errorMsg =
-          error instanceof Error ? error.message : "Failed to fetch parcels";
-        const statusCode = (error as { response?: { status?: number } })
-          ?.response?.status;
-        toast.error(
-          `Error ${statusCode ? `(${statusCode})` : ""}: ${errorMsg}`
-        );
-      } finally {
-        setIsLoading(false);
-      }
+      await fetchParcels(currentPage);
     },
-    [user?.email, filters.filter, debouncedSearchTerm, itemsPerPage]
-  );
+    pollingInterval: 30000,
+    cacheKeys: user?.email ? [
+      `receiver:dashboard:${user.email}`,
+      `${RECEIVER_CACHE_KEYS.PARCELS}${user.email}`,
+      RECEIVER_CACHE_KEYS.DASHBOARD,
+    ] : [RECEIVER_CACHE_KEYS.DASHBOARD],
+    enablePolling: true,
+    enableVisibilityRefresh: true,
+    enableCacheListener: true,
+  });
 
   const handlePageChange = (newPage: number) => {
     if (newPage >= 1 && newPage <= pagination.totalPages) {
@@ -132,16 +155,20 @@ export default function ReceiverDashboard() {
   const handleConfirmDelivery = async (parcelId: string, note?: string) => {
     try {
       setIsConfirming(true);
-      await receiverApiService.confirmDelivery(parcelId, note);
+      await confirmDelivery(parcelId).unwrap();
       toast.success("Delivery confirmed successfully! 🎉");
 
-      await fetchParcels(currentPage);
+      // refetch to ensure UI is up-to-date (RTK Query invalidation + optimistic update will help)
+      await refetchParcels();
       setSelectedParcel(null);
+      try {
+        invalidateAllReceiverCaches();
+      } catch (err) {
+        // ignore
+      }
     } catch (error: any) {
-      
-      const errorMessage = error.message || "Failed to confirm delivery";
+      const errorMessage = error?.data?.message || error?.message || "Failed to confirm delivery";
       toast.error(errorMessage);
-
     } finally {
       setIsConfirming(false);
     }
@@ -156,15 +183,40 @@ export default function ReceiverDashboard() {
     toast.success("Parcels exported successfully!");
   };
 
+  // keep a tab-listener to handle cross-tab cache invalidation events
   useEffect(() => {
-    if (!loading && user) {
-      fetchParcels(1);
+    const handler = (ev: Event) => {
+      const e = ev as CustomEvent<{ key: string }>; 
+      const key = e?.detail?.key || '';
+      if (key && (key === 'PARCELS' || key.includes('PARCEL') || key.includes('receiver:dashboard'))) {
+        refetchParcels();
+      }
+    };
+
+    window.addEventListener('cache-invalidated', handler as EventListener);
+    return () => window.removeEventListener('cache-invalidated', handler as EventListener);
+  }, [refetchParcels]);
+
+  // apply client-side filters and pagination with memoization to avoid new refs
+  const filteredParcels = useMemo(() => {
+    const list = parcels ?? [];
+    const search = (filters.searchTerm || '').toLowerCase().trim();
+    const filtered = list.filter((p: any) => {
+      if (!search) return true;
+      return (p.trackingNumber || p.tracking_number || p._id || '').toString().toLowerCase().includes(search) || (p.senderInfo?.name || '').toLowerCase().includes(search) || (p.receiverInfo?.name || '').toLowerCase().includes(search);
+    });
+    if (filters.filter && filters.filter !== 'all') {
+      return filtered.filter((p: any) => ((p.currentStatus || p.status) || '').toString().toLowerCase() === filters.filter.toLowerCase());
     }
-  }, [user, loading, fetchParcels]);
+    return filtered;
+  }, [parcels, filters.searchTerm, filters.filter]);
 
-  const displayParcels = parcels;
+  const displayParcels = useMemo(() => {
+    const start = (currentPage - 1) * itemsPerPage;
+    return filteredParcels.slice(start, start + itemsPerPage);
+  }, [filteredParcels, currentPage, itemsPerPage]);
 
-  if (loading || isLoading) {
+  if (((loading || receiverLoading || isLoading) && (!parcels || parcels.length === 0))) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">

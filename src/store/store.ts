@@ -4,6 +4,7 @@ import { FLUSH, PAUSE, PERSIST, persistReducer, persistStore, PURGE, REGISTER, R
 import storage from 'redux-persist/lib/storage';
 import apiSlice from './api/apiSlice';
 import authSlice, { logout } from './slices/authSlice';
+import receiverSlice from './slices/receiverSlice';
 
 const createNoopStorage = () => {
     return {
@@ -41,6 +42,13 @@ const apiPersistConfig = {
 
 const persistedAuthReducer = persistReducer(authPersistConfig, authSlice);
 const persistedApiReducer = persistReducer(apiPersistConfig, apiSlice.reducer);
+const receiverPersistConfig = {
+    key: 'receiver',
+    storage: storageToUse,
+    whitelist: ['parcels', 'pagination', 'stats', 'lastUpdated'],
+};
+
+const persistedReceiverReducer = persistReducer(receiverPersistConfig, receiverSlice);
 
 if (!IS_PROD && typeof window !== 'undefined') {
     window.addEventListener('storage', (e) => {
@@ -61,6 +69,18 @@ const logoutCacheResetMiddleware: Middleware = (storeAPI) => (next) => (action) 
 
         if (typeof window !== 'undefined') {
             localStorage.removeItem('persist:api');
+            try {
+                // remove any receiver-related cached keys (e.g. receiver:dashboard:...)
+                for (let i = localStorage.length - 1; i >= 0; i--) {
+                    const key = localStorage.key(i);
+                    if (!key) continue;
+                    if (key === 'persist:receiver' || key.startsWith('receiver:') || key.includes('RECEIVER')) {
+                        localStorage.removeItem(key);
+                    }
+                }
+            } catch (err) {
+                console.warn('[logoutCacheResetMiddleware] failed to clear receiver cache', err);
+            }
         }
     }
     return next(action);
@@ -70,6 +90,7 @@ export const store = configureStore({
     reducer: {
         auth: persistedAuthReducer,
         api: persistedApiReducer,
+        receiver: persistedReceiverReducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
